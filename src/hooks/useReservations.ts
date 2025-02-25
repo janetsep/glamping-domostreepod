@@ -10,26 +10,35 @@ export const useReservations = () => {
   const fetchGlampingUnits = async () => {
     setIsLoading(true);
     try {
-      console.log('Iniciando fetch de unidades...');
+      console.log('Verificando conexión con Supabase...');
+      
+      // Primero verificamos la conexión
+      const { error: healthError } = await supabase.from('glamping_units').select('count').single();
+      if (healthError) {
+        console.error('Error de conexión:', healthError);
+        throw new Error('No se pudo establecer conexión con la base de datos');
+      }
+
+      console.log('Conexión establecida, obteniendo unidades...');
       
       const { data, error } = await supabase
         .from('glamping_units')
         .select('*');
 
-      console.log('Respuesta de Supabase:', { data, error });
+      console.log('Respuesta:', { data, error });
 
       if (error) {
-        console.error('Error detallado:', error);
+        console.error('Error al obtener unidades:', error);
         toast({
           variant: "destructive",
-          title: "Error",
+          title: "Error de conexión",
           description: `No se pudieron cargar las unidades: ${error.message}`,
         });
         return [];
       }
 
       if (!data || data.length === 0) {
-        console.log('No hay datos, intentando insertar ejemplos...');
+        console.log('No hay datos, insertando ejemplos...');
         const exampleUnits = [
           {
             name: 'Cabaña del Bosque',
@@ -73,14 +82,13 @@ export const useReservations = () => {
         return insertedData as GlampingUnit[];
       }
 
-      console.log('Datos obtenidos correctamente:', data);
       return data as GlampingUnit[];
     } catch (error) {
-      console.error('Error completo:', error);
+      console.error('Error inesperado:', error);
       toast({
         variant: "destructive",
-        title: "Error",
-        description: "Ocurrió un error al cargar las unidades",
+        title: "Error de conexión",
+        description: "No se pudo conectar con el servidor. Por favor, verifica tu conexión a internet.",
       });
       return [];
     } finally {
