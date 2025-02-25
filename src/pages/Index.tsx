@@ -1,11 +1,12 @@
-
 import { Calendar, MapPin, Users, CreditCard } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useReservations } from "@/hooks/useReservations";
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import type { GlampingUnit } from "@/lib/supabase";
 
 const Index = () => {
+  const navigate = useNavigate();
   const { fetchGlampingUnits } = useReservations();
   const [units, setUnits] = useState<GlampingUnit[]>([]);
 
@@ -80,7 +81,12 @@ const Index = () => {
                   </div>
                   <div className="flex justify-between items-center">
                     <span className="text-lg font-semibold">${unit.price_per_night.toLocaleString()}/noche</span>
-                    <Button variant="outline">Ver detalles</Button>
+                    <Button 
+                      variant="outline"
+                      onClick={() => navigate(`/unit/${unit.id}`)}
+                    >
+                      Ver detalles
+                    </Button>
                   </div>
                 </div>
               </div>
