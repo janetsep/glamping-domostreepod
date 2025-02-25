@@ -1,13 +1,14 @@
+
 import { Calendar, MapPin, Users, CreditCard } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useReservations } from "@/hooks/useReservations";
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import type { GlampingUnit } from "@/lib/supabase";
 
 const Index = () => {
   const navigate = useNavigate();
-  const { fetchGlampingUnits } = useReservations();
+  const { fetchGlampingUnits, isLoading } = useReservations();
   const [units, setUnits] = useState<GlampingUnit[]>([]);
 
   useEffect(() => {
@@ -23,12 +24,20 @@ const Index = () => {
       {/* Navigation */}
       <nav className="fixed w-full bg-white bg-opacity-90 backdrop-blur-sm z-50 border-b">
         <div className="container mx-auto px-4 py-4 flex items-center justify-between">
-          <h1 className="text-2xl font-display font-bold text-primary">Glamping</h1>
+          <Link to="/" className="text-2xl font-display font-bold text-primary">Glamping</Link>
           <div className="flex gap-6">
-            <Button variant="ghost">Experiencias</Button>
-            <Button variant="ghost">Ubicación</Button>
-            <Button variant="ghost">Contacto</Button>
-            <Button variant="default">Reservar</Button>
+            <Button variant="ghost" asChild>
+              <Link to="/experiences">Experiencias</Link>
+            </Button>
+            <Button variant="ghost" asChild>
+              <Link to="/location">Ubicación</Link>
+            </Button>
+            <Button variant="ghost" asChild>
+              <Link to="/contact">Contacto</Link>
+            </Button>
+            <Button variant="default" onClick={() => navigate('/reservations')}>
+              Reservar
+            </Button>
           </div>
         </div>
       </nav>
@@ -43,7 +52,11 @@ const Index = () => {
             <p className="text-lg text-gray-600 mb-8">
               Experimenta el lujo de la naturaleza en nuestro exclusivo glamping
             </p>
-            <Button size="lg" className="bg-accent hover:bg-accent/90">
+            <Button 
+              size="lg" 
+              className="bg-accent hover:bg-accent/90"
+              onClick={() => navigate('/reservations')}
+            >
               Reserva tu estadía
             </Button>
           </div>
@@ -56,42 +69,46 @@ const Index = () => {
           <h3 className="text-3xl font-display font-bold text-primary mb-12 text-center">
             Nuestros Glampings
           </h3>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {units.map((unit) => (
-              <div key={unit.id} className="bg-white rounded-lg overflow-hidden shadow-lg transition-transform hover:scale-[1.02] animate-fadeIn">
-                <img
-                  src={unit.image_url || "/placeholder.svg"}
-                  alt={unit.name}
-                  className="w-full h-64 object-cover"
-                />
-                <div className="p-6">
-                  <h4 className="text-xl font-display font-bold mb-2">{unit.name}</h4>
-                  <p className="text-gray-600 mb-4">
-                    {unit.description}
-                  </p>
-                  <div className="flex items-center gap-4 text-sm text-gray-500 mb-4">
-                    <div className="flex items-center gap-1">
-                      <Users size={16} />
-                      <span>Hasta {unit.max_guests} personas</span>
+          {isLoading ? (
+            <div className="text-center">Cargando unidades...</div>
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+              {units.map((unit) => (
+                <div key={unit.id} className="bg-white rounded-lg overflow-hidden shadow-lg transition-transform hover:scale-[1.02] animate-fadeIn">
+                  <img
+                    src={unit.image_url || "/placeholder.svg"}
+                    alt={unit.name}
+                    className="w-full h-64 object-cover"
+                  />
+                  <div className="p-6">
+                    <h4 className="text-xl font-display font-bold mb-2">{unit.name}</h4>
+                    <p className="text-gray-600 mb-4">
+                      {unit.description}
+                    </p>
+                    <div className="flex items-center gap-4 text-sm text-gray-500 mb-4">
+                      <div className="flex items-center gap-1">
+                        <Users size={16} />
+                        <span>Hasta {unit.max_guests} personas</span>
+                      </div>
+                      <div className="flex items-center gap-1">
+                        <MapPin size={16} />
+                        <span>Vista al bosque</span>
+                      </div>
                     </div>
-                    <div className="flex items-center gap-1">
-                      <MapPin size={16} />
-                      <span>Vista al bosque</span>
+                    <div className="flex justify-between items-center">
+                      <span className="text-lg font-semibold">${unit.price_per_night.toLocaleString()}/noche</span>
+                      <Button 
+                        variant="outline"
+                        onClick={() => navigate(`/unit/${unit.id}`)}
+                      >
+                        Ver detalles
+                      </Button>
                     </div>
-                  </div>
-                  <div className="flex justify-between items-center">
-                    <span className="text-lg font-semibold">${unit.price_per_night.toLocaleString()}/noche</span>
-                    <Button 
-                      variant="outline"
-                      onClick={() => navigate(`/unit/${unit.id}`)}
-                    >
-                      Ver detalles
-                    </Button>
                   </div>
                 </div>
-              </div>
-            ))}
-          </div>
+              ))}
+            </div>
+          )}
         </div>
       </section>
 
@@ -144,6 +161,7 @@ const Index = () => {
           <Button
             size="lg"
             className="bg-white text-primary hover:bg-white/90"
+            onClick={() => navigate('/reservations')}
           >
             Hacer una reserva
           </Button>
@@ -171,8 +189,12 @@ const Index = () => {
             <div>
               <h4 className="font-display font-bold text-lg mb-4">Síguenos</h4>
               <div className="flex gap-4">
-                <a href="#" className="text-gray-600 hover:text-primary">Instagram</a>
-                <a href="#" className="text-gray-600 hover:text-primary">Facebook</a>
+                <Button variant="link" asChild>
+                  <Link to="#" className="text-gray-600 hover:text-primary">Instagram</Link>
+                </Button>
+                <Button variant="link" asChild>
+                  <Link to="#" className="text-gray-600 hover:text-primary">Facebook</Link>
+                </Button>
               </div>
             </div>
           </div>
