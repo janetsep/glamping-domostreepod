@@ -8,23 +8,28 @@ export const useReservations = () => {
   const { toast } = useToast();
 
   const fetchGlampingUnits = async () => {
+    setIsLoading(true);
     try {
+      console.log('Iniciando fetch de unidades...');
+      
       const { data, error } = await supabase
         .from('glamping_units')
         .select('*');
 
+      console.log('Respuesta de Supabase:', { data, error });
+
       if (error) {
-        console.error('Error fetching units:', error);
+        console.error('Error detallado:', error);
         toast({
           variant: "destructive",
           title: "Error",
-          description: "No se pudieron cargar las unidades de glamping",
+          description: `No se pudieron cargar las unidades: ${error.message}`,
         });
         return [];
       }
 
       if (!data || data.length === 0) {
-        // Si no hay datos, insertamos algunos de ejemplo
+        console.log('No hay datos, intentando insertar ejemplos...');
         const exampleUnits = [
           {
             name: 'Cabaña del Bosque',
@@ -55,27 +60,31 @@ export const useReservations = () => {
           .select();
 
         if (insertError) {
-          console.error('Error inserting example units:', insertError);
+          console.error('Error al insertar ejemplos:', insertError);
           toast({
             variant: "destructive",
             title: "Error",
-            description: "No se pudieron crear las unidades de ejemplo",
+            description: `No se pudieron crear las unidades de ejemplo: ${insertError.message}`,
           });
           return [];
         }
 
+        console.log('Datos de ejemplo insertados:', insertedData);
         return insertedData as GlampingUnit[];
       }
 
+      console.log('Datos obtenidos correctamente:', data);
       return data as GlampingUnit[];
     } catch (error) {
-      console.error('Error:', error);
+      console.error('Error completo:', error);
       toast({
         variant: "destructive",
         title: "Error",
         description: "Ocurrió un error al cargar las unidades",
       });
       return [];
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -112,6 +121,7 @@ export const useReservations = () => {
 
       return data as Reservation;
     } catch (error) {
+      console.error('Error al crear reserva:', error);
       toast({
         variant: "destructive",
         title: "Error",
