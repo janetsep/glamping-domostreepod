@@ -1,12 +1,166 @@
-// Update this page (the content is just a fallback if you fail to update the page)
+
+import { Calendar, MapPin, Users, CreditCard } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 const Index = () => {
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100">
-      <div className="text-center">
-        <h1 className="text-4xl font-bold mb-4">Welcome to Your Blank App</h1>
-        <p className="text-xl text-gray-600">Start building your amazing project here!</p>
-      </div>
+    <div className="min-h-screen bg-white">
+      {/* Navigation */}
+      <nav className="fixed w-full bg-white bg-opacity-90 backdrop-blur-sm z-50 border-b">
+        <div className="container mx-auto px-4 py-4 flex items-center justify-between">
+          <h1 className="text-2xl font-display font-bold text-primary">Glamping</h1>
+          <div className="flex gap-6">
+            <Button variant="ghost">Experiencias</Button>
+            <Button variant="ghost">Ubicación</Button>
+            <Button variant="ghost">Contacto</Button>
+            <Button variant="default">Reservar</Button>
+          </div>
+        </div>
+      </nav>
+
+      {/* Hero Section */}
+      <section className="pt-24 pb-12">
+        <div className="container mx-auto px-4">
+          <div className="max-w-3xl mx-auto text-center animate-fadeIn">
+            <h2 className="text-5xl font-display font-bold text-primary mb-6">
+              Vive la naturaleza con todo el confort
+            </h2>
+            <p className="text-lg text-gray-600 mb-8">
+              Experimenta el lujo de la naturaleza en nuestro exclusivo glamping
+            </p>
+            <Button size="lg" className="bg-accent hover:bg-accent/90">
+              Reserva tu estadía
+            </Button>
+          </div>
+        </div>
+      </section>
+
+      {/* Featured Locations */}
+      <section className="py-16 bg-secondary/20">
+        <div className="container mx-auto px-4">
+          <h3 className="text-3xl font-display font-bold text-primary mb-12 text-center">
+            Nuestros Glampings
+          </h3>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {[1, 2, 3].map((item) => (
+              <div key={item} className="bg-white rounded-lg overflow-hidden shadow-lg transition-transform hover:scale-[1.02] animate-fadeIn">
+                <img
+                  src="/placeholder.svg"
+                  alt="Glamping"
+                  className="w-full h-64 object-cover"
+                />
+                <div className="p-6">
+                  <h4 className="text-xl font-display font-bold mb-2">Glamping Suite {item}</h4>
+                  <p className="text-gray-600 mb-4">
+                    Experiencia única rodeado de naturaleza con todas las comodidades
+                  </p>
+                  <div className="flex items-center gap-4 text-sm text-gray-500 mb-4">
+                    <div className="flex items-center gap-1">
+                      <Users size={16} />
+                      <span>2-4 personas</span>
+                    </div>
+                    <div className="flex items-center gap-1">
+                      <MapPin size={16} />
+                      <span>Vista al bosque</span>
+                    </div>
+                  </div>
+                  <div className="flex justify-between items-center">
+                    <span className="text-lg font-semibold">$150.000/noche</span>
+                    <Button variant="outline">Ver detalles</Button>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Features */}
+      <section className="py-16">
+        <div className="container mx-auto px-4">
+          <h3 className="text-3xl font-display font-bold text-primary mb-12 text-center">
+            ¿Por qué elegirnos?
+          </h3>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {[
+              {
+                icon: <Calendar className="w-8 h-8 text-accent" />,
+                title: "Reserva Flexible",
+                description: "Sistema de reservas fácil y flexible para tu comodidad",
+              },
+              {
+                icon: <MapPin className="w-8 h-8 text-accent" />,
+                title: "Ubicación Privilegiada",
+                description: "Ubicados en medio de la naturaleza con vistas increíbles",
+              },
+              {
+                icon: <CreditCard className="w-8 h-8 text-accent" />,
+                title: "Pago Seguro",
+                description: "Proceso de pago seguro a través de Webpay",
+              },
+            ].map((feature, index) => (
+              <div
+                key={index}
+                className="p-6 bg-white rounded-lg shadow-lg text-center animate-fadeIn"
+              >
+                <div className="mb-4 flex justify-center">{feature.icon}</div>
+                <h4 className="text-xl font-display font-bold mb-2">{feature.title}</h4>
+                <p className="text-gray-600">{feature.description}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* CTA Section */}
+      <section className="py-16 bg-primary text-white">
+        <div className="container mx-auto px-4 text-center">
+          <h3 className="text-3xl font-display font-bold mb-6">
+            ¿Listo para vivir una experiencia única?
+          </h3>
+          <p className="text-lg mb-8 opacity-90">
+            Reserva ahora y disfruta de una estadía inolvidable
+          </p>
+          <Button
+            size="lg"
+            className="bg-white text-primary hover:bg-white/90"
+          >
+            Hacer una reserva
+          </Button>
+        </div>
+      </section>
+
+      {/* Footer */}
+      <footer className="bg-secondary/20 py-12">
+        <div className="container mx-auto px-4">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div>
+              <h4 className="font-display font-bold text-lg mb-4">Contacto</h4>
+              <p className="text-gray-600">
+                Email: info@glamping.com<br />
+                Teléfono: +56 9 1234 5678
+              </p>
+            </div>
+            <div>
+              <h4 className="font-display font-bold text-lg mb-4">Ubicación</h4>
+              <p className="text-gray-600">
+                Camino a la Montaña km 5,<br />
+                Región de Los Lagos, Chile
+              </p>
+            </div>
+            <div>
+              <h4 className="font-display font-bold text-lg mb-4">Síguenos</h4>
+              <div className="flex gap-4">
+                <a href="#" className="text-gray-600 hover:text-primary">Instagram</a>
+                <a href="#" className="text-gray-600 hover:text-primary">Facebook</a>
+              </div>
+            </div>
+          </div>
+          <div className="mt-8 pt-8 border-t text-center text-gray-500">
+            <p>&copy; 2024 Glamping Experience. Todos los derechos reservados.</p>
+          </div>
+        </div>
+      </footer>
     </div>
   );
 };
