@@ -1,8 +1,22 @@
 
 import { Calendar, MapPin, Users, CreditCard } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { useReservations } from "@/hooks/useReservations";
+import { useEffect, useState } from "react";
+import type { GlampingUnit } from "@/lib/supabase";
 
 const Index = () => {
+  const { fetchGlampingUnits } = useReservations();
+  const [units, setUnits] = useState<GlampingUnit[]>([]);
+
+  useEffect(() => {
+    const loadUnits = async () => {
+      const data = await fetchGlampingUnits();
+      setUnits(data);
+    };
+    loadUnits();
+  }, []);
+
   return (
     <div className="min-h-screen bg-white">
       {/* Navigation */}
@@ -42,22 +56,22 @@ const Index = () => {
             Nuestros Glampings
           </h3>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {[1, 2, 3].map((item) => (
-              <div key={item} className="bg-white rounded-lg overflow-hidden shadow-lg transition-transform hover:scale-[1.02] animate-fadeIn">
+            {units.map((unit) => (
+              <div key={unit.id} className="bg-white rounded-lg overflow-hidden shadow-lg transition-transform hover:scale-[1.02] animate-fadeIn">
                 <img
-                  src="/placeholder.svg"
-                  alt="Glamping"
+                  src={unit.image_url || "/placeholder.svg"}
+                  alt={unit.name}
                   className="w-full h-64 object-cover"
                 />
                 <div className="p-6">
-                  <h4 className="text-xl font-display font-bold mb-2">Glamping Suite {item}</h4>
+                  <h4 className="text-xl font-display font-bold mb-2">{unit.name}</h4>
                   <p className="text-gray-600 mb-4">
-                    Experiencia única rodeado de naturaleza con todas las comodidades
+                    {unit.description}
                   </p>
                   <div className="flex items-center gap-4 text-sm text-gray-500 mb-4">
                     <div className="flex items-center gap-1">
                       <Users size={16} />
-                      <span>2-4 personas</span>
+                      <span>Hasta {unit.max_guests} personas</span>
                     </div>
                     <div className="flex items-center gap-1">
                       <MapPin size={16} />
@@ -65,7 +79,7 @@ const Index = () => {
                     </div>
                   </div>
                   <div className="flex justify-between items-center">
-                    <span className="text-lg font-semibold">$150.000/noche</span>
+                    <span className="text-lg font-semibold">${unit.price_per_night.toLocaleString()}/noche</span>
                     <Button variant="outline">Ver detalles</Button>
                   </div>
                 </div>
