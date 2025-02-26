@@ -24,7 +24,13 @@ const Index = () => {
       {/* Navigation */}
       <nav className="fixed w-full bg-white bg-opacity-90 backdrop-blur-sm z-50 border-b">
         <div className="container mx-auto px-4 py-4 flex items-center justify-between">
-          <Link to="/" className="text-2xl font-display font-bold text-primary">Glamping</Link>
+          <Link to="/" className="flex items-center">
+            <img 
+              src="/lovable-uploads/7f7e32a2-1e84-49ce-9d9c-fd06aece4b05.png" 
+              alt="Domos Treepod" 
+              className="h-12 w-auto"
+            />
+          </Link>
           <div className="flex gap-6">
             <Button variant="ghost" asChild>
               <Link to="/experiences">Experiencias</Link>
