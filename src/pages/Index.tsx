@@ -15,11 +15,20 @@ const Index = () => {
 
   useEffect(() => {
     const loadUnits = async () => {
-      const data = await fetchGlampingUnits();
-      setUnits(data);
+      try {
+        const data = await fetchGlampingUnits();
+        setUnits(data || []);
+      } catch (error) {
+        console.error('Error cargando unidades:', error);
+      }
     };
+    
     loadUnits();
-  }, []);
+  }, [fetchGlampingUnits]);
+
+  if (!units && isLoading) {
+    return <div className="min-h-screen flex items-center justify-center">Cargando...</div>;
+  }
 
   return (
     <div className="min-h-screen bg-white">

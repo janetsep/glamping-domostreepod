@@ -10,20 +10,6 @@ export const useReservations = () => {
   const fetchGlampingUnits = async () => {
     setIsLoading(true);
     try {
-      console.log('Iniciando conexión con Supabase...');
-      
-      // Primero verificamos la conexión sin hacer una consulta específica
-      const { data: health, error: healthError } = await supabase
-        .from('glamping_units')
-        .select('count');
-
-      if (healthError) {
-        console.error('Error de conexión:', healthError);
-        throw new Error(`Error de conexión: ${healthError.message}`);
-      }
-
-      console.log('Conexión establecida, obteniendo unidades...');
-      
       const { data, error } = await supabase
         .from('glamping_units')
         .select('*');
@@ -39,7 +25,6 @@ export const useReservations = () => {
       }
 
       if (!data || data.length === 0) {
-        console.log('No hay datos, insertando ejemplos...');
         const exampleUnits = [
           {
             name: 'Cabaña del Bosque',
@@ -79,7 +64,6 @@ export const useReservations = () => {
           return [];
         }
 
-        console.log('Datos de ejemplo insertados:', insertedData);
         return insertedData as GlampingUnit[];
       }
 
