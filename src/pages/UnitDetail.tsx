@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
@@ -29,9 +28,12 @@ const UnitDetail = () => {
   const [startDate, setStartDate] = useState<Date>();
   const [endDate, setEndDate] = useState<Date>();
   const [guests, setGuests] = useState<number>(1);
-  const { createReservation, isLoading } = useReservations();
+  const { createReservation, isLoading, checkAvailability, calculateQuote } = useReservations();
   const { toast } = useToast();
   const [user, setUser] = useState<any>(null);
+
+  const [quote, setQuote] = useState<any>(null);
+  const [isAvailable, setIsAvailable] = useState<boolean | null>(null);
 
   useEffect(() => {
     const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
@@ -55,15 +57,47 @@ const UnitDetail = () => {
 
   if (!unit) return null;
 
-  const nights = startDate && endDate ? differenceInDays(endDate, startDate) : 0;
-  const totalPrice = nights * unit.price_per_night;
+  const checkAvailabilityAndQuote = async () => {
+    if (!startDate || !endDate || !unit) return;
 
+    const available = await checkAvailability(unit.id, startDate, endDate);
+    setIsAvailable(available);
+
+    if (available) {
+      const quoteDetails = calculateQuote(
+        unit.price_per_night,
+        startDate,
+        endDate,
+        guests
+      );
+      setQuote(quoteDetails);
+    } else {
+      setQuote(null);
+    }
+  };
+
+  useEffect(() => {
+    if (startDate && endDate) {
+      checkAvailabilityAndQuote();
+    }
+  }, [startDate, endDate, guests]);
+
+  // Modificar el handleReservation para usar el precio de la cotización
   const handleReservation = async () => {
-    if (!startDate || !endDate) {
+    if (!startDate || !endDate || !quote) {
       toast({
         variant: "destructive",
         title: "Error",
         description: "Por favor selecciona las fechas de entrada y salida",
+      });
+      return;
+    }
+
+    if (!isAvailable) {
+      toast({
+        variant: "destructive",
+        title: "No disponible",
+        description: "Lo sentimos, las fechas seleccionadas no están disponibles.",
       });
       return;
     }
@@ -74,7 +108,6 @@ const UnitDetail = () => {
         title: "Error",
         description: "Debes iniciar sesión para hacer una reserva",
       });
-      // Aquí podrías redirigir al usuario a la página de login
       return;
     }
 
@@ -83,7 +116,7 @@ const UnitDetail = () => {
       startDate,
       endDate,
       guests,
-      totalPrice
+      quote.totalPrice
     );
 
     if (reservation) {
@@ -214,28 +247,33 @@ const UnitDetail = () => {
               </Select>
 
               {/* Resumen y precio */}
-              {startDate && endDate && (
-                <div className="border-t pt-4 mt-4">
-                  <div className="flex justify-between mb-2">
-                    <span>
-                      ${unit.price_per_night.toLocaleString()} × {nights} noches
-                    </span>
-                    <span>${totalPrice.toLocaleString()}</span>
-                  </div>
+              {startDate && endDate && quote && (
+                <div className="border-t pt-4 mt-4 space-y-3">
+                  {quote.breakdown.map((item: any, index: number) => (
+                    <div key={index} className="flex justify-between text-sm">
+                      <span>{item.description}</span>
+                      <span>${item.amount.toLocaleString()}</span>
+                    </div>
+                  ))}
                   <div className="text-lg font-semibold flex justify-between pt-2 border-t">
                     <span>Total</span>
-                    <span>${totalPrice.toLocaleString()}</span>
+                    <span>${quote.totalPrice.toLocaleString()}</span>
                   </div>
+                  {isAvailable ? (
+                    <p className="text-green-600 text-sm">✓ Fechas disponibles</p>
+                  ) : (
+                    <p className="text-red-600 text-sm">✗ Fechas no disponibles</p>
+                  )}
                 </div>
               )}
 
               <Button
                 className="w-full"
                 size="lg"
-                disabled={!startDate || !endDate || isLoading}
+                disabled={!startDate || !endDate || isLoading || !isAvailable}
                 onClick={handleReservation}
               >
-                Reservar ahora
+                {isAvailable ? "Reservar ahora" : "Fechas no disponibles"}
               </Button>
             </div>
           </div>

@@ -1,3 +1,4 @@
+
 import { useState, useCallback } from 'react';
 import { supabase, type Reservation, type GlampingUnit } from '@/lib/supabase';
 import { useToast } from '@/components/ui/use-toast';
@@ -19,13 +20,11 @@ export const useReservations = () => {
         throw error;
       }
 
-      // Si hay datos, retornarlos inmediatamente
       if (data && data.length > 0) {
         console.log('Unidades encontradas:', data.length);
         return data as GlampingUnit[];
       }
 
-      // Si no hay datos, crear ejemplos
       console.log('Creando unidades de ejemplo');
       const exampleUnits = [
         {
@@ -75,6 +74,61 @@ export const useReservations = () => {
     }
   }, [toast]);
 
+  const checkAvailability = async (
+    unitId: string,
+    checkIn: Date,
+    checkOut: Date
+  ) => {
+    try {
+      setIsLoading(true);
+      
+      const { data: existingReservations, error } = await supabase
+        .from('reservations')
+        .select('*')
+        .eq('unit_id', unitId)
+        .eq('status', 'confirmed')
+        .or(`check_in.lte.${checkOut.toISOString()},check_out.gte.${checkIn.toISOString()}`);
+
+      if (error) throw error;
+
+      // Si no hay reservaciones que se superpongan, está disponible
+      return !existingReservations || existingReservations.length === 0;
+    } catch (error) {
+      console.error('Error al verificar disponibilidad:', error);
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: "No se pudo verificar la disponibilidad. Por favor, intenta de nuevo.",
+      });
+      return false;
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const calculateQuote = (
+    pricePerNight: number,
+    checkIn: Date,
+    checkOut: Date,
+    guests: number
+  ) => {
+    const nights = Math.ceil((checkOut.getTime() - checkIn.getTime()) / (1000 * 60 * 60 * 24));
+    const basePrice = pricePerNight * nights;
+    
+    // Aquí podrías agregar lógica adicional para descuentos o cargos extra
+    // Por ejemplo, cargo extra por más huéspedes, descuento por estancias largas, etc.
+    
+    return {
+      nights,
+      pricePerNight,
+      basePrice,
+      totalPrice: basePrice,
+      breakdown: [
+        { description: `${nights} noches x $${pricePerNight.toLocaleString()}`, amount: basePrice }
+      ]
+    };
+  };
+
   const createReservation = async (
     unitId: string,
     checkIn: Date,
@@ -84,6 +138,17 @@ export const useReservations = () => {
   ) => {
     setIsLoading(true);
     try {
+      // Primero verificar disponibilidad
+      const isAvailable = await checkAvailability(unitId, checkIn, checkOut);
+      if (!isAvailable) {
+        toast({
+          variant: "destructive",
+          title: "No disponible",
+          description: "Lo sentimos, las fechas seleccionadas no están disponibles.",
+        });
+        return null;
+      }
+
       const { data: { user } } = await supabase.auth.getUser();
       
       if (!user) {
@@ -111,10 +176,7 @@ export const useReservations = () => {
         .select()
         .single();
 
-      if (error) {
-        console.error('Error al crear reserva:', error);
-        throw error;
-      }
+      if (error) throw error;
 
       toast({
         title: "Reserva creada",
@@ -138,6 +200,8 @@ export const useReservations = () => {
   return {
     isLoading,
     fetchGlampingUnits,
-    createReservation
+    createReservation,
+    checkAvailability,
+    calculateQuote
   };
 };
