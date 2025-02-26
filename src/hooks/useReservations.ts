@@ -10,13 +10,16 @@ export const useReservations = () => {
   const fetchGlampingUnits = async () => {
     setIsLoading(true);
     try {
-      console.log('Verificando conexión con Supabase...');
+      console.log('Iniciando conexión con Supabase...');
       
-      // Primero verificamos la conexión
-      const { error: healthError } = await supabase.from('glamping_units').select('count').single();
+      // Primero verificamos la conexión sin hacer una consulta específica
+      const { data: health, error: healthError } = await supabase
+        .from('glamping_units')
+        .select('count');
+
       if (healthError) {
         console.error('Error de conexión:', healthError);
-        throw new Error('No se pudo establecer conexión con la base de datos');
+        throw new Error(`Error de conexión: ${healthError.message}`);
       }
 
       console.log('Conexión establecida, obteniendo unidades...');
@@ -24,8 +27,6 @@ export const useReservations = () => {
       const { data, error } = await supabase
         .from('glamping_units')
         .select('*');
-
-      console.log('Respuesta:', { data, error });
 
       if (error) {
         console.error('Error al obtener unidades:', error);
@@ -88,7 +89,7 @@ export const useReservations = () => {
       toast({
         variant: "destructive",
         title: "Error de conexión",
-        description: "No se pudo conectar con el servidor. Por favor, verifica tu conexión a internet.",
+        description: "No se pudo conectar con el servidor. Por favor, verifica tu conexión a internet o inténtalo más tarde.",
       });
       return [];
     } finally {
