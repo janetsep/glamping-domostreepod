@@ -1,119 +1,65 @@
-
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { supabase } from "@/lib/supabase";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { useToast } from "@/components/ui/use-toast";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import { Label } from "@/components/ui/label";
+import { useNavigate } from "react-router-dom";
+import { useState } from "react";
 
-const Auth = () => {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [loading, setLoading] = useState(false);
-  const [isSignUp, setIsSignUp] = useState(false);
+export default function Auth() {
   const navigate = useNavigate();
-  const { toast } = useToast();
-
-  const handleAuth = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setLoading(true);
-
-    try {
-      if (isSignUp) {
-        const { error } = await supabase.auth.signUp({
-          email,
-          password,
-        });
-        if (error) throw error;
-        toast({
-          title: "Registro exitoso",
-          description: "Por favor revisa tu email para confirmar tu cuenta.",
-        });
-      } else {
-        const { error } = await supabase.auth.signInWithPassword({
-          email,
-          password,
-        });
-        if (error) throw error;
-        navigate("/");
-      }
-    } catch (error: any) {
-      toast({
-        variant: "destructive",
-        title: "Error",
-        description: error.message,
-      });
-    } finally {
-      setLoading(false);
-    }
-  };
+  const [isSignUp, setIsSignUp] = useState(false);
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
-      <Card className="w-full max-w-md">
-        <CardHeader>
-          <CardTitle>{isSignUp ? "Crear cuenta" : "Iniciar sesión"}</CardTitle>
-          <CardDescription>
-            {isSignUp
-              ? "Crea una cuenta para hacer reservaciones"
-              : "Inicia sesión para hacer reservaciones"}
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <form onSubmit={handleAuth} className="space-y-4">
-            <div className="space-y-2">
-              <Label htmlFor="email">Email</Label>
-              <Input
-                id="email"
+    <div className="min-h-screen flex items-center justify-center bg-gray-50 px-4">
+      <div className="max-w-md w-full space-y-8">
+        <div className="text-center">
+          <Button 
+            variant="ghost" 
+            className="mb-4"
+            onClick={() => navigate("/")}
+          >
+            ← Volver a inicio
+          </Button>
+          <h2 className="mt-6 text-3xl font-extrabold text-gray-900">
+            {isSignUp ? "Crear cuenta" : "Iniciar sesión"}
+          </h2>
+        </div>
+        <form className="mt-8 space-y-6" action="#" method="POST">
+          <input type="hidden" name="remember" defaultValue="true" />
+          <div className="rounded-md shadow-sm -space-y-px">
+            <div>
+              <label htmlFor="email-address" className="sr-only">
+                Correo electrónico
+              </label>
+              <input
+                id="email-address"
+                name="email"
                 type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
+                autoComplete="email"
                 required
-                placeholder="tu@email.com"
+                className="appearance-none rounded-md relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
+                placeholder="Correo electrónico"
               />
             </div>
-            <div className="space-y-2">
-              <Label htmlFor="password">Contraseña</Label>
-              <Input
+            <div>
+              <label htmlFor="password" className="sr-only">
+                Contraseña
+              </label>
+              <input
                 id="password"
+                name="password"
                 type="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
+                autoComplete="current-password"
                 required
-                placeholder="••••••••"
+                className="appearance-none rounded-md relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
+                placeholder="Contraseña"
               />
             </div>
-            <Button type="submit" className="w-full" disabled={loading}>
-              {loading
-                ? "Cargando..."
-                : isSignUp
-                ? "Crear cuenta"
-                : "Iniciar sesión"}
-            </Button>
-          </form>
-          <div className="mt-4 text-center">
-            <Button
-              variant="link"
-              onClick={() => setIsSignUp(!isSignUp)}
-              className="text-sm"
-            >
-              {isSignUp
-                ? "¿Ya tienes una cuenta? Inicia sesión"
-                : "¿No tienes una cuenta? Regístrate"}
+          </div>
+          <div>
+            <Button type="submit" className="w-full">
+              {isSignUp ? "Crear cuenta" : "Iniciar sesión"}
             </Button>
           </div>
-        </CardContent>
-      </Card>
+        </form>
+      </div>
     </div>
   );
-};
-
-export default Auth;
+}
