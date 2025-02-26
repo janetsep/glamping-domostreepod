@@ -1,7 +1,5 @@
 
 import { useReservations } from "@/hooks/useReservations";
-import { useEffect, useState } from "react";
-import type { GlampingUnit } from "@/lib/supabase";
 import Navigation from "@/components/Navigation";
 import Hero from "@/components/Hero";
 import GlampingUnits from "@/components/GlampingUnits";
@@ -16,6 +14,9 @@ const Index = () => {
   const { data: units = [], isLoading } = useQuery({
     queryKey: ['glamping-units'],
     queryFn: fetchGlampingUnits,
+    retry: 3,
+    staleTime: 1000 * 60 * 5, // 5 minutos
+    refetchOnWindowFocus: false
   });
 
   return (

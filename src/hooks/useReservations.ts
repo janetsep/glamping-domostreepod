@@ -1,4 +1,3 @@
-
 import { useState, useCallback } from 'react';
 import { supabase, type Reservation, type GlampingUnit } from '@/lib/supabase';
 import { useToast } from '@/components/ui/use-toast';
@@ -8,30 +7,26 @@ export const useReservations = () => {
   const { toast } = useToast();
 
   const fetchGlampingUnits = useCallback(async () => {
-    setIsLoading(true);
     try {
+      console.log('Iniciando fetchGlampingUnits');
       const { data, error } = await supabase
         .from('glamping_units')
         .select('*')
         .order('name');
 
       if (error) {
-        console.error('Error al obtener unidades:', error);
-        toast({
-          variant: "destructive",
-          title: "Error de conexión",
-          description: `No se pudieron cargar las unidades: ${error.message}`,
-        });
-        return [];
+        console.error('Error en la consulta:', error);
+        throw error;
       }
 
       // Si hay datos, retornarlos inmediatamente
       if (data && data.length > 0) {
+        console.log('Unidades encontradas:', data.length);
         return data as GlampingUnit[];
       }
 
       // Si no hay datos, crear ejemplos
-      console.log('No hay unidades, creando ejemplos...');
+      console.log('Creando unidades de ejemplo');
       const exampleUnits = [
         {
           name: 'Cabaña del Bosque',
@@ -63,25 +58,20 @@ export const useReservations = () => {
 
       if (insertError) {
         console.error('Error al insertar ejemplos:', insertError);
-        toast({
-          variant: "destructive",
-          title: "Error",
-          description: `No se pudieron crear las unidades de ejemplo: ${insertError.message}`,
-        });
-        return [];
+        throw insertError;
       }
 
+      console.log('Unidades de ejemplo creadas:', insertedData?.length);
       return insertedData as GlampingUnit[];
+
     } catch (error) {
-      console.error('Error inesperado:', error);
+      console.error('Error en fetchGlampingUnits:', error);
       toast({
         variant: "destructive",
         title: "Error de conexión",
-        description: "No se pudo conectar con el servidor. Por favor, verifica tu conexión a internet o inténtalo más tarde.",
+        description: "No se pudieron cargar las unidades. Por favor, intenta de nuevo más tarde.",
       });
       return [];
-    } finally {
-      setIsLoading(false);
     }
   }, [toast]);
 
