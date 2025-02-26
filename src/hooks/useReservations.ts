@@ -1,5 +1,5 @@
 
-import { useState } from 'react';
+import { useState, useCallback } from 'react';
 import { supabase, type Reservation, type GlampingUnit } from '@/lib/supabase';
 import { useToast } from '@/components/ui/use-toast';
 
@@ -7,12 +7,13 @@ export const useReservations = () => {
   const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
 
-  const fetchGlampingUnits = async () => {
+  const fetchGlampingUnits = useCallback(async () => {
     setIsLoading(true);
     try {
       const { data, error } = await supabase
         .from('glamping_units')
-        .select('*');
+        .select('*')
+        .order('name');
 
       if (error) {
         console.error('Error al obtener unidades:', error);
@@ -24,51 +25,53 @@ export const useReservations = () => {
         return [];
       }
 
-      if (!data || data.length === 0) {
-        console.log('No hay unidades, creando ejemplos...');
-        const exampleUnits = [
-          {
-            name: 'Cabaña del Bosque',
-            description: 'Una hermosa cabaña con vista al bosque nativo, perfecta para escapadas románticas.',
-            max_guests: 2,
-            price_per_night: 150000,
-            image_url: 'https://images.unsplash.com/photo-1618767689160-da3fb810aad7'
-          },
-          {
-            name: 'Domo Familiar',
-            description: 'Espacioso domo geodésico con todas las comodidades para una experiencia familiar única.',
-            max_guests: 4,
-            price_per_night: 200000,
-            image_url: 'https://images.unsplash.com/photo-1521401830884-6c03c1c87ebb'
-          },
-          {
-            name: 'Suite Lago',
-            description: 'Lujosa suite con vista panorámica al lago, ideal para parejas que buscan tranquilidad.',
-            max_guests: 2,
-            price_per_night: 180000,
-            image_url: 'https://images.unsplash.com/photo-1571896349842-33c89424de2d'
-          }
-        ];
-
-        const { data: insertedData, error: insertError } = await supabase
-          .from('glamping_units')
-          .insert(exampleUnits)
-          .select();
-
-        if (insertError) {
-          console.error('Error al insertar ejemplos:', insertError);
-          toast({
-            variant: "destructive",
-            title: "Error",
-            description: `No se pudieron crear las unidades de ejemplo: ${insertError.message}`,
-          });
-          return [];
-        }
-
-        return insertedData as GlampingUnit[];
+      // Si hay datos, retornarlos inmediatamente
+      if (data && data.length > 0) {
+        return data as GlampingUnit[];
       }
 
-      return data as GlampingUnit[];
+      // Si no hay datos, crear ejemplos
+      console.log('No hay unidades, creando ejemplos...');
+      const exampleUnits = [
+        {
+          name: 'Cabaña del Bosque',
+          description: 'Una hermosa cabaña con vista al bosque nativo, perfecta para escapadas románticas.',
+          max_guests: 2,
+          price_per_night: 150000,
+          image_url: 'https://images.unsplash.com/photo-1618767689160-da3fb810aad7'
+        },
+        {
+          name: 'Domo Familiar',
+          description: 'Espacioso domo geodésico con todas las comodidades para una experiencia familiar única.',
+          max_guests: 4,
+          price_per_night: 200000,
+          image_url: 'https://images.unsplash.com/photo-1521401830884-6c03c1c87ebb'
+        },
+        {
+          name: 'Suite Lago',
+          description: 'Lujosa suite con vista panorámica al lago, ideal para parejas que buscan tranquilidad.',
+          max_guests: 2,
+          price_per_night: 180000,
+          image_url: 'https://images.unsplash.com/photo-1571896349842-33c89424de2d'
+        }
+      ];
+
+      const { data: insertedData, error: insertError } = await supabase
+        .from('glamping_units')
+        .insert(exampleUnits)
+        .select();
+
+      if (insertError) {
+        console.error('Error al insertar ejemplos:', insertError);
+        toast({
+          variant: "destructive",
+          title: "Error",
+          description: `No se pudieron crear las unidades de ejemplo: ${insertError.message}`,
+        });
+        return [];
+      }
+
+      return insertedData as GlampingUnit[];
     } catch (error) {
       console.error('Error inesperado:', error);
       toast({
@@ -80,7 +83,7 @@ export const useReservations = () => {
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [toast]);
 
   const createReservation = async (
     unitId: string,

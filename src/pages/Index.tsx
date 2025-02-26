@@ -8,19 +8,15 @@ import GlampingUnits from "@/components/GlampingUnits";
 import Features from "@/components/Features";
 import CTASection from "@/components/CTASection";
 import Footer from "@/components/Footer";
+import { useQuery } from "@tanstack/react-query";
 
 const Index = () => {
-  const { fetchGlampingUnits, isLoading } = useReservations();
-  const [units, setUnits] = useState<GlampingUnit[]>([]);
-
-  useEffect(() => {
-    const loadUnits = async () => {
-      const data = await fetchGlampingUnits();
-      setUnits(data || []);
-    };
-    
-    loadUnits();
-  }, [fetchGlampingUnits]);
+  const { fetchGlampingUnits } = useReservations();
+  
+  const { data: units = [], isLoading } = useQuery({
+    queryKey: ['glamping-units'],
+    queryFn: fetchGlampingUnits,
+  });
 
   return (
     <div className="min-h-screen bg-white">
