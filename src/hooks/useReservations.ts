@@ -25,6 +25,7 @@ export const useReservations = () => {
       }
 
       if (!data || data.length === 0) {
+        console.log('No hay unidades, creando ejemplos...');
         const exampleUnits = [
           {
             name: 'Cabaña del Bosque',
