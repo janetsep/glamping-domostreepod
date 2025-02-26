@@ -28,7 +28,7 @@ const Index = () => {
             <img 
               src="/lovable-uploads/7f7e32a2-1e84-49ce-9d9c-fd06aece4b05.png" 
               alt="Domos Treepod" 
-              className="h-12 w-auto"
+              className="h-14 w-auto"
             />
           </Link>
           <div className="flex gap-6">
