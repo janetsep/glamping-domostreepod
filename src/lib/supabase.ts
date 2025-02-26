@@ -1,10 +1,9 @@
 
 import { createClient } from '@supabase/supabase-js';
 
-const supabaseUrl = 'https://ynyiwhjvdrqgrjfcyfin.supabase.co';
-const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InlueWl3aGp2ZHJxZ3JqZmN5ZmluIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDA1MTg5ODIsImV4cCI6MjA1NjA5NDk4Mn0.WwPCyeZX42Jp4A4lW0jl7arXt0lzwRwm18-Ay_D4Ci8';
+const supabaseUrl = 'https://gtxjfmvnzrsuaxryffnt.supabase.co';
+const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imd0eGpmbXZuenJzdWF4cnlmZm50Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDA1MTg5ODIsImV4cCI6MjA1NjA5NDk4Mn0.WwPCyeZX42Jp4A4lW0jl7arXt0lzwRwm18-Ay_D4Ci8';
 
-// Actualizamos la configuración del cliente con opciones más robustas
 const options = {
   auth: {
     autoRefreshToken: true,
@@ -13,18 +12,11 @@ const options = {
   },
   global: {
     headers: {
-      'Content-Type': 'application/json',
-      'apikey': supabaseKey
+      'Content-Type': 'application/json'
     }
   },
   db: {
     schema: 'public'
-  },
-  // Agregamos configuración de retries y timeouts
-  realtime: {
-    params: {
-      eventsPerSecond: 10
-    }
   }
 };
 
