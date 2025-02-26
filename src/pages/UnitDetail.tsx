@@ -92,11 +92,12 @@ const UnitDetail = () => {
     }
 
     if (!user) {
+      // En lugar de mostrar un error, redirigimos al usuario al login
       toast({
-        variant: "destructive",
-        title: "Error",
-        description: "Debes iniciar sesión para hacer una reserva",
+        title: "Iniciar sesión",
+        description: "Por favor inicia sesión para completar tu reserva",
       });
+      navigate("/auth");
       return;
     }
 
