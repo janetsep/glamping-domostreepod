@@ -1,5 +1,5 @@
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { Calendar as CalendarIcon, Users, ArrowLeft } from "lucide-react";
@@ -17,10 +17,11 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { format, addDays, differenceInDays } from "date-fns";
+import { format, differenceInDays } from "date-fns";
 import { es } from "date-fns/locale";
 import { useReservations } from "@/hooks/useReservations";
 import { supabase, type GlampingUnit } from "@/lib/supabase";
+import { useToast } from "@/components/ui/use-toast";
 
 const UnitDetail = () => {
   const { id } = useParams();
@@ -29,6 +30,16 @@ const UnitDetail = () => {
   const [endDate, setEndDate] = useState<Date>();
   const [guests, setGuests] = useState<number>(1);
   const { createReservation, isLoading } = useReservations();
+  const { toast } = useToast();
+  const [user, setUser] = useState<any>(null);
+
+  useEffect(() => {
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+      setUser(session?.user || null);
+    });
+
+    return () => subscription.unsubscribe();
+  }, []);
 
   const { data: unit } = useQuery<GlampingUnit>({
     queryKey: ["unit", id],
@@ -48,7 +59,24 @@ const UnitDetail = () => {
   const totalPrice = nights * unit.price_per_night;
 
   const handleReservation = async () => {
-    if (!startDate || !endDate) return;
+    if (!startDate || !endDate) {
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: "Por favor selecciona las fechas de entrada y salida",
+      });
+      return;
+    }
+
+    if (!user) {
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: "Debes iniciar sesión para hacer una reserva",
+      });
+      // Aquí podrías redirigir al usuario a la página de login
+      return;
+    }
 
     const reservation = await createReservation(
       unit.id,

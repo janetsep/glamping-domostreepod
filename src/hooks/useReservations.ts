@@ -90,11 +90,23 @@ export const useReservations = () => {
   ) => {
     setIsLoading(true);
     try {
+      const { data: { user } } = await supabase.auth.getUser();
+      
+      if (!user) {
+        toast({
+          variant: "destructive",
+          title: "Error",
+          description: "Debes iniciar sesión para hacer una reserva",
+        });
+        return null;
+      }
+
       const { data, error } = await supabase
         .from('reservations')
         .insert([
           {
             unit_id: unitId,
+            user_id: user.id,
             check_in: checkIn.toISOString(),
             check_out: checkOut.toISOString(),
             guests,
@@ -105,7 +117,10 @@ export const useReservations = () => {
         .select()
         .single();
 
-      if (error) throw error;
+      if (error) {
+        console.error('Error al crear reserva:', error);
+        throw error;
+      }
 
       toast({
         title: "Reserva creada",
@@ -118,7 +133,7 @@ export const useReservations = () => {
       toast({
         variant: "destructive",
         title: "Error",
-        description: "No se pudo crear la reserva",
+        description: "No se pudo crear la reserva. Por favor, inténtalo de nuevo.",
       });
       return null;
     } finally {
