@@ -24,6 +24,7 @@ const UnitDetail = () => {
   const [user, setUser] = useState<any>(null);
   const [quote, setQuote] = useState<any>(null);
   const [isAvailable, setIsAvailable] = useState<boolean | null>(null);
+  const [isConfirming, setIsConfirming] = useState(false);
 
   useEffect(() => {
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
@@ -91,11 +92,26 @@ const UnitDetail = () => {
       return;
     }
 
+    // Si no está confirmando, mostrar el resumen primero
+    if (!isConfirming) {
+      setIsConfirming(true);
+      return;
+    }
+
+    // Solo pedir inicio de sesión si está confirmando la reserva
     if (!user) {
-      // En lugar de mostrar un error, redirigimos al usuario al login
+      // Guardar los detalles de la reserva en localStorage antes de redirigir
+      localStorage.setItem('pendingReservation', JSON.stringify({
+        unitId: unit?.id,
+        startDate,
+        endDate,
+        guests,
+        totalPrice: quote.totalPrice
+      }));
+      
       toast({
-        title: "Iniciar sesión",
-        description: "Por favor inicia sesión para completar tu reserva",
+        title: "Casi listo",
+        description: "Para confirmar tu reserva, necesitamos que inicies sesión",
       });
       navigate("/auth");
       return;
@@ -112,6 +128,10 @@ const UnitDetail = () => {
     );
 
     if (reservation) {
+      toast({
+        title: "¡Reserva exitosa!",
+        description: "Tu reserva ha sido confirmada.",
+      });
       navigate("/reservations");
     }
   };
@@ -131,7 +151,7 @@ const UnitDetail = () => {
 
           <div className="bg-secondary/20 p-6 rounded-lg">
             <h2 className="text-2xl font-display font-bold mb-6">
-              Reserva tu estadía
+              {isConfirming ? "Confirma tu reserva" : "Cotiza tu estadía"}
             </h2>
             <div className="space-y-4">
               <DateSelector
@@ -153,6 +173,7 @@ const UnitDetail = () => {
                   isAvailable={isAvailable || false}
                   isLoading={isLoading}
                   onReserve={handleReservation}
+                  buttonText={isConfirming ? "Confirmar reserva" : "Continuar reserva"}
                 />
               )}
             </div>

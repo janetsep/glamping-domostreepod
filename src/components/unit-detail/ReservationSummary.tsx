@@ -9,6 +9,7 @@ interface ReservationSummaryProps {
   isAvailable: boolean;
   isLoading: boolean;
   onReserve: () => void;
+  buttonText?: string;
 }
 
 export const ReservationSummary = ({
@@ -16,6 +17,7 @@ export const ReservationSummary = ({
   isAvailable,
   isLoading,
   onReserve,
+  buttonText = "Reservar ahora"
 }: ReservationSummaryProps) => {
   return (
     <div className="space-y-4">
@@ -43,7 +45,7 @@ export const ReservationSummary = ({
         disabled={isLoading || !isAvailable}
         onClick={onReserve}
       >
-        {isAvailable ? "Reservar ahora" : "Fechas no disponibles"}
+        {buttonText}
       </Button>
     </div>
   );
