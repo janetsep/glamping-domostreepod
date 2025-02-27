@@ -149,21 +149,18 @@ export const useReservations = () => {
         return null;
       }
 
-      // Ya no verificamos si el usuario está autenticado
-      // Generamos un ID aleatorio para el usuario anónimo
-      const anonymousUserId = 'anonymous_' + Math.random().toString(36).substring(2, 15);
-
+      // Hacemos la inserción sin el user_id para que Supabase maneje el valor nulo
       const { data, error } = await supabase
         .from('reservations')
         .insert([
           {
             unit_id: unitId,
-            user_id: anonymousUserId, // Usamos el ID anónimo
+            // No enviamos user_id, dejamos que sea null
             check_in: checkIn.toISOString(),
             check_out: checkOut.toISOString(),
             guests,
             total_price: totalPrice,
-            status: 'confirmed' // Cambiamos a confirmado directamente
+            status: 'confirmed'
           }
         ])
         .select()
