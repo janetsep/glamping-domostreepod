@@ -1,18 +1,33 @@
 
-import { useLocation, Link } from "react-router-dom";
+import { useLocation, Link, useNavigate } from "react-router-dom";
 import { useEffect } from "react";
 import { Home, ArrowLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { toast } from "sonner";
 
 const NotFound = () => {
   const location = useLocation();
+  const navigate = useNavigate();
 
   useEffect(() => {
     console.error(
       "404 Error: User attempted to access non-existent route:",
       location.pathname
     );
+    
+    // Mostrar toast con mensaje de error
+    toast.error("Página no encontrada", {
+      description: "La URL que intentas acceder no existe o ha sido movida."
+    });
   }, [location.pathname]);
+
+  const goToHome = () => {
+    navigate("/");
+  };
+
+  const goBack = () => {
+    navigate(-1);
+  };
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50">
@@ -34,17 +49,21 @@ const NotFound = () => {
         </p>
         
         <div className="flex flex-col sm:flex-row gap-3 justify-center">
-          <Button asChild variant="default">
-            <Link to="/" className="flex items-center">
-              <Home className="mr-2 w-4 h-4" />
-              Ir al inicio
-            </Link>
+          <Button 
+            variant="default" 
+            onClick={goToHome}
+            className="flex items-center"
+          >
+            <Home className="mr-2 w-4 h-4" />
+            Ir al inicio
           </Button>
-          <Button asChild variant="outline">
-            <Link to="#" onClick={() => window.history.back()} className="flex items-center">
-              <ArrowLeft className="mr-2 w-4 h-4" />
-              Volver atrás
-            </Link>
+          <Button 
+            variant="outline" 
+            onClick={goBack}
+            className="flex items-center"
+          >
+            <ArrowLeft className="mr-2 w-4 h-4" />
+            Volver atrás
           </Button>
         </div>
       </div>
