@@ -26,6 +26,7 @@ const UnitDetail = () => {
   const [isReservationConfirmed, setIsReservationConfirmed] = useState(false);
   const [fallbackUnit, setFallbackUnit] = useState<GlampingUnit | null>(null);
   const [isProcessingPayment, setIsProcessingPayment] = useState(false);
+  const [paymentDetails, setPaymentDetails] = useState<any>(null);
 
   // Intentar obtener la unidad por ID
   const { data: unit, isError } = useQuery<GlampingUnit | null>({
@@ -123,6 +124,7 @@ const UnitDetail = () => {
     setGuests(1);
     setQuote(null);
     setIsReservationConfirmed(false);
+    setPaymentDetails(null);
   };
 
   const handleConfirmReservation = async () => {
@@ -141,22 +143,32 @@ const UnitDetail = () => {
       );
 
       if (reservation) {
-        // Simulamos la redirección a WebPay Plus
+        // Proceso de pago con WebPay Plus
         const paymentResult = await redirectToWebpay(reservation.id, quote.totalPrice);
         console.log("Resultado del pago:", paymentResult);
         
-        setIsReservationConfirmed(true);
-        toast({
-          title: "¡Pago exitoso!",
-          description: "Tu reserva ha sido confirmada exitosamente.",
-        });
+        if (paymentResult.status === 'success') {
+          setIsReservationConfirmed(true);
+          setPaymentDetails(paymentResult.details);
+          
+          toast({
+            title: "¡Pago exitoso!",
+            description: "Tu reserva ha sido confirmada exitosamente.",
+          });
+        } else {
+          toast({
+            variant: "destructive",
+            title: "Error en el pago",
+            description: paymentResult.message || "No se pudo procesar el pago. Por favor, intenta de nuevo.",
+          });
+        }
       }
     } catch (error) {
       console.error("Error al confirmar reserva:", error);
       toast({
         variant: "destructive",
-        title: "Error en el pago",
-        description: "No se pudo procesar el pago. Por favor, intenta de nuevo.",
+        title: "Error en el proceso",
+        description: "No se pudo completar la reserva. Por favor, intenta de nuevo.",
       });
     } finally {
       setIsProcessingPayment(false);
@@ -193,12 +205,22 @@ const UnitDetail = () => {
                 <p>
                   Gracias por tu reserva. Hemos enviado los detalles a tu correo electrónico.
                 </p>
-                <div className="text-sm text-muted-foreground mt-4">
+                <div className="text-sm text-muted-foreground mt-4 space-y-2">
                   <p>Fechas reservadas:</p>
                   <p>Entrada: {startDate?.toLocaleDateString()}</p>
                   <p>Salida: {endDate?.toLocaleDateString()}</p>
                   <p>Huéspedes: {guests}</p>
                   <p className="font-semibold mt-2">Total: ${quote?.totalPrice.toLocaleString()}</p>
+                  
+                  {paymentDetails && (
+                    <div className="mt-4 pt-4 border-t text-left">
+                      <p className="font-semibold mb-2">Detalles del pago:</p>
+                      <p>Método: WebPay Plus</p>
+                      <p>Tarjeta: {paymentDetails.card_detail?.card_number}</p>
+                      <p>Código de autorización: {paymentDetails.authorization_code}</p>
+                      <p>Estado: {paymentDetails.status}</p>
+                    </div>
+                  )}
                 </div>
                 <Button className="mt-6" onClick={handleNewQuote}>
                   Hacer nueva reserva

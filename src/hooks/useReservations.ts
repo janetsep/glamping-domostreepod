@@ -216,26 +216,95 @@ export const useReservations = () => {
     }
   };
 
-  // Esta función simulará la redirección a WebPay Plus
-  const redirectToWebpay = (reservationId: string, amount: number) => {
-    console.log(`Redirigiendo a WebPay para la reserva ${reservationId} por $${amount}`);
+  // Esta función simula la integración con WebPay Plus según el repositorio de ejemplo
+  const redirectToWebpay = async (reservationId: string, amount: number) => {
+    console.log(`Iniciando proceso WebPay para la reserva ${reservationId} por $${amount}`);
     
-    // En un entorno real, aquí se realizaría la redirección a WebPay
-    // Simulamos la redirección con un modal
-    toast({
-      title: "Redirigiendo a WebPay Plus",
-      description: `Procesando pago de $${amount.toLocaleString()} por tu reserva`,
-    });
-    
-    // Simulamos un tiempo de procesamiento
-    return new Promise((resolve) => {
-      setTimeout(() => {
-        resolve({
-          status: 'success',
-          transactionId: `WPP-${Date.now()}`
-        });
-      }, 2000);
-    });
+    try {
+      // En un entorno de producción, esto sería una llamada a un endpoint en el backend
+      // que integraría con el SDK de Transbank WebPay
+      
+      // Simulamos la creación de una transacción según el ejemplo del repositorio
+      // Basado en https://github.com/TransbankDevelopers/transbank-sdk-nodejs-webpay-rest-example
+      
+      // Simular respuesta de creación de transacción
+      const simulatedResponse = {
+        token: `webpay-plus-sample-${Date.now()}`,
+        url: 'https://webpay3gint.transbank.cl/webpayserver/initTransaction'
+      };
+      
+      toast({
+        title: "Conectando con WebPay Plus",
+        description: `Preparando transacción de $${amount.toLocaleString()}`,
+      });
+      
+      // Simulamos un pequeño delay como si estuviéramos haciendo la petición real
+      await new Promise(resolve => setTimeout(resolve, 1500));
+      
+      // En una implementación real, aquí se redireccionaría al usuario a la URL de WebPay
+      // usando window.location.href = simulatedResponse.url;
+      // Para nuestra simulación, vamos a mostrar un mensaje y simular el retorno exitoso
+      
+      toast({
+        title: "Simulación WebPay",
+        description: "En un entorno real, serías redirigido a la página de pago de WebPay",
+      });
+      
+      // Simulamos otro delay como si el usuario estuviera completando el pago
+      await new Promise(resolve => setTimeout(resolve, 2000));
+      
+      // Simulamos la respuesta exitosa
+      const successResponse = {
+        vci: "TSY",
+        amount,
+        status: "AUTHORIZED",
+        buy_order: `BO-${reservationId}`,
+        session_id: `session-${Date.now()}`,
+        card_detail: {
+          card_number: "XXXX-XXXX-XXXX-6623"
+        },
+        accounting_date: new Date().toISOString().split('T')[0],
+        transaction_date: new Date().toISOString(),
+        authorization_code: "1213",
+        payment_type_code: "VN",
+        response_code: 0,
+        installments_number: 0
+      };
+      
+      // Actualizar el estado de la reserva a confirmada
+      const { error } = await supabase
+        .from('reservations')
+        .update({ status: 'confirmed', payment_details: successResponse })
+        .eq('id', reservationId);
+        
+      if (error) {
+        console.error('Error al actualizar reserva:', error);
+        throw new Error('Error al confirmar la reserva después del pago');
+      }
+      
+      toast({
+        title: "Pago procesado con éxito",
+        description: `Transacción completada. Código de autorización: ${successResponse.authorization_code}`,
+      });
+      
+      return {
+        status: 'success',
+        transactionId: successResponse.authorization_code,
+        details: successResponse
+      };
+    } catch (error) {
+      console.error('Error en el proceso de pago:', error);
+      toast({
+        variant: "destructive",
+        title: "Error en el pago",
+        description: "No se pudo completar el proceso de pago. Por favor, intenta nuevamente.",
+      });
+      
+      return {
+        status: 'error',
+        message: error instanceof Error ? error.message : 'Error desconocido en el proceso de pago'
+      };
+    }
   };
 
   return {
