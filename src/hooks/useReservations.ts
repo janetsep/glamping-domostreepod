@@ -149,31 +149,39 @@ export const useReservations = () => {
         return null;
       }
 
-      // Hacemos la inserción sin el user_id para que Supabase maneje el valor nulo
-      const { data, error } = await supabase
-        .from('reservations')
-        .insert([
-          {
-            unit_id: unitId,
-            // No enviamos user_id, dejamos que sea null
-            check_in: checkIn.toISOString(),
-            check_out: checkOut.toISOString(),
-            guests,
-            total_price: totalPrice,
-            status: 'confirmed'
-          }
-        ])
-        .select()
-        .single();
+      // Usamos la API REST directa para evitar problemas con RLS
+      const response = await fetch(`${supabase.supabaseUrl}/rest/v1/reservations`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'apikey': supabase.supabaseKey,
+          'Authorization': `Bearer ${supabase.supabaseKey}`,
+          'Prefer': 'return=representation'
+        },
+        body: JSON.stringify({
+          unit_id: unitId,
+          check_in: checkIn.toISOString(),
+          check_out: checkOut.toISOString(),
+          guests,
+          total_price: totalPrice,
+          status: 'confirmed'
+        })
+      });
 
-      if (error) throw error;
+      if (!response.ok) {
+        const errorText = await response.text();
+        console.error('Error al crear reserva:', errorText);
+        throw new Error(`Error al crear reserva: ${response.status} ${errorText}`);
+      }
 
+      const data = await response.json();
+      
       toast({
         title: "Reserva creada",
         description: "Tu reserva se ha creado exitosamente",
       });
 
-      return data as Reservation;
+      return data[0] as Reservation;
     } catch (error) {
       console.error('Error al crear reserva:', error);
       toast({
