@@ -4,6 +4,9 @@ import { useNavigate, useSearchParams } from 'react-router-dom';
 import { supabase } from '@/lib/supabase';
 import { useToast } from '@/components/ui/use-toast';
 
+const SUPABASE_URL = 'https://gtxjfmvnzrsuaxryffnt.supabase.co';
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imd0eGpmbXZuenJzdWF4cnlmZm50Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDA1MTg5ODIsImV4cCI6MjA1NjA5NDk4Mn0.WwPCyeZX42Jp4A4lW0jl7arXt0lzwRwm18-Ay_D4Ci8';
+
 const WebPayReturn = () => {
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
@@ -12,9 +15,9 @@ const WebPayReturn = () => {
 
   useEffect(() => {
     const processPayment = async () => {
-      const token = searchParams.get('token_ws');
+      const token_ws = searchParams.get('token_ws');
       
-      if (!token) {
+      if (!token_ws) {
         toast({
           variant: "destructive",
           title: "Error en el pago",
@@ -25,43 +28,25 @@ const WebPayReturn = () => {
       }
 
       try {
-        // Confirmamos la transacción con WebPay
-        const confirmResponse = await fetch('https://webpay3gint.transbank.cl/rswebpaytransaction/api/webpay/v1.2/transactions/' + token, {
-          method: 'PUT',
+        // Llamar a nuestra Edge Function para confirmar la transacción
+        const confirmResponse = await fetch(`${SUPABASE_URL}/functions/v1/webpay-confirm`, {
+          method: 'POST',
           headers: {
-            'Tbk-Api-Key-Id': '597055555532',
-            'Tbk-Api-Key-Secret': '579B532A7440BB0C9079DED94D31EA1615BACEB56610332264630D42D0A36B1C'
-          }
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${SUPABASE_ANON_KEY}`
+          },
+          body: JSON.stringify({ token_ws })
         });
 
         if (!confirmResponse.ok) {
-          throw new Error('Error al confirmar transacción');
+          const errorData = await confirmResponse.json();
+          throw new Error(errorData.error || 'Error al confirmar la transacción');
         }
 
         const transactionResult = await confirmResponse.json();
         console.log('Resultado de la transacción:', transactionResult);
 
-        // Buscamos la reserva por el buy_order
-        const buyOrder = transactionResult.buy_order;
-        const reservationId = buyOrder.replace('BO-', '');
-
-        // Actualizamos el estado de la reserva
-        const { error: updateError } = await supabase
-          .from('reservations')
-          .update({
-            status: transactionResult.response_code === 0 ? 'confirmed' : 'failed',
-            payment_details: {
-              ...transactionResult,
-              confirmation_date: new Date().toISOString()
-            }
-          })
-          .eq('id', reservationId);
-
-        if (updateError) {
-          console.error('Error al actualizar reserva:', updateError);
-          throw updateError;
-        }
-
+        // Procesar el resultado
         if (transactionResult.response_code === 0) {
           toast({
             title: "¡Pago exitoso!",
@@ -75,9 +60,23 @@ const WebPayReturn = () => {
           });
         }
 
-        // Redirigimos al usuario a la página de detalle de la unidad
+        // Redirigir al usuario (usando ID de unidad extraído del buy_order)
+        const buyOrder = transactionResult.buy_order;
+        const reservationId = buyOrder.replace('BO-', '');
+        
+        // Obtener la unidad asociada a la reserva
+        const { data: reservation } = await supabase
+          .from('reservations')
+          .select('unit_id')
+          .eq('id', reservationId)
+          .single();
+          
         setTimeout(() => {
-          navigate(`/unit/${reservationId}`);
+          if (reservation?.unit_id) {
+            navigate(`/unit/${reservation.unit_id}`);
+          } else {
+            navigate('/');
+          }
         }, 3000);
 
       } catch (error) {
@@ -87,6 +86,7 @@ const WebPayReturn = () => {
           title: "Error en el proceso",
           description: "No se pudo completar el proceso de pago. Por favor, contacta a soporte."
         });
+        setTimeout(() => navigate('/'), 3000);
       } finally {
         setIsProcessing(false);
       }

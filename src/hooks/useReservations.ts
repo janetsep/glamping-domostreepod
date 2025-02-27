@@ -220,19 +220,35 @@ export const useReservations = () => {
     console.log(`Iniciando proceso WebPay para la reserva ${reservationId} por $${amount}`);
     
     try {
-      // En lugar de intentar conectar directamente con la API de WebPay,
-      // vamos a simular el proceso para propósitos de desarrollo
-      
-      // Simulamos la respuesta de WebPay con datos de prueba
-      const simulatedToken = `SIMULADO-${Date.now()}`;
-      const simulatedUrl = `/webpay/return?token_ws=${simulatedToken}`;
-      
-      // Guardamos el token simulado en la reserva
+      // Usando nuestra Edge Function para iniciar la transacción con WebPay
+      const initResponse = await fetch(`${SUPABASE_URL}/functions/v1/webpay-init`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${SUPABASE_ANON_KEY}`
+        },
+        body: JSON.stringify({
+          reservationId,
+          amount,
+          origin: window.location.origin
+        })
+      });
+
+      if (!initResponse.ok) {
+        const errorData = await initResponse.json();
+        console.error('Error al iniciar transacción:', errorData);
+        throw new Error(errorData.error || 'Error al iniciar la transacción con WebPay');
+      }
+
+      const transactionData = await initResponse.json();
+      console.log('Transacción iniciada:', transactionData);
+
+      // Guardamos el token en la reserva
       const { error: updateError } = await supabase
         .from('reservations')
         .update({ 
           payment_details: { 
-            token: simulatedToken,
+            token: transactionData.token,
             transaction_initiation: new Date().toISOString()
           }
         })
@@ -242,50 +258,15 @@ export const useReservations = () => {
         console.error('Error al actualizar reserva con token:', updateError);
       }
 
-      // Actualizamos inmediatamente el estado de la reserva a 'confirmed' para simular
-      const { error: confirmError } = await supabase
-        .from('reservations')
-        .update({
-          status: 'confirmed',
-          payment_details: {
-            token: simulatedToken,
-            vci: "TSY", 
-            amount: amount,
-            status: "AUTHORIZED",
-            buy_order: `BO-${reservationId}`,
-            session_id: `session-${Date.now()}`,
-            card_detail: {
-              card_number: "XXXX-XXXX-XXXX-6623"
-            },
-            response_code: 0,
-            accounting_date: new Date().toLocaleDateString('es-CL'),
-            transaction_date: new Date().toISOString(),
-            payment_type_code: "VN",
-            authorization_code: Math.floor(1000 + Math.random() * 9000).toString(),
-            installments_number: 0
-          }
-        })
-        .eq('id', reservationId);
+      // Redirigimos al usuario a la página de pago de WebPay
+      window.location.href = transactionData.url;
 
-      if (confirmError) {
-        console.error('Error al confirmar reserva:', confirmError);
-      }
-
-      toast({
-        title: "Transacción simulada", 
-        description: "Se ha simulado el pago correctamente. En producción serías redirigido a WebPay."
-      });
-
-      // En lugar de redirigir, retornamos un resultado exitoso simulado
       return {
-        status: 'success',
-        message: 'Pago simulado completado con éxito',
+        status: 'pending',
+        message: 'Redirigiendo a WebPay Plus',
         details: {
-          token: simulatedToken,
-          authorization_code: Math.floor(1000 + Math.random() * 9000).toString(),
-          card_number: "XXXX-XXXX-XXXX-6623",
-          amount: amount,
-          response_code: 0
+          token: transactionData.token,
+          url: transactionData.url
         }
       };
     } catch (error) {
