@@ -14,8 +14,7 @@ enabled = true
 port = 54323
 api_url = "http://localhost"
 
-[[edgefunction]]
-name = "webpay-init"
+[functions]
+[functions.webpay-init]
 
-[[edgefunction]]
-name = "webpay-confirm"
+[functions.webpay-confirm]
