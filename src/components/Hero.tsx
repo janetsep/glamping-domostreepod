@@ -18,7 +18,7 @@ const Hero = () => {
           <Button 
             size="lg" 
             className="bg-accent hover:bg-accent/90"
-            onClick={() => navigate('/reservations')}
+            onClick={() => navigate('/unit/1')}
           >
             Reserva tu estadía
           </Button>

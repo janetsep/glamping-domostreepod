@@ -42,7 +42,7 @@ const Navigation = () => {
           </Button>
           <Button
             variant={isMobile ? "ghost" : "default"}
-            onClick={() => navigate("/reservations")}
+            onClick={() => navigate("/unit/1")}
           >
             Reservar
           </Button>

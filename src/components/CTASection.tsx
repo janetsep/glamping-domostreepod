@@ -17,7 +17,7 @@ const CTASection = () => {
         <Button
           size="lg"
           className="bg-white text-primary hover:bg-white/90"
-          onClick={() => navigate('/reservations')}
+          onClick={() => navigate('/unit/1')}
         >
           Hacer una reserva
         </Button>
