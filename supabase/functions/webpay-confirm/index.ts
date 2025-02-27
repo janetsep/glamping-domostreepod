@@ -62,37 +62,98 @@ serve(async (req) => {
     const transactionResult = JSON.parse(responseBody);
     console.log("Transacción confirmada:", transactionResult);
 
-    // Actualizar la reserva en la base de datos
-    if (transactionResult.buy_order) {
-      try {
-        const reservationId = transactionResult.buy_order.replace("BO-", "");
-        console.log(`Actualizando reserva ${reservationId} con resultado de transacción`);
-        
-        // Crear cliente de Supabase
-        const supabaseUrl = Deno.env.get("SUPABASE_URL") || "";
-        const supabaseKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") || "";
-        
-        if (!supabaseUrl || !supabaseKey) {
-          console.error("Faltan variables de entorno para Supabase");
-        } else {
-          const supabase = createClient(supabaseUrl, supabaseKey);
-          const { error } = await supabase
-            .from("reservations")
-            .update({
-              status: transactionResult.response_code === 0 ? "confirmed" : "failed",
-              payment_details: transactionResult,
-            })
-            .eq("id", reservationId);
-
-          if (error) {
-            console.error("Error al actualizar la reserva:", error);
-          } else {
-            console.log(`Reserva ${reservationId} actualizada correctamente`);
-          }
-        }
-      } catch (updateError) {
-        console.error("Error al procesar la actualización de la reserva:", updateError);
+    // Extraer el ID de reserva del buy_order
+    // El formato buy_order ahora es "BO" seguido del ID de reserva sin caracteres especiales
+    // Necesitamos recuperar el ID original de la BD
+    try {
+      const buyOrder = transactionResult.buy_order;
+      console.log(`Buy order recibido: ${buyOrder}`);
+      
+      if (!buyOrder || !buyOrder.startsWith("BO")) {
+        console.error("Formato de buy_order inválido:", buyOrder);
+        return new Response(
+          JSON.stringify({ error: "Formato de buy_order inválido", buy_order: buyOrder }),
+          { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+        );
       }
+      
+      // Crear cliente de Supabase
+      const supabaseUrl = Deno.env.get("SUPABASE_URL") || "";
+      const supabaseKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") || "";
+      
+      if (!supabaseUrl || !supabaseKey) {
+        console.error("Faltan variables de entorno para Supabase");
+        return new Response(
+          JSON.stringify({ error: "Error de configuración del servidor" }),
+          { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+        );
+      }
+      
+      const supabase = createClient(supabaseUrl, supabaseKey);
+      
+      // Buscar la reserva que tiene este buy_order en sus payment_details
+      const { data: reservations, error: searchError } = await supabase
+        .from("reservations")
+        .select("id, payment_details")
+        .eq("status", "pending");
+      
+      if (searchError) {
+        console.error("Error al buscar la reserva:", searchError);
+        return new Response(
+          JSON.stringify({ error: "Error al buscar la reserva", details: searchError }),
+          { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+        );
+      }
+      
+      // Encontrar la reserva que coincide con el buy_order
+      const reservation = reservations.find(r => 
+        r.payment_details && r.payment_details.buy_order === buyOrder
+      );
+      
+      if (!reservation) {
+        console.error("No se encontró reserva con buy_order:", buyOrder);
+        console.log("Reservas pendientes:", reservations);
+        return new Response(
+          JSON.stringify({ error: "No se encontró la reserva asociada a esta transacción" }),
+          { status: 404, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+        );
+      }
+      
+      const reservationId = reservation.id;
+      console.log(`Reserva encontrada con ID: ${reservationId}`);
+      
+      // Actualizar la reserva
+      const { error: updateError } = await supabase
+        .from("reservations")
+        .update({
+          status: transactionResult.response_code === 0 ? "confirmed" : "failed",
+          payment_details: {
+            ...reservation.payment_details,
+            ...transactionResult,
+            confirmation_timestamp: new Date().toISOString()
+          },
+        })
+        .eq("id", reservationId);
+
+      if (updateError) {
+        console.error("Error al actualizar la reserva:", updateError);
+        return new Response(
+          JSON.stringify({ error: "Error al actualizar la reserva", details: updateError }),
+          { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+        );
+      }
+      
+      console.log(`Reserva ${reservationId} actualizada correctamente`);
+      
+      // Añadir el ID de reserva al resultado
+      transactionResult.reservation_id = reservationId;
+      
+    } catch (processError) {
+      console.error("Error al procesar la confirmación:", processError);
+      return new Response(
+        JSON.stringify({ error: "Error al procesar la confirmación de pago", details: processError.message }),
+        { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
     }
 
     return new Response(JSON.stringify(transactionResult), {

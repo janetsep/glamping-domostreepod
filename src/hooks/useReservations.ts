@@ -235,9 +235,15 @@ export const useReservations = () => {
       });
 
       if (!initResponse.ok) {
-        const errorData = await initResponse.json();
-        console.error('Error al iniciar transacción:', errorData);
-        throw new Error(errorData.error || 'Error al iniciar la transacción con WebPay');
+        const errorText = await initResponse.text();
+        console.error('Error al iniciar transacción:', errorText);
+        
+        try {
+          const errorData = JSON.parse(errorText);
+          throw new Error(errorData.error || 'Error al iniciar la transacción con WebPay');
+        } catch (parseError) {
+          throw new Error(`Error al iniciar la transacción con WebPay: ${errorText}`);
+        }
       }
 
       const transactionData = await initResponse.json();

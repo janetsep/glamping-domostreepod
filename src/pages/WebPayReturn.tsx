@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { supabase } from '@/lib/supabase';
 import { useToast } from '@/components/ui/use-toast';
+import { toast as sonnerToast } from 'sonner';
 
 const SUPABASE_URL = 'https://gtxjfmvnzrsuaxryffnt.supabase.co';
 const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imd0eGpmbXZuenJzdWF4cnlmZm50Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDA1MTg5ODIsImV4cCI6MjA1NjA5NDk4Mn0.WwPCyeZX42Jp4A4lW0jl7arXt0lzwRwm18-Ay_D4Ci8';
@@ -22,6 +23,13 @@ const WebPayReturn = () => {
       const tbk_orden_compra = searchParams.get('TBK_ORDEN_COMPRA');
       const tbk_id_sesion = searchParams.get('TBK_ID_SESION');
       
+      console.log("Parámetros de retorno de WebPay:", {
+        token_ws,
+        tbk_token,
+        tbk_orden_compra,
+        tbk_id_sesion
+      });
+      
       // WebPay puede redirigir con TBK_ parámetros cuando hay un rechazo
       if (tbk_token) {
         console.error('Transacción rechazada por WebPay:', { tbk_token, tbk_orden_compra, tbk_id_sesion });
@@ -30,6 +38,9 @@ const WebPayReturn = () => {
           variant: "destructive",
           title: "Pago rechazado",
           description: "La transacción fue rechazada por el banco. Por favor, intenta con otro método de pago."
+        });
+        sonnerToast.error("Pago rechazado", {
+          description: "La transacción fue rechazada por el banco."
         });
         setTimeout(() => navigate('/'), 5000);
         setIsProcessing(false);
@@ -42,6 +53,9 @@ const WebPayReturn = () => {
           variant: "destructive",
           title: "Error en el pago",
           description: "No se recibió el token de la transacción."
+        });
+        sonnerToast.error("Error en el pago", {
+          description: "No se recibió información de la transacción."
         });
         setTimeout(() => navigate('/'), 5000);
         setIsProcessing(false);
@@ -61,8 +75,18 @@ const WebPayReturn = () => {
           body: JSON.stringify({ token_ws })
         });
 
-        const responseData = await confirmResponse.json();
-        console.log('Respuesta de confirmación:', responseData);
+        const responseText = await confirmResponse.text();
+        console.log('Respuesta de confirmación (texto):', responseText);
+        
+        let responseData;
+        try {
+          responseData = JSON.parse(responseText);
+        } catch (e) {
+          console.error('Error al parsear la respuesta JSON:', e);
+          throw new Error(`Error al parsear la respuesta: ${responseText}`);
+        }
+        
+        console.log('Respuesta de confirmación (objeto):', responseData);
 
         if (!confirmResponse.ok) {
           throw new Error(responseData.error || 'Error al confirmar la transacción');
@@ -77,6 +101,9 @@ const WebPayReturn = () => {
             title: "¡Pago exitoso!",
             description: `Tu reserva ha sido confirmada. Código de autorización: ${responseData.authorization_code}`
           });
+          sonnerToast.success("¡Pago exitoso!", {
+            description: "Tu reserva ha sido confirmada."
+          });
         } else {
           setError(`Pago rechazado. Código: ${responseData.response_code}`);
           toast({
@@ -84,18 +111,18 @@ const WebPayReturn = () => {
             title: "Pago rechazado",
             description: `La transacción no pudo ser completada (código ${responseData.response_code}). Por favor, intenta nuevamente.`
           });
+          sonnerToast.error("Pago rechazado", {
+            description: `Código de respuesta: ${responseData.response_code}`
+          });
         }
 
-        // Redirigir al usuario (usando ID de unidad extraído del buy_order)
-        if (responseData.buy_order) {
-          const buyOrder = responseData.buy_order;
-          const reservationId = buyOrder.replace('BO-', '');
-          
+        // Redirigir al usuario usando reservation_id o unidad extraída
+        if (responseData.reservation_id) {
           // Obtener la unidad asociada a la reserva
           const { data: reservation, error: reservationError } = await supabase
             .from('reservations')
             .select('unit_id')
-            .eq('id', reservationId)
+            .eq('id', responseData.reservation_id)
             .single();
             
           if (reservationError) {
@@ -109,6 +136,30 @@ const WebPayReturn = () => {
               navigate('/');
             }
           }, 5000);
+        } else if (responseData.buy_order) {
+          // Buscar la reserva que tenga este buy_order en sus payment_details
+          const { data: reservations, error: searchError } = await supabase
+            .from("reservations")
+            .select("id, unit_id, payment_details")
+            .eq("status", "confirmed");
+          
+          if (searchError) {
+            console.error('Error al buscar reservas:', searchError);
+            setTimeout(() => navigate('/'), 5000);
+            return;
+          }
+          
+          const reservation = reservations.find(r => 
+            r.payment_details && r.payment_details.buy_order === responseData.buy_order
+          );
+          
+          if (reservation) {
+            setTimeout(() => {
+              navigate(`/unit/${reservation.unit_id}`);
+            }, 5000);
+          } else {
+            setTimeout(() => navigate('/'), 5000);
+          }
         } else {
           setTimeout(() => navigate('/'), 5000);
         }
@@ -120,6 +171,9 @@ const WebPayReturn = () => {
           variant: "destructive",
           title: "Error en el proceso",
           description: "No se pudo completar el proceso de pago. Por favor, contacta a soporte."
+        });
+        sonnerToast.error("Error en el proceso de pago", {
+          description: "Por favor, contacta a soporte."
         });
         setTimeout(() => navigate('/'), 5000);
       } finally {

@@ -34,9 +34,11 @@ serve(async (req) => {
     }
 
     // Formato correcto para el buy_order según Transbank
-    // Debe ser alfanumérico de máximo 26 caracteres, sin espacios ni caracteres especiales
-    const buyOrder = `BO${reservationId.replace(/-/g, '').substring(0, 24)}`;
-    const sessionId = `session-${Date.now()}`;
+    // Para evitar problemas, usamos un formato simplificado que cumple con las reglas de Transbank:
+    // - Máximo 26 caracteres
+    // - Solo alfanuméricos (sin guiones, espacios ni caracteres especiales)
+    const buyOrder = `BO${reservationId.replace(/[^a-zA-Z0-9]/g, '')}`.substring(0, 26);
+    const sessionId = `session${Date.now()}`;
     const returnUrl = `${origin}/webpay/return`;
 
     console.log("Parámetros de inicio de transacción:", {
