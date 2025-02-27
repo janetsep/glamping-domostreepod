@@ -18,23 +18,10 @@ const UnitDetail = () => {
   const [startDate, setStartDate] = useState<Date>();
   const [endDate, setEndDate] = useState<Date>();
   const [guests, setGuests] = useState<number>(1);
-  const { createReservation, isLoading, checkAvailability, calculateQuote } =
-    useReservations();
+  const { checkAvailability, calculateQuote } = useReservations();
   const { toast } = useToast();
-  const [user, setUser] = useState<any>(null);
   const [quote, setQuote] = useState<any>(null);
   const [isAvailable, setIsAvailable] = useState<boolean | null>(null);
-  const [isConfirming, setIsConfirming] = useState(false);
-
-  useEffect(() => {
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      (event, session) => {
-        setUser(session?.user || null);
-      }
-    );
-
-    return () => subscription.unsubscribe();
-  }, []);
 
   const { data: unit } = useQuery<GlampingUnit>({
     queryKey: ["unit", id],
@@ -92,48 +79,10 @@ const UnitDetail = () => {
       return;
     }
 
-    // Si no está confirmando, mostrar el resumen primero
-    if (!isConfirming) {
-      setIsConfirming(true);
-      return;
-    }
-
-    // Solo pedir inicio de sesión si está confirmando la reserva
-    if (!user) {
-      // Guardar los detalles de la reserva en localStorage antes de redirigir
-      localStorage.setItem('pendingReservation', JSON.stringify({
-        unitId: unit?.id,
-        startDate,
-        endDate,
-        guests,
-        totalPrice: quote.totalPrice
-      }));
-      
-      toast({
-        title: "Casi listo",
-        description: "Para confirmar tu reserva, necesitamos que inicies sesión",
-      });
-      navigate("/auth");
-      return;
-    }
-
-    if (!unit) return;
-
-    const reservation = await createReservation(
-      unit.id,
-      startDate,
-      endDate,
-      guests,
-      quote.totalPrice
-    );
-
-    if (reservation) {
-      toast({
-        title: "¡Reserva exitosa!",
-        description: "Tu reserva ha sido confirmada.",
-      });
-      navigate("/reservations");
-    }
+    toast({
+      title: "Cotización lista",
+      description: "Las fechas están disponibles. Puedes proceder con la reserva.",
+    });
   };
 
   if (!unit) return null;
@@ -151,7 +100,7 @@ const UnitDetail = () => {
 
           <div className="bg-secondary/20 p-6 rounded-lg">
             <h2 className="text-2xl font-display font-bold mb-6">
-              {isConfirming ? "Confirma tu reserva" : "Cotiza tu estadía"}
+              Cotiza tu estadía
             </h2>
             <div className="space-y-4">
               <DateSelector
@@ -171,9 +120,9 @@ const UnitDetail = () => {
                 <ReservationSummary
                   quote={quote}
                   isAvailable={isAvailable || false}
-                  isLoading={isLoading}
+                  isLoading={false}
                   onReserve={handleReservation}
-                  buttonText={isConfirming ? "Confirmar reserva" : "Continuar reserva"}
+                  buttonText="Verificar disponibilidad"
                 />
               )}
             </div>
