@@ -22,6 +22,7 @@ const UnitDetail = () => {
   const { toast } = useToast();
   const [quote, setQuote] = useState<any>(null);
   const [isAvailable, setIsAvailable] = useState<boolean | null>(null);
+  const [showQuote, setShowQuote] = useState(false);
 
   const { data: unit } = useQuery<GlampingUnit>({
     queryKey: ["unit", id],
@@ -49,19 +50,26 @@ const UnitDetail = () => {
         guests
       );
       setQuote(quoteDetails);
+      setShowQuote(true);
     } else {
       setQuote(null);
+      setShowQuote(false);
+      toast({
+        variant: "destructive",
+        title: "No disponible",
+        description: "Las fechas seleccionadas no están disponibles.",
+      });
     }
   };
 
   useEffect(() => {
-    if (startDate && endDate) {
-      checkAvailabilityAndQuote();
-    }
+    // Resetear la cotización cuando cambien las fechas o el número de huéspedes
+    setShowQuote(false);
+    setQuote(null);
   }, [startDate, endDate, guests]);
 
   const handleReservation = async () => {
-    if (!startDate || !endDate || !quote) {
+    if (!startDate || !endDate) {
       toast({
         variant: "destructive",
         title: "Error",
@@ -70,19 +78,15 @@ const UnitDetail = () => {
       return;
     }
 
-    if (!isAvailable) {
-      toast({
-        variant: "destructive",
-        title: "No disponible",
-        description: "Lo sentimos, las fechas seleccionadas no están disponibles.",
-      });
-      return;
-    }
+    await checkAvailabilityAndQuote();
+  };
 
-    toast({
-      title: "Cotización lista",
-      description: "Las fechas están disponibles. Puedes proceder con la reserva.",
-    });
+  const handleNewQuote = () => {
+    setShowQuote(false);
+    setStartDate(undefined);
+    setEndDate(undefined);
+    setGuests(1);
+    setQuote(null);
   };
 
   if (!unit) return null;
@@ -103,27 +107,46 @@ const UnitDetail = () => {
               Cotiza tu estadía
             </h2>
             <div className="space-y-4">
-              <DateSelector
-                startDate={startDate}
-                endDate={endDate}
-                onStartDateChange={setStartDate}
-                onEndDateChange={setEndDate}
-              />
+              {!showQuote ? (
+                <>
+                  <DateSelector
+                    startDate={startDate}
+                    endDate={endDate}
+                    onStartDateChange={setStartDate}
+                    onEndDateChange={setEndDate}
+                  />
 
-              <GuestSelector
-                maxGuests={unit.max_guests}
-                guests={guests}
-                onGuestsChange={setGuests}
-              />
+                  <GuestSelector
+                    maxGuests={unit.max_guests}
+                    guests={guests}
+                    onGuestsChange={setGuests}
+                  />
 
-              {startDate && endDate && quote && (
-                <ReservationSummary
-                  quote={quote}
-                  isAvailable={isAvailable || false}
-                  isLoading={false}
-                  onReserve={handleReservation}
-                  buttonText="Verificar disponibilidad"
-                />
+                  <Button 
+                    className="w-full" 
+                    size="lg"
+                    onClick={handleReservation}
+                    disabled={!startDate || !endDate}
+                  >
+                    Cotizar estadía
+                  </Button>
+                </>
+              ) : quote && (
+                <>
+                  <ReservationSummary
+                    quote={quote}
+                    isAvailable={isAvailable || false}
+                    isLoading={false}
+                    onReserve={handleNewQuote}
+                    buttonText="Nueva cotización"
+                  />
+                  <div className="text-sm text-muted-foreground mt-4">
+                    <p>Fechas seleccionadas:</p>
+                    <p>Entrada: {startDate?.toLocaleDateString()}</p>
+                    <p>Salida: {endDate?.toLocaleDateString()}</p>
+                    <p>Huéspedes: {guests}</p>
+                  </div>
+                </>
               )}
             </div>
           </div>
