@@ -23,6 +23,7 @@ export const ReservationSummary = ({
   buttonText = "Reservar ahora"
 }: ReservationSummaryProps) => {
   const [showPaymentOptions, setShowPaymentOptions] = useState(false);
+  const [selectedPayment, setSelectedPayment] = useState<string | null>(null);
 
   const handleAcceptQuote = () => {
     if (buttonText === "Nueva cotización") {
@@ -38,6 +39,10 @@ export const ReservationSummary = ({
       onConfirm();
     }
     setShowPaymentOptions(false);
+  };
+
+  const handlePaymentSelect = (method: string) => {
+    setSelectedPayment(method);
   };
 
   return (
@@ -72,22 +77,26 @@ export const ReservationSummary = ({
       ) : (
         <div className="space-y-4 border-t pt-4">
           <h3 className="font-semibold text-md">Opciones de pago</h3>
-          <div className="grid grid-cols-2 gap-3">
-            <Button variant="outline" className="p-4 h-auto flex flex-col items-center">
-              <span className="text-xl mb-2">💳</span>
-              <span className="text-sm">Tarjeta de crédito</span>
-            </Button>
-            <Button variant="outline" className="p-4 h-auto flex flex-col items-center">
-              <span className="text-xl mb-2">🏦</span>
-              <span className="text-sm">Transferencia</span>
+          <div className="grid grid-cols-1 gap-3">
+            <Button 
+              variant={selectedPayment === 'webpay' ? 'default' : 'outline'} 
+              className="p-4 h-auto flex items-center"
+              onClick={() => handlePaymentSelect('webpay')}
+            >
+              <span className="text-xl mr-3">💳</span>
+              <div className="flex flex-col items-start">
+                <span className="font-semibold">WebPay Plus</span>
+                <span className="text-xs text-left">Paga con tarjetas de crédito, débito o prepago</span>
+              </div>
             </Button>
           </div>
           <Button
             className="w-full mt-4"
             size="lg"
             onClick={handleConfirmReservation}
+            disabled={!selectedPayment}
           >
-            Confirmar reserva
+            Continuar al pago
           </Button>
           <Button
             className="w-full"

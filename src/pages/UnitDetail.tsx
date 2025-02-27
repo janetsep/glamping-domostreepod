@@ -18,13 +18,14 @@ const UnitDetail = () => {
   const [startDate, setStartDate] = useState<Date>();
   const [endDate, setEndDate] = useState<Date>();
   const [guests, setGuests] = useState<number>(1);
-  const { checkAvailability, calculateQuote, createReservation, fetchGlampingUnits } = useReservations();
+  const { checkAvailability, calculateQuote, createReservation, fetchGlampingUnits, redirectToWebpay } = useReservations();
   const { toast } = useToast();
   const [quote, setQuote] = useState<any>(null);
   const [isAvailable, setIsAvailable] = useState<boolean | null>(null);
   const [showQuote, setShowQuote] = useState(false);
   const [isReservationConfirmed, setIsReservationConfirmed] = useState(false);
   const [fallbackUnit, setFallbackUnit] = useState<GlampingUnit | null>(null);
+  const [isProcessingPayment, setIsProcessingPayment] = useState(false);
 
   // Intentar obtener la unidad por ID
   const { data: unit, isError } = useQuery<GlampingUnit | null>({
@@ -128,28 +129,37 @@ const UnitDetail = () => {
     if (!displayUnit || !startDate || !endDate || !quote) return;
 
     try {
+      setIsProcessingPayment(true);
+      
       const reservation = await createReservation(
         displayUnit.id,
         startDate,
         endDate,
         guests,
-        quote.totalPrice
+        quote.totalPrice,
+        'webpay'
       );
 
       if (reservation) {
+        // Simulamos la redirección a WebPay Plus
+        const paymentResult = await redirectToWebpay(reservation.id, quote.totalPrice);
+        console.log("Resultado del pago:", paymentResult);
+        
         setIsReservationConfirmed(true);
         toast({
-          title: "¡Reserva confirmada!",
-          description: "Hemos registrado tu reserva correctamente.",
+          title: "¡Pago exitoso!",
+          description: "Tu reserva ha sido confirmada exitosamente.",
         });
       }
     } catch (error) {
       console.error("Error al confirmar reserva:", error);
       toast({
         variant: "destructive",
-        title: "Error",
-        description: "No se pudo confirmar la reserva. Por favor, intenta de nuevo.",
+        title: "Error en el pago",
+        description: "No se pudo procesar el pago. Por favor, intenta de nuevo.",
       });
+    } finally {
+      setIsProcessingPayment(false);
     }
   };
 
@@ -229,7 +239,7 @@ const UnitDetail = () => {
                       <ReservationSummary
                         quote={quote}
                         isAvailable={isAvailable || false}
-                        isLoading={false}
+                        isLoading={isProcessingPayment}
                         onReserve={handleNewQuote}
                         onConfirm={handleConfirmReservation}
                         buttonText="Aceptar cotización"

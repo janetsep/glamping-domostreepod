@@ -32,25 +32,32 @@ export const useReservations = () => {
       console.log('Creando unidades de ejemplo');
       const exampleUnits = [
         {
-          name: 'Cabaña del Bosque',
-          description: 'Una hermosa cabaña con vista al bosque nativo, perfecta para escapadas románticas.',
-          max_guests: 2,
-          price_per_night: 150000,
-          image_url: 'https://images.unsplash.com/photo-1618767689160-da3fb810aad7'
-        },
-        {
           name: 'Domo Familiar',
-          description: 'Espacioso domo geodésico con todas las comodidades para una experiencia familiar única.',
+          description: 'Espacioso domo geodésico con todas las comodidades para una experiencia familiar única. Perfecto para familias con niños.',
           max_guests: 4,
           price_per_night: 200000,
           image_url: 'https://images.unsplash.com/photo-1521401830884-6c03c1c87ebb'
         },
         {
-          name: 'Suite Lago',
-          description: 'Lujosa suite con vista panorámica al lago, ideal para parejas que buscan tranquilidad.',
+          name: 'Domo Bosque',
+          description: 'Hermoso domo rodeado de vegetación nativa con vistas al bosque. Ideal para los amantes de la naturaleza.',
+          max_guests: 2,
+          price_per_night: 150000,
+          image_url: 'https://images.unsplash.com/photo-1618767689160-da3fb810aad7'
+        },
+        {
+          name: 'Domo Panorámico',
+          description: 'Domo con techo transparente para observar las estrellas por la noche. Una experiencia única en medio de la naturaleza.',
           max_guests: 2,
           price_per_night: 180000,
           image_url: 'https://images.unsplash.com/photo-1571896349842-33c89424de2d'
+        },
+        {
+          name: 'Domo Superior',
+          description: 'Nuestro domo más lujoso, con jacuzzi privado y las mejores vistas del valle. Perfecto para ocasiones especiales.',
+          max_guests: 4,
+          price_per_night: 250000,
+          image_url: 'https://images.unsplash.com/photo-1533090368676-1fd25485db88?q=80&w=1969&auto=format&fit=crop'
         }
       ];
 
@@ -138,7 +145,8 @@ export const useReservations = () => {
     checkIn: Date,
     checkOut: Date,
     guests: number,
-    totalPrice: number
+    totalPrice: number,
+    paymentMethod: string = 'webpay'
   ) => {
     setIsLoading(true);
     try {
@@ -168,7 +176,8 @@ export const useReservations = () => {
           check_out: checkOut.toISOString(),
           guests,
           total_price: totalPrice,
-          status: 'confirmed'
+          status: 'pending',
+          payment_method: paymentMethod
         })
       });
 
@@ -181,8 +190,8 @@ export const useReservations = () => {
       const data = await response.json();
       
       toast({
-        title: "Reserva creada",
-        description: "Tu reserva se ha creado exitosamente",
+        title: "Reserva iniciada",
+        description: "Tu reserva se ha creado y ahora serás redirigido a Webpay para completar el pago",
       });
 
       return data[0] as Reservation;
@@ -199,11 +208,34 @@ export const useReservations = () => {
     }
   };
 
+  // Esta función simulará la redirección a WebPay Plus
+  const redirectToWebpay = (reservationId: string, amount: number) => {
+    console.log(`Redirigiendo a WebPay para la reserva ${reservationId} por $${amount}`);
+    
+    // En un entorno real, aquí se realizaría la redirección a WebPay
+    // Simulamos la redirección con un modal
+    toast({
+      title: "Redirigiendo a WebPay Plus",
+      description: `Procesando pago de $${amount.toLocaleString()} por tu reserva`,
+    });
+    
+    // Simulamos un tiempo de procesamiento
+    return new Promise((resolve) => {
+      setTimeout(() => {
+        resolve({
+          status: 'success',
+          transactionId: `WPP-${Date.now()}`
+        });
+      }, 2000);
+    });
+  };
+
   return {
     isLoading,
     fetchGlampingUnits,
     createReservation,
     checkAvailability,
-    calculateQuote
+    calculateQuote,
+    redirectToWebpay
   };
 };
