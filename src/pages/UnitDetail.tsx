@@ -18,11 +18,12 @@ const UnitDetail = () => {
   const [startDate, setStartDate] = useState<Date>();
   const [endDate, setEndDate] = useState<Date>();
   const [guests, setGuests] = useState<number>(1);
-  const { checkAvailability, calculateQuote } = useReservations();
+  const { checkAvailability, calculateQuote, createReservation } = useReservations();
   const { toast } = useToast();
   const [quote, setQuote] = useState<any>(null);
   const [isAvailable, setIsAvailable] = useState<boolean | null>(null);
   const [showQuote, setShowQuote] = useState(false);
+  const [isReservationConfirmed, setIsReservationConfirmed] = useState(false);
 
   const { data: unit } = useQuery<GlampingUnit>({
     queryKey: ["unit", id],
@@ -87,6 +88,36 @@ const UnitDetail = () => {
     setEndDate(undefined);
     setGuests(1);
     setQuote(null);
+    setIsReservationConfirmed(false);
+  };
+
+  const handleConfirmReservation = async () => {
+    if (!unit || !startDate || !endDate || !quote) return;
+
+    try {
+      const reservation = await createReservation(
+        unit.id,
+        startDate,
+        endDate,
+        guests,
+        quote.totalPrice
+      );
+
+      if (reservation) {
+        setIsReservationConfirmed(true);
+        toast({
+          title: "¡Reserva confirmada!",
+          description: "Hemos registrado tu reserva correctamente.",
+        });
+      }
+    } catch (error) {
+      console.error("Error al confirmar reserva:", error);
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: "No se pudo confirmar la reserva. Por favor, intenta de nuevo.",
+      });
+    }
   };
 
   if (!unit) return null;
@@ -103,52 +134,75 @@ const UnitDetail = () => {
           <UnitInfo unit={unit} />
 
           <div className="bg-secondary/20 p-6 rounded-lg">
-            <h2 className="text-2xl font-display font-bold mb-6">
-              Cotiza tu estadía
-            </h2>
-            <div className="space-y-4">
-              {!showQuote ? (
-                <>
-                  <DateSelector
-                    startDate={startDate}
-                    endDate={endDate}
-                    onStartDateChange={setStartDate}
-                    onEndDateChange={setEndDate}
-                  />
+            {isReservationConfirmed ? (
+              <div className="text-center p-8 space-y-4">
+                <div className="text-6xl mb-4">🎉</div>
+                <h2 className="text-2xl font-display font-bold">¡Reserva confirmada!</h2>
+                <p>
+                  Gracias por tu reserva. Hemos enviado los detalles a tu correo electrónico.
+                </p>
+                <div className="text-sm text-muted-foreground mt-4">
+                  <p>Fechas reservadas:</p>
+                  <p>Entrada: {startDate?.toLocaleDateString()}</p>
+                  <p>Salida: {endDate?.toLocaleDateString()}</p>
+                  <p>Huéspedes: {guests}</p>
+                  <p className="font-semibold mt-2">Total: ${quote?.totalPrice.toLocaleString()}</p>
+                </div>
+                <Button className="mt-6" onClick={handleNewQuote}>
+                  Hacer nueva reserva
+                </Button>
+              </div>
+            ) : (
+              <>
+                <h2 className="text-2xl font-display font-bold mb-6">
+                  Cotiza tu estadía
+                </h2>
+                <div className="space-y-4">
+                  {!showQuote ? (
+                    <>
+                      <DateSelector
+                        startDate={startDate}
+                        endDate={endDate}
+                        onStartDateChange={setStartDate}
+                        onEndDateChange={setEndDate}
+                      />
 
-                  <GuestSelector
-                    maxGuests={unit.max_guests}
-                    guests={guests}
-                    onGuestsChange={setGuests}
-                  />
+                      <GuestSelector
+                        maxGuests={unit.max_guests}
+                        guests={guests}
+                        onGuestsChange={setGuests}
+                      />
 
-                  <Button 
-                    className="w-full" 
-                    size="lg"
-                    onClick={handleReservation}
-                    disabled={!startDate || !endDate}
-                  >
-                    Cotizar estadía
-                  </Button>
-                </>
-              ) : quote && (
-                <>
-                  <ReservationSummary
-                    quote={quote}
-                    isAvailable={isAvailable || false}
-                    isLoading={false}
-                    onReserve={handleNewQuote}
-                    buttonText="Nueva cotización"
-                  />
-                  <div className="text-sm text-muted-foreground mt-4">
-                    <p>Fechas seleccionadas:</p>
-                    <p>Entrada: {startDate?.toLocaleDateString()}</p>
-                    <p>Salida: {endDate?.toLocaleDateString()}</p>
-                    <p>Huéspedes: {guests}</p>
-                  </div>
-                </>
-              )}
-            </div>
+                      <Button 
+                        className="w-full" 
+                        size="lg"
+                        onClick={handleReservation}
+                        disabled={!startDate || !endDate}
+                      >
+                        Cotizar estadía
+                      </Button>
+                    </>
+                  ) : quote && (
+                    <>
+                      <ReservationSummary
+                        quote={quote}
+                        isAvailable={isAvailable || false}
+                        isLoading={false}
+                        onReserve={handleNewQuote}
+                        onConfirm={handleConfirmReservation}
+                        buttonText="Aceptar cotización"
+                      />
+                      <div className="text-sm text-muted-foreground mt-4">
+                        <p>Fechas seleccionadas:</p>
+                        <p>Entrada: {startDate?.toLocaleDateString()}</p>
+                        <p>Salida: {endDate?.toLocaleDateString()}</p>
+                        <p>Huéspedes: {guests}</p>
+                      </div>
+                    </>
+                  )}
+                </div>
+              </>
+            )}
           </div>
         </div>
       </div>
