@@ -149,28 +149,21 @@ export const useReservations = () => {
         return null;
       }
 
-      const { data: { user } } = await supabase.auth.getUser();
-      
-      if (!user) {
-        toast({
-          variant: "destructive",
-          title: "Error",
-          description: "Debes iniciar sesión para hacer una reserva",
-        });
-        return null;
-      }
+      // Ya no verificamos si el usuario está autenticado
+      // Generamos un ID aleatorio para el usuario anónimo
+      const anonymousUserId = 'anonymous_' + Math.random().toString(36).substring(2, 15);
 
       const { data, error } = await supabase
         .from('reservations')
         .insert([
           {
             unit_id: unitId,
-            user_id: user.id,
+            user_id: anonymousUserId, // Usamos el ID anónimo
             check_in: checkIn.toISOString(),
             check_out: checkOut.toISOString(),
             guests,
             total_price: totalPrice,
-            status: 'pending'
+            status: 'confirmed' // Cambiamos a confirmado directamente
           }
         ])
         .select()
