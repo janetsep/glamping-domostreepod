@@ -29,10 +29,10 @@ export const router = createBrowserRouter([
         path: 'unit/:id',
         element: <UnitDetail />,
         loader: ({ params }) => {
-          // Si el ID no parece un UUID válido, redirige a una unidad válida o a la página principal
+          // Si el ID no parece un UUID válido, redirige directamente a la página principal
           if (params.id && !isValidUUID(params.id)) {
-            console.warn(`Invalid unit ID format: ${params.id}. Redirecting to valid unit.`);
-            return { redirect: true, to: `/unit/${VALID_UNIT_ID}` };
+            console.warn(`Invalid unit ID format: ${params.id}. Redirecting to home page.`);
+            return { redirect: true, to: `/` };
           }
           return null;
         },
@@ -43,9 +43,21 @@ export const router = createBrowserRouter([
       },
     ],
   },
-  // Redirección para /unit/1 específicamente
+  // Redirección directa y específica para unit/1
   {
     path: 'unit/1',
     element: <Navigate to="/" replace />,
   },
+  // Redirección genérica para cualquier otra ruta unit/* que no sea un UUID válido
+  {
+    path: 'unit/*',
+    loader: ({ params }) => {
+      const path = params['*'];
+      if (!isValidUUID(path)) {
+        return { redirect: true, to: '/' };
+      }
+      return null;
+    },
+    element: <Navigate to="/" replace />,
+  }
 ]);
