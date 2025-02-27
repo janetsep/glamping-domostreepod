@@ -2,9 +2,13 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 
-const WEBPAY_URL = "https://webpay3gint.transbank.cl/rswebpaytransaction/api/webpay/v1.2/transactions";
-const TBK_API_KEY_ID = "597055555532";
-const TBK_API_KEY_SECRET = "579B532A7440BB0C9079DED94D31EA1615BACEB56610332264630D42D0A36B1C";
+// Credenciales de prueba de WebPay (Ambiente de integración)
+const ENVIRONMENT = "TEST"; // TEST o LIVE
+const COMMERCE_CODE = ENVIRONMENT === "TEST" ? "597055555532" : "YOUR_LIVE_COMMERCE_CODE";
+const API_KEY = ENVIRONMENT === "TEST" ? "579B532A7440BB0C9079DED94D31EA1615BACEB56610332264630D42D0A36B1C" : "YOUR_LIVE_API_KEY";
+const WEBPAY_ENDPOINT = ENVIRONMENT === "TEST" 
+  ? "https://webpay3gint.transbank.cl" 
+  : "https://webpay3g.transbank.cl";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -12,12 +16,14 @@ const corsHeaders = {
 };
 
 serve(async (req) => {
+  // Handle CORS preflight requests
   if (req.method === "OPTIONS") {
-    return new Response("ok", { headers: corsHeaders });
+    return new Response(null, { headers: corsHeaders });
   }
 
   try {
     const { token_ws } = await req.json();
+    console.log(`Confirmando transacción con token: ${token_ws}`);
 
     if (!token_ws) {
       return new Response(
@@ -27,47 +33,65 @@ serve(async (req) => {
     }
 
     // Confirmar la transacción con WebPay
-    const confirmResponse = await fetch(`${WEBPAY_URL}/${token_ws}`, {
+    const confirmResponse = await fetch(`${WEBPAY_ENDPOINT}/rswebpaytransaction/api/webpay/v1.2/transactions/${token_ws}`, {
       method: "PUT",
       headers: {
-        "Tbk-Api-Key-Id": TBK_API_KEY_ID,
-        "Tbk-Api-Key-Secret": TBK_API_KEY_SECRET,
+        "Content-Type": "application/json",
+        "Tbk-Api-Key-Id": COMMERCE_CODE,
+        "Tbk-Api-Key-Secret": API_KEY,
       },
     });
 
+    // Capturar el cuerpo de la respuesta
+    const responseBody = await confirmResponse.text();
+    console.log(`Respuesta de confirmación de WebPay (status ${confirmResponse.status}): ${responseBody}`);
+
     if (!confirmResponse.ok) {
-      const errorText = await confirmResponse.text();
-      console.error("Error al confirmar transacción con WebPay:", errorText);
+      console.error(`Error al confirmar transacción con WebPay: ${responseBody}`);
       return new Response(
-        JSON.stringify({ error: "Error al confirmar transacción con WebPay", details: errorText }),
+        JSON.stringify({ 
+          error: "Error al confirmar transacción con WebPay", 
+          details: responseBody,
+          status: confirmResponse.status
+        }),
         { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
       );
     }
 
-    // Obtener resultado de la transacción
-    const transactionResult = await confirmResponse.json();
+    // Transformar la respuesta de WebPay
+    const transactionResult = JSON.parse(responseBody);
     console.log("Transacción confirmada:", transactionResult);
 
     // Actualizar la reserva en la base de datos
     if (transactionResult.buy_order) {
-      const reservationId = transactionResult.buy_order.replace("BO-", "");
-      
-      // Crear cliente de Supabase
-      const supabaseUrl = Deno.env.get("SUPABASE_URL") || "";
-      const supabaseKey = Deno.env.get("SUPABASE_ANON_KEY") || "";
-      const supabase = createClient(supabaseUrl, supabaseKey);
-      
-      // Actualizar la reserva
-      const { error } = await supabase
-        .from("reservations")
-        .update({
-          status: transactionResult.response_code === 0 ? "confirmed" : "failed",
-          payment_details: transactionResult,
-        })
-        .eq("id", reservationId);
+      try {
+        const reservationId = transactionResult.buy_order.replace("BO-", "");
+        console.log(`Actualizando reserva ${reservationId} con resultado de transacción`);
+        
+        // Crear cliente de Supabase
+        const supabaseUrl = Deno.env.get("SUPABASE_URL") || "";
+        const supabaseKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") || "";
+        
+        if (!supabaseUrl || !supabaseKey) {
+          console.error("Faltan variables de entorno para Supabase");
+        } else {
+          const supabase = createClient(supabaseUrl, supabaseKey);
+          const { error } = await supabase
+            .from("reservations")
+            .update({
+              status: transactionResult.response_code === 0 ? "confirmed" : "failed",
+              payment_details: transactionResult,
+            })
+            .eq("id", reservationId);
 
-      if (error) {
-        console.error("Error al actualizar la reserva:", error);
+          if (error) {
+            console.error("Error al actualizar la reserva:", error);
+          } else {
+            console.log(`Reserva ${reservationId} actualizada correctamente`);
+          }
+        }
+      } catch (updateError) {
+        console.error("Error al procesar la actualización de la reserva:", updateError);
       }
     }
 
@@ -76,9 +100,9 @@ serve(async (req) => {
     });
   } catch (error) {
     console.error("Error en la función webpay-confirm:", error);
-    return new Response(JSON.stringify({ error: error.message }), {
-      status: 500,
-      headers: { ...corsHeaders, "Content-Type": "application/json" },
-    });
+    return new Response(
+      JSON.stringify({ error: error.message || "Error interno del servidor" }),
+      { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+    );
   }
 });
