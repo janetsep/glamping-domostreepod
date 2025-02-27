@@ -149,7 +149,7 @@ const UnitDetail = () => {
         
         if (paymentResult.status === 'success') {
           setIsReservationConfirmed(true);
-          setPaymentDetails(paymentResult.details);
+          setPaymentDetails(paymentResult.details || null);
           
           toast({
             title: "¡Pago exitoso!",

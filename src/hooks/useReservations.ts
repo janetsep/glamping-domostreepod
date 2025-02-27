@@ -260,11 +260,13 @@ export const useReservations = () => {
       // Redirigimos al usuario a la página de pago de WebPay
       window.location.href = transactionData.url;
 
-      // Como estamos redirigiendo, este código no se ejecutará
-      // La respuesta real será manejada en la página de retorno
       return {
         status: 'pending',
-        message: 'Redirigiendo a WebPay Plus'
+        message: 'Redirigiendo a WebPay Plus',
+        details: {
+          token: transactionData.token,
+          url: transactionData.url
+        }
       };
     } catch (error) {
       console.error('Error en el proceso de pago:', error);
@@ -276,7 +278,8 @@ export const useReservations = () => {
       
       return {
         status: 'error',
-        message: error instanceof Error ? error.message : 'Error desconocido en el proceso de pago'
+        message: error instanceof Error ? error.message : 'Error desconocido en el proceso de pago',
+        details: null
       };
     }
   };
