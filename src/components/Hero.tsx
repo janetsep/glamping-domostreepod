@@ -5,6 +5,11 @@ import { useNavigate } from "react-router-dom";
 const Hero = () => {
   const navigate = useNavigate();
 
+  // Usar una ID de unidad que exista en la base de datos
+  const handleReserveClick = () => {
+    navigate('/unit/48a7a330-ebae-4e79-8f53-31a84ac900d9');
+  };
+
   return (
     <section className="pt-24 pb-12">
       <div className="container mx-auto px-4">
@@ -18,7 +23,7 @@ const Hero = () => {
           <Button 
             size="lg" 
             className="bg-accent hover:bg-accent/90"
-            onClick={() => navigate('/unit/1')}
+            onClick={handleReserveClick}
           >
             Reserva tu estadía
           </Button>

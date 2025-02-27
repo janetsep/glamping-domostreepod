@@ -7,6 +7,11 @@ const Navigation = () => {
   const navigate = useNavigate();
   const isMobile = useMobile();
 
+  // Usar una ID de unidad que exista en la base de datos
+  const handleReserveClick = () => {
+    navigate('/unit/48a7a330-ebae-4e79-8f53-31a84ac900d9');
+  };
+
   return (
     <nav className="bg-white py-4 shadow-sm">
       <div className="container mx-auto px-4 flex items-center justify-between">
@@ -42,7 +47,7 @@ const Navigation = () => {
           </Button>
           <Button
             variant={isMobile ? "ghost" : "default"}
-            onClick={() => navigate("/unit/1")}
+            onClick={handleReserveClick}
           >
             Reservar
           </Button>

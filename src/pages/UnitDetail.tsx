@@ -18,34 +18,67 @@ const UnitDetail = () => {
   const [startDate, setStartDate] = useState<Date>();
   const [endDate, setEndDate] = useState<Date>();
   const [guests, setGuests] = useState<number>(1);
-  const { checkAvailability, calculateQuote, createReservation } = useReservations();
+  const { checkAvailability, calculateQuote, createReservation, fetchGlampingUnits } = useReservations();
   const { toast } = useToast();
   const [quote, setQuote] = useState<any>(null);
   const [isAvailable, setIsAvailable] = useState<boolean | null>(null);
   const [showQuote, setShowQuote] = useState(false);
   const [isReservationConfirmed, setIsReservationConfirmed] = useState(false);
+  const [fallbackUnit, setFallbackUnit] = useState<GlampingUnit | null>(null);
 
-  const { data: unit } = useQuery<GlampingUnit>({
+  // Intentar obtener la unidad por ID
+  const { data: unit, isError } = useQuery<GlampingUnit | null>({
     queryKey: ["unit", id],
     queryFn: async () => {
-      const { data } = await supabase
-        .from("glamping_units")
-        .select("*")
-        .eq("id", id)
-        .single();
-      return data;
+      try {
+        console.log("Consultando unidad con ID:", id);
+        const { data, error } = await supabase
+          .from("glamping_units")
+          .select("*")
+          .eq("id", id)
+          .single();
+        
+        if (error) {
+          console.error("Error al obtener unidad:", error);
+          return null;
+        }
+        
+        return data;
+      } catch (error) {
+        console.error("Error en la consulta:", error);
+        return null;
+      }
     },
   });
 
-  const checkAvailabilityAndQuote = async () => {
-    if (!startDate || !endDate || !unit) return;
+  // Si no se encuentra por ID, cargar la primera unidad disponible
+  useEffect(() => {
+    const loadFallbackUnit = async () => {
+      if (isError || (!unit && id)) {
+        console.log("Cargando unidad alternativa...");
+        const units = await fetchGlampingUnits();
+        if (units && units.length > 0) {
+          console.log("Unidad alternativa encontrada:", units[0]);
+          setFallbackUnit(units[0]);
+        }
+      }
+    };
 
-    const available = await checkAvailability(unit.id, startDate, endDate);
+    loadFallbackUnit();
+  }, [id, unit, isError, fetchGlampingUnits]);
+
+  // Usar la unidad directa o la alternativa
+  const displayUnit = unit || fallbackUnit;
+
+  const checkAvailabilityAndQuote = async () => {
+    if (!startDate || !endDate || !displayUnit) return;
+
+    const available = await checkAvailability(displayUnit.id, startDate, endDate);
     setIsAvailable(available);
 
     if (available) {
       const quoteDetails = calculateQuote(
-        unit.price_per_night,
+        displayUnit.price_per_night,
         startDate,
         endDate,
         guests
@@ -92,11 +125,11 @@ const UnitDetail = () => {
   };
 
   const handleConfirmReservation = async () => {
-    if (!unit || !startDate || !endDate || !quote) return;
+    if (!displayUnit || !startDate || !endDate || !quote) return;
 
     try {
       const reservation = await createReservation(
-        unit.id,
+        displayUnit.id,
         startDate,
         endDate,
         guests,
@@ -120,7 +153,16 @@ const UnitDetail = () => {
     }
   };
 
-  if (!unit) return null;
+  // Mostrar un mensaje de carga mientras obtenemos la información de la unidad
+  if (!displayUnit) {
+    return (
+      <div className="min-h-screen bg-white pt-24">
+        <div className="container mx-auto px-4 text-center">
+          <p>Cargando información de la unidad...</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-white pt-24">
@@ -131,7 +173,7 @@ const UnitDetail = () => {
         </Button>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-          <UnitInfo unit={unit} />
+          <UnitInfo unit={displayUnit} />
 
           <div className="bg-secondary/20 p-6 rounded-lg">
             {isReservationConfirmed ? (
@@ -168,7 +210,7 @@ const UnitDetail = () => {
                       />
 
                       <GuestSelector
-                        maxGuests={unit.max_guests}
+                        maxGuests={displayUnit.max_guests}
                         guests={guests}
                         onGuestsChange={setGuests}
                       />
