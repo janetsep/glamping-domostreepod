@@ -1,6 +1,6 @@
 
 import { useState, useEffect } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams, useNavigate, useLoaderData } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { ArrowLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -15,6 +15,7 @@ import { ReservationSummary } from "@/components/unit-detail/ReservationSummary"
 const UnitDetail = () => {
   const { id } = useParams();
   const navigate = useNavigate();
+  const loaderData = useLoaderData() as { redirect?: boolean; to?: string } | null;
   const [startDate, setStartDate] = useState<Date>();
   const [endDate, setEndDate] = useState<Date>();
   const [guests, setGuests] = useState<number>(1);
@@ -27,6 +28,13 @@ const UnitDetail = () => {
   const [fallbackUnit, setFallbackUnit] = useState<GlampingUnit | null>(null);
   const [isProcessingPayment, setIsProcessingPayment] = useState(false);
   const [paymentDetails, setPaymentDetails] = useState<any>(null);
+
+  // Manejar la redirección si el loader lo indica
+  useEffect(() => {
+    if (loaderData?.redirect && loaderData.to) {
+      navigate(loaderData.to, { replace: true });
+    }
+  }, [loaderData, navigate]);
 
   // Intentar obtener la unidad por ID
   const { data: unit, isError } = useQuery<GlampingUnit | null>({
@@ -195,89 +203,98 @@ const UnitDetail = () => {
         </Button>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-          <UnitInfo unit={displayUnit} />
+          {displayUnit ? (
+            <>
+              <UnitInfo unit={displayUnit} />
 
-          <div className="bg-secondary/20 p-6 rounded-lg">
-            {isReservationConfirmed ? (
-              <div className="text-center p-8 space-y-4">
-                <div className="text-6xl mb-4">🎉</div>
-                <h2 className="text-2xl font-display font-bold">¡Reserva confirmada!</h2>
-                <p>
-                  Gracias por tu reserva. Hemos enviado los detalles a tu correo electrónico.
-                </p>
-                <div className="text-sm text-muted-foreground mt-4 space-y-2">
-                  <p>Fechas reservadas:</p>
-                  <p>Entrada: {startDate?.toLocaleDateString()}</p>
-                  <p>Salida: {endDate?.toLocaleDateString()}</p>
-                  <p>Huéspedes: {guests}</p>
-                  <p className="font-semibold mt-2">Total: ${quote?.totalPrice.toLocaleString()}</p>
-                  
-                  {paymentDetails && (
-                    <div className="mt-4 pt-4 border-t text-left">
-                      <p className="font-semibold mb-2">Detalles del pago:</p>
-                      <p>Método: WebPay Plus</p>
-                      <p>Tarjeta: {paymentDetails.card_detail?.card_number}</p>
-                      <p>Código de autorización: {paymentDetails.authorization_code}</p>
-                      <p>Estado: {paymentDetails.status}</p>
+              <div className="bg-secondary/20 p-6 rounded-lg">
+                {isReservationConfirmed ? (
+                  <div className="text-center p-8 space-y-4">
+                    <div className="text-6xl mb-4">🎉</div>
+                    <h2 className="text-2xl font-display font-bold">¡Reserva confirmada!</h2>
+                    <p>
+                      Gracias por tu reserva. Hemos enviado los detalles a tu correo electrónico.
+                    </p>
+                    <div className="text-sm text-muted-foreground mt-4 space-y-2">
+                      <p>Fechas reservadas:</p>
+                      <p>Entrada: {startDate?.toLocaleDateString()}</p>
+                      <p>Salida: {endDate?.toLocaleDateString()}</p>
+                      <p>Huéspedes: {guests}</p>
+                      <p className="font-semibold mt-2">Total: ${quote?.totalPrice.toLocaleString()}</p>
+                      
+                      {paymentDetails && (
+                        <div className="mt-4 pt-4 border-t text-left">
+                          <p className="font-semibold mb-2">Detalles del pago:</p>
+                          <p>Método: WebPay Plus</p>
+                          <p>Tarjeta: {paymentDetails.card_detail?.card_number}</p>
+                          <p>Código de autorización: {paymentDetails.authorization_code}</p>
+                          <p>Estado: {paymentDetails.status}</p>
+                        </div>
+                      )}
                     </div>
-                  )}
-                </div>
-                <Button className="mt-6" onClick={handleNewQuote}>
-                  Hacer nueva reserva
-                </Button>
+                    <Button className="mt-6" onClick={handleNewQuote}>
+                      Hacer nueva reserva
+                    </Button>
+                  </div>
+                ) : (
+                  <>
+                    <h2 className="text-2xl font-display font-bold mb-6">
+                      Cotiza tu estadía
+                    </h2>
+                    <div className="space-y-4">
+                      {!showQuote ? (
+                        <>
+                          <DateSelector
+                            startDate={startDate}
+                            endDate={endDate}
+                            onStartDateChange={setStartDate}
+                            onEndDateChange={setEndDate}
+                          />
+
+                          <GuestSelector
+                            maxGuests={displayUnit.max_guests}
+                            guests={guests}
+                            onGuestsChange={setGuests}
+                          />
+
+                          <Button 
+                            className="w-full" 
+                            size="lg"
+                            onClick={handleReservation}
+                            disabled={!startDate || !endDate}
+                          >
+                            Cotizar estadía
+                          </Button>
+                        </>
+                      ) : quote && (
+                        <>
+                          <ReservationSummary
+                            quote={quote}
+                            isAvailable={isAvailable || false}
+                            isLoading={isProcessingPayment}
+                            onReserve={handleNewQuote}
+                            onConfirm={handleConfirmReservation}
+                            buttonText="Aceptar cotización"
+                          />
+                          <div className="text-sm text-muted-foreground mt-4">
+                            <p>Fechas seleccionadas:</p>
+                            <p>Entrada: {startDate?.toLocaleDateString()}</p>
+                            <p>Salida: {endDate?.toLocaleDateString()}</p>
+                            <p>Huéspedes: {guests}</p>
+                          </div>
+                        </>
+                      )}
+                    </div>
+                  </>
+                )}
               </div>
-            ) : (
-              <>
-                <h2 className="text-2xl font-display font-bold mb-6">
-                  Cotiza tu estadía
-                </h2>
-                <div className="space-y-4">
-                  {!showQuote ? (
-                    <>
-                      <DateSelector
-                        startDate={startDate}
-                        endDate={endDate}
-                        onStartDateChange={setStartDate}
-                        onEndDateChange={setEndDate}
-                      />
-
-                      <GuestSelector
-                        maxGuests={displayUnit.max_guests}
-                        guests={guests}
-                        onGuestsChange={setGuests}
-                      />
-
-                      <Button 
-                        className="w-full" 
-                        size="lg"
-                        onClick={handleReservation}
-                        disabled={!startDate || !endDate}
-                      >
-                        Cotizar estadía
-                      </Button>
-                    </>
-                  ) : quote && (
-                    <>
-                      <ReservationSummary
-                        quote={quote}
-                        isAvailable={isAvailable || false}
-                        isLoading={isProcessingPayment}
-                        onReserve={handleNewQuote}
-                        onConfirm={handleConfirmReservation}
-                        buttonText="Aceptar cotización"
-                      />
-                      <div className="text-sm text-muted-foreground mt-4">
-                        <p>Fechas seleccionadas:</p>
-                        <p>Entrada: {startDate?.toLocaleDateString()}</p>
-                        <p>Salida: {endDate?.toLocaleDateString()}</p>
-                        <p>Huéspedes: {guests}</p>
-                      </div>
-                    </>
-                  )}
-                </div>
-              </>
-            )}
-          </div>
+            </>
+          ) : (
+            <div className="col-span-2 text-center py-12">
+              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto mb-4"></div>
+              <p>Cargando información de la unidad...</p>
+            </div>
+          )}
         </div>
       </div>
     </div>
