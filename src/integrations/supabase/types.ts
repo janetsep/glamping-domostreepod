@@ -43,6 +43,8 @@ export type Database = {
           created_at: string
           guests: number
           id: string
+          payment_details: Json | null
+          payment_method: string | null
           status: string
           total_price: number
           unit_id: string
@@ -54,6 +56,8 @@ export type Database = {
           created_at?: string
           guests: number
           id?: string
+          payment_details?: Json | null
+          payment_method?: string | null
           status: string
           total_price: number
           unit_id: string
@@ -65,6 +69,8 @@ export type Database = {
           created_at?: string
           guests?: number
           id?: string
+          payment_details?: Json | null
+          payment_method?: string | null
           status?: string
           total_price?: number
           unit_id?: string
