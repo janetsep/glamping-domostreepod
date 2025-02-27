@@ -19,7 +19,7 @@ const queryClient = new QueryClient({
   },
 });
 
-const router = createBrowserRouter([
+export const router = createBrowserRouter([
   {
     path: "/",
     element: <Index />,
