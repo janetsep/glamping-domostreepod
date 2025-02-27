@@ -1,4 +1,3 @@
-
 import { useState, useCallback } from 'react';
 import { supabase, type Reservation, type GlampingUnit } from '@/lib/supabase';
 
@@ -216,88 +215,63 @@ export const useReservations = () => {
     }
   };
 
-  // Esta función simula la integración con WebPay Plus según el repositorio de ejemplo
   const redirectToWebpay = async (reservationId: string, amount: number) => {
     console.log(`Iniciando proceso WebPay para la reserva ${reservationId} por $${amount}`);
     
     try {
-      // En un entorno de producción, esto sería una llamada a un endpoint en el backend
-      // que integraría con el SDK de Transbank WebPay
-      
-      // Simulamos la creación de una transacción según el ejemplo del repositorio
-      // Basado en https://github.com/TransbankDevelopers/transbank-sdk-nodejs-webpay-rest-example
-      
-      // Simular respuesta de creación de transacción
-      const simulatedResponse = {
-        token: `webpay-plus-sample-${Date.now()}`,
-        url: 'https://webpay3gint.transbank.cl/webpayserver/initTransaction'
-      };
-      
-      toast({
-        title: "Conectando con WebPay Plus",
-        description: `Preparando transacción de $${amount.toLocaleString()}`,
-      });
-      
-      // Simulamos un pequeño delay como si estuviéramos haciendo la petición real
-      await new Promise(resolve => setTimeout(resolve, 1500));
-      
-      // En una implementación real, aquí se redireccionaría al usuario a la URL de WebPay
-      // usando window.location.href = simulatedResponse.url;
-      // Para nuestra simulación, vamos a mostrar un mensaje y simular el retorno exitoso
-      
-      toast({
-        title: "Simulación WebPay",
-        description: "En un entorno real, serías redirigido a la página de pago de WebPay",
-      });
-      
-      // Simulamos otro delay como si el usuario estuviera completando el pago
-      await new Promise(resolve => setTimeout(resolve, 2000));
-      
-      // Simulamos la respuesta exitosa
-      const successResponse = {
-        vci: "TSY",
-        amount,
-        status: "AUTHORIZED",
-        buy_order: `BO-${reservationId}`,
-        session_id: `session-${Date.now()}`,
-        card_detail: {
-          card_number: "XXXX-XXXX-XXXX-6623"
+      // Iniciamos la transacción en el ambiente de integración de WebPay Plus
+      const initResponse = await fetch('https://webpay3gint.transbank.cl/rswebpaytransaction/api/webpay/v1.2/transactions', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Tbk-Api-Key-Id': '597055555532',  // Credenciales de prueba de WebPay
+          'Tbk-Api-Key-Secret': '579B532A7440BB0C9079DED94D31EA1615BACEB56610332264630D42D0A36B1C'
         },
-        accounting_date: new Date().toISOString().split('T')[0],
-        transaction_date: new Date().toISOString(),
-        authorization_code: "1213",
-        payment_type_code: "VN",
-        response_code: 0,
-        installments_number: 0
-      };
-      
-      // Actualizar el estado de la reserva a confirmada
-      const { error } = await supabase
-        .from('reservations')
-        .update({ status: 'confirmed', payment_details: successResponse })
-        .eq('id', reservationId);
-        
-      if (error) {
-        console.error('Error al actualizar reserva:', error);
-        throw new Error('Error al confirmar la reserva después del pago');
-      }
-      
-      toast({
-        title: "Pago procesado con éxito",
-        description: `Transacción completada. Código de autorización: ${successResponse.authorization_code}`,
+        body: JSON.stringify({
+          buy_order: `BO-${reservationId}`,
+          session_id: `session-${Date.now()}`,
+          amount: amount,
+          return_url: `${window.location.origin}/webpay/return`
+        })
       });
-      
+
+      if (!initResponse.ok) {
+        throw new Error('Error al iniciar transacción con WebPay');
+      }
+
+      const transactionData = await initResponse.json();
+      console.log('Transacción iniciada:', transactionData);
+
+      // Guardamos el token en la reserva
+      const { error: updateError } = await supabase
+        .from('reservations')
+        .update({ 
+          payment_details: { 
+            token: transactionData.token,
+            transaction_initiation: new Date().toISOString()
+          }
+        })
+        .eq('id', reservationId);
+
+      if (updateError) {
+        console.error('Error al actualizar reserva con token:', updateError);
+      }
+
+      // Redirigimos al usuario a la página de pago de WebPay
+      window.location.href = transactionData.url;
+
+      // Como estamos redirigiendo, este código no se ejecutará
+      // La respuesta real será manejada en la página de retorno
       return {
-        status: 'success',
-        transactionId: successResponse.authorization_code,
-        details: successResponse
+        status: 'pending',
+        message: 'Redirigiendo a WebPay Plus'
       };
     } catch (error) {
       console.error('Error en el proceso de pago:', error);
       toast({
         variant: "destructive",
         title: "Error en el pago",
-        description: "No se pudo completar el proceso de pago. Por favor, intenta nuevamente.",
+        description: "No se pudo iniciar el proceso de pago. Por favor, intenta nuevamente.",
       });
       
       return {
