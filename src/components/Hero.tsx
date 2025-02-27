@@ -10,10 +10,10 @@ const Hero = () => {
       <div className="container mx-auto px-4">
         <div className="max-w-3xl mx-auto text-center animate-fadeIn">
           <h2 className="text-5xl font-display font-bold text-primary mb-6">
-            Vive la naturaleza con todo el confort
+            Domos Treepod: Vive la naturaleza con todo el confort
           </h2>
           <p className="text-lg text-gray-600 mb-8">
-            Experimenta el lujo de la naturaleza en nuestro exclusivo glamping
+            Experimenta el lujo de la naturaleza en nuestro exclusivo glamping de domos geodésicos
           </p>
           <Button 
             size="lg" 

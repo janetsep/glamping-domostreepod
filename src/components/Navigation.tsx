@@ -1,44 +1,51 @@
-import { useState, useEffect } from "react";
-import { Link, useNavigate } from "react-router-dom";
+
 import { Button } from "@/components/ui/button";
-import { supabase } from "@/lib/supabase";
+import { useNavigate } from "react-router-dom";
+import { useMobile } from "@/hooks/use-mobile";
 
 const Navigation = () => {
-  const [user, setUser] = useState<any>(null);
   const navigate = useNavigate();
-
-  useEffect(() => {
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
-      setUser(session?.user || null);
-    });
-
-    return () => subscription.unsubscribe();
-  }, []);
-
-  const handleLogout = async () => {
-    await supabase.auth.signOut();
-    navigate("/");
-  };
+  const isMobile = useMobile();
 
   return (
-    <nav className="fixed w-full bg-white/80 backdrop-blur-md z-50 py-4 border-b">
-      <div className="container mx-auto px-4">
-        <div className="flex justify-between items-center">
-          <Link to="/" className="text-xl font-semibold text-primary">
-            Glamping
-          </Link>
-          <div className="flex items-center gap-4">
-            {user ? (
-              <>
-                <span className="text-sm text-gray-600">{user.email}</span>
-                <Button variant="outline" onClick={handleLogout}>
-                  Cerrar sesión
-                </Button>
-              </>
-            ) : (
-              <Button onClick={() => navigate("/auth")}>Iniciar sesión</Button>
-            )}
-          </div>
+    <nav className="bg-white py-4 shadow-sm">
+      <div className="container mx-auto px-4 flex items-center justify-between">
+        <div className="flex items-center">
+          <img 
+            src="/lovable-uploads/21690294-058b-4ab7-9d01-fcf2bd94b8b3.png" 
+            alt="Domos Treepod" 
+            className="h-16 mr-2"
+          />
+        </div>
+
+        <div className="flex gap-4">
+          <Button
+            variant="ghost"
+            onClick={() => navigate("/")}
+            className="hidden md:inline-flex"
+          >
+            Inicio
+          </Button>
+          <Button
+            variant="ghost"
+            onClick={() => navigate("/units")}
+            className="hidden md:inline-flex"
+          >
+            Unidades
+          </Button>
+          <Button
+            variant="ghost"
+            onClick={() => navigate("/about")}
+            className="hidden md:inline-flex"
+          >
+            Nosotros
+          </Button>
+          <Button
+            variant={isMobile ? "ghost" : "default"}
+            onClick={() => navigate("/reservations")}
+          >
+            Reservar
+          </Button>
         </div>
       </div>
     </nav>
