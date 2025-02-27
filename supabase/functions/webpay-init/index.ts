@@ -23,25 +23,31 @@ serve(async (req) => {
 
   try {
     const { reservationId, amount, origin } = await req.json();
-    console.log(`Iniciando transacción para reserva ${reservationId}, monto: ${amount}, origen: ${origin}`);
+    console.log(`Iniciando transacción WebPay para reserva ${reservationId} por $${amount} desde ${origin}`);
 
     if (!reservationId || !amount || !origin) {
+      console.error("Faltan parámetros necesarios:", { reservationId, amount, origin });
       return new Response(
-        JSON.stringify({ error: "Faltan parámetros requeridos (reservationId, amount, origin)" }),
+        JSON.stringify({ error: "Faltan parámetros obligatorios (reservationId, amount, origin)" }),
         { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
       );
     }
 
-    // Formatear los valores correctamente
-    const formattedAmount = Math.round(amount); // WebPay requiere un número entero
-    const buyOrder = `BO-${reservationId}`;
+    // Formato correcto para el buy_order según Transbank
+    // Debe ser alfanumérico de máximo 26 caracteres, sin espacios ni caracteres especiales
+    const buyOrder = `BO${reservationId.replace(/-/g, '').substring(0, 24)}`;
     const sessionId = `session-${Date.now()}`;
     const returnUrl = `${origin}/webpay/return`;
 
-    console.log(`Datos formateados: buyOrder=${buyOrder}, sessionId=${sessionId}, amount=${formattedAmount}, returnUrl=${returnUrl}`);
+    console.log("Parámetros de inicio de transacción:", {
+      buy_order: buyOrder,
+      session_id: sessionId,
+      amount,
+      return_url: returnUrl
+    });
 
-    // Iniciar transacción con WebPay usando la API REST
-    const initResponse = await fetch(`${WEBPAY_ENDPOINT}/rswebpaytransaction/api/webpay/v1.2/transactions`, {
+    // Iniciar transacción en WebPay
+    const response = await fetch(`${WEBPAY_ENDPOINT}/rswebpaytransaction/api/webpay/v1.2/transactions`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -51,58 +57,52 @@ serve(async (req) => {
       body: JSON.stringify({
         buy_order: buyOrder,
         session_id: sessionId,
-        amount: formattedAmount,
+        amount: amount,
         return_url: returnUrl,
       }),
     });
 
-    // Capturar el cuerpo de la respuesta
-    const responseBody = await initResponse.text();
-    console.log(`Respuesta de WebPay (status ${initResponse.status}): ${responseBody}`);
+    const responseBody = await response.text();
+    console.log(`Respuesta de WebPay (status ${response.status}): ${responseBody}`);
 
-    // Verificar si la respuesta es exitosa
-    if (!initResponse.ok) {
-      console.error(`Error al iniciar transacción con WebPay: ${responseBody}`);
+    if (!response.ok) {
+      console.error(`Error al iniciar transacción: ${responseBody}`);
       return new Response(
-        JSON.stringify({ 
-          error: "Error al iniciar transacción con WebPay", 
-          details: responseBody,
-          status: initResponse.status
-        }),
-        { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+        JSON.stringify({ error: "Error al iniciar transacción con WebPay", details: responseBody, status: response.status }),
+        { status: response.status, headers: { ...corsHeaders, "Content-Type": "application/json" } }
       );
     }
 
-    // Transformar la respuesta de WebPay
     const transactionData = JSON.parse(responseBody);
     console.log("Transacción iniciada con éxito:", transactionData);
 
-    // Actualizar la reserva con el token de la transacción
+    // Actualizar la reserva con los datos de inicio de transacción
     try {
-      // Crear cliente de Supabase
       const supabaseUrl = Deno.env.get("SUPABASE_URL") || "";
       const supabaseKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") || "";
       
-      if (!supabaseUrl || !supabaseKey) {
-        console.error("Faltan variables de entorno para Supabase");
-      } else {
+      if (supabaseUrl && supabaseKey) {
         const supabase = createClient(supabaseUrl, supabaseKey);
         const { error } = await supabase
           .from("reservations")
-          .update({ 
+          .update({
             payment_details: { 
-              token: transactionData.token,
+              ...transactionData,
+              buy_order: buyOrder,
+              session_id: sessionId,
               transaction_initiation: new Date().toISOString()
             }
           })
           .eq("id", reservationId);
 
         if (error) {
-          console.error("Error al actualizar la reserva:", error);
+          console.error("Error al actualizar la reserva con datos de inicio de transacción:", error);
+        } else {
+          console.log(`Reserva ${reservationId} actualizada con datos de transacción`);
         }
       }
     } catch (error) {
-      console.error("Error al actualizar la reserva en Supabase:", error);
+      console.error("Error al actualizar la reserva:", error);
     }
 
     return new Response(JSON.stringify(transactionData), {
