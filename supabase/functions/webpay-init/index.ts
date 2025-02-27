@@ -33,13 +33,13 @@ serve(async (req) => {
       );
     }
 
-    // Formato correcto para el buy_order según Transbank
-    // Para evitar problemas, usamos un formato simplificado que cumple con las reglas de Transbank:
-    // - Máximo 26 caracteres
-    // - Solo alfanuméricos (sin guiones, espacios ni caracteres especiales)
-    const buyOrder = `BO${reservationId.replace(/[^a-zA-Z0-9]/g, '')}`.substring(0, 26);
-    const sessionId = `session${Date.now()}`;
-    const returnUrl = `${origin}/webpay/return`;
+    // Generamos un número de orden único y simple (solo números y letras)
+    // Transbank requiere un buy_order alfanumérico sin caracteres especiales
+    const buyOrder = `R${Date.now()}`;
+    const sessionId = `S${Date.now()}`;
+    
+    // La URL de retorno debe ser /webpay/return (no incluyas origin/)
+    const returnUrl = `${origin.endsWith("/") ? origin.slice(0, -1) : origin}/webpay/return`;
 
     console.log("Parámetros de inicio de transacción:", {
       buy_order: buyOrder,
@@ -75,7 +75,17 @@ serve(async (req) => {
       );
     }
 
-    const transactionData = JSON.parse(responseBody);
+    let transactionData;
+    try {
+      transactionData = JSON.parse(responseBody);
+    } catch (e) {
+      console.error("Error al parsear respuesta JSON de WebPay:", e);
+      return new Response(
+        JSON.stringify({ error: "Error al procesar respuesta de WebPay", details: responseBody }),
+        { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
+    }
+    
     console.log("Transacción iniciada con éxito:", transactionData);
 
     // Actualizar la reserva con los datos de inicio de transacción
@@ -89,7 +99,8 @@ serve(async (req) => {
           .from("reservations")
           .update({
             payment_details: { 
-              ...transactionData,
+              token: transactionData.token,
+              url: transactionData.url,
               buy_order: buyOrder,
               session_id: sessionId,
               transaction_initiation: new Date().toISOString()

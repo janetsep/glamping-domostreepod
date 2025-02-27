@@ -22,6 +22,7 @@ serve(async (req) => {
   }
 
   try {
+    console.log("Recibida solicitud de confirmación WebPay");
     const { token_ws } = await req.json();
     console.log(`Confirmando transacción con token: ${token_ws}`);
 
@@ -59,23 +60,23 @@ serve(async (req) => {
     }
 
     // Transformar la respuesta de WebPay
-    const transactionResult = JSON.parse(responseBody);
+    let transactionResult;
+    try {
+      transactionResult = JSON.parse(responseBody);
+    } catch (e) {
+      console.error("Error al parsear respuesta JSON de WebPay:", e);
+      return new Response(
+        JSON.stringify({ error: "Error al procesar respuesta de WebPay", details: responseBody }),
+        { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
+    }
+    
     console.log("Transacción confirmada:", transactionResult);
 
-    // Extraer el ID de reserva del buy_order
-    // El formato buy_order ahora es "BO" seguido del ID de reserva sin caracteres especiales
-    // Necesitamos recuperar el ID original de la BD
+    // Buscar la reserva por buy_order
     try {
       const buyOrder = transactionResult.buy_order;
       console.log(`Buy order recibido: ${buyOrder}`);
-      
-      if (!buyOrder || !buyOrder.startsWith("BO")) {
-        console.error("Formato de buy_order inválido:", buyOrder);
-        return new Response(
-          JSON.stringify({ error: "Formato de buy_order inválido", buy_order: buyOrder }),
-          { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
-        );
-      }
       
       // Crear cliente de Supabase
       const supabaseUrl = Deno.env.get("SUPABASE_URL") || "";
@@ -91,35 +92,40 @@ serve(async (req) => {
       
       const supabase = createClient(supabaseUrl, supabaseKey);
       
-      // Buscar la reserva que tiene este buy_order en sus payment_details
-      const { data: reservations, error: searchError } = await supabase
+      // Buscar todas las reservas pendientes
+      const { data: pendingReservations, error: fetchError } = await supabase
         .from("reservations")
         .select("id, payment_details")
         .eq("status", "pending");
-      
-      if (searchError) {
-        console.error("Error al buscar la reserva:", searchError);
+        
+      if (fetchError) {
+        console.error("Error al buscar reservas pendientes:", fetchError);
         return new Response(
-          JSON.stringify({ error: "Error al buscar la reserva", details: searchError }),
+          JSON.stringify({ error: "Error al buscar reservas", details: fetchError }),
           { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
         );
       }
       
-      // Encontrar la reserva que coincide con el buy_order
-      const reservation = reservations.find(r => 
-        r.payment_details && r.payment_details.buy_order === buyOrder
-      );
+      console.log(`Encontradas ${pendingReservations.length} reservas pendientes`);
       
-      if (!reservation) {
+      // Encontrar la reserva correspondiente
+      let reservationId = null;
+      for (const reservation of pendingReservations) {
+        if (reservation.payment_details && reservation.payment_details.buy_order === buyOrder) {
+          reservationId = reservation.id;
+          break;
+        }
+      }
+      
+      if (!reservationId) {
         console.error("No se encontró reserva con buy_order:", buyOrder);
-        console.log("Reservas pendientes:", reservations);
+        // Devolvemos el resultado de la transacción sin actualizar la BD
         return new Response(
-          JSON.stringify({ error: "No se encontró la reserva asociada a esta transacción" }),
-          { status: 404, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+          JSON.stringify(transactionResult),
+          { headers: { ...corsHeaders, "Content-Type": "application/json" } }
         );
       }
       
-      const reservationId = reservation.id;
       console.log(`Reserva encontrada con ID: ${reservationId}`);
       
       // Actualizar la reserva
@@ -128,7 +134,6 @@ serve(async (req) => {
         .update({
           status: transactionResult.response_code === 0 ? "confirmed" : "failed",
           payment_details: {
-            ...reservation.payment_details,
             ...transactionResult,
             confirmation_timestamp: new Date().toISOString()
           },
@@ -137,23 +142,15 @@ serve(async (req) => {
 
       if (updateError) {
         console.error("Error al actualizar la reserva:", updateError);
-        return new Response(
-          JSON.stringify({ error: "Error al actualizar la reserva", details: updateError }),
-          { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
-        );
+      } else {
+        console.log(`Reserva ${reservationId} actualizada correctamente`);
       }
-      
-      console.log(`Reserva ${reservationId} actualizada correctamente`);
       
       // Añadir el ID de reserva al resultado
       transactionResult.reservation_id = reservationId;
       
     } catch (processError) {
       console.error("Error al procesar la confirmación:", processError);
-      return new Response(
-        JSON.stringify({ error: "Error al procesar la confirmación de pago", details: processError.message }),
-        { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
-      );
     }
 
     return new Response(JSON.stringify(transactionResult), {
