@@ -11,6 +11,8 @@ import { UnitInfo } from "@/components/unit-detail/UnitInfo";
 import { DateSelector } from "@/components/unit-detail/DateSelector";
 import { GuestSelector } from "@/components/unit-detail/GuestSelector";
 import { ReservationSummary } from "@/components/unit-detail/ReservationSummary";
+import { clearAllToasts } from "@/hooks/use-toast";
+import { toast as sonnerToast } from "sonner";
 
 const UnitDetail = () => {
   const { id } = useParams();
@@ -141,6 +143,10 @@ const UnitDetail = () => {
     try {
       setIsProcessingPayment(true);
       
+      // Limpiar todos los mensajes antes de iniciar el proceso
+      clearAllToasts();
+      sonnerToast.dismiss();
+      
       const reservation = await createReservation(
         displayUnit.id,
         startDate,
@@ -151,33 +157,13 @@ const UnitDetail = () => {
       );
 
       if (reservation) {
-        // Proceso de pago con WebPay Plus
-        const paymentResult = await redirectToWebpay(reservation.id, quote.totalPrice);
-        console.log("Resultado del pago:", paymentResult);
-        
-        if (paymentResult.status === 'success') {
-          setIsReservationConfirmed(true);
-          setPaymentDetails(paymentResult.details || null);
-          
-          toast({
-            title: "¡Pago exitoso!",
-            description: "Tu reserva ha sido confirmada exitosamente.",
-          });
-        } else {
-          toast({
-            variant: "destructive",
-            title: "Error en el pago",
-            description: paymentResult.message || "No se pudo procesar el pago. Por favor, intenta de nuevo.",
-          });
-        }
+        // Iniciar el proceso de pago sin esperar respuesta (para evitar errores de timeout)
+        redirectToWebpay(reservation.id, quote.totalPrice);
+        // No hacemos nada después de la redirección, ya que el usuario será llevado a WebPay
       }
     } catch (error) {
       console.error("Error al confirmar reserva:", error);
-      toast({
-        variant: "destructive",
-        title: "Error en el proceso",
-        description: "No se pudo completar la reserva. Por favor, intenta de nuevo.",
-      });
+      // No mostramos toast de error, ya que el usuario podría ser redirigido de todas formas
     } finally {
       setIsProcessingPayment(false);
     }

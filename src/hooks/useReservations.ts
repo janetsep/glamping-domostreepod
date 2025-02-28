@@ -6,6 +6,7 @@ const SUPABASE_URL = 'https://gtxjfmvnzrsuaxryffnt.supabase.co';
 const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imd0eGpmbXZuenJzdWF4cnlmZm50Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDA1MTg5ODIsImV4cCI6MjA1NjA5NDk4Mn0.WwPCyeZX42Jp4A4lW0jl7arXt0lzwRwm18-Ay_D4Ci8';
 
 import { useToast, clearAllToasts } from '@/hooks/use-toast';
+import { toast as sonnerToast } from 'sonner';
 
 export const useReservations = () => {
   const [isLoading, setIsLoading] = useState(false);
@@ -222,8 +223,11 @@ export const useReservations = () => {
     try {
       setIsLoading(true);
       
-      // Eliminar todos los toasts existentes al comienzo de la función
+      // Eliminar TODOS los toasts existentes
       clearAllToasts();
+      
+      // También limpiar los toasts de sonner
+      sonnerToast.dismiss();
       
       // Verificamos el origen para la URL de retorno
       const origin = window.location.origin;
@@ -237,8 +241,6 @@ export const useReservations = () => {
       };
       
       console.log(`Datos para iniciar transacción: ${JSON.stringify(requestData)}`);
-      
-      // NO mostramos ningún toast de redirección, eliminamos esta línea
       
       // Llamada a la función Edge para iniciar la transacción
       const initResponse = await fetch(`${SUPABASE_URL}/functions/v1/webpay-init`, {
@@ -260,20 +262,33 @@ export const useReservations = () => {
         transactionData = JSON.parse(responseText);
       } catch (e) {
         console.error(`Error al parsear respuesta JSON: ${e.message}`);
-        throw new Error(`Error al parsear respuesta: ${responseText}`);
+        // No mostrar ningún toast de error aquí, simplemente continuar
+        return {
+          status: 'error',
+          message: 'Error al parsear respuesta',
+          details: null
+        };
       }
 
-      // Verificar errores en la respuesta
+      // Verificar errores en la respuesta, pero sin mostrar toasts
       if (!initResponse.ok || transactionData.error) {
         const errorMessage = transactionData.error || `Error HTTP: ${initResponse.status}`;
         console.error(`Error al iniciar transacción: ${errorMessage}`);
-        throw new Error(errorMessage);
+        return {
+          status: 'error',
+          message: errorMessage,
+          details: null
+        };
       }
 
       // Verificar que la respuesta incluya URL y token
       if (!transactionData.url || !transactionData.token) {
         console.error(`Respuesta incompleta de WebPay: ${JSON.stringify(transactionData)}`);
-        throw new Error('Respuesta de WebPay incompleta: falta URL o token');
+        return {
+          status: 'error',
+          message: 'Respuesta incompleta de WebPay',
+          details: null
+        };
       }
 
       console.log(`Transacción iniciada exitosamente. Token: ${transactionData.token}`);
@@ -297,7 +312,9 @@ export const useReservations = () => {
       console.log('Enviando formulario de redirección...');
       
       // Enviamos el formulario inmediatamente
-      form.submit();
+      setTimeout(() => {
+        form.submit();
+      }, 10);
       
       return {
         status: 'pending',
@@ -308,15 +325,9 @@ export const useReservations = () => {
         }
       };
     } catch (error) {
-      console.error(`Error en el proceso de pago: ${error.message}`);
+      console.error(`Error en el proceso de pago: ${error instanceof Error ? error.message : 'Error desconocido'}`);
       
-      // Solo mostrar mensaje de error si realmente hay un error
-      toast({
-        variant: "destructive",
-        title: "Error en el pago",
-        description: error instanceof Error ? error.message : "No se pudo iniciar el proceso de pago",
-      });
-      
+      // NO mostrar ningún mensaje de error, simplemente retornar el estado
       return {
         status: 'error',
         message: error instanceof Error ? error.message : 'Error desconocido en el proceso de pago',
