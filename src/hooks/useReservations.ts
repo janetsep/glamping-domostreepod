@@ -234,19 +234,28 @@ export const useReservations = () => {
         })
       });
 
+      const responseText = await initResponse.text();
+      console.log(`Respuesta de webpay-init (texto): ${responseText}`);
+
       if (!initResponse.ok) {
-        const errorText = await initResponse.text();
-        console.error('Error al iniciar transacción:', errorText);
+        console.error('Error al iniciar transacción:', responseText);
         
         try {
-          const errorData = JSON.parse(errorText);
+          const errorData = JSON.parse(responseText);
           throw new Error(errorData.error || 'Error al iniciar la transacción con WebPay');
         } catch (parseError) {
-          throw new Error(`Error al iniciar la transacción con WebPay: ${errorText}`);
+          throw new Error(`Error al iniciar la transacción con WebPay: ${responseText}`);
         }
       }
 
-      const transactionData = await initResponse.json();
+      let transactionData;
+      try {
+        transactionData = JSON.parse(responseText);
+      } catch (e) {
+        console.error('Error al parsear respuesta JSON:', e);
+        throw new Error(`Error al parsear respuesta: ${responseText}`);
+      }
+
       console.log('Transacción iniciada:', transactionData);
 
       // Guardamos el token en la reserva
@@ -263,6 +272,13 @@ export const useReservations = () => {
       if (updateError) {
         console.error('Error al actualizar reserva con token:', updateError);
       }
+
+      // Verificamos que la URL y el token existan
+      if (!transactionData.url || !transactionData.token) {
+        throw new Error('Respuesta de WebPay incompleta: falta URL o token');
+      }
+
+      console.log(`Redirigiendo a: ${transactionData.url}`);
 
       // Redirigimos al usuario a la página de pago de WebPay
       window.location.href = transactionData.url;

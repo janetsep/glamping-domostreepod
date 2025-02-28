@@ -16,5 +16,7 @@ api_url = "http://localhost"
 
 [functions]
 [functions.webpay-init]
+verify_jwt = false
 
 [functions.webpay-confirm]
+verify_jwt = false
