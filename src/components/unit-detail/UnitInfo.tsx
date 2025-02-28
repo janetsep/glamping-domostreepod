@@ -7,6 +7,9 @@ interface UnitInfoProps {
 }
 
 export const UnitInfo = ({ unit }: UnitInfoProps) => {
+  // Imagen interior del domo para 2 personas
+  const interiorImage = "/lovable-uploads/f0a226af-4b5a-47f8-9a16-71ebc00d5039.png";
+
   // Determinar las características específicas basadas en el nombre del domo
   const getFeatures = (unitName: string) => {
     const baseFeatures = [
@@ -41,6 +44,16 @@ export const UnitInfo = ({ unit }: UnitInfoProps) => {
         alt={unit.name}
         className="w-full h-96 object-cover rounded-lg"
       />
+      
+      {/* Imagen interior */}
+      <div className="mt-2">
+        <img 
+          src={interiorImage} 
+          alt={`Interior del ${unit.name}`}
+          className="w-full h-64 object-cover rounded-md cursor-pointer hover:opacity-90 transition-opacity"
+        />
+      </div>
+      
       <div className="mt-6">
         <h1 className="text-3xl font-display font-bold text-primary mb-4">
           {unit.name}
