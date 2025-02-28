@@ -12,6 +12,13 @@ interface GlampingUnitsProps {
 const GlampingUnits = ({ units, isLoading }: GlampingUnitsProps) => {
   const navigate = useNavigate();
 
+  // Imágenes interiores para mostrar en carrusel
+  const interiorImages = [
+    "/lovable-uploads/381ffefb-15d1-43c6-b9a2-576aefbb71ab.png",
+    "/lovable-uploads/dd7854dd-f545-4a1d-9ca2-7092cd11fdb4.png",
+    "/lovable-uploads/801debde-1eeb-41a1-b8d2-cfad12f86327.png"
+  ];
+
   if (isLoading) {
     return (
       <section className="py-16 bg-secondary/20">
@@ -28,9 +35,26 @@ const GlampingUnits = ({ units, isLoading }: GlampingUnitsProps) => {
   return (
     <section className="py-16 bg-secondary/20">
       <div className="container mx-auto px-4">
-        <h3 className="text-3xl font-display font-bold text-primary mb-12 text-center">
+        <h3 className="text-3xl font-display font-bold text-primary mb-4 text-center">
           Nuestros Glampings
         </h3>
+        <p className="text-center text-gray-600 max-w-2xl mx-auto mb-8">
+          Disfruta de amplios espacios interiores con vistas panorámicas al bosque. Cada domo está equipado con camas confortables y áreas de estar.
+        </p>
+
+        {/* Galería de imágenes interiores */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-12">
+          {interiorImages.map((img, index) => (
+            <div key={index} className="rounded-lg overflow-hidden shadow-md h-64">
+              <img 
+                src={img} 
+                alt={`Interior del domo ${index + 1}`} 
+                className="w-full h-full object-cover hover:scale-105 transition-transform duration-500"
+              />
+            </div>
+          ))}
+        </div>
+
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {units.map((unit) => (
             <div 
