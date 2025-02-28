@@ -1,3 +1,4 @@
+
 import * as React from "react"
 
 import type {
@@ -6,7 +7,7 @@ import type {
 } from "@/components/ui/toast"
 
 const TOAST_LIMIT = 1
-const TOAST_REMOVE_DELAY = 1000000
+const TOAST_REMOVE_DELAY = 5000 // Reducir a 5 segundos para que desaparezca más rápido
 
 type ToasterToast = ToastProps & {
   id: string
@@ -137,6 +138,11 @@ function dispatch(action: Action) {
   })
 }
 
+// Función para limpiar todos los toasts (útil antes de redirecciones)
+export function clearAllToasts() {
+  dispatch({ type: "DISMISS_TOAST" });
+}
+
 type Toast = Omit<ToasterToast, "id">
 
 function toast({ ...props }: Toast) {
@@ -185,6 +191,7 @@ function useToast() {
     ...state,
     toast,
     dismiss: (toastId?: string) => dispatch({ type: "DISMISS_TOAST", toastId }),
+    clearAll: () => clearAllToasts()
   }
 }
 

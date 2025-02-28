@@ -5,7 +5,7 @@ import { supabase, type Reservation, type GlampingUnit } from '@/lib/supabase';
 const SUPABASE_URL = 'https://gtxjfmvnzrsuaxryffnt.supabase.co';
 const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imd0eGpmbXZuenJzdWF4cnlmZm50Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDA1MTg5ODIsImV4cCI6MjA1NjA5NDk4Mn0.WwPCyeZX42Jp4A4lW0jl7arXt0lzwRwm18-Ay_D4Ci8';
 
-import { useToast } from '@/components/ui/use-toast';
+import { useToast, clearAllToasts } from '@/hooks/use-toast';
 
 export const useReservations = () => {
   const [isLoading, setIsLoading] = useState(false);
@@ -239,6 +239,7 @@ export const useReservations = () => {
       toast({
         title: "Procesando pago",
         description: "Conectando con el servicio de pagos. Por favor espera un momento...",
+        duration: 3000, // Solo mostrar por 3 segundos
       });
       
       // Llamada a la función Edge para iniciar la transacción
@@ -280,8 +281,8 @@ export const useReservations = () => {
       console.log(`Transacción iniciada exitosamente. Token: ${transactionData.token}`);
       console.log(`URL de redirección: ${transactionData.url}`);
 
-      // NO mostramos ningún toast de error antes de redirigir
-      // La redirección se hará automáticamente
+      // Limpiar todos los toasts antes de redirigir
+      clearAllToasts();
       
       // Crear un formulario HTML para enviar el token (método recomendado por Transbank)
       const form = document.createElement('form');
@@ -300,10 +301,8 @@ export const useReservations = () => {
       document.body.appendChild(form);
       console.log('Enviando formulario de redirección...');
       
-      // Pequeño retraso para asegurar que el toast se muestre antes de la redirección
-      setTimeout(() => {
-        form.submit();
-      }, 500);
+      // Redirigir inmediatamente, sin mostrar más toasts
+      form.submit();
       
       return {
         status: 'pending',
