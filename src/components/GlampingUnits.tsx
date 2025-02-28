@@ -35,17 +35,26 @@ const GlampingUnits = ({ units, isLoading }: GlampingUnitsProps) => {
           {units.map((unit) => (
             <div 
               key={unit.id} 
-              className="bg-white rounded-lg overflow-hidden shadow-lg transition-transform hover:scale-[1.02] animate-fadeIn relative group"
+              className="rounded-lg overflow-hidden shadow-lg transition-transform hover:scale-[1.02] animate-fadeIn cursor-pointer"
               onClick={() => navigate(`/unit/${unit.id}`)}
             >
-              <div className="relative h-64 overflow-hidden">
+              <div className="relative h-80 overflow-hidden">
                 <img
                   src={unit.image_url || "/placeholder.svg"}
                   alt={unit.name}
                   className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
                 />
-                {/* Overlay que aparece al hacer hover */}
-                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-end p-6">
+                {/* Overlay oscuro permanente pero más sutil */}
+                <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent opacity-50"></div>
+                
+                {/* Nombre y precio siempre visible */}
+                <div className="absolute bottom-0 left-0 right-0 p-4">
+                  <h4 className="text-xl font-display font-bold text-white">{unit.name}</h4>
+                  <span className="text-lg font-semibold text-white">${unit.price_per_night.toLocaleString()}/noche</span>
+                </div>
+                
+                {/* Overlay con información completa que aparece al hacer hover */}
+                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent opacity-0 hover:opacity-100 transition-opacity duration-300 flex flex-col justify-end p-6">
                   <h4 className="text-xl font-display font-bold text-white mb-2">{unit.name}</h4>
                   <p className="text-white/90 text-sm mb-4 line-clamp-3">
                     {unit.description}
@@ -60,24 +69,19 @@ const GlampingUnits = ({ units, isLoading }: GlampingUnitsProps) => {
                       <span>Vista al bosque</span>
                     </div>
                   </div>
-                  <span className="text-lg font-semibold text-white">${unit.price_per_night.toLocaleString()}/noche</span>
-                </div>
-              </div>
-              
-              {/* Información visible sin hover */}
-              <div className="p-6 group-hover:bg-primary/5 transition-colors">
-                <h4 className="text-xl font-display font-bold mb-2">{unit.name}</h4>
-                <div className="flex justify-between items-center">
-                  <span className="text-lg font-semibold">${unit.price_per_night.toLocaleString()}/noche</span>
-                  <Button 
-                    variant="outline"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      navigate(`/unit/${unit.id}`);
-                    }}
-                  >
-                    Ver detalles
-                  </Button>
+                  <div className="flex justify-between items-center">
+                    <span className="text-lg font-semibold text-white">${unit.price_per_night.toLocaleString()}/noche</span>
+                    <Button 
+                      variant="secondary"
+                      size="sm"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        navigate(`/unit/${unit.id}`);
+                      }}
+                    >
+                      Ver detalles
+                    </Button>
+                  </div>
                 </div>
               </div>
             </div>
