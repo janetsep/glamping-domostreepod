@@ -7,8 +7,19 @@ interface UnitInfoProps {
 }
 
 export const UnitInfo = ({ unit }: UnitInfoProps) => {
-  // Imagen interior del domo para 2 personas
-  const interiorImage = "/lovable-uploads/f0a226af-4b5a-47f8-9a16-71ebc00d5039.png";
+  // Seleccionar imagen interior según el número de huéspedes
+  const getInteriorImage = (maxGuests: number) => {
+    if (maxGuests === 2) {
+      return "/lovable-uploads/f0a226af-4b5a-47f8-9a16-71ebc00d5039.png"; // Domo para 2 personas
+    } else if (maxGuests === 3) {
+      return "/lovable-uploads/04ce7b83-26de-4148-a84b-6b62dd46101f.png"; // Domo para 3 personas
+    } else {
+      // Imagen predeterminada para otros tamaños
+      return "/lovable-uploads/f0a226af-4b5a-47f8-9a16-71ebc00d5039.png";
+    }
+  };
+
+  const interiorImage = getInteriorImage(unit.max_guests);
 
   // Determinar las características específicas basadas en el nombre del domo
   const getFeatures = (unitName: string) => {
