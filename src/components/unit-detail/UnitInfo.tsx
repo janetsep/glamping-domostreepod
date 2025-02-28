@@ -1,5 +1,5 @@
 
-import { Users } from "lucide-react";
+import { Users, Coffee, Droplets, Wifi, Flame } from "lucide-react";
 import type { GlampingUnit } from "@/lib/supabase";
 
 interface UnitInfoProps {
@@ -7,6 +7,33 @@ interface UnitInfoProps {
 }
 
 export const UnitInfo = ({ unit }: UnitInfoProps) => {
+  // Determinar las características específicas basadas en el nombre del domo
+  const getFeatures = (unitName: string) => {
+    const baseFeatures = [
+      { icon: <Coffee size={16} />, text: "Mini cocina equipada" },
+      { icon: <Droplets size={16} />, text: "Ducha con agua caliente" },
+      { icon: <Wifi size={16} />, text: "Wifi disponible" },
+    ];
+
+    // Agregar características específicas según el domo
+    if (unitName.includes("Araucaria")) {
+      return [...baseFeatures, { icon: <Flame size={16} />, text: "Zona de fogón" }];
+    }
+    if (unitName.includes("Canelo")) {
+      return [...baseFeatures, { icon: <Droplets size={16} />, text: "Jacuzzi al aire libre" }];
+    }
+    if (unitName.includes("Coihue")) {
+      return [...baseFeatures, { icon: <Droplets size={16} />, text: "Ducha panorámica" }];
+    }
+    if (unitName.includes("Mirador")) {
+      return [...baseFeatures, { icon: <Droplets size={16} />, text: "Hot tub privado" }];
+    }
+    
+    return baseFeatures;
+  };
+
+  const features = getFeatures(unit.name);
+
   return (
     <div>
       <img
@@ -18,12 +45,29 @@ export const UnitInfo = ({ unit }: UnitInfoProps) => {
         <h1 className="text-3xl font-display font-bold text-primary mb-4">
           {unit.name}
         </h1>
-        <p className="text-gray-600 mb-4">{unit.description}</p>
-        <div className="flex items-center gap-4 text-sm text-gray-500">
-          <div className="flex items-center gap-1">
+        <p className="text-gray-600 mb-6">{unit.description}</p>
+        
+        <h2 className="text-lg font-semibold mb-3">Características</h2>
+        <div className="grid grid-cols-2 gap-4 mb-8">
+          <div className="flex items-center gap-2 text-sm text-gray-700">
             <Users size={16} />
             <span>Hasta {unit.max_guests} personas</span>
           </div>
+          
+          {features.map((feature, index) => (
+            <div key={index} className="flex items-center gap-2 text-sm text-gray-700">
+              {feature.icon}
+              <span>{feature.text}</span>
+            </div>
+          ))}
+        </div>
+        
+        <div className="bg-green-50 p-4 rounded-lg border border-green-100">
+          <h3 className="font-semibold text-green-800 mb-2">Experiencia TreePod</h3>
+          <p className="text-sm text-green-700">
+            Disfruta de una experiencia única en nuestros exclusivos domos, rodeado de naturaleza y con 
+            todas las comodidades para una estadía inolvidable en el sur de Chile.
+          </p>
         </div>
       </div>
     </div>

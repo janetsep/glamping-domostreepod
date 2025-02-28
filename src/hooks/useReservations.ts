@@ -29,35 +29,35 @@ export const useReservations = () => {
         return data as GlampingUnit[];
       }
 
-      console.log('Creando unidades de ejemplo');
+      console.log('Creando unidades de ejemplo basadas en domostreepod.cl');
       const exampleUnits = [
         {
-          name: 'Domo Familiar',
-          description: 'Espacioso domo geodésico con todas las comodidades para una experiencia familiar única. Perfecto para familias con niños.',
-          max_guests: 4,
-          price_per_night: 200000,
-          image_url: 'https://images.unsplash.com/photo-1521401830884-6c03c1c87ebb'
+          name: 'Domo Araucaria',
+          description: 'Domo autosustentable con amplia terraza, mini cocina equipada, zona de fogón, ducha con agua caliente y hermosas vistas al lago. Ubicado en un entorno natural maravilloso, es perfecto para una escapada romántica o de aventura en la naturaleza.',
+          max_guests: 2,
+          price_per_night: 120000,
+          image_url: 'https://domostreepod.cl/wp-content/uploads/2021/04/Caba%C3%B1a-en-un-%C3%A1rbol-Domo-Araucaria-3-800x530.jpg'
         },
         {
-          name: 'Domo Bosque',
-          description: 'Hermoso domo rodeado de vegetación nativa con vistas al bosque. Ideal para los amantes de la naturaleza.',
+          name: 'Domo Canelo',
+          description: 'Lujoso domo con jacuzzi al aire libre, terraza panorámica y vistas espectaculares al bosque nativo. Equipado con mini cocina, baño completo y todos los detalles para una experiencia de glamping perfecta. Escape ideal para reconectar con la naturaleza.',
           max_guests: 2,
+          price_per_night: 135000,
+          image_url: 'https://domostreepod.cl/wp-content/uploads/2021/04/Domo-Canelo-Cabana-en-un-arbol-5-800x530.jpg'
+        },
+        {
+          name: 'Domo Coihue',
+          description: 'Increíble domo suspendido entre árboles nativos con terraza privada y hermosas vistas al bosque y al lago. Cuenta con ducha panorámica, mini cocina y todas las comodidades para una estadía mágica en plena naturaleza. Perfecto para aventureros.',
+          max_guests: 2,
+          price_per_night: 125000,
+          image_url: 'https://domostreepod.cl/wp-content/uploads/2021/04/Caba%C3%B1a-en-un-arbol-Domo-Coihue-1-800x530.jpg'
+        },
+        {
+          name: 'Domo Mirador',
+          description: 'Exclusivo domo con vistas 360° al lago y bosque nativo, con terraza panorámica privada y hot tub. Equipado con cocina integrada, baño completo y todas las comodidades para una experiencia inolvidable en contacto con la naturaleza.',
+          max_guests: 4,
           price_per_night: 150000,
-          image_url: 'https://images.unsplash.com/photo-1618767689160-da3fb810aad7'
-        },
-        {
-          name: 'Domo Panorámico',
-          description: 'Domo con techo transparente para observar las estrellas por la noche. Una experiencia única en medio de la naturaleza.',
-          max_guests: 2,
-          price_per_night: 180000,
-          image_url: 'https://images.unsplash.com/photo-1571896349842-33c89424de2d'
-        },
-        {
-          name: 'Domo Superior',
-          description: 'Nuestro domo más lujoso, con jacuzzi privado y las mejores vistas del valle. Perfecto para ocasiones especiales.',
-          max_guests: 4,
-          price_per_night: 250000,
-          image_url: 'https://images.unsplash.com/photo-1533090368676-1fd25485db88?q=80&w=1969&auto=format&fit=crop'
+          image_url: 'https://domostreepod.cl/wp-content/uploads/2022/04/domo-mirador-1-800x530.jpg'
         }
       ];
 

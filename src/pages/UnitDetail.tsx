@@ -188,7 +188,7 @@ const UnitDetail = () => {
     return (
       <div className="min-h-screen bg-white pt-24">
         <div className="container mx-auto px-4 text-center">
-          <p>Cargando información de la unidad...</p>
+          <p>Cargando información del domo...</p>
         </div>
       </div>
     );
@@ -199,7 +199,7 @@ const UnitDetail = () => {
       <div className="container mx-auto px-4">
         <Button variant="ghost" className="mb-6" onClick={() => navigate("/")}>
           <ArrowLeft className="mr-2" />
-          Volver
+          Volver a Domos
         </Button>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
@@ -207,13 +207,13 @@ const UnitDetail = () => {
             <>
               <UnitInfo unit={displayUnit} />
 
-              <div className="bg-secondary/20 p-6 rounded-lg">
+              <div className="bg-secondary/20 p-6 rounded-lg shadow-sm">
                 {isReservationConfirmed ? (
                   <div className="text-center p-8 space-y-4">
                     <div className="text-6xl mb-4">🎉</div>
                     <h2 className="text-2xl font-display font-bold">¡Reserva confirmada!</h2>
                     <p>
-                      Gracias por tu reserva. Hemos enviado los detalles a tu correo electrónico.
+                      Gracias por tu reserva en Domos TreePod. Hemos enviado los detalles a tu correo electrónico.
                     </p>
                     <div className="text-sm text-muted-foreground mt-4 space-y-2">
                       <p>Fechas reservadas:</p>
@@ -239,7 +239,7 @@ const UnitDetail = () => {
                 ) : (
                   <>
                     <h2 className="text-2xl font-display font-bold mb-6">
-                      Cotiza tu estadía
+                      Reserva tu experiencia TreePod
                     </h2>
                     <div className="space-y-4">
                       {!showQuote ? (
@@ -257,8 +257,13 @@ const UnitDetail = () => {
                             onGuestsChange={setGuests}
                           />
 
+                          <div className="mt-8 text-sm text-gray-600 p-3 bg-amber-50 border border-amber-100 rounded">
+                            <p className="font-medium text-amber-800 mb-1">Política de reserva</p>
+                            <p>Pago total por adelantado para confirmar tu reserva. Check-in desde las 15:00, check-out hasta las 12:00.</p>
+                          </div>
+
                           <Button 
-                            className="w-full" 
+                            className="w-full mt-2" 
                             size="lg"
                             onClick={handleReservation}
                             disabled={!startDate || !endDate}
@@ -292,7 +297,7 @@ const UnitDetail = () => {
           ) : (
             <div className="col-span-2 text-center py-12">
               <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto mb-4"></div>
-              <p>Cargando información de la unidad...</p>
+              <p>Cargando información del domo...</p>
             </div>
           )}
         </div>
