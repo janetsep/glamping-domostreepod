@@ -2,9 +2,11 @@
 import { useReservations } from "@/hooks/useReservations";
 import Navigation from "@/components/Navigation";
 import Hero from "@/components/Hero";
-import GlampingUnits from "@/components/GlampingUnits";
-import Features from "@/components/Features";
-import CTASection from "@/components/CTASection";
+import Benefits from "@/components/Benefits";
+import Testimonials from "@/components/Testimonials";
+import Location from "@/components/Location";
+import Packages from "@/components/Packages";
+import SimplifiedContact from "@/components/SimplifiedContact";
 import Footer from "@/components/Footer";
 import { useQuery } from "@tanstack/react-query";
 import { useEffect } from "react";
@@ -34,9 +36,11 @@ const Index = () => {
     <div className="min-h-screen bg-white">
       <Navigation />
       <Hero />
-      <GlampingUnits units={units} isLoading={isLoading} />
-      <Features />
-      <CTASection />
+      <Benefits />
+      <Testimonials />
+      <Location />
+      <Packages units={units} isLoading={isLoading} />
+      <SimplifiedContact />
       <Footer />
     </div>
   );

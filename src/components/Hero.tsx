@@ -1,45 +1,71 @@
 
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
+import { useState, useEffect } from "react";
 
 const Hero = () => {
   const navigate = useNavigate();
+  const [isScrolled, setIsScrolled] = useState(false);
 
   // Usar una ID de unidad que exista en la base de datos
   const handleReserveClick = () => {
     navigate('/unit/48a7a330-ebae-4e79-8f53-31a84ac900d9');
   };
 
+  useEffect(() => {
+    const handleScroll = () => {
+      setIsScrolled(window.scrollY > 100);
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
   return (
-    <section className="pt-24 pb-12 relative">
-      {/* Imagen de fondo con overlay */}
-      <div className="absolute inset-0 z-0">
-        <img 
-          src="/lovable-uploads/abaa63a0-8f4a-4939-96f9-808ed3d09802.png" 
-          alt="Domo geodésico entre árboles con cielo azul" 
-          className="w-full h-full object-cover object-center object-[center_40%]"
-        />
-        <div className="absolute inset-0 bg-black/30"></div>
-      </div>
-      
-      <div className="container mx-auto px-4 relative z-10">
-        <div className="max-w-3xl mx-auto text-center animate-fadeIn">
-          <h2 className="text-5xl font-display font-bold text-white mb-6 text-shadow">
-            Domos Treepod: Vive la naturaleza con todo el confort
-          </h2>
-          <p className="text-xl text-white/90 mb-8 text-shadow">
-            Experimenta el lujo de la naturaleza en nuestro exclusivo glamping de domos geodésicos
-          </p>
+    <>
+      {/* Botón de reserva flotante que aparece al hacer scroll */}
+      {isScrolled && (
+        <div className="fixed top-20 right-4 z-50 animate-fade-in">
           <Button 
             size="lg" 
-            className="bg-accent hover:bg-accent/90"
+            className="bg-accent hover:bg-accent/90 shadow-lg"
             onClick={handleReserveClick}
           >
-            Reserva tu estadía
+            ¡Reserva tu Experiencia Ahora!
           </Button>
         </div>
-      </div>
-    </section>
+      )}
+
+      <section className="h-screen relative">
+        {/* Imagen de fondo con overlay */}
+        <div className="absolute inset-0 z-0">
+          <img 
+            src="/lovable-uploads/7f7e32a2-1e84-49ce-9d9c-fd06aece4b05.png" 
+            alt="Domos iluminados por la noche en el bosque estrellado" 
+            className="w-full h-full object-cover object-center"
+          />
+          <div className="absolute inset-0 bg-black/40"></div>
+        </div>
+        
+        <div className="container mx-auto px-4 relative z-10 h-full flex items-center">
+          <div className="max-w-3xl mx-auto text-center animate-fadeIn">
+            <h2 className="text-4xl md:text-5xl font-display font-bold text-white mb-6 text-shadow">
+              Vive una Experiencia Única de Glamping en la Cordillera de los Andes 🌲🔥
+            </h2>
+            <p className="text-xl text-white/90 mb-8 text-shadow">
+              Desconéctate del estrés y sumérgete en la naturaleza con lujo, privacidad y confort.
+            </p>
+            <Button 
+              size="lg" 
+              className="bg-accent hover:bg-accent/90 text-lg font-semibold px-8 py-6"
+              onClick={handleReserveClick}
+            >
+              ¡Reserva tu Experiencia Ahora!
+            </Button>
+          </div>
+        </div>
+      </section>
+    </>
   );
 };
 
