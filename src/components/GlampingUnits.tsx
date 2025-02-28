@@ -42,46 +42,37 @@ const GlampingUnits = ({ units, isLoading }: GlampingUnitsProps) => {
                 <img
                   src={unit.image_url || "/placeholder.svg"}
                   alt={unit.name}
-                  className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                  className="w-full h-full object-cover transition-transform duration-500 hover:scale-110"
                 />
-                {/* Overlay oscuro permanente pero más sutil */}
-                <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent opacity-50"></div>
-                
-                {/* Nombre y precio siempre visible */}
-                <div className="absolute bottom-0 left-0 right-0 p-4">
-                  <h4 className="text-xl font-display font-bold text-white">{unit.name}</h4>
-                  <span className="text-lg font-semibold text-white">${unit.price_per_night.toLocaleString()}/noche</span>
+                {/* Overlay oscuro permanente pero sutil con información básica */}
+                <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent">
+                  <div className="absolute bottom-0 left-0 right-0 p-4">
+                    <h4 className="text-xl font-display font-bold text-white">{unit.name}</h4>
+                    <div className="flex items-center gap-4 text-sm text-white/90 my-2">
+                      <div className="flex items-center gap-1">
+                        <Users size={16} />
+                        <span>Hasta {unit.max_guests} personas</span>
+                      </div>
+                      <div className="flex items-center gap-1">
+                        <MapPin size={16} />
+                        <span>Vista al bosque</span>
+                      </div>
+                    </div>
+                    <span className="text-lg font-semibold text-white">${unit.price_per_night.toLocaleString()}/noche</span>
+                  </div>
                 </div>
                 
-                {/* Overlay con información completa que aparece al hacer hover */}
-                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent opacity-0 hover:opacity-100 transition-opacity duration-300 flex flex-col justify-end p-6">
-                  <h4 className="text-xl font-display font-bold text-white mb-2">{unit.name}</h4>
-                  <p className="text-white/90 text-sm mb-4 line-clamp-3">
-                    {unit.description}
-                  </p>
-                  <div className="flex items-center gap-4 text-sm text-white/80 mb-3">
-                    <div className="flex items-center gap-1">
-                      <Users size={16} />
-                      <span>Hasta {unit.max_guests} personas</span>
-                    </div>
-                    <div className="flex items-center gap-1">
-                      <MapPin size={16} />
-                      <span>Vista al bosque</span>
-                    </div>
-                  </div>
-                  <div className="flex justify-between items-center">
-                    <span className="text-lg font-semibold text-white">${unit.price_per_night.toLocaleString()}/noche</span>
-                    <Button 
-                      variant="secondary"
-                      size="sm"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        navigate(`/unit/${unit.id}`);
-                      }}
-                    >
-                      Ver detalles
-                    </Button>
-                  </div>
+                {/* Overlay con mensaje de clic para más información */}
+                <div className="absolute inset-0 bg-black/40 opacity-0 hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
+                  <Button 
+                    variant="secondary"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      navigate(`/unit/${unit.id}`);
+                    }}
+                  >
+                    Ver más información
+                  </Button>
                 </div>
               </div>
             </div>
