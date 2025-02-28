@@ -15,11 +15,11 @@ const Hero = () => {
       {/* Imagen de fondo con overlay */}
       <div className="absolute inset-0 z-0">
         <img 
-          src="/lovable-uploads/9e606128-1db3-42ce-b1ca-0474a875279f.png" 
-          alt="Domo geodésico iluminado en el bosque" 
+          src="/lovable-uploads/abaa63a0-8f4a-4939-96f9-808ed3d09802.png" 
+          alt="Domo geodésico entre árboles con cielo azul" 
           className="w-full h-full object-cover object-center object-[center_40%]"
         />
-        <div className="absolute inset-0 bg-black/40"></div>
+        <div className="absolute inset-0 bg-black/30"></div>
       </div>
       
       <div className="container mx-auto px-4 relative z-10">
