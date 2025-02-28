@@ -17,7 +17,7 @@ const Hero = () => {
         <img 
           src="/lovable-uploads/9e606128-1db3-42ce-b1ca-0474a875279f.png" 
           alt="Domo geodésico iluminado en el bosque" 
-          className="w-full h-full object-cover object-center"
+          className="w-full h-full object-cover object-center object-[center_40%]"
         />
         <div className="absolute inset-0 bg-black/40"></div>
       </div>
