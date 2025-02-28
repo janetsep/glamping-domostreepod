@@ -235,11 +235,11 @@ export const useReservations = () => {
       
       console.log(`Datos para iniciar transacción: ${JSON.stringify(requestData)}`);
       
-      // Mostrar toast de carga para mejorar la experiencia del usuario
+      // Mostrar toast de carga para mejorar la experiencia del usuario - usamos variante default (sin color rojo)
       toast({
-        title: "Procesando pago",
-        description: "Conectando con el servicio de pagos. Por favor espera un momento...",
-        duration: 3000, // Solo mostrar por 3 segundos
+        title: "✅ Redirigiendo a Webpay",
+        description: "Estamos conectando con el servicio de pagos...",
+        duration: 2000,
       });
       
       // Llamada a la función Edge para iniciar la transacción
@@ -302,7 +302,9 @@ export const useReservations = () => {
       console.log('Enviando formulario de redirección...');
       
       // Redirigir inmediatamente, sin mostrar más toasts
-      form.submit();
+      setTimeout(() => {
+        form.submit();
+      }, 100); // Un ligero retraso para permitir que clearAllToasts se complete
       
       return {
         status: 'pending',
