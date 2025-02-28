@@ -11,13 +11,23 @@ const Hero = () => {
   };
 
   return (
-    <section className="pt-24 pb-12">
-      <div className="container mx-auto px-4">
+    <section className="pt-24 pb-12 relative">
+      {/* Imagen de fondo con overlay */}
+      <div className="absolute inset-0 z-0">
+        <img 
+          src="/lovable-uploads/9e606128-1db3-42ce-b1ca-0474a875279f.png" 
+          alt="Domo geodésico iluminado en el bosque" 
+          className="w-full h-full object-cover"
+        />
+        <div className="absolute inset-0 bg-black/40"></div>
+      </div>
+      
+      <div className="container mx-auto px-4 relative z-10">
         <div className="max-w-3xl mx-auto text-center animate-fadeIn">
-          <h2 className="text-5xl font-display font-bold text-primary mb-6">
+          <h2 className="text-5xl font-display font-bold text-white mb-6 text-shadow">
             Domos Treepod: Vive la naturaleza con todo el confort
           </h2>
-          <p className="text-lg text-gray-600 mb-8">
+          <p className="text-xl text-white/90 mb-8 text-shadow">
             Experimenta el lujo de la naturaleza en nuestro exclusivo glamping de domos geodésicos
           </p>
           <Button 
