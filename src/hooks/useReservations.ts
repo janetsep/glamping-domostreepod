@@ -235,6 +235,12 @@ export const useReservations = () => {
       
       console.log(`Datos para iniciar transacción: ${JSON.stringify(requestData)}`);
       
+      // Mostrar toast de carga para mejorar la experiencia del usuario
+      toast({
+        title: "Procesando pago",
+        description: "Conectando con el servicio de pagos. Por favor espera un momento...",
+      });
+      
       // Llamada a la función Edge para iniciar la transacción
       const initResponse = await fetch(`${SUPABASE_URL}/functions/v1/webpay-init`, {
         method: 'POST',
@@ -274,10 +280,14 @@ export const useReservations = () => {
       console.log(`Transacción iniciada exitosamente. Token: ${transactionData.token}`);
       console.log(`URL de redirección: ${transactionData.url}`);
 
+      // NO mostramos ningún toast de error antes de redirigir
+      // La redirección se hará automáticamente
+      
       // Crear un formulario HTML para enviar el token (método recomendado por Transbank)
       const form = document.createElement('form');
       form.method = 'POST';
       form.action = transactionData.url;
+      form.style.display = 'none'; // Ocultar el formulario
       
       // Añadir el token como un campo oculto
       const tokenField = document.createElement('input');
@@ -289,7 +299,11 @@ export const useReservations = () => {
       // Añadir el formulario al documento y enviarlo
       document.body.appendChild(form);
       console.log('Enviando formulario de redirección...');
-      form.submit();
+      
+      // Pequeño retraso para asegurar que el toast se muestre antes de la redirección
+      setTimeout(() => {
+        form.submit();
+      }, 500);
       
       return {
         status: 'pending',
@@ -301,6 +315,8 @@ export const useReservations = () => {
       };
     } catch (error) {
       console.error(`Error en el proceso de pago: ${error.message}`);
+      
+      // Este toast se mostrará si hay un error real
       toast({
         variant: "destructive",
         title: "Error en el pago",
