@@ -222,6 +222,9 @@ export const useReservations = () => {
     try {
       setIsLoading(true);
       
+      // Eliminar todos los toasts existentes al comienzo de la función
+      clearAllToasts();
+      
       // Verificamos el origen para la URL de retorno
       const origin = window.location.origin;
       console.log(`Origen para URL de retorno: ${origin}`);
@@ -235,12 +238,7 @@ export const useReservations = () => {
       
       console.log(`Datos para iniciar transacción: ${JSON.stringify(requestData)}`);
       
-      // Mostrar toast de carga para mejorar la experiencia del usuario - usamos variante default (sin color rojo)
-      toast({
-        title: "✅ Redirigiendo a Webpay",
-        description: "Estamos conectando con el servicio de pagos...",
-        duration: 2000,
-      });
+      // NO mostramos ningún toast de redirección, eliminamos esta línea
       
       // Llamada a la función Edge para iniciar la transacción
       const initResponse = await fetch(`${SUPABASE_URL}/functions/v1/webpay-init`, {
@@ -280,9 +278,6 @@ export const useReservations = () => {
 
       console.log(`Transacción iniciada exitosamente. Token: ${transactionData.token}`);
       console.log(`URL de redirección: ${transactionData.url}`);
-
-      // Limpiar todos los toasts antes de redirigir
-      clearAllToasts();
       
       // Crear un formulario HTML para enviar el token (método recomendado por Transbank)
       const form = document.createElement('form');
@@ -301,10 +296,8 @@ export const useReservations = () => {
       document.body.appendChild(form);
       console.log('Enviando formulario de redirección...');
       
-      // Redirigir inmediatamente, sin mostrar más toasts
-      setTimeout(() => {
-        form.submit();
-      }, 100); // Un ligero retraso para permitir que clearAllToasts se complete
+      // Enviamos el formulario inmediatamente
+      form.submit();
       
       return {
         status: 'pending',
@@ -317,7 +310,7 @@ export const useReservations = () => {
     } catch (error) {
       console.error(`Error en el proceso de pago: ${error.message}`);
       
-      // Este toast se mostrará si hay un error real
+      // Solo mostrar mensaje de error si realmente hay un error
       toast({
         variant: "destructive",
         title: "Error en el pago",
