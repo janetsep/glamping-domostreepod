@@ -220,69 +220,77 @@ export const useReservations = () => {
     console.log(`Iniciando proceso WebPay para la reserva ${reservationId} por $${amount}`);
     
     try {
-      // Usando nuestra Edge Function para iniciar la transacción con WebPay
+      setIsLoading(true);
+      
+      // Verificamos el origen para la URL de retorno
+      const origin = window.location.origin;
+      console.log(`Origen para URL de retorno: ${origin}`);
+      
+      // Datos para la solicitud
+      const requestData = {
+        reservationId,
+        amount,
+        origin
+      };
+      
+      console.log(`Datos para iniciar transacción: ${JSON.stringify(requestData)}`);
+      
+      // Llamada a la función Edge para iniciar la transacción
       const initResponse = await fetch(`${SUPABASE_URL}/functions/v1/webpay-init`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${SUPABASE_ANON_KEY}`
         },
-        body: JSON.stringify({
-          reservationId,
-          amount,
-          origin: window.location.origin
-        })
+        body: JSON.stringify(requestData)
       });
 
+      // Verificar respuesta como texto primero para debugging
       const responseText = await initResponse.text();
       console.log(`Respuesta de webpay-init (texto): ${responseText}`);
 
-      if (!initResponse.ok) {
-        console.error('Error al iniciar transacción:', responseText);
-        
-        try {
-          const errorData = JSON.parse(responseText);
-          throw new Error(errorData.error || 'Error al iniciar la transacción con WebPay');
-        } catch (parseError) {
-          throw new Error(`Error al iniciar la transacción con WebPay: ${responseText}`);
-        }
-      }
-
+      // Parsear respuesta
       let transactionData;
       try {
         transactionData = JSON.parse(responseText);
       } catch (e) {
-        console.error('Error al parsear respuesta JSON:', e);
+        console.error(`Error al parsear respuesta JSON: ${e.message}`);
         throw new Error(`Error al parsear respuesta: ${responseText}`);
       }
 
-      console.log('Transacción iniciada:', transactionData);
-
-      // Guardamos el token en la reserva
-      const { error: updateError } = await supabase
-        .from('reservations')
-        .update({ 
-          payment_details: { 
-            token: transactionData.token,
-            transaction_initiation: new Date().toISOString()
-          }
-        })
-        .eq('id', reservationId);
-
-      if (updateError) {
-        console.error('Error al actualizar reserva con token:', updateError);
+      // Verificar errores en la respuesta
+      if (!initResponse.ok || transactionData.error) {
+        const errorMessage = transactionData.error || `Error HTTP: ${initResponse.status}`;
+        console.error(`Error al iniciar transacción: ${errorMessage}`);
+        throw new Error(errorMessage);
       }
 
-      // Verificamos que la URL y el token existan
+      // Verificar que la respuesta incluya URL y token
       if (!transactionData.url || !transactionData.token) {
+        console.error(`Respuesta incompleta de WebPay: ${JSON.stringify(transactionData)}`);
         throw new Error('Respuesta de WebPay incompleta: falta URL o token');
       }
 
-      console.log(`Redirigiendo a: ${transactionData.url}`);
+      console.log(`Transacción iniciada exitosamente. Token: ${transactionData.token}`);
+      console.log(`URL de redirección: ${transactionData.url}`);
 
-      // Redirigimos al usuario a la página de pago de WebPay
-      window.location.href = transactionData.url;
-
+      // Crear un formulario HTML para enviar el token (método recomendado por Transbank)
+      const form = document.createElement('form');
+      form.method = 'POST';
+      form.action = transactionData.url;
+      
+      // Añadir el token como un campo oculto
+      const tokenField = document.createElement('input');
+      tokenField.type = 'hidden';
+      tokenField.name = 'token_ws';
+      tokenField.value = transactionData.token;
+      form.appendChild(tokenField);
+      
+      // Añadir el formulario al documento y enviarlo
+      document.body.appendChild(form);
+      console.log('Enviando formulario de redirección...');
+      form.submit();
+      
       return {
         status: 'pending',
         message: 'Redirigiendo a WebPay Plus',
@@ -292,11 +300,11 @@ export const useReservations = () => {
         }
       };
     } catch (error) {
-      console.error('Error en el proceso de pago:', error);
+      console.error(`Error en el proceso de pago: ${error.message}`);
       toast({
         variant: "destructive",
         title: "Error en el pago",
-        description: "No se pudo iniciar el proceso de pago. Por favor, intenta nuevamente.",
+        description: error instanceof Error ? error.message : "No se pudo iniciar el proceso de pago",
       });
       
       return {
@@ -304,6 +312,8 @@ export const useReservations = () => {
         message: error instanceof Error ? error.message : 'Error desconocido en el proceso de pago',
         details: null
       };
+    } finally {
+      setIsLoading(false);
     }
   };
 
