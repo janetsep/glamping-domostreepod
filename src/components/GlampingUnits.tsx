@@ -12,11 +12,11 @@ interface GlampingUnitsProps {
 const GlampingUnits = ({ units, isLoading }: GlampingUnitsProps) => {
   const navigate = useNavigate();
 
-  // Imágenes interiores para mostrar en carrusel
+  // Imágenes interiores actualizadas para mostrar en carrusel
   const interiorImages = [
     "/lovable-uploads/381ffefb-15d1-43c6-b9a2-576aefbb71ab.png",
-    "/lovable-uploads/dd7854dd-f545-4a1d-9ca2-7092cd11fdb4.png",
-    "/lovable-uploads/801debde-1eeb-41a1-b8d2-cfad12f86327.png"
+    "/lovable-uploads/7f7e32a2-1e84-49ce-9d9c-fd06aece4b05.png",
+    "/lovable-uploads/21690294-058b-4ab7-9d01-fcf2bd94b8b3.png"
   ];
 
   if (isLoading) {
