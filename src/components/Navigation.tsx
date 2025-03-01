@@ -44,24 +44,17 @@ const Navigation = () => {
           
           <Button
             variant="ghost"
+            onClick={() => scrollToSection('hero')}
+            className="hidden md:inline-flex"
+          >
+            Inicio
+          </Button>
+          <Button
+            variant="ghost"
             onClick={() => scrollToSection('packages')}
             className="hidden md:inline-flex"
           >
             Domos
-          </Button>
-          <Button
-            variant="ghost"
-            onClick={() => scrollToSection('benefits')}
-            className="hidden md:inline-flex"
-          >
-            Galería
-          </Button>
-          <Button
-            variant="ghost"
-            onClick={() => scrollToSection('testimonials')}
-            className="hidden md:inline-flex"
-          >
-            Actividades
           </Button>
           <Button
             variant="ghost"
