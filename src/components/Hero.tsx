@@ -53,7 +53,7 @@ const Hero = () => {
               Sumérgete en el lujo natural de Valle Las Trancas
             </h2>
             <p className="text-xl text-white/90 mb-8 text-shadow">
-              Desconéctate del estrés y sumérgete en la naturaleza con lujo, privacidad y confort.
+              Descubre un destino único donde la naturaleza, la comodidad y la historia se entrelazan.
             </p>
             <Button 
               size="lg" 
