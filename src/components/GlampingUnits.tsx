@@ -17,7 +17,7 @@ const GlampingUnits = ({ units, isLoading }: GlampingUnitsProps) => {
       <section className="py-16 bg-secondary/20">
         <div className="container mx-auto px-4">
           <h3 className="text-3xl font-display font-bold text-primary mb-12 text-center">
-            Nuestros Glampings
+            Nuestro Glamping
           </h3>
           <div className="text-center text-lg">Cargando unidades...</div>
         </div>
@@ -29,7 +29,7 @@ const GlampingUnits = ({ units, isLoading }: GlampingUnitsProps) => {
     <section className="py-16 bg-secondary/20">
       <div className="container mx-auto px-4">
         <h3 className="text-3xl font-display font-bold text-primary mb-12 text-center">
-          Nuestros Glampings
+          Nuestro Glamping
         </h3>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {units.map((unit) => (
