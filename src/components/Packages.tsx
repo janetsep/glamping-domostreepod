@@ -63,7 +63,7 @@ const Packages = ({ units, isLoading }: PackagesProps) => {
   };
 
   return (
-    <section className="py-20 bg-secondary/10">
+    <section id="packages" className="py-20 bg-secondary/10">
       <div className="container mx-auto px-4">
         <h2 className="text-3xl md:text-4xl font-display font-bold text-primary mb-4 text-center">
           Paquetes y Ofertas Especiales

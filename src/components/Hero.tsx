@@ -36,7 +36,7 @@ const Hero = () => {
         </div>
       )}
 
-      <section className="h-screen relative">
+      <section id="hero" className="h-screen relative">
         {/* Imagen de fondo con overlay */}
         <div className="absolute inset-0 z-0">
           <img 

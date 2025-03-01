@@ -3,7 +3,7 @@ import { MapPin, Trees, Droplets, Bird } from "lucide-react";
 
 const Location = () => {
   return (
-    <section className="py-20 bg-white">
+    <section id="location" className="py-20 bg-white">
       <div className="container mx-auto px-4">
         <h2 className="text-3xl md:text-4xl font-display font-bold text-primary mb-4 text-center">
           Ubicación y Entorno
