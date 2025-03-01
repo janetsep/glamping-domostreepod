@@ -40,8 +40,8 @@ const Hero = () => {
         {/* Imagen de fondo con overlay */}
         <div className="absolute inset-0 z-0">
           <img 
-            src="/lovable-uploads/7f7e32a2-1e84-49ce-9d9c-fd06aece4b05.png" 
-            alt="Domos iluminados por la noche en el bosque estrellado" 
+            src="/lovable-uploads/221f04ad-9f65-4671-866a-1844175adeb0.png" 
+            alt="Domo geodésico entre árboles con cielo azul" 
             className="w-full h-full object-cover object-center"
           />
           <div className="absolute inset-0 bg-black/40"></div>
