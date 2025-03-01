@@ -50,7 +50,7 @@ const Hero = () => {
         <div className="container mx-auto px-4 relative z-10 h-full flex items-center">
           <div className="max-w-3xl mx-auto text-center animate-fadeIn">
             <h2 className="text-4xl md:text-5xl font-display font-bold text-white mb-6 text-shadow">
-              Vive una Experiencia Única de Glamping en la Cordillera de los Andes 🌲🔥
+              Sumérgete en el lujo natural de Valle Las Trancas
             </h2>
             <p className="text-xl text-white/90 mb-8 text-shadow">
               Desconéctate del estrés y sumérgete en la naturaleza con lujo, privacidad y confort.
