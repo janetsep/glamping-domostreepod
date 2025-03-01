@@ -1,3 +1,4 @@
+
 import { Calendar, Users, Clock } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
@@ -67,10 +68,10 @@ const Packages = ({ units, isLoading }: PackagesProps) => {
 
   return (
     <section id="packages" className="py-20 bg-secondary/10">
-      {/* Título de sección */}
+      {/* Franja de título sin texto */}
       <div className="w-full bg-primary/5 border-b border-primary/10 py-3 mb-16">
         <div className="container mx-auto px-4">
-          <h1 className="text-xl font-medium text-primary">Domos</h1>
+          {/* Título removido de la franja */}
         </div>
       </div>
       

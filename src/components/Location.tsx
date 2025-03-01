@@ -4,10 +4,10 @@ import { MapPin, Trees, Droplets, Bird } from "lucide-react";
 const Location = () => {
   return (
     <section id="location" className="py-20 bg-white">
-      {/* Título de sección */}
+      {/* Franja de título sin texto */}
       <div className="w-full bg-primary/5 border-b border-primary/10 py-3 mb-16">
         <div className="container mx-auto px-4">
-          <h1 className="text-xl font-medium text-primary">Ubicación</h1>
+          {/* Título removido de la franja */}
         </div>
       </div>
       
