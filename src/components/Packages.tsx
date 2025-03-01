@@ -1,4 +1,3 @@
-
 import { Calendar, Users, Clock } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
@@ -13,31 +12,35 @@ interface PackagesProps {
 const Packages = ({ units, isLoading }: PackagesProps) => {
   const navigate = useNavigate();
   const [timeLeft, setTimeLeft] = useState({ days: 3, hours: 8, minutes: 45 });
+  const [hoveredUnit, setHoveredUnit] = useState<string | null>(null);
   
   const packages = [
     {
-      title: "Escapada Romántica",
-      description: "Perfecta para parejas, incluye tinaja privada con vistas al bosque y cena especial a la luz de las velas.",
-      price: 180000,
-      originalPrice: 220000,
+      id: "48a7a330-ebae-4e79-8f53-31a84ac900d9",
+      title: "Domo Araucaria",
+      description: "Domo autosustentable con amplia terraza, mini cocina equipada, zona de fogón, ducha con agua caliente y hermosas vistas al lago.",
+      price: 120000,
+      originalPrice: 150000,
       image: "/lovable-uploads/f0a226af-4b5a-47f8-9a16-71ebc00d5039.png",
-      features: ["2 noches de alojamiento", "Desayuno incluido", "Tinaja privada", "Cena romántica", "Botella de vino"]
+      features: ["2 noches de alojamiento", "Desayuno incluido", "Capacidad: 2 personas", "Vistas al bosque", "Acceso a senderos"]
     },
     {
-      title: "Aventura en la Montaña",
-      description: "Para los amantes de la naturaleza y la aventura, incluye trekking guiado y parrilla en tu domo.",
-      price: 220000,
-      originalPrice: 280000,
+      id: "58a7a330-ebae-4e79-8f53-31a84ac900d8",
+      title: "Domo Canelo",
+      description: "Lujoso domo con jacuzzi al aire libre, terraza panorámica y vistas espectaculares al bosque nativo.",
+      price: 135000,
+      originalPrice: 180000,
       image: "/lovable-uploads/04ce7b83-26de-4148-a84b-6b62dd46101f.png",
-      features: ["3 noches de alojamiento", "Desayuno incluido", "Trekking guiado", "Kit de parrilla", "Mapas de senderos"]
+      features: ["3 noches de alojamiento", "Desayuno incluido", "Capacidad: 2 personas", "Jacuzzi privado", "Wifi gratis"]
     },
     {
-      title: "Desconexión Total",
-      description: "Experiencia sin tecnología, con actividades de relajación y reconexión con la naturaleza.",
-      price: 200000,
-      originalPrice: 250000,
+      id: "68a7a330-ebae-4e79-8f53-31a84ac900d7",
+      title: "Domo Coihue",
+      description: "Increíble domo suspendido entre árboles nativos con terraza privada y hermosas vistas al bosque y al lago.",
+      price: 125000,
+      originalPrice: 160000,
       image: "/lovable-uploads/9e606128-1db3-42ce-b1ca-0474a875279f.png",
-      features: ["2 noches de alojamiento", "Desayuno incluido", "Sesión de yoga", "Kit de meditación", "Hot tub privado"]
+      features: ["2 noches de alojamiento", "Desayuno incluido", "Capacidad: 2 personas", "Ducha panorámica", "Mini cocina"]
     }
   ];
 
@@ -58,8 +61,8 @@ const Packages = ({ units, isLoading }: PackagesProps) => {
     return () => clearInterval(timer);
   }, []);
 
-  const handleReserveClick = () => {
-    navigate('/unit/48a7a330-ebae-4e79-8f53-31a84ac900d9');
+  const handleUnitClick = (unitId: string) => {
+    navigate(`/unit/${unitId}`);
   };
 
   return (
@@ -73,11 +76,58 @@ const Packages = ({ units, isLoading }: PackagesProps) => {
       
       <div className="container mx-auto px-4">
         <h2 className="text-3xl md:text-4xl font-display font-bold text-primary mb-4 text-center">
-          Paquetes y Ofertas Especiales
+          Nuestros Domos Exclusivos
         </h2>
-        <p className="text-xl text-center text-gray-600 mb-6 max-w-3xl mx-auto">
-          Aprovecha nuestras promociones de temporada y vive una experiencia inolvidable
+        <p className="text-xl text-center text-gray-600 mb-10 max-w-3xl mx-auto">
+          Experiencias únicas de alojamiento en medio de la naturaleza
         </p>
+        
+        {/* Domos con efecto hover */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mt-8 mb-16">
+          {packages.map((pkg) => (
+            <div 
+              key={pkg.id} 
+              className="relative rounded-lg overflow-hidden shadow-lg cursor-pointer group"
+              onMouseEnter={() => setHoveredUnit(pkg.id)}
+              onMouseLeave={() => setHoveredUnit(null)}
+              onClick={() => handleUnitClick(pkg.id)}
+            >
+              <div className="h-72 relative overflow-hidden">
+                <img 
+                  src={pkg.image} 
+                  alt={pkg.title} 
+                  className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                />
+                
+                {/* Overlay con información en hover */}
+                <div 
+                  className={`absolute inset-0 bg-black/60 flex flex-col justify-end p-6 transition-opacity duration-300 ${
+                    hoveredUnit === pkg.id ? 'opacity-100' : 'opacity-0'
+                  }`}
+                >
+                  <h3 className="text-2xl font-display font-bold text-white mb-2">{pkg.title}</h3>
+                  <p className="text-white/90 text-sm mb-3">{pkg.description}</p>
+                  <div className="flex justify-between items-end">
+                    <div>
+                      <span className="text-white/70 line-through text-sm">
+                        ${pkg.originalPrice.toLocaleString()}
+                      </span>
+                      <div className="text-xl font-bold text-white">
+                        ${pkg.price.toLocaleString()}
+                      </div>
+                    </div>
+                    <div className="text-white text-sm">Ver detalles →</div>
+                  </div>
+                </div>
+              </div>
+              
+              {/* Title visible when not hovering */}
+              <div className={`p-4 bg-white ${hoveredUnit === pkg.id ? 'opacity-0' : 'opacity-100'} transition-opacity absolute bottom-0 left-0 right-0`}>
+                <h3 className="text-xl font-display font-bold">{pkg.title}</h3>
+              </div>
+            </div>
+          ))}
+        </div>
         
         {/* Contador de urgencia */}
         <div className="bg-white p-4 rounded-lg shadow-md mb-10 max-w-2xl mx-auto">
@@ -101,58 +151,6 @@ const Packages = ({ units, isLoading }: PackagesProps) => {
           </div>
         </div>
         
-        {/* Paquetes */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mt-8">
-          {packages.map((pkg, index) => (
-            <div 
-              key={index} 
-              className="bg-white rounded-lg overflow-hidden shadow-lg hover:shadow-xl transition-all transform hover:-translate-y-1"
-            >
-              <div className="relative">
-                <img 
-                  src={pkg.image} 
-                  alt={pkg.title} 
-                  className="w-full h-48 object-cover"
-                />
-                <div className="absolute top-2 right-2 bg-accent text-white text-xs px-2 py-1 rounded-full">
-                  {Math.round((1 - (pkg.price / pkg.originalPrice)) * 100)}% OFF
-                </div>
-              </div>
-              <div className="p-6">
-                <h3 className="text-xl font-display font-bold mb-2">{pkg.title}</h3>
-                <p className="text-gray-600 mb-4 text-sm">{pkg.description}</p>
-                
-                <ul className="space-y-2 mb-4">
-                  {pkg.features.map((feature, i) => (
-                    <li key={i} className="flex items-start gap-2 text-sm">
-                      <span className="text-accent">✓</span>
-                      <span>{feature}</span>
-                    </li>
-                  ))}
-                </ul>
-                
-                <div className="flex items-end justify-between mt-4">
-                  <div>
-                    <span className="text-gray-400 line-through text-sm">
-                      ${pkg.originalPrice.toLocaleString()}
-                    </span>
-                    <div className="text-2xl font-bold text-primary">
-                      ${pkg.price.toLocaleString()}
-                    </div>
-                    <div className="text-xs text-gray-500">por estadía</div>
-                  </div>
-                  <Button 
-                    onClick={handleReserveClick}
-                    className="bg-accent hover:bg-accent/90"
-                  >
-                    Reservar
-                  </Button>
-                </div>
-              </div>
-            </div>
-          ))}
-        </div>
-        
         {/* Disponibilidad limitada */}
         <div className="text-center mt-10">
           <p className="text-sm text-red-600 font-semibold mb-4">
@@ -161,7 +159,7 @@ const Packages = ({ units, isLoading }: PackagesProps) => {
           <Button 
             size="lg" 
             className="bg-primary hover:bg-primary/90"
-            onClick={handleReserveClick}
+            onClick={() => handleUnitClick("48a7a330-ebae-4e79-8f53-31a84ac900d9")}
           >
             Ver Disponibilidad
           </Button>
