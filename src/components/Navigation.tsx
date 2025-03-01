@@ -85,6 +85,13 @@ const Navigation = () => {
             Ubicación
           </Button>
           <Button
+            variant="ghost"
+            onClick={() => scrollToSection('contact')}
+            className="hidden md:inline-flex"
+          >
+            Contacto
+          </Button>
+          <Button
             variant={isMobile ? "ghost" : "default"}
             onClick={handleReserveClick}
           >

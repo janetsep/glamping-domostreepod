@@ -12,6 +12,13 @@ const Hero = () => {
 
   return (
     <section id="hero" className="h-screen relative">
+      {/* Título de sección */}
+      <div className="w-full bg-primary/5 border-b border-primary/10 py-3 absolute top-0 z-10">
+        <div className="container mx-auto px-4">
+          <h1 className="text-xl font-medium text-primary">Inicio</h1>
+        </div>
+      </div>
+      
       {/* Imagen de fondo con overlay */}
       <div className="absolute inset-0 z-0">
         <img 
