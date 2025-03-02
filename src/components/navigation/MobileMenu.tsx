@@ -29,8 +29,13 @@ const MobileMenu = ({
     setMobileMenuOpen(false);
   };
 
+  const onReserveClick = () => {
+    handleReserveClick();
+    setMobileMenuOpen(false);
+  };
+
   return (
-    <>
+    <div className="md:hidden">
       <button 
         onClick={() => setMobileMenuOpen(!mobileMenuOpen)} 
         className="p-2 text-gray-700"
@@ -52,14 +57,14 @@ const MobileMenu = ({
           
           <Button
             variant="default"
-            onClick={handleReserveClick}
+            onClick={onReserveClick}
             className="mt-6 w-full py-6 text-lg bg-cyan-500 hover:bg-cyan-600 text-white"
           >
             Reservar Ahora
           </Button>
         </div>
       </div>
-    </>
+    </div>
   );
 };
 

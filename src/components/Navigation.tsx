@@ -19,23 +19,21 @@ const Navigation = () => {
       <div className="container mx-auto px-4 flex items-center justify-between">
         <Logo isScrolled={isScrolled} />
 
-        {/* Menú móvil */}
-        {isMobile && (
+        {isMobile ? (
           <MobileMenu 
             isScrolled={isScrolled} 
             handleReserveClick={handleReserveClick} 
             scrollToSection={scrollToSection} 
             navigateToPage={navigateToPage} 
           />
+        ) : (
+          <DesktopMenu 
+            isScrolled={isScrolled} 
+            handleReserveClick={handleReserveClick} 
+            scrollToSection={scrollToSection} 
+            navigateToPage={navigateToPage} 
+          />
         )}
-
-        {/* Menú escritorio */}
-        <DesktopMenu 
-          isScrolled={isScrolled} 
-          handleReserveClick={handleReserveClick} 
-          scrollToSection={scrollToSection} 
-          navigateToPage={navigateToPage} 
-        />
       </div>
     </nav>
   );

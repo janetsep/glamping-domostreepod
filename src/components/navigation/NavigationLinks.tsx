@@ -25,13 +25,21 @@ export const NavigationLinks = ({
     { name: "Contacto", id: "contact" },
   ];
 
+  const handleClick = (link: { name: string; id?: string; path?: string }) => {
+    if (link.path) {
+      navigateToPage(link.path);
+    } else if (link.id) {
+      scrollToSection(link.id);
+    }
+  };
+
   if (isMobile) {
     return (
       <>
         {links.map((link) => (
           <button 
             key={link.name}
-            onClick={() => link.path ? navigateToPage(link.path) : scrollToSection(link.id!)}
+            onClick={() => handleClick(link)}
             className="py-3 border-b border-gray-100 text-left text-lg"
           >
             {link.name}
@@ -47,7 +55,7 @@ export const NavigationLinks = ({
         <Button
           key={link.name}
           variant={isScrolled ? "ghost" : "link"}
-          onClick={() => link.path ? navigateToPage(link.path) : scrollToSection(link.id!)}
+          onClick={() => handleClick(link)}
           className={`text-base md:text-lg font-medium ${isScrolled ? 'text-gray-700 hover:text-cyan-500' : 'text-white text-shadow'}`}
         >
           {link.name}
