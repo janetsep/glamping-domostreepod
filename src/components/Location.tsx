@@ -36,13 +36,15 @@ const Location = () => {
           Ubicados en el Valle Las Trancas, a 10 minutos de las Termas de Chillán, rodeados de bosques vírgenes y lejos del ruido urbano
         </p>
         
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
-          {/* Elfsight Store Locator Widget */}
+        {/* Mapa a ancho completo encima de los detalles */}
+        <div className="w-full mb-12">
           <div className="rounded-lg overflow-hidden shadow-lg h-[400px]">
             <div className="elfsight-app-12e4e663-8c5f-4b7f-84a7-2e3a311f4a62" data-elfsight-app-lazy></div>
           </div>
-          
-          {/* Información del Valle */}
+        </div>
+        
+        {/* Información del Valle */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-start">
           <div>
             <div className="flex items-start gap-4 mb-6">
               <MapPin className="h-6 w-6 text-accent flex-shrink-0 mt-1" />
@@ -90,7 +92,9 @@ const Location = () => {
                 </div>
               </div>
             </div>
-            
+          </div>
+          
+          <div>
             <h3 className="text-xl font-semibold mb-4">Cómo llegar:</h3>
             <div className="space-y-3">
               <div className="flex items-start gap-3">
