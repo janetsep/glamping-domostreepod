@@ -2,7 +2,6 @@
 import { MapPin, Trees, Droplets, Bird, Car, Bus, Plane } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
-import { useEffect } from "react";
 
 const Location = () => {
   const navigate = useNavigate();
@@ -10,14 +9,6 @@ const Location = () => {
   const handleExploreClick = () => {
     navigate("/unit/48a7a330-ebae-4e79-8f53-31a84ac900d9"); // ID del Domo Araucaria
   };
-  
-  // Initialize Elfsight widget when component mounts
-  useEffect(() => {
-    // Force reinitialization of the Elfsight widget
-    if (window.elfsight && typeof window.elfsight.initialize === 'function') {
-      window.elfsight.initialize();
-    }
-  }, []);
   
   return (
     <section id="location" className="py-20 bg-white">
@@ -36,10 +27,18 @@ const Location = () => {
           Ubicados en el Valle Las Trancas, a 10 minutos de las Termas de Chillán, rodeados de bosques vírgenes y lejos del ruido urbano
         </p>
         
-        {/* Mapa a ancho completo encima de los detalles */}
+        {/* Google Maps a ancho completo encima de los detalles */}
         <div className="w-full mb-12">
           <div className="rounded-lg overflow-hidden shadow-lg h-[400px]">
-            <div className="elfsight-app-12e4e663-8c5f-4b7f-84a7-2e3a311f4a62" data-elfsight-app-lazy></div>
+            <iframe 
+              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3192.2092131459133!2d-71.4865568!3d-36.908599!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x9669e25f76da97d9%3A0xdc5a55a3c0c2ffb7!2sTreePod%20Glamping!5e0!3m2!1ses!2scl!4v1715374232348!5m2!1ses!2scl" 
+              width="100%" 
+              height="100%" 
+              style={{ border: 0 }} 
+              allowFullScreen 
+              loading="lazy" 
+              referrerPolicy="no-referrer-when-downgrade"
+            ></iframe>
           </div>
         </div>
         
