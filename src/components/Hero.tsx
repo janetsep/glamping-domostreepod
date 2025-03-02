@@ -1,6 +1,7 @@
 
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
+import { ChevronDown } from "lucide-react";
 
 const Hero = () => {
   const navigate = useNavigate();
@@ -41,9 +42,7 @@ const Hero = () => {
       
       {/* Indicador de scroll */}
       <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 z-10 animate-bounce">
-        <div className="w-8 h-14 rounded-full border-2 border-white/60 flex justify-center pt-2">
-          <div className="w-1.5 h-3 bg-white/80 rounded-full animate-pulse"></div>
-        </div>
+        <ChevronDown className="w-10 h-10 text-white/90" strokeWidth={1.5} />
       </div>
     </section>
   );
