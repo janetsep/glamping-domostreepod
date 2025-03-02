@@ -131,21 +131,33 @@ const Footer = () => {
               </li>
             </ul>
             <div className="flex gap-3 mt-4">
-              <Button variant="ghost" size="icon" asChild className="bg-white hover:bg-primary/10 shadow-sm">
-                <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" aria-label="Facebook">
-                  <Facebook className="h-5 w-5 text-primary" />
-                </a>
-              </Button>
-              <Button variant="ghost" size="icon" asChild className="bg-white hover:bg-primary/10 shadow-sm">
-                <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" aria-label="Instagram">
-                  <Instagram className="h-5 w-5 text-primary" />
-                </a>
-              </Button>
-              <Button variant="ghost" size="icon" asChild className="bg-white hover:bg-primary/10 shadow-sm">
-                <a href="https://youtube.com" target="_blank" rel="noopener noreferrer" aria-label="YouTube">
-                  <Youtube className="h-5 w-5 text-primary" />
-                </a>
-              </Button>
+              <a 
+                href="https://facebook.com" 
+                target="_blank" 
+                rel="noopener noreferrer" 
+                aria-label="Facebook"
+                className="inline-flex items-center justify-center w-10 h-10 rounded-md bg-white hover:bg-primary/10 shadow-sm transition-colors"
+              >
+                <Facebook className="h-5 w-5 text-primary" />
+              </a>
+              <a 
+                href="https://instagram.com" 
+                target="_blank" 
+                rel="noopener noreferrer" 
+                aria-label="Instagram"
+                className="inline-flex items-center justify-center w-10 h-10 rounded-md bg-white hover:bg-primary/10 shadow-sm transition-colors"
+              >
+                <Instagram className="h-5 w-5 text-primary" />
+              </a>
+              <a 
+                href="https://youtube.com" 
+                target="_blank" 
+                rel="noopener noreferrer" 
+                aria-label="YouTube"
+                className="inline-flex items-center justify-center w-10 h-10 rounded-md bg-white hover:bg-primary/10 shadow-sm transition-colors"
+              >
+                <Youtube className="h-5 w-5 text-primary" />
+              </a>
             </div>
           </div>
           
