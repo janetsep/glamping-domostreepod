@@ -45,7 +45,7 @@ const Hero = () => {
             />
           </div>
         ))}
-        <div className="absolute inset-0 bg-black/40 backdrop-blur-[2px]"></div>
+        <div className="absolute inset-0 bg-black/45 backdrop-blur-[1px]"></div>
       </div>
       
       <div className="container mx-auto px-4 relative z-10 h-full flex items-center">
@@ -58,7 +58,7 @@ const Hero = () => {
           </p>
           <Button 
             size="lg" 
-            className="bg-accent hover:bg-accent/90 text-white text-lg font-semibold px-8 py-6 rounded-full shadow-lg transition-all duration-300 hover:scale-105"
+            className="bg-accent hover:bg-accent/90 text-white text-lg font-medium px-8 py-6 rounded-full shadow-lg transition-all duration-300 hover:scale-105"
             onClick={handleReserveClick}
           >
             Reserva tu Experiencia
