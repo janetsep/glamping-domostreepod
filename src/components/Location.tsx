@@ -2,6 +2,7 @@
 import { MapPin, Trees, Droplets, Bird, Car, Bus, Plane } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
+import { useEffect } from "react";
 
 const Location = () => {
   const navigate = useNavigate();
@@ -9,6 +10,14 @@ const Location = () => {
   const handleExploreClick = () => {
     navigate("/unit/48a7a330-ebae-4e79-8f53-31a84ac900d9"); // ID del Domo Araucaria
   };
+  
+  // Initialize Elfsight widget when component mounts
+  useEffect(() => {
+    // Force reinitialization of the Elfsight widget
+    if (window.elfsight && typeof window.elfsight.initialize === 'function') {
+      window.elfsight.initialize();
+    }
+  }, []);
   
   return (
     <section id="location" className="py-20 bg-white">
@@ -28,18 +37,9 @@ const Location = () => {
         </p>
         
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
-          {/* Mapa */}
+          {/* Elfsight Store Locator Widget */}
           <div className="rounded-lg overflow-hidden shadow-lg h-[400px]">
-            <iframe 
-              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d101642.12996031373!2d-71.53145371913551!3d-36.86035225613085!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x9662d30354addbf9%3A0xfee2d4459f4d9099!2sValle%20Las%20Trancas%2C%20Chile!5e0!3m2!1ses!2scl!4v1705543234507!5m2!1ses!2scl" 
-              width="100%" 
-              height="100%" 
-              style={{ border: 0 }} 
-              allowFullScreen 
-              loading="lazy" 
-              referrerPolicy="no-referrer-when-downgrade"
-              title="Mapa de ubicación"
-            ></iframe>
+            <div className="elfsight-app-12e4e663-8c5f-4b7f-84a7-2e3a311f4a62" data-elfsight-app-lazy></div>
           </div>
           
           {/* Información del Valle */}
