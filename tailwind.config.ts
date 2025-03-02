@@ -1,4 +1,3 @@
-
 import type { Config } from "tailwindcss";
 
 export default {
@@ -55,9 +54,9 @@ export default {
         },
       },
       fontFamily: {
-        sans: ["Inter", "Merriweather", "sans-serif"],
-        display: ["Playfair Display", "serif"],
-        body: ["Inter", "Merriweather", "sans-serif"],
+        sans: ["Open Sans", "Nunito", "sans-serif"],
+        display: ["Poppins", "sans-serif"],
+        body: ["Open Sans", "Nunito", "sans-serif"],
       },
       borderRadius: {
         lg: "var(--radius)",
