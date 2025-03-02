@@ -55,8 +55,8 @@ export default {
         },
       },
       fontFamily: {
-        sans: ["Merriweather", "serif"],
-        display: ["Lora", "serif"],
+        sans: ["Inter", "system-ui", "sans-serif"],
+        display: ["Playfair Display", "serif"],
         body: ["Merriweather", "serif"],
       },
       borderRadius: {
