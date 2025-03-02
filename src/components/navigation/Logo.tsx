@@ -1,20 +1,21 @@
 
-import { Link } from "react-router-dom";
+import { useNavigation } from "./useNavigation";
 
 interface LogoProps {
   isScrolled: boolean;
 }
 
 const Logo = ({ isScrolled }: LogoProps) => {
+  const { navigateToHome } = useNavigation();
+
   return (
-    <div className="flex items-center">
-      <Link to="/">
-        <img 
-          src="/lovable-uploads/21690294-058b-4ab7-9d01-fcf2bd94b8b3.png" 
-          alt="Domos Treepod" 
-          className={`h-14 transition-all duration-300 ${isScrolled ? 'h-12' : 'h-16'}`}
-        />
-      </Link>
+    <div 
+      className="flex items-center cursor-pointer" 
+      onClick={navigateToHome}
+    >
+      <h1 className={`font-serif text-2xl md:text-3xl font-bold ${isScrolled ? 'text-cyan-700' : 'text-white text-shadow'}`}>
+        DOMOtreepod
+      </h1>
     </div>
   );
 };

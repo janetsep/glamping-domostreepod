@@ -1,5 +1,4 @@
 
-import { Button } from "@/components/ui/button";
 import { useMobile } from "@/hooks/use-mobile";
 import { useScrollDetection } from "./navigation/useScrollDetection";
 import { useNavigation } from "./navigation/useNavigation";

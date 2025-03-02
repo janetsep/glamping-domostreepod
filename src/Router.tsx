@@ -8,12 +8,16 @@ import {
 import App from "./App";
 import AboutUs from "./pages/AboutUs";
 import NotFound from "./pages/NotFound";
+import Index from "./pages/Index";
+import UnitDetail from "./pages/UnitDetail";
 
 const router = createBrowserRouter(
   createRoutesFromElements(
     <Route path="/" element={<App />} errorElement={<NotFound />}>
-      <Route index element={<AboutUs />} />
+      <Route index element={<Index />} />
+      <Route path="index" element={<Index />} />
       <Route path="sobre-nosotros" element={<AboutUs />} />
+      <Route path="unit/:unitId" element={<UnitDetail />} />
     </Route>
   )
 );

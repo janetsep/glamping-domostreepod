@@ -15,7 +15,7 @@ export const NavigationLinks = ({
   navigateToPage
 }: NavigationLinksProps) => {
   const links = [
-    { name: "Inicio", id: "hero" },
+    { name: "Inicio", path: "/" },  // Changed to use path for more reliable navigation
     { name: "Domos", id: "packages" },
     { name: "Servicios", id: "benefits" },
     { name: "Experiencias", id: "testimonials" },
