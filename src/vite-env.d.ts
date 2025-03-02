@@ -4,5 +4,5 @@
 interface Window {
   elfsight?: {
     initialize: () => void;
-  }
+  };
 }
