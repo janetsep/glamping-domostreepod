@@ -1,7 +1,7 @@
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { 
   Facebook, 
   Instagram, 
@@ -18,6 +18,7 @@ import { toast } from "sonner";
 
 const Footer = () => {
   const [email, setEmail] = useState("");
+  const navigate = useNavigate();
 
   const handleNewsletterSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -25,6 +26,27 @@ const Footer = () => {
       description: "Pronto recibirás nuestras novedades y ofertas especiales."
     });
     setEmail("");
+  };
+
+  const navigateTo = (path: string) => {
+    // Si es un hash link en la página principal
+    if (path.startsWith('/#')) {
+      // Si ya estamos en la página principal
+      if (window.location.pathname === '/') {
+        const element = document.getElementById(path.substring(2));
+        if (element) {
+          element.scrollIntoView({ behavior: 'smooth' });
+        }
+      } else {
+        // Si estamos en otra página, navegar a la página principal con el hash
+        navigate(path);
+      }
+    } else {
+      // Si es una ruta normal
+      navigate(path);
+      // Asegurar que la página se muestre desde el inicio
+      window.scrollTo(0, 0);
+    }
   };
 
   return (
@@ -60,13 +82,13 @@ const Footer = () => {
                 { name: "Contacto", href: "/#contact" }
               ].map((item) => (
                 <li key={item.name}>
-                  <Link 
-                    to={item.href} 
-                    className="text-gray-600 hover:text-primary flex items-center transition-colors"
+                  <button 
+                    onClick={() => navigateTo(item.href)} 
+                    className="text-gray-600 hover:text-primary flex items-center transition-colors cursor-pointer"
                   >
                     <ChevronRight className="h-4 w-4 mr-1" />
                     {item.name}
-                  </Link>
+                  </button>
                 </li>
               ))}
             </ul>
@@ -110,19 +132,19 @@ const Footer = () => {
             </ul>
             <div className="flex gap-3 mt-4">
               <Button variant="ghost" size="icon" asChild className="bg-white hover:bg-primary/10 shadow-sm">
-                <Link to="https://facebook.com" target="_blank" aria-label="Facebook">
+                <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" aria-label="Facebook">
                   <Facebook className="h-5 w-5 text-primary" />
-                </Link>
+                </a>
               </Button>
               <Button variant="ghost" size="icon" asChild className="bg-white hover:bg-primary/10 shadow-sm">
-                <Link to="https://instagram.com" target="_blank" aria-label="Instagram">
+                <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" aria-label="Instagram">
                   <Instagram className="h-5 w-5 text-primary" />
-                </Link>
+                </a>
               </Button>
               <Button variant="ghost" size="icon" asChild className="bg-white hover:bg-primary/10 shadow-sm">
-                <Link to="https://youtube.com" target="_blank" aria-label="YouTube">
+                <a href="https://youtube.com" target="_blank" rel="noopener noreferrer" aria-label="YouTube">
                   <Youtube className="h-5 w-5 text-primary" />
-                </Link>
+                </a>
               </Button>
             </div>
           </div>
@@ -152,24 +174,24 @@ const Footer = () => {
         {/* Additional Links */}
         <div className="border-t border-gray-200 pt-8 pb-6">
           <div className="flex flex-wrap justify-center gap-4 mb-6">
-            <Link to="#" className="text-sm text-gray-600 hover:text-primary">
+            <button onClick={() => navigateTo("#")} className="text-sm text-gray-600 hover:text-primary">
               Términos y Condiciones
-            </Link>
-            <Link to="#" className="text-sm text-gray-600 hover:text-primary">
+            </button>
+            <button onClick={() => navigateTo("#")} className="text-sm text-gray-600 hover:text-primary">
               Política de Privacidad
-            </Link>
-            <Link to="#" className="text-sm text-gray-600 hover:text-primary">
+            </button>
+            <button onClick={() => navigateTo("#")} className="text-sm text-gray-600 hover:text-primary">
               Política de Cancelación
-            </Link>
-            <Link to="#" className="text-sm text-gray-600 hover:text-primary">
+            </button>
+            <button onClick={() => navigateTo("#")} className="text-sm text-gray-600 hover:text-primary">
               Preguntas Frecuentes
-            </Link>
-            <Link to="/sobre-nosotros" className="text-sm text-gray-600 hover:text-primary">
+            </button>
+            <button onClick={() => navigateTo("/sobre-nosotros")} className="text-sm text-gray-600 hover:text-primary">
               Sobre Nosotros
-            </Link>
-            <Link to="#" className="text-sm text-gray-600 hover:text-primary">
+            </button>
+            <button onClick={() => navigateTo("#")} className="text-sm text-gray-600 hover:text-primary">
               Mapa del Sitio
-            </Link>
+            </button>
           </div>
         </div>
         

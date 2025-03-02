@@ -1,5 +1,5 @@
 
-import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import { createBrowserRouter, RouterProvider, ScrollRestoration } from "react-router-dom";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import WebPayReturn from "./pages/WebPayReturn";
@@ -23,23 +23,48 @@ const queryClient = new QueryClient({
 export const router = createBrowserRouter([
   {
     path: "/",
-    element: <Index />,
+    element: (
+      <>
+        <Index />
+        <ScrollRestoration />
+      </>
+    ),
   },
   {
     path: "/unit/:id",
-    element: <UnitDetail />,
+    element: (
+      <>
+        <UnitDetail />
+        <ScrollRestoration />
+      </>
+    ),
   },
   {
     path: "/webpay/return",
-    element: <WebPayReturn />,
+    element: (
+      <>
+        <WebPayReturn />
+        <ScrollRestoration />
+      </>
+    ),
   },
   {
     path: "/sobre-nosotros",
-    element: <AboutUs />,
+    element: (
+      <>
+        <AboutUs />
+        <ScrollRestoration />
+      </>
+    ),
   },
   {
     path: "*",
-    element: <NotFound />,
+    element: (
+      <>
+        <NotFound />
+        <ScrollRestoration />
+      </>
+    ),
   },
 ]);
 

@@ -1,6 +1,6 @@
 
 import { Button } from "@/components/ui/button";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { useMobile } from "@/hooks/use-mobile";
 
 const Navigation = () => {
@@ -13,9 +13,15 @@ const Navigation = () => {
   };
 
   const scrollToSection = (id: string) => {
-    const element = document.getElementById(id);
-    if (element) {
-      element.scrollIntoView({ behavior: 'smooth' });
+    // Si estamos en la página principal, desplazamos a la sección
+    if (window.location.pathname === '/') {
+      const element = document.getElementById(id);
+      if (element) {
+        element.scrollIntoView({ behavior: 'smooth' });
+      }
+    } else {
+      // Si estamos en otra página, primero navegamos a la principal y luego al ID
+      navigate(`/#${id}`);
     }
   };
 
@@ -23,12 +29,13 @@ const Navigation = () => {
     <nav className="bg-white py-4 shadow-sm sticky top-0 z-50">
       <div className="container mx-auto px-4 flex items-center justify-between">
         <div className="flex items-center">
-          <img 
-            src="/lovable-uploads/21690294-058b-4ab7-9d01-fcf2bd94b8b3.png" 
-            alt="Domos Treepod" 
-            className="h-16 mr-2 cursor-pointer"
-            onClick={() => scrollToSection('hero')}
-          />
+          <Link to="/">
+            <img 
+              src="/lovable-uploads/21690294-058b-4ab7-9d01-fcf2bd94b8b3.png" 
+              alt="Domos Treepod" 
+              className="h-16 mr-2 cursor-pointer"
+            />
+          </Link>
         </div>
 
         <div className="flex gap-4 items-center">
@@ -76,6 +83,13 @@ const Navigation = () => {
             className="hidden md:inline-flex"
           >
             Ubicación
+          </Button>
+          <Button
+            variant="ghost"
+            onClick={() => navigate('/sobre-nosotros')}
+            className="hidden md:inline-flex"
+          >
+            Sobre Nosotros
           </Button>
           <Button
             variant="ghost"
