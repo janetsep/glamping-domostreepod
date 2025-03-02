@@ -1,6 +1,7 @@
 
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
+import { Calendar, ShieldCheck } from "lucide-react";
 
 interface ReservationSummaryProps {
   quote: {
@@ -59,21 +60,30 @@ export const ReservationSummary = ({
           <span>${quote.totalPrice.toLocaleString()}</span>
         </div>
         {isAvailable ? (
-          <p className="text-green-600 text-sm">✓ Fechas disponibles</p>
+          <div className="flex items-center gap-1 text-green-600 text-sm">
+            <Calendar size={14} />
+            <span>✓ Fechas disponibles - ¡Asegura tu reserva!</span>
+          </div>
         ) : (
           <p className="text-red-600 text-sm">✗ Fechas no disponibles</p>
         )}
       </div>
 
       {!showPaymentOptions ? (
-        <Button
-          className="w-full"
-          size="lg"
-          disabled={isLoading || !isAvailable}
-          onClick={handleAcceptQuote}
-        >
-          {buttonText}
-        </Button>
+        <div>
+          <Button
+            className="w-full bg-accent hover:bg-accent/90 shadow-md"
+            size="lg"
+            disabled={isLoading || !isAvailable}
+            onClick={handleAcceptQuote}
+          >
+            {buttonText}
+          </Button>
+          <div className="mt-3 text-xs text-gray-500 flex items-center justify-center gap-1">
+            <ShieldCheck size={14} />
+            <span>Reserva segura, cancelación flexible hasta 7 días antes</span>
+          </div>
+        </div>
       ) : (
         <div className="space-y-4 border-t pt-4">
           <h3 className="font-semibold text-md">Opciones de pago</h3>
@@ -91,7 +101,7 @@ export const ReservationSummary = ({
             </Button>
           </div>
           <Button
-            className="w-full mt-4"
+            className="w-full mt-4 bg-accent hover:bg-accent/90"
             size="lg"
             onClick={handleConfirmReservation}
             disabled={!selectedPayment}

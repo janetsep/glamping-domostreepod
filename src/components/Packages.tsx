@@ -1,4 +1,3 @@
-
 import { Calendar, Users, Coffee, Droplets, Wifi, Flame, BedDouble, Mountain } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
@@ -103,6 +102,10 @@ const Packages = ({ units, isLoading }: PackagesProps) => {
   const toggleExpandUnit = (unitId: string, event: React.MouseEvent) => {
     event.stopPropagation();
     setExpandedUnit(expandedUnit === unitId ? null : unitId);
+  };
+
+  const handleReservationClick = () => {
+    navigate(`/unit/48a7a330-ebae-4e79-8f53-31a84ac900d9`);
   };
 
   return (
@@ -254,6 +257,23 @@ const Packages = ({ units, isLoading }: PackagesProps) => {
           ))}
         </div>
         
+        {/* CTA después de la sección de domos */}
+        <div className="mt-12 mb-16 bg-gradient-to-r from-accent/10 to-primary/10 rounded-lg p-8 text-center">
+          <h3 className="text-2xl md:text-3xl font-display font-bold text-primary mb-3">
+            ¿Te imaginas despertando con estas vistas?
+          </h3>
+          <p className="text-lg text-gray-700 mb-6 max-w-2xl mx-auto">
+            Reserva tu domo ahora y prepárate para vivir una experiencia inolvidable en medio de la naturaleza.
+          </p>
+          <Button 
+            size="lg" 
+            className="bg-accent hover:bg-accent/90 font-medium"
+            onClick={handleReservationClick}
+          >
+            Asegura tu experiencia ahora
+          </Button>
+        </div>
+        
         {/* Contador de urgencia */}
         <div className="bg-white p-4 rounded-lg shadow-md mb-10 max-w-2xl mx-auto">
           <div className="text-center mb-2">
@@ -276,8 +296,8 @@ const Packages = ({ units, isLoading }: PackagesProps) => {
           </div>
         </div>
         
-        {/* Disponibilidad limitada */}
-        <div className="text-center mt-10">
+        {/* Disponibilidad limitada - Enhanced CTA */}
+        <div className="text-center mt-10 mb-6">
           <p className="text-sm text-red-600 font-semibold mb-4">
             ¡Solo quedan 3 domos disponibles para este fin de semana!
           </p>
@@ -288,6 +308,9 @@ const Packages = ({ units, isLoading }: PackagesProps) => {
           >
             Ver Disponibilidad
           </Button>
+          <p className="text-sm text-gray-500 mt-3">
+            No esperes más, la naturaleza te está esperando
+          </p>
         </div>
       </div>
     </section>
