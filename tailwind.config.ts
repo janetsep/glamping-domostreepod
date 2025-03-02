@@ -1,4 +1,3 @@
-
 import type { Config } from "tailwindcss";
 
 export default {
@@ -63,6 +62,7 @@ export default {
         md: "calc(var(--radius) - 2px)",
         sm: "calc(var(--radius) - 4px)",
       },
+      
       keyframes: {
         "accordion-down": {
           from: { height: "0" },
@@ -76,14 +76,43 @@ export default {
           "0%": { opacity: "0", transform: "translateY(10px)" },
           "100%": { opacity: "1", transform: "translateY(0)" },
         },
+        float: {
+          "0%, 100%": { transform: "translateY(0)" },
+          "50%": { transform: "translateY(-10px)" },
+        },
+        pulse: {
+          "0%, 100%": { opacity: "1" },
+          "50%": { opacity: "0.5" },
+        },
+        subtleZoom: {
+          "0%": { transform: "scale(1)" },
+          "100%": { transform: "scale(1.05)" },
+        },
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
-        fadeIn: "fadeIn 0.5s ease-out",
+        fadeIn: "fadeIn 0.8s ease-out",
+        float: "float 6s ease-in-out infinite",
+        pulse: "pulse 4s ease-in-out infinite",
+        subtleZoom: "subtleZoom 30s ease-in-out infinite alternate",
       },
       textShadow: {
         DEFAULT: '1px 1px 3px rgba(0, 0, 0, 0.75)',
+        md: '0 2px 4px rgba(0, 0, 0, 0.6)',
+        lg: '0 4px 8px rgba(0, 0, 0, 0.5)',
+      },
+      transitionProperty: {
+        'height': 'height',
+        'spacing': 'margin, padding',
+      },
+      spacing: {
+        '112': '28rem',
+        '128': '32rem',
+      },
+      aspectRatio: {
+        'portrait': '3/4',
+        'cinematic': '21/9',
       },
     },
   },
@@ -93,6 +122,12 @@ export default {
       const newUtilities = {
         '.text-shadow': {
           textShadow: '1px 1px 3px rgba(0, 0, 0, 0.75)'
+        },
+        '.text-shadow-md': {
+          textShadow: '0 2px 4px rgba(0, 0, 0, 0.6)'
+        },
+        '.text-shadow-lg': {
+          textShadow: '0 4px 8px rgba(0, 0, 0, 0.5)'
         },
         '.text-shadow-none': {
           textShadow: 'none'
