@@ -1,15 +1,5 @@
 
-import { useEffect } from "react";
-
 const Blog = () => {
-  // Initialize Elfsight widget when component mounts
-  useEffect(() => {
-    // Force reinitialization of the Elfsight widget
-    if (window.elfsight && typeof window.elfsight.initialize === 'function') {
-      window.elfsight.initialize();
-    }
-  }, []);
-
   return (
     <section id="blog" className="py-20 bg-white">
       {/* Franja de título sin texto */}
@@ -27,9 +17,12 @@ const Blog = () => {
           Descubre historias, consejos y experiencias sobre glamping, naturaleza y turismo sustentable
         </p>
         
-        <div className="rounded-lg overflow-hidden shadow-lg">
-          {/* Elfsight Blog Widget */}
-          <div className="elfsight-app-bf93849c-d740-491c-b64f-60a38a56932e" data-elfsight-app-lazy></div>
+        <div className="bg-primary/5 p-12 rounded-lg text-center">
+          <h3 className="text-2xl font-medium text-primary mb-4">Próximamente</h3>
+          <p className="text-gray-600">
+            Estamos trabajando en contenido interesante para ti. 
+            ¡Vuelve pronto para descubrir nuestros artículos!
+          </p>
         </div>
       </div>
     </section>
