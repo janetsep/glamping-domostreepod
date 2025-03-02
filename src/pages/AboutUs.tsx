@@ -1,7 +1,7 @@
 
 import React from "react";
 import Navigation from "@/components/Navigation";
-import Footer from "@/components/Footer";
+import Footer from "@/components/footer";
 import { Leaf, Users, Award, Heart, Recycle, TreePine } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
 
