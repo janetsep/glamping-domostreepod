@@ -1,4 +1,3 @@
-
 import { Button } from "@/components/ui/button";
 import { useNavigate, Link } from "react-router-dom";
 import { useMobile } from "@/hooks/use-mobile";
@@ -128,7 +127,7 @@ const Navigation = () => {
                 <Button
                   variant="default"
                   onClick={handleReserveClick}
-                  className="mt-6 w-full py-6 text-lg"
+                  className="mt-6 w-full py-6 text-lg bg-cyan-500 hover:bg-cyan-600 text-white"
                 >
                   Reservar Ahora
                 </Button>
@@ -152,63 +151,63 @@ const Navigation = () => {
           <Button
             variant={isScrolled ? "ghost" : "link"}
             onClick={() => scrollToSection('hero')}
-            className={`text-base md:text-lg font-medium ${isScrolled ? 'text-gray-700' : 'text-white text-shadow'}`}
+            className={`text-base md:text-lg font-medium ${isScrolled ? 'text-gray-700 hover:text-cyan-500' : 'text-white text-shadow'}`}
           >
             Inicio
           </Button>
           <Button
             variant={isScrolled ? "ghost" : "link"}
             onClick={() => scrollToSection('packages')}
-            className={`text-base md:text-lg font-medium ${isScrolled ? 'text-gray-700' : 'text-white text-shadow'}`}
+            className={`text-base md:text-lg font-medium ${isScrolled ? 'text-gray-700 hover:text-cyan-500' : 'text-white text-shadow'}`}
           >
             Domos
           </Button>
           <Button
             variant={isScrolled ? "ghost" : "link"}
             onClick={() => scrollToSection('benefits')}
-            className={`text-base md:text-lg font-medium ${isScrolled ? 'text-gray-700' : 'text-white text-shadow'}`}
+            className={`text-base md:text-lg font-medium ${isScrolled ? 'text-gray-700 hover:text-cyan-500' : 'text-white text-shadow'}`}
           >
             Servicios
           </Button>
           <Button
             variant={isScrolled ? "ghost" : "link"}
             onClick={() => scrollToSection('testimonials')}
-            className={`text-base md:text-lg font-medium ${isScrolled ? 'text-gray-700' : 'text-white text-shadow'}`}
+            className={`text-base md:text-lg font-medium ${isScrolled ? 'text-gray-700 hover:text-cyan-500' : 'text-white text-shadow'}`}
           >
             Experiencias
           </Button>
           <Button
             variant={isScrolled ? "ghost" : "link"}
             onClick={() => scrollToSection('location')}
-            className={`text-base md:text-lg font-medium ${isScrolled ? 'text-gray-700' : 'text-white text-shadow'}`}
+            className={`text-base md:text-lg font-medium ${isScrolled ? 'text-gray-700 hover:text-cyan-500' : 'text-white text-shadow'}`}
           >
             Ubicación
           </Button>
           <Button
             variant={isScrolled ? "ghost" : "link"}
             onClick={() => scrollToSection('blog')}
-            className={`text-base md:text-lg font-medium ${isScrolled ? 'text-gray-700' : 'text-white text-shadow'}`}
+            className={`text-base md:text-lg font-medium ${isScrolled ? 'text-gray-700 hover:text-cyan-500' : 'text-white text-shadow'}`}
           >
             Blog
           </Button>
           <Button
             variant={isScrolled ? "ghost" : "link"}
             onClick={() => navigateToPage('/sobre-nosotros')}
-            className={`text-base md:text-lg font-medium ${isScrolled ? 'text-gray-700' : 'text-white text-shadow'}`}
+            className={`text-base md:text-lg font-medium ${isScrolled ? 'text-gray-700 hover:text-cyan-500' : 'text-white text-shadow'}`}
           >
             Sobre Nosotros
           </Button>
           <Button
             variant={isScrolled ? "ghost" : "link"}
             onClick={() => scrollToSection('contact')}
-            className={`text-base md:text-lg font-medium ${isScrolled ? 'text-gray-700' : 'text-white text-shadow'}`}
+            className={`text-base md:text-lg font-medium ${isScrolled ? 'text-gray-700 hover:text-cyan-500' : 'text-white text-shadow'}`}
           >
             Contacto
           </Button>
           <Button
             variant={isScrolled ? "default" : "outline"}
             onClick={handleReserveClick}
-            className={`text-base md:text-lg ${isScrolled ? "bg-primary" : "bg-transparent text-white border-white hover:bg-white/20 hover:text-white"}`}
+            className={`text-base md:text-lg ${isScrolled ? "bg-cyan-500 hover:bg-cyan-600 text-white" : "bg-transparent text-white border-white hover:bg-white/20 hover:text-white"}`}
           >
             Reservar
           </Button>

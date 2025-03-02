@@ -34,7 +34,7 @@ export default {
           foreground: "#2D2D2D",
         },
         accent: {
-          DEFAULT: "#0096CC",
+          DEFAULT: "#0EA5E9", // Updaded to use a more cyan color
           foreground: "#FFFFFF",
         },
         destructive: {
@@ -52,6 +52,10 @@ export default {
         card: {
           DEFAULT: "hsl(var(--card))",
           foreground: "hsl(var(--card-foreground))",
+        },
+        cyan: {
+          500: "#0EA5E9", // Using a specific cyan color
+          600: "#0284C7", // Slightly darker for hover states
         },
       },
       fontFamily: {

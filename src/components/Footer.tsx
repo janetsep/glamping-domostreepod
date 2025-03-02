@@ -1,4 +1,3 @@
-
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Link, useNavigate } from "react-router-dom";
@@ -138,7 +137,7 @@ const Footer = () => {
                 aria-label="Facebook"
                 className="inline-flex items-center justify-center w-10 h-10 rounded-md bg-white hover:bg-primary/10 shadow-sm transition-colors"
               >
-                <Facebook className="h-5 w-5 text-primary" />
+                <Facebook className="h-5 w-5 text-cyan-500" />
               </a>
               <a 
                 href="https://instagram.com" 
@@ -147,7 +146,7 @@ const Footer = () => {
                 aria-label="Instagram"
                 className="inline-flex items-center justify-center w-10 h-10 rounded-md bg-white hover:bg-primary/10 shadow-sm transition-colors"
               >
-                <Instagram className="h-5 w-5 text-primary" />
+                <Instagram className="h-5 w-5 text-cyan-500" />
               </a>
               <a 
                 href="https://youtube.com" 
@@ -156,7 +155,7 @@ const Footer = () => {
                 aria-label="YouTube"
                 className="inline-flex items-center justify-center w-10 h-10 rounded-md bg-white hover:bg-primary/10 shadow-sm transition-colors"
               >
-                <Youtube className="h-5 w-5 text-primary" />
+                <Youtube className="h-5 w-5 text-cyan-500" />
               </a>
             </div>
           </div>
@@ -176,7 +175,7 @@ const Footer = () => {
                 required
                 className="bg-white"
               />
-              <Button type="submit" className="w-full bg-accent hover:bg-accent/90">
+              <Button type="submit" className="w-full bg-cyan-500 hover:bg-cyan-600 text-white">
                 Suscribirme
               </Button>
             </form>
@@ -186,22 +185,22 @@ const Footer = () => {
         {/* Additional Links */}
         <div className="border-t border-gray-200 pt-8 pb-6">
           <div className="flex flex-wrap justify-center gap-4 mb-6">
-            <button onClick={() => navigateTo("#")} className="text-sm text-gray-600 hover:text-primary">
+            <button onClick={() => navigateTo("#")} className="text-sm text-gray-600 hover:text-cyan-500">
               Términos y Condiciones
             </button>
-            <button onClick={() => navigateTo("#")} className="text-sm text-gray-600 hover:text-primary">
+            <button onClick={() => navigateTo("#")} className="text-sm text-gray-600 hover:text-cyan-500">
               Política de Privacidad
             </button>
-            <button onClick={() => navigateTo("#")} className="text-sm text-gray-600 hover:text-primary">
+            <button onClick={() => navigateTo("#")} className="text-sm text-gray-600 hover:text-cyan-500">
               Política de Cancelación
             </button>
-            <button onClick={() => navigateTo("#")} className="text-sm text-gray-600 hover:text-primary">
+            <button onClick={() => navigateTo("#")} className="text-sm text-gray-600 hover:text-cyan-500">
               Preguntas Frecuentes
             </button>
-            <button onClick={() => navigateTo("/sobre-nosotros")} className="text-sm text-gray-600 hover:text-primary">
+            <button onClick={() => navigateTo("/sobre-nosotros")} className="text-sm text-gray-600 hover:text-cyan-500">
               Sobre Nosotros
             </button>
-            <button onClick={() => navigateTo("#")} className="text-sm text-gray-600 hover:text-primary">
+            <button onClick={() => navigateTo("#")} className="text-sm text-gray-600 hover:text-cyan-500">
               Mapa del Sitio
             </button>
           </div>
@@ -214,7 +213,7 @@ const Footer = () => {
             <Button 
               variant="ghost" 
               onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })} 
-              className="text-primary text-sm"
+              className="text-cyan-500 text-sm"
             >
               <ArrowLeft className="mr-2 h-4 w-4" />
               Volver arriba

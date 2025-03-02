@@ -58,7 +58,7 @@ const Hero = () => {
           </p>
           <Button 
             size="lg" 
-            className="bg-accent hover:bg-accent/90 text-white text-base md:text-lg font-medium px-8 py-6 rounded-full shadow-lg transition-all duration-300 hover:scale-105"
+            className="bg-cyan-500 hover:bg-cyan-600 text-white text-base md:text-lg font-medium px-8 py-6 rounded-full shadow-lg transition-all duration-300 hover:scale-105"
             onClick={handleReserveClick}
           >
             Reserva tu Experiencia

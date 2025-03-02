@@ -12,17 +12,14 @@ const SimplifiedContact = () => {
   const [date, setDate] = useState("");
   const [guests, setGuests] = useState("");
 
-  // Initialize Elfsight widget when component mounts
   useEffect(() => {
     const script = document.createElement('script');
     script.src = "https://static.elfsight.com/platform/platform.js";
     script.async = true;
     document.body.appendChild(script);
 
-    // Cleanup
     return () => {
       document.body.removeChild(script);
-      // Ensure any instances are cleaned up
       if (window.elfsight && typeof window.elfsight.initialize === 'function') {
         // This is a safeguard in case the script has initialization functions
       }
@@ -35,7 +32,6 @@ const SimplifiedContact = () => {
       description: "Nos pondremos en contacto contigo pronto"
     });
     
-    // Navegar a una unidad después de enviar el formulario
     navigate('/unit/48a7a330-ebae-4e79-8f53-31a84ac900d9');
   };
 
@@ -56,7 +52,6 @@ const SimplifiedContact = () => {
 
   return (
     <section id="contact" className="py-20 bg-white">
-      {/* Franja de título sin texto */}
       <div className="w-full bg-primary/5 border-b border-primary/10 py-3 mb-16">
         <div className="container mx-auto px-4">
           {/* Título removido de la franja */}
@@ -139,7 +134,7 @@ const SimplifiedContact = () => {
                 </div>
               </div>
               
-              <Button type="submit" className="w-full bg-accent hover:bg-accent/90" size="lg">
+              <Button type="submit" className="w-full bg-cyan-500 hover:bg-cyan-600 text-white" size="lg">
                 Solicitar Reserva
               </Button>
             </form>
@@ -152,14 +147,14 @@ const SimplifiedContact = () => {
                   href="https://wa.me/56912345678" 
                   target="_blank" 
                   rel="noopener noreferrer"
-                  className="inline-flex items-center text-sm text-gray-600 hover:text-accent"
+                  className="inline-flex items-center text-sm text-gray-600 hover:text-cyan-500"
                 >
                   <MessageSquare className="h-4 w-4 mr-2" />
                   WhatsApp: +56 9 1234 5678
                 </a>
                 <a 
                   href="tel:+56912345678" 
-                  className="inline-flex items-center text-sm text-gray-600 hover:text-accent"
+                  className="inline-flex items-center text-sm text-gray-600 hover:text-cyan-500"
                 >
                   <Phone className="h-4 w-4 mr-2" />
                   Teléfono: +56 9 1234 5678
@@ -194,14 +189,12 @@ const SimplifiedContact = () => {
       
       {/* Elfsight Social Media Button */}
       <button 
-        className="fixed bottom-20 right-6 bg-primary text-white p-3 rounded-full shadow-lg hover:bg-primary/90 transition-colors z-50"
+        className="fixed bottom-20 right-6 bg-cyan-500 text-white p-3 rounded-full shadow-lg hover:bg-cyan-600 transition-colors z-50"
         aria-label="Ver redes sociales"
         onClick={() => {
           const elfsightElement = document.querySelector('.elfsight-app-997d64da-bc31-4252-aaea-4e030bfce7a5');
           if (elfsightElement) {
-            // If element exists, toggle a class that controls visibility
             elfsightElement.classList.toggle('active');
-            // Force reload of the widget if needed
             if (window.elfsight && typeof window.elfsight.initialize === 'function') {
               window.elfsight.initialize();
             }
