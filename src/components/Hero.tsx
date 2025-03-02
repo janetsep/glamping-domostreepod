@@ -50,10 +50,10 @@ const Hero = () => {
       
       <div className="container mx-auto px-4 relative z-10 h-full flex items-center">
         <div className="max-w-3xl mx-auto text-center animate-fadeIn">
-          <h2 className="text-4xl md:text-6xl font-display font-bold text-white mb-6 text-shadow tracking-wide">
+          <h2 className="text-4xl md:text-6xl font-display font-bold text-white mb-6 text-shadow tracking-wide leading-tight">
             Un refugio entre las copas de los árboles
           </h2>
-          <p className="text-xl md:text-2xl text-white/90 mb-8 text-shadow max-w-xl mx-auto leading-relaxed">
+          <p className="text-xl md:text-2xl font-body text-white/90 mb-8 text-shadow max-w-xl mx-auto leading-relaxed">
             Donde la naturaleza y el lujo se encuentran
           </p>
           <Button 

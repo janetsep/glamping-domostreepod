@@ -1,4 +1,7 @@
 
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Merriweather:wght@300;400;700&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -72,8 +75,12 @@
   }
   
   body {
-    @apply font-sans text-gray-800 bg-white;
+    @apply font-body text-gray-800 bg-white;
     font-feature-settings: "ss01", "ss02", "ss03", "cv01", "cv02";
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-display font-bold;
   }
 }
 
@@ -87,7 +94,7 @@
   }
   
   .section-description {
-    @apply text-xl text-center text-gray-600 mb-10 max-w-3xl mx-auto;
+    @apply text-xl text-center text-gray-600 mb-10 max-w-3xl mx-auto font-body;
   }
   
   .card-gradient {
