@@ -122,7 +122,7 @@ const Navigation = () => {
                 <Button
                   variant="default"
                   onClick={handleReserveClick}
-                  className="mt-6 w-full py-6"
+                  className="mt-6 w-full py-6 text-lg"
                 >
                   Reservar Ahora
                 </Button>
@@ -146,56 +146,56 @@ const Navigation = () => {
           <Button
             variant={isScrolled ? "ghost" : "link"}
             onClick={() => scrollToSection('hero')}
-            className={`text-sm font-medium ${isScrolled ? 'text-gray-700' : 'text-white text-shadow'}`}
+            className={`text-base md:text-lg font-medium ${isScrolled ? 'text-gray-700' : 'text-white text-shadow'}`}
           >
             Inicio
           </Button>
           <Button
             variant={isScrolled ? "ghost" : "link"}
             onClick={() => scrollToSection('packages')}
-            className={`text-sm font-medium ${isScrolled ? 'text-gray-700' : 'text-white text-shadow'}`}
+            className={`text-base md:text-lg font-medium ${isScrolled ? 'text-gray-700' : 'text-white text-shadow'}`}
           >
             Domos
           </Button>
           <Button
             variant={isScrolled ? "ghost" : "link"}
             onClick={() => scrollToSection('benefits')}
-            className={`text-sm font-medium ${isScrolled ? 'text-gray-700' : 'text-white text-shadow'}`}
+            className={`text-base md:text-lg font-medium ${isScrolled ? 'text-gray-700' : 'text-white text-shadow'}`}
           >
             Servicios
           </Button>
           <Button
             variant={isScrolled ? "ghost" : "link"}
             onClick={() => scrollToSection('testimonials')}
-            className={`text-sm font-medium ${isScrolled ? 'text-gray-700' : 'text-white text-shadow'}`}
+            className={`text-base md:text-lg font-medium ${isScrolled ? 'text-gray-700' : 'text-white text-shadow'}`}
           >
             Experiencias
           </Button>
           <Button
             variant={isScrolled ? "ghost" : "link"}
             onClick={() => scrollToSection('location')}
-            className={`text-sm font-medium ${isScrolled ? 'text-gray-700' : 'text-white text-shadow'}`}
+            className={`text-base md:text-lg font-medium ${isScrolled ? 'text-gray-700' : 'text-white text-shadow'}`}
           >
             Ubicación
           </Button>
           <Button
             variant={isScrolled ? "ghost" : "link"}
-            onClick={() => navigate('/sobre-nosotros')}
-            className={`text-sm font-medium ${isScrolled ? 'text-gray-700' : 'text-white text-shadow'}`}
+            onClick={() => navigateToPage('/sobre-nosotros')}
+            className={`text-base md:text-lg font-medium ${isScrolled ? 'text-gray-700' : 'text-white text-shadow'}`}
           >
             Sobre Nosotros
           </Button>
           <Button
             variant={isScrolled ? "ghost" : "link"}
             onClick={() => scrollToSection('contact')}
-            className={`text-sm font-medium ${isScrolled ? 'text-gray-700' : 'text-white text-shadow'}`}
+            className={`text-base md:text-lg font-medium ${isScrolled ? 'text-gray-700' : 'text-white text-shadow'}`}
           >
             Contacto
           </Button>
           <Button
             variant={isScrolled ? "default" : "outline"}
             onClick={handleReserveClick}
-            className={isScrolled ? "bg-primary" : "bg-transparent text-white border-white hover:bg-white/20 hover:text-white"}
+            className={`text-base md:text-lg ${isScrolled ? "bg-primary" : "bg-transparent text-white border-white hover:bg-white/20 hover:text-white"}`}
           >
             Reservar
           </Button>

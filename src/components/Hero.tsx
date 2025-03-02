@@ -50,15 +50,15 @@ const Hero = () => {
       
       <div className="container mx-auto px-4 relative z-10 h-full flex items-center">
         <div className="max-w-3xl mx-auto text-center animate-fadeIn">
-          <h2 className="text-4xl md:text-6xl font-display font-bold text-white mb-6 text-shadow tracking-wide leading-tight">
+          <h1 className="text-4xl md:text-5xl lg:text-6xl font-display font-bold text-white mb-6 text-shadow tracking-wide leading-tight">
             Un refugio entre las copas de los árboles
-          </h2>
+          </h1>
           <p className="text-xl md:text-2xl font-body text-white/90 mb-8 text-shadow max-w-xl mx-auto leading-relaxed">
             Donde la naturaleza y el lujo se encuentran
           </p>
           <Button 
             size="lg" 
-            className="bg-accent hover:bg-accent/90 text-white text-lg font-medium px-8 py-6 rounded-full shadow-lg transition-all duration-300 hover:scale-105"
+            className="bg-accent hover:bg-accent/90 text-white text-lg md:text-xl lg:text-2xl font-medium px-8 py-6 rounded-full shadow-lg transition-all duration-300 hover:scale-105"
             onClick={handleReserveClick}
           >
             Reserva tu Experiencia
