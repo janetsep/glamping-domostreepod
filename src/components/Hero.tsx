@@ -8,10 +8,11 @@ const Hero = () => {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   
   const images = [
-    "/lovable-uploads/221f04ad-9f65-4671-866a-1844175adeb0.png",
-    "/lovable-uploads/e07b0d00-f09b-4a23-b937-964931a152a6.png",
-    "/lovable-uploads/dbcd97fc-9467-44b8-af76-01592c156f3f.png",
-    "/lovable-uploads/badf4425-7a82-4330-9850-9dde76bc21eb.png"
+    "/lovable-uploads/65a640f0-862a-47e4-bc80-4d6cc1f2599b.png",
+    "/lovable-uploads/ed56aab2-6ded-4bab-a2ab-2471f2fc6442.png",
+    "/lovable-uploads/5bcb79d0-1a05-40e3-9088-2836fa262778.png",
+    "/lovable-uploads/3f3be815-8b79-44fa-89b0-d3d4f795e9a7.png",
+    "/lovable-uploads/fd23279d-7903-4b82-871d-b0ab29e6e890.png"
   ];
 
   useEffect(() => {
@@ -39,7 +40,7 @@ const Hero = () => {
           >
             <img 
               src={image} 
-              alt={`Domo geodésico entre árboles ${index + 1}`}
+              alt={`Bosque y naturaleza ${index + 1}`}
               className="w-full h-full object-cover object-center scale-105"
             />
           </div>
