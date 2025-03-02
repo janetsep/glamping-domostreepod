@@ -1,7 +1,6 @@
 
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
-import { ChevronDown } from "lucide-react";
 
 const Hero = () => {
   const navigate = useNavigate();
@@ -40,9 +39,15 @@ const Hero = () => {
         </div>
       </div>
       
-      {/* Indicador de scroll */}
+      {/* Indicador de scroll con forma de domo */}
       <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 z-10 animate-bounce">
-        <ChevronDown className="w-10 h-10 text-white/90" strokeWidth={1.5} />
+        <svg width="40" height="32" viewBox="0 0 40 32" fill="none" xmlns="http://www.w3.org/2000/svg" className="text-white/90">
+          <path d="M20 0C12.268 0 6 11.789 6 16C6 20.211 12.268 32 20 32C27.732 32 34 20.211 34 16C34 11.789 27.732 0 20 0Z" stroke="currentColor" strokeWidth="1.5" />
+          <path d="M6 16H34" stroke="currentColor" strokeWidth="1.5" />
+          <path d="M20 0V32" stroke="currentColor" strokeWidth="1.5" />
+          <path d="M13 8C13 8 20 10 27 8" stroke="currentColor" strokeWidth="1.5" />
+          <path d="M13 24C13 24 20 22 27 24" stroke="currentColor" strokeWidth="1.5" />
+        </svg>
       </div>
     </section>
   );
