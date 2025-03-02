@@ -8,9 +8,8 @@ import {
 import App from "./App";
 import AboutUs from "./pages/AboutUs";
 import NotFound from "./pages/NotFound";
-import Footer from "./components/footer";
 
-export const router = createBrowserRouter(
+const router = createBrowserRouter(
   createRoutesFromElements(
     <Route path="/" element={<App />} errorElement={<NotFound />}>
       <Route index element={<AboutUs />} />
@@ -20,12 +19,8 @@ export const router = createBrowserRouter(
 );
 
 function Router() {
-  return (
-    <>
-      <RouterProvider router={router} />
-      <Footer />
-    </>
-  );
+  return <RouterProvider router={router} />;
 }
 
+export { router };
 export default Router;
