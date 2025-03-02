@@ -6,6 +6,7 @@ import Benefits from "@/components/Benefits";
 import Testimonials from "@/components/Testimonials";
 import Location from "@/components/Location";
 import Packages from "@/components/Packages";
+import Blog from "@/components/Blog";
 import SimplifiedContact from "@/components/SimplifiedContact";
 import Footer from "@/components/Footer";
 import { useQuery } from "@tanstack/react-query";
@@ -48,6 +49,9 @@ const Index = () => {
       </div>
       <div className="my-8 md:my-16">
         <Packages units={units} isLoading={isLoading} />
+      </div>
+      <div className="my-8 md:my-16">
+        <Blog />
       </div>
       <div className="mt-8 md:mt-16 bg-gradient-to-r from-gray-50 to-white py-12"> {/* Gradiente sutil */}
         <SimplifiedContact />

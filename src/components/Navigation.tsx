@@ -107,6 +107,12 @@ const Navigation = () => {
                   Ubicación
                 </button>
                 <button 
+                  onClick={() => scrollToSection('blog')} 
+                  className="py-3 border-b border-gray-100 text-left text-lg"
+                >
+                  Blog
+                </button>
+                <button 
                   onClick={() => navigateToPage('/sobre-nosotros')} 
                   className="py-3 border-b border-gray-100 text-left text-lg"
                 >
@@ -177,6 +183,13 @@ const Navigation = () => {
             className={`text-base md:text-lg font-medium ${isScrolled ? 'text-gray-700' : 'text-white text-shadow'}`}
           >
             Ubicación
+          </Button>
+          <Button
+            variant={isScrolled ? "ghost" : "link"}
+            onClick={() => scrollToSection('blog')}
+            className={`text-base md:text-lg font-medium ${isScrolled ? 'text-gray-700' : 'text-white text-shadow'}`}
+          >
+            Blog
           </Button>
           <Button
             variant={isScrolled ? "ghost" : "link"}
