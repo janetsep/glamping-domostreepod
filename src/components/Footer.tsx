@@ -51,12 +51,13 @@ const Footer = () => {
             <h4 className="font-display font-bold text-lg mb-4">Menú</h4>
             <ul className="space-y-2">
               {[
-                { name: "Inicio", href: "#hero" },
-                { name: "Domos", href: "#packages" },
-                { name: "Servicios", href: "#benefits" },
-                { name: "Experiencias", href: "#testimonials" },
-                { name: "Ubicación", href: "#location" },
-                { name: "Contacto", href: "#contact" }
+                { name: "Inicio", href: "/" },
+                { name: "Domos", href: "/#packages" },
+                { name: "Servicios", href: "/#benefits" },
+                { name: "Experiencias", href: "/#testimonials" },
+                { name: "Ubicación", href: "/#location" },
+                { name: "Sobre Nosotros", href: "/sobre-nosotros" },
+                { name: "Contacto", href: "/#contact" }
               ].map((item) => (
                 <li key={item.name}>
                   <Link 
@@ -162,6 +163,9 @@ const Footer = () => {
             </Link>
             <Link to="#" className="text-sm text-gray-600 hover:text-primary">
               Preguntas Frecuentes
+            </Link>
+            <Link to="/sobre-nosotros" className="text-sm text-gray-600 hover:text-primary">
+              Sobre Nosotros
             </Link>
             <Link to="#" className="text-sm text-gray-600 hover:text-primary">
               Mapa del Sitio

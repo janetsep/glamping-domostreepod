@@ -8,6 +8,7 @@ import WebPayReturn from "./pages/WebPayReturn";
 import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
 import UnitDetail from "./pages/UnitDetail";
+import AboutUs from "./pages/AboutUs";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -31,6 +32,10 @@ export const router = createBrowserRouter([
   {
     path: "/webpay/return",
     element: <WebPayReturn />,
+  },
+  {
+    path: "/sobre-nosotros",
+    element: <AboutUs />,
   },
   {
     path: "*",
