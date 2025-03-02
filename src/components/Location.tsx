@@ -31,7 +31,7 @@ const Location = () => {
         <div className="w-full mb-12">
           <div className="rounded-lg overflow-hidden shadow-lg h-[400px]">
             <iframe 
-              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3192.2092131459133!2d-71.4865568!3d-36.908599!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x9669e25f76da97d9%3A0xdc5a55a3c0c2ffb7!2sTreePod%20Glamping!5e0!3m2!1ses!2scl!4v1715374232348!5m2!1ses!2scl&markers=color:red%7Clabel:T%7C-36.908599,-71.4865568&zoom=15" 
+              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3192!2d-71.487!3d-36.907!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMzrCsDU0JzI1LjIiUyA3McKwMjknMTMuMiJX!5e0!3m2!1ses!2scl!4v1715374232348!5m2!1ses!2scl&q=3FQV%2B7FW+Las+Trancas,+Pinto,+Chile&markers=color:red%7Clabel:T%7C3FQV+7FW+Las+Trancas,+Pinto,+Chile&zoom=15" 
               width="100%" 
               height="100%" 
               style={{ border: 0 }} 
