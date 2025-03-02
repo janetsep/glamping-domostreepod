@@ -1,30 +1,27 @@
 
 import { Star } from "lucide-react";
+import { useEffect } from "react";
 
 const Testimonials = () => {
-  const testimonials = [
-    {
-      name: "Carolina Mendoza",
-      avatar: "/lovable-uploads/f0a226af-4b5a-47f8-9a16-71ebc00d5039.png",
-      text: "Mi esposo y yo pasamos un fin de semana increíble. La tinaja al atardecer viendo las montañas fue una experiencia mágica que nunca olvidaremos.",
-      rating: 5,
-      source: "Google"
-    },
-    {
-      name: "Martín Figueroa",
-      avatar: "/lovable-uploads/04ce7b83-26de-4148-a84b-6b62dd46101f.png",
-      text: "Lo mejor de TreePod es la combinación perfecta entre naturaleza y confort. Los domos están impecables y las vistas al despertar son impresionantes.",
-      rating: 5,
-      source: "Instagram"
-    },
-    {
-      name: "Valentina Rojas",
-      avatar: "/lovable-uploads/9e606128-1db3-42ce-b1ca-0474a875279f.png",
-      text: "Si buscas desconectarte del mundo y reconectar contigo mismo, este es el lugar perfecto. La cena bajo las estrellas fue la cereza del pastel.",
-      rating: 5,
-      source: "Facebook"
+  // This effect will ensure the Elfsight script loads properly
+  useEffect(() => {
+    // Check if the script is already added to prevent duplicates
+    if (!document.querySelector('script[src="https://static.elfsight.com/platform/platform.js"]')) {
+      const script = document.createElement('script');
+      script.src = "https://static.elfsight.com/platform/platform.js";
+      script.async = true;
+      document.body.appendChild(script);
     }
-  ];
+    
+    // Manually trigger Elfsight to load widgets if their platform JS is already loaded
+    if (window.elfsight) {
+      window.elfsight.initialize();
+    }
+    
+    return () => {
+      // No cleanup needed as we don't want to remove the script when component unmounts
+    };
+  }, []);
 
   const renderStars = (rating: number) => {
     return Array(5)
@@ -54,32 +51,10 @@ const Testimonials = () => {
           Recomendado por más de 500 viajeros satisfechos
         </p>
         
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mt-12">
-          {testimonials.map((testimonial, index) => (
-            <div 
-              key={index} 
-              className="bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow"
-            >
-              <div className="flex items-center mb-4">
-                <img 
-                  src={testimonial.avatar} 
-                  alt={testimonial.name} 
-                  className="w-12 h-12 rounded-full object-cover mr-4"
-                />
-                <div>
-                  <h3 className="font-semibold">{testimonial.name}</h3>
-                  <div className="flex items-center">
-                    {renderStars(testimonial.rating)}
-                    <span className="text-xs text-gray-500 ml-2">vía {testimonial.source}</span>
-                  </div>
-                </div>
-              </div>
-              <p className="text-gray-600 italic">"{testimonial.text}"</p>
-            </div>
-          ))}
-        </div>
-
-        {/* Social Proof */}
+        {/* Elfsight All-in-One Reviews Widget */}
+        <div className="elfsight-app-58776635-7259-470b-9077-f838d052ebab" data-elfsight-app-lazy></div>
+        
+        {/* Social Proof - Mantener esta sección como referencia rápida */}
         <div className="mt-16 bg-white p-6 rounded-lg shadow-md">
           <h3 className="text-xl font-semibold text-center mb-6">Nuestras reseñas en plataformas</h3>
           <div className="flex flex-wrap justify-center gap-4">
