@@ -1,8 +1,7 @@
-
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Calendar, Users, MessageSquare, Phone } from "lucide-react";
+import { Calendar, Users, MessageSquare, Phone, Share2 } from "lucide-react";
 import { toast } from "sonner";
 import { useNavigate } from "react-router-dom";
 
@@ -12,6 +11,23 @@ const SimplifiedContact = () => {
   const [email, setEmail] = useState("");
   const [date, setDate] = useState("");
   const [guests, setGuests] = useState("");
+
+  // Initialize Elfsight widget when component mounts
+  useEffect(() => {
+    const script = document.createElement('script');
+    script.src = "https://static.elfsight.com/platform/platform.js";
+    script.async = true;
+    document.body.appendChild(script);
+
+    // Cleanup
+    return () => {
+      document.body.removeChild(script);
+      // Ensure any instances are cleaned up
+      if (window.elfsight && typeof window.elfsight.initialize === 'function') {
+        // This is a safeguard in case the script has initialization functions
+      }
+    };
+  }, []);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -175,6 +191,28 @@ const SimplifiedContact = () => {
           </div>
         </div>
       </div>
+      
+      {/* Elfsight Social Media Button */}
+      <button 
+        className="fixed bottom-20 right-6 bg-primary text-white p-3 rounded-full shadow-lg hover:bg-primary/90 transition-colors z-50"
+        aria-label="Ver redes sociales"
+        onClick={() => {
+          const elfsightElement = document.querySelector('.elfsight-app-997d64da-bc31-4252-aaea-4e030bfce7a5');
+          if (elfsightElement) {
+            // If element exists, toggle a class that controls visibility
+            elfsightElement.classList.toggle('active');
+            // Force reload of the widget if needed
+            if (window.elfsight && typeof window.elfsight.initialize === 'function') {
+              window.elfsight.initialize();
+            }
+          }
+        }}
+      >
+        <Share2 className="h-6 w-6" />
+      </button>
+      
+      {/* Elfsight Social Feed Widget - initially hidden */}
+      <div className="fixed bottom-32 right-6 z-50 hidden elfsight-app-997d64da-bc31-4252-aaea-4e030bfce7a5" data-elfsight-app-lazy></div>
       
       {/* Botón flotante de WhatsApp */}
       <a 
