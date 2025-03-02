@@ -8,7 +8,7 @@ import Location from "@/components/Location";
 import Packages from "@/components/Packages";
 import Blog from "@/components/Blog";
 import SimplifiedContact from "@/components/SimplifiedContact";
-import Footer from "@/components/Footer";
+import Footer from "@/components/footer";
 import { useQuery } from "@tanstack/react-query";
 import { useEffect } from "react";
 import { toast } from "sonner";
