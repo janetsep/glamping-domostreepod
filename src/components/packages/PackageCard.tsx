@@ -2,6 +2,7 @@
 import { Coffee, Droplets, Wifi, Flame, BedDouble, Mountain } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
+import React from "react";
 
 export interface PackageAmenity {
   icon: React.ReactNode;

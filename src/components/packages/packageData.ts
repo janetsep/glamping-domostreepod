@@ -1,6 +1,12 @@
 
 import { Coffee, Droplets, Wifi, Flame, BedDouble, Mountain } from "lucide-react";
 import { PackageItem } from "./PackageCard";
+import React from "react";
+
+// Function to create icon elements more safely
+const createIcon = (Icon: React.ElementType) => {
+  return React.createElement(Icon, { size: 18 });
+};
 
 export const packageData: PackageItem[] = [
   {
@@ -15,12 +21,12 @@ export const packageData: PackageItem[] = [
     size: "32m²",
     features: ["2 noches de alojamiento", "Desayuno incluido", "Capacidad: 2 personas", "Vistas al bosque", "Acceso a senderos"],
     amenities: [
-      { icon: <Coffee size={18} />, text: "Mini cocina equipada" },
-      { icon: <Droplets size={18} />, text: "Ducha con agua caliente" },
-      { icon: <Wifi size={18} />, text: "WiFi de alta velocidad" },
-      { icon: <Flame size={18} />, text: "Calefacción ecológica" },
-      { icon: <BedDouble size={18} />, text: "Cama king size premium" },
-      { icon: <Mountain size={18} />, text: "Vistas panorámicas al bosque nativo" }
+      { icon: createIcon(Coffee), text: "Mini cocina equipada" },
+      { icon: createIcon(Droplets), text: "Ducha con agua caliente" },
+      { icon: createIcon(Wifi), text: "WiFi de alta velocidad" },
+      { icon: createIcon(Flame), text: "Calefacción ecológica" },
+      { icon: createIcon(BedDouble), text: "Cama king size premium" },
+      { icon: createIcon(Mountain), text: "Vistas panorámicas al bosque nativo" }
     ]
   },
   {
@@ -35,12 +41,12 @@ export const packageData: PackageItem[] = [
     size: "38m²",
     features: ["3 noches de alojamiento", "Desayuno incluido", "Capacidad: 2 personas", "Jacuzzi privado", "Wifi gratis"],
     amenities: [
-      { icon: <Coffee size={18} />, text: "Cocina completamente equipada" },
-      { icon: <Droplets size={18} />, text: "Jacuzzi exterior privado" },
-      { icon: <Wifi size={18} />, text: "WiFi de alta velocidad" },
-      { icon: <Flame size={18} />, text: "Sistema de calefacción central" },
-      { icon: <BedDouble size={18} />, text: "Cama king size con ropa de cama premium" },
-      { icon: <Mountain size={18} />, text: "Terraza con vistas al valle" }
+      { icon: createIcon(Coffee), text: "Cocina completamente equipada" },
+      { icon: createIcon(Droplets), text: "Jacuzzi exterior privado" },
+      { icon: createIcon(Wifi), text: "WiFi de alta velocidad" },
+      { icon: createIcon(Flame), text: "Sistema de calefacción central" },
+      { icon: createIcon(BedDouble), text: "Cama king size con ropa de cama premium" },
+      { icon: createIcon(Mountain), text: "Terraza con vistas al valle" }
     ]
   },
   {
@@ -55,12 +61,12 @@ export const packageData: PackageItem[] = [
     size: "36m²",
     features: ["2 noches de alojamiento", "Desayuno incluido", "Capacidad: 2 personas", "Ducha panorámica", "Mini cocina"],
     amenities: [
-      { icon: <Coffee size={18} />, text: "Mini bar y café de especialidad" },
-      { icon: <Droplets size={18} />, text: "Ducha panorámica con vista al bosque" },
-      { icon: <Wifi size={18} />, text: "Conexión WiFi" },
-      { icon: <Flame size={18} />, text: "Calefacción de bajo consumo" },
-      { icon: <BedDouble size={18} />, text: "Cama queen con vistas al amanecer" },
-      { icon: <Mountain size={18} />, text: "Terraza privada suspendida" }
+      { icon: createIcon(Coffee), text: "Mini bar y café de especialidad" },
+      { icon: createIcon(Droplets), text: "Ducha panorámica con vista al bosque" },
+      { icon: createIcon(Wifi), text: "Conexión WiFi" },
+      { icon: createIcon(Flame), text: "Calefacción de bajo consumo" },
+      { icon: createIcon(BedDouble), text: "Cama queen con vistas al amanecer" },
+      { icon: createIcon(Mountain), text: "Terraza privada suspendida" }
     ]
   }
 ];
