@@ -1,5 +1,5 @@
 
-import { MapPin, Trees, Droplets, Bird } from "lucide-react";
+import { MapPin, Trees, Droplets, Bird, Car, Bus, Plane } from "lucide-react";
 
 const Location = () => {
   return (
@@ -16,7 +16,7 @@ const Location = () => {
           Ubicación y Entorno
         </h2>
         <p className="text-xl text-center text-gray-600 mb-12 max-w-3xl mx-auto">
-          Descubre lo increíble que es el Valle Las Trancas, un paraíso natural a los pies de la cordillera
+          Ubicados en el Valle Las Trancas, a 10 minutos de las Termas de Chillán, rodeados de bosques vírgenes y lejos del ruido urbano
         </p>
         
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
@@ -45,11 +45,14 @@ const Location = () => {
                   experiencia única en uno de los valles más hermosos de la Cordillera de Los Andes, a solo 1.5 horas 
                   de la ciudad de Chillán.
                 </p>
+                <p className="text-gray-600 mt-2">
+                  <span className="font-medium">Coordenadas GPS:</span> 36°54'S 71°28'O
+                </p>
               </div>
             </div>
             
             <h3 className="text-xl font-semibold mb-4">Descubre los alrededores:</h3>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
               <div className="flex items-start gap-3">
                 <Trees className="h-5 w-5 text-accent flex-shrink-0 mt-1" />
                 <div>
@@ -76,6 +79,38 @@ const Location = () => {
                 <div>
                   <h4 className="font-semibold">Centro de Ski</h4>
                   <p className="text-sm text-gray-600">A 20 minutos del centro de ski Nevados de Chillán.</p>
+                </div>
+              </div>
+            </div>
+            
+            <h3 className="text-xl font-semibold mb-4">Cómo llegar:</h3>
+            <div className="space-y-3">
+              <div className="flex items-start gap-3">
+                <Car className="h-5 w-5 text-accent flex-shrink-0 mt-1" />
+                <div>
+                  <h4 className="font-semibold">Desde Chillán</h4>
+                  <p className="text-sm text-gray-600">1.5 horas por ruta pavimentada (85 km).</p>
+                </div>
+              </div>
+              <div className="flex items-start gap-3">
+                <Car className="h-5 w-5 text-accent flex-shrink-0 mt-1" />
+                <div>
+                  <h4 className="font-semibold">Desde Concepción</h4>
+                  <p className="text-sm text-gray-600">3 horas por autopista (230 km).</p>
+                </div>
+              </div>
+              <div className="flex items-start gap-3">
+                <Plane className="h-5 w-5 text-accent flex-shrink-0 mt-1" />
+                <div>
+                  <h4 className="font-semibold">Desde Santiago</h4>
+                  <p className="text-sm text-gray-600">5 horas por autopista (420 km) o 45 minutos en avión + 1.5 horas en auto desde Chillán.</p>
+                </div>
+              </div>
+              <div className="flex items-start gap-3">
+                <Bus className="h-5 w-5 text-accent flex-shrink-0 mt-1" />
+                <div>
+                  <h4 className="font-semibold">En Bus</h4>
+                  <p className="text-sm text-gray-600">Buses diarios desde Chillán al Valle Las Trancas (consultar horarios).</p>
                 </div>
               </div>
             </div>
