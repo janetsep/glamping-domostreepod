@@ -18,9 +18,6 @@ const Logo = ({ isScrolled }: LogoProps) => {
         alt="DOMOS TREEPOD" 
         className={`h-12 ${isScrolled ? 'filter-none' : 'brightness-125'}`} 
       />
-      <h1 className={`font-serif text-2xl md:text-3xl font-bold ml-2 ${isScrolled ? 'text-cyan-700' : 'text-white text-shadow'}`}>
-        DOMOtreepod
-      </h1>
     </div>
   );
 };
