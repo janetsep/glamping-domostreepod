@@ -1,6 +1,6 @@
 
 import { useState, useEffect } from "react";
-import { useParams, useNavigate, useLoaderData } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { ArrowLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -15,9 +15,8 @@ import { clearAllToasts } from "@/hooks/use-toast";
 import { toast as sonnerToast } from "sonner";
 
 const UnitDetail = () => {
-  const { id } = useParams();
+  const { unitId } = useParams<{ unitId: string }>();
   const navigate = useNavigate();
-  const loaderData = useLoaderData() as { redirect?: boolean; to?: string } | null;
   const [startDate, setStartDate] = useState<Date>();
   const [endDate, setEndDate] = useState<Date>();
   const [guests, setGuests] = useState<number>(1);
@@ -31,23 +30,27 @@ const UnitDetail = () => {
   const [isProcessingPayment, setIsProcessingPayment] = useState(false);
   const [paymentDetails, setPaymentDetails] = useState<any>(null);
 
-  // Manejar la redirección si el loader lo indica
+  // Scroll to top when page loads
   useEffect(() => {
-    if (loaderData?.redirect && loaderData.to) {
-      navigate(loaderData.to, { replace: true });
-    }
-  }, [loaderData, navigate]);
+    window.scrollTo(0, 0);
+  }, []);
 
   // Intentar obtener la unidad por ID
   const { data: unit, isError } = useQuery<GlampingUnit | null>({
-    queryKey: ["unit", id],
+    queryKey: ["unit", unitId],
     queryFn: async () => {
       try {
-        console.log("Consultando unidad con ID:", id);
+        console.log("Consultando unidad con ID:", unitId);
+        
+        if (!unitId) {
+          console.error("ID de unidad no proporcionado");
+          return null;
+        }
+        
         const { data, error } = await supabase
           .from("glamping_units")
           .select("*")
-          .eq("id", id)
+          .eq("id", unitId)
           .single();
         
         if (error) {
@@ -61,12 +64,13 @@ const UnitDetail = () => {
         return null;
       }
     },
+    enabled: !!unitId,
   });
 
   // Si no se encuentra por ID, cargar la primera unidad disponible
   useEffect(() => {
     const loadFallbackUnit = async () => {
-      if (isError || (!unit && id)) {
+      if (isError || (!unit && unitId)) {
         console.log("Cargando unidad alternativa...");
         const units = await fetchGlampingUnits();
         if (units && units.length > 0) {
@@ -77,7 +81,7 @@ const UnitDetail = () => {
     };
 
     loadFallbackUnit();
-  }, [id, unit, isError, fetchGlampingUnits]);
+  }, [unitId, unit, isError, fetchGlampingUnits]);
 
   // Usar la unidad directa o la alternativa
   const displayUnit = unit || fallbackUnit;

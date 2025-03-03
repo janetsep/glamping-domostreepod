@@ -10,7 +10,7 @@ export const useNavigation = () => {
   };
 
   const scrollToSection = (id: string) => {
-    // Check if we're on the main page (either "/" or "/index")
+    // Check if we're on the main page
     const isMainPage = location.pathname === '/' || location.pathname === '/index';
     
     if (isMainPage) {

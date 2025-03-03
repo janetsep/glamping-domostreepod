@@ -2,9 +2,10 @@
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
+import { useNavigation } from "./navigation/useNavigation";
 
 const Hero = () => {
-  const navigate = useNavigate();
+  const { handleReserveClick } = useNavigation();
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   
   const images = [
@@ -22,10 +23,6 @@ const Hero = () => {
     
     return () => clearInterval(interval);
   }, [images.length]);
-
-  const handleReserveClick = () => {
-    navigate('/unit/48a7a330-ebae-4e79-8f53-31a84ac900d9');
-  };
 
   return (
     <section id="hero" className="h-screen relative overflow-hidden">

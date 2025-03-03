@@ -1,4 +1,6 @@
+
 import { Button } from "@/components/ui/button";
+import { useLocation } from "react-router-dom";
 
 interface NavigationLinksProps {
   isMobile: boolean;
@@ -13,11 +15,14 @@ export const NavigationLinks = ({
   scrollToSection,
   navigateToPage
 }: NavigationLinksProps) => {
+  const location = useLocation();
+  const isHomePage = location.pathname === "/" || location.pathname === "/index";
+  
   const links = [
-    { name: "Inicio", path: "/" },  // Changed to use path for more reliable navigation
+    { name: "Inicio", path: "/" },
     { name: "Domos", id: "packages" },
     { name: "Servicios", id: "benefits" },
-    { name: "Comentarios", id: "testimonials" },  // Changed from "Experiencias" to "Comentarios"
+    { name: "Comentarios", id: "testimonials" },
     { name: "Ubicación", id: "location" },
     { name: "Blog", id: "blog" },
     { name: "Sobre Nosotros", path: "/sobre-nosotros" },
@@ -28,7 +33,13 @@ export const NavigationLinks = ({
     if (link.path) {
       navigateToPage(link.path);
     } else if (link.id) {
-      scrollToSection(link.id);
+      if (isHomePage) {
+        // If on home page, just scroll to section
+        scrollToSection(link.id);
+      } else {
+        // If on another page, navigate to home with hash
+        navigateToPage(`/#${link.id}`);
+      }
     }
   };
 

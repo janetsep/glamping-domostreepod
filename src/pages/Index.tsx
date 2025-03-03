@@ -24,6 +24,9 @@ const Index = () => {
   });
 
   useEffect(() => {
+    // Scroll to top when page loads
+    window.scrollTo(0, 0);
+    
     // Mostrar toast más sutil para la experiencia minimalista
     toast.success("Bienvenido a Domos Treepod", {
       description: "Descubre una experiencia única en la naturaleza",
@@ -35,24 +38,23 @@ const Index = () => {
 
   return (
     <div className="min-h-screen bg-white">
-      {/* Removed duplicate Navigation component from here */}
       <Hero />
-      <div className="my-8 md:my-16"> {/* Espaciado adicional entre secciones */}
+      <div className="my-8 md:my-16">
         <Benefits />
       </div>
-      <div className="my-8 md:my-16 bg-gray-50 py-12"> {/* Fondo sutil para crear separación */}
+      <div className="my-8 md:my-16 bg-gray-50 py-12">
         <Testimonials />
       </div>
       <div className="my-8 md:my-16">
         <Location />
       </div>
-      <div className="my-8 md:my-16">
+      <div id="packages" className="my-8 md:my-16">
         <Packages units={units} isLoading={isLoading} />
       </div>
       <div className="my-8 md:my-16">
         <Blog />
       </div>
-      <div className="mt-8 md:mt-16 bg-gradient-to-r from-gray-50 to-white py-12"> {/* Gradiente sutil */}
+      <div className="mt-8 md:mt-16 bg-gradient-to-r from-gray-50 to-white py-12">
         <SimplifiedContact />
       </div>
       <Footer />

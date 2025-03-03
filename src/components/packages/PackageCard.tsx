@@ -1,7 +1,6 @@
 
 import { Coffee, Droplets, Wifi, Flame, BedDouble, Mountain } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { useState } from "react";
 import React from "react";
 
 export interface PackageAmenity {
@@ -43,12 +42,11 @@ const PackageCard = ({
   return (
     <div 
       key={pkg.id} 
-      className={`relative rounded-lg overflow-hidden shadow-lg cursor-pointer group transition-all duration-300 ${
+      className={`relative rounded-lg overflow-hidden shadow-lg group transition-all duration-300 ${
         expandedUnit === pkg.id ? 'md:col-span-3 md:row-span-2 md:h-auto' : ''
       }`}
       onMouseEnter={() => !expandedUnit && setHoveredUnit(pkg.id)}
       onMouseLeave={() => !expandedUnit && setHoveredUnit(null)}
-      onClick={() => expandedUnit ? null : handleUnitClick(pkg.id)}
     >
       {expandedUnit === pkg.id ? (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 p-6 bg-white">
@@ -124,7 +122,10 @@ const PackageCard = ({
         </div>
       ) : (
         <>
-          <div className="h-72 relative overflow-hidden">
+          <div 
+            className="h-72 relative overflow-hidden cursor-pointer"
+            onClick={() => handleUnitClick(pkg.id)}
+          >
             <img 
               src={pkg.image} 
               alt={pkg.title} 
@@ -150,7 +151,10 @@ const PackageCard = ({
                 </div>
                 <div className="flex space-x-2">
                   <button 
-                    onClick={(e) => toggleExpandUnit(pkg.id, e)}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      toggleExpandUnit(pkg.id, e);
+                    }}
                     className="text-white text-sm bg-white/20 hover:bg-white/30 px-2 py-1 rounded"
                   >
                     Ver detalles
