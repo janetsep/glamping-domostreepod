@@ -14,8 +14,8 @@ const Logo = ({ isScrolled }: LogoProps) => {
       onClick={navigateToHome}
     >
       <img 
-        src="/lovable-uploads/badf4425-7a82-4330-9850-9dde76bc21eb.png" 
-        alt="DOMOtreepod" 
+        src="/lovable-uploads/aeac7b47-8316-4eef-b586-34cc71ffa668.png" 
+        alt="DOMOS TREEPOD" 
         className={`h-12 ${isScrolled ? 'filter-none' : 'brightness-125'}`} 
       />
       <h1 className={`font-serif text-2xl md:text-3xl font-bold ml-2 ${isScrolled ? 'text-cyan-700' : 'text-white text-shadow'}`}>
