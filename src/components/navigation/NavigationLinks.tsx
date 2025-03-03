@@ -31,6 +31,7 @@ export const NavigationLinks = ({
 
   const handleClick = (link: { name: string; id?: string; path?: string }) => {
     if (link.path) {
+      // For static pages like "Sobre Nosotros", use navigateToPage
       navigateToPage(link.path);
     } else if (link.id) {
       if (isHomePage) {

@@ -6,7 +6,7 @@ export const useNavigation = () => {
   const location = useLocation();
 
   const handleReserveClick = () => {
-    navigate('/unit/48a7a330-ebae-4e79-8f53-31a84ac900d9');
+    navigate('/unit/0a69edfd-4f3a-40f9-a822-1b6f675043b2'); // Updated to use a valid ID from the logs
   };
 
   const scrollToSection = (id: string) => {
@@ -26,12 +26,17 @@ export const useNavigation = () => {
   };
 
   const navigateToPage = (path: string) => {
+    // Handle navigation and ensure scroll to top
     navigate(path);
+    // Scroll to top after navigation
+    window.scrollTo(0, 0);
   };
 
   // Home navigation specific function
   const navigateToHome = () => {
     navigate('/');
+    // Scroll to top after navigation to home
+    window.scrollTo(0, 0);
   };
 
   return {
