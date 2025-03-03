@@ -1,4 +1,3 @@
-
 import { Button } from "@/components/ui/button";
 
 interface NavigationLinksProps {
@@ -18,7 +17,7 @@ export const NavigationLinks = ({
     { name: "Inicio", path: "/" },  // Changed to use path for more reliable navigation
     { name: "Domos", id: "packages" },
     { name: "Servicios", id: "benefits" },
-    { name: "Experiencias", id: "testimonials" },
+    { name: "Comentarios", id: "testimonials" },  // Changed from "Experiencias" to "Comentarios"
     { name: "Ubicación", id: "location" },
     { name: "Blog", id: "blog" },
     { name: "Sobre Nosotros", path: "/sobre-nosotros" },
