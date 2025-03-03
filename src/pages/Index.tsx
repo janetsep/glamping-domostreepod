@@ -1,6 +1,5 @@
 
 import { useReservations } from "@/hooks/useReservations";
-import Navigation from "@/components/Navigation";
 import Hero from "@/components/Hero";
 import Benefits from "@/components/Benefits";
 import Testimonials from "@/components/Testimonials";
@@ -36,7 +35,7 @@ const Index = () => {
 
   return (
     <div className="min-h-screen bg-white">
-      <Navigation />
+      {/* Removed duplicate Navigation component from here */}
       <Hero />
       <div className="my-8 md:my-16"> {/* Espaciado adicional entre secciones */}
         <Benefits />
