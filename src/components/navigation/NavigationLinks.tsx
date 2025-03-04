@@ -1,7 +1,20 @@
 
 import { Button } from "@/components/ui/button";
 import { useLocation } from "react-router-dom";
-import { Home, Package, ListChecks, MessageSquare, MapPin, BookOpen, Info, Mail, Moon, Sun, Leaf, Trees } from "lucide-react";
+import { 
+  Home, 
+  Moon, 
+  Sun, 
+  MessageSquare, 
+  MapPin, 
+  Leaf, 
+  Trees, 
+  Mail,
+  Coffee,
+  Mountain,
+  BedDouble
+} from "lucide-react";
+import { packageData } from "../packages/packageData";
 
 interface NavigationLinksProps {
   isMobile: boolean;
@@ -19,12 +32,15 @@ export const NavigationLinks = ({
   const location = useLocation();
   const isHomePage = location.pathname === "/" || location.pathname === "/index";
   
+  // Use actual Glamping unit names from packageData
+  const domoNames = packageData.map(pkg => pkg.title).join(', ');
+  
   const links = [
     { name: "Inicio", path: "/", icon: Home },
-    { name: "Domos", id: "packages", icon: Moon },
-    { name: "Servicios", id: "benefits", icon: Sun },
+    { name: "Domos", id: "packages", icon: BedDouble, description: domoNames },
+    { name: "Servicios", id: "benefits", icon: Coffee, description: "Incluye desayuno, WiFi y más" },
     { name: "Comentarios", id: "testimonials", icon: MessageSquare },
-    { name: "Ubicación", id: "location", icon: MapPin },
+    { name: "Ubicación", id: "location", icon: MapPin, description: "Sur de Chile" },
     { name: "Blog", id: "blog", icon: Leaf },
     { name: "Sobre Nosotros", path: "/sobre-nosotros", icon: Trees },
     { name: "Contacto", id: "contact", icon: Mail },
@@ -57,9 +73,16 @@ export const NavigationLinks = ({
               <div className="flex items-center justify-center w-10 h-10 rounded-full bg-gradient-to-br from-cyan-500/20 to-cyan-400/10 text-cyan-500 group-hover:from-cyan-500 group-hover:to-cyan-400 group-hover:text-white transition-all duration-300">
                 <Icon className="h-5 w-5" />
               </div>
-              <span className="font-display tracking-wide group-hover:text-cyan-500 transition-colors duration-300">
-                {link.name}
-              </span>
+              <div className="flex flex-col">
+                <span className="font-display tracking-wide group-hover:text-cyan-500 transition-colors duration-300">
+                  {link.name}
+                </span>
+                {link.description && (
+                  <span className="text-xs text-gray-500 mt-0.5 group-hover:text-cyan-400 transition-colors duration-300">
+                    {link.description}
+                  </span>
+                )}
+              </div>
             </button>
           );
         })}

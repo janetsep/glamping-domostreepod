@@ -1,12 +1,16 @@
 
 import { useNavigate, useLocation } from "react-router-dom";
+import { packageData } from "../packages/packageData";
 
 export const useNavigation = () => {
   const navigate = useNavigate();
   const location = useLocation();
 
+  // Use the first package ID from packageData for the main reservation button
+  const defaultUnitId = packageData && packageData.length > 0 ? packageData[0].id : "48a7a330-ebae-4e79-8f53-31a84ac900d9";
+
   const handleReserveClick = () => {
-    navigate('/unit/0a69edfd-4f3a-40f9-a822-1b6f675043b2'); // Updated to use a valid ID from the logs
+    navigate(`/unit/${defaultUnitId}`);
   };
 
   const scrollToSection = (id: string) => {

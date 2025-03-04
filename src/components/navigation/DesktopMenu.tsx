@@ -1,7 +1,7 @@
 
 import { Button } from "@/components/ui/button";
 import { NavigationLinks } from "./NavigationLinks";
-import { sparkles } from "lucide-react";
+import { Sparkles } from "lucide-react";
 
 interface DesktopMenuProps {
   isScrolled: boolean;
