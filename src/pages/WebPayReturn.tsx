@@ -13,7 +13,7 @@ const WebPayReturn = () => {
   const location = useLocation();
   const [isLoading, setIsLoading] = useState(true);
   const [transactionResult, setTransactionResult] = useState<TransactionResult | null>(null);
-  const [error, setError, setErrorCodigo] = useState<string | null>(null);
+  const [error, setError] = useState<string | null>(null);
   const [reservationId, setReservationId] = useState<string | null>(null);
   const [isPackage, setIsPackage] = useState(false);
 
@@ -70,6 +70,7 @@ const WebPayReturn = () => {
 
         if (!response.ok) {
           const errorData = await response.text();
+          console.error('Error en la respuesta del servidor:', errorData);
           throw new Error(`Error en la confirmación: ${errorData}`);
         }
 
@@ -93,9 +94,15 @@ const WebPayReturn = () => {
           if (unitId) {
             if (data.response_code === 0) {
               // If payment was successful, navigate to the detail page with query param
+              toast.success("Pago completado con éxito", {
+                description: "Tu reserva ha sido confirmada correctamente",
+              });
               navigate(`/unit/${unitId}?payment=success&reservationId=${data.reservation_id || reservationId}`);
             } else {
               // If payment failed, navigate back to the detail page
+              toast.error("Pago no completado", {
+                description: `Código de respuesta: ${data.response_code}`,
+              });
               navigate(`/unit/${unitId}?payment=failed`);
             }
           } else {
