@@ -1,6 +1,6 @@
 
 import { clearAllToasts } from "@/hooks/use-toast";
-import { sonnerToast } from "sonner";
+import { toast } from "sonner";
 import { Activity, ThemedPackage } from "@/types";
 
 type ReservationState = {
@@ -16,7 +16,13 @@ type ReservationState = {
   setShowQuote: (show: boolean) => void;
   toast: any;
   selectedActivities: Activity[];
+  setSelectedActivities: (
+    value: Activity[] | ((prev: Activity[]) => Activity[])
+  ) => void;
   selectedPackages: ThemedPackage[];
+  setSelectedPackages: (
+    value: ThemedPackage[] | ((prev: ThemedPackage[]) => ThemedPackage[])
+  ) => void;
   activitiesTotal: number;
   packagesTotal: number;
   checkedAvailability: boolean;
@@ -25,6 +31,7 @@ type ReservationState = {
   createReservation: any;
   redirectToWebpay: any;
   setIsProcessingPayment: (isProcessing: boolean) => void;
+  quote: any;
 };
 
 export const useReservationActions = (state: ReservationState) => {
@@ -142,7 +149,7 @@ export const useReservationActions = (state: ReservationState) => {
       
       // Limpiar todos los mensajes antes de iniciar el proceso
       clearAllToasts();
-      sonnerToast.dismiss();
+      toast.dismiss();
       
       // Get activity and package IDs for storage
       const activityIds = state.selectedActivities.map(a => a.id);
