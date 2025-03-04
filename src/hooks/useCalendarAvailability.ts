@@ -7,7 +7,7 @@ import {
   isSameDay
 } from "date-fns";
 import { AvailabilityCalendarDay } from "@/types";
-import { checkUnitAvailability } from "./reservations/utils/availabilityChecker";
+import { checkGeneralAvailability } from "./reservations/utils/availabilityChecker";
 
 export const useCalendarAvailability = (unitId: string, currentMonth: Date, selectedDate: Date | null) => {
   const [calendarDays, setCalendarDays] = useState<AvailabilityCalendarDay[]>([]);
@@ -28,33 +28,33 @@ export const useCalendarAvailability = (unitId: string, currentMonth: Date, sele
     try {
       setIsLoading(true);
       
-      // Get all days in the interval
+      // Obtenemos todos los días del mes
       const daysInMonth = eachDayOfInterval({ start, end });
       
-      // We'll check each day's availability against existing reservations
+      // Verificamos la disponibilidad para cada día
       const availabilityMap = await Promise.all(
         daysInMonth.map(async (day) => {
-          // Check availability for this specific day (end date is same day for simplicity)
-          // This isn't perfect for real availability but works for calendar display purposes
-          // since we're just checking if the day falls within any reservation
+          // Verificamos disponibilidad para este día específico
           const dayEnd = new Date(day);
           dayEnd.setHours(23, 59, 59, 999);
           
-          // We invert the result because we want to know if the day is available (not reserved)
-          const isAvailable = await checkUnitAvailability(unitId, day, dayEnd)
-            .catch(() => false);  // Default to unavailable if there's an error
+          // Usamos la nueva función que verifica la disponibilidad general
+          const { isAvailable, availableUnits, totalUnits } = await checkGeneralAvailability(day, dayEnd)
+            .catch(() => ({ isAvailable: false, availableUnits: 0, totalUnits: 4 }));  // Valor por defecto en caso de error
           
           return {
             date: day,
             isAvailable,
-            isSelected: selectedDate ? isSameDay(day, selectedDate) : false
+            isSelected: selectedDate ? isSameDay(day, selectedDate) : false,
+            availableUnits,
+            totalUnits
           };
         })
       );
       
       return availabilityMap;
     } catch (error) {
-      console.error("Error in fetchAvailability:", error);
+      console.error("Error en fetchAvailability:", error);
       return [];
     } finally {
       setIsLoading(false);
