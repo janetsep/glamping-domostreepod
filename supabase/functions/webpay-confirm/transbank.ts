@@ -53,6 +53,31 @@ export async function confirmWebPayTransaction(
     console.log("Respuesta de confirmación de WebPay (objeto):", responseData);
     
     if (!response.ok) {
+      // Verificar si es un error de transacción bloqueada
+      if (response.status === 422 && responseData?.error_message?.includes("Transaction already locked")) {
+        console.log("Transacción ya está siendo procesada por otro proceso, esto podría ser normal si hay múltiples intentos de confirmación");
+        
+        // Si la transacción ya está bloqueada, podemos intentar obtener su estado actual
+        try {
+          const statusResponse = await fetch(`${config.endpoint}/${token}`, {
+            method: 'GET',
+            headers: {
+              'Content-Type': 'application/json',
+              'Tbk-Api-Key-Id': config.apiKey,
+              'Tbk-Api-Key-Secret': config.sharedSecret,
+            }
+          });
+          
+          if (statusResponse.ok) {
+            const statusData = await statusResponse.json();
+            console.log("Estado actual de la transacción:", statusData);
+            return statusData; // Devolvemos el estado actual en lugar de generar un error
+          }
+        } catch (statusError) {
+          console.error("Error al obtener estado de transacción:", statusError);
+        }
+      }
+      
       console.error("Error en la respuesta de WebPay:", response.status, responseData);
       throw new Error(`Error en respuesta de WebPay: ${response.status} - ${responseText}`);
     }

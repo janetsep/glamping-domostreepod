@@ -58,6 +58,20 @@ serve(async (req) => {
       return createResponse(result);
     } catch (processingError) {
       console.error(`[webpay-confirm] Error en procesamiento:`, processingError);
+      
+      // Manejo especial para error de "Transaction already locked"
+      if (processingError.message && processingError.message.includes("Transaction already locked")) {
+        console.log("[webpay-confirm] La transacción ya está siendo procesada por otro proceso");
+        
+        // Devolver un mensaje más amigable e indicando que puede no ser un error real
+        return createResponse({
+          error: "La transacción ya está siendo procesada",
+          details: processingError.message,
+          already_processing: true,
+          reservation_id: reservation_id
+        }, 409); // Código 409 Conflict
+      }
+      
       return createResponse({
         error: processingError.message || 'Error al procesar la confirmación con WebPay',
         details: typeof processingError === 'object' ? JSON.stringify(processingError) : String(processingError)
