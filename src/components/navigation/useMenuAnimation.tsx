@@ -1,15 +1,9 @@
 
 import { useState, useRef, useEffect } from "react";
 import { useLocation } from "react-router-dom";
+import { navigationLinks, NavLink } from "./NavigationLinks";
 
-export interface NavLink {
-  name: string;
-  path: string | null;
-  icon: any;
-  id: string | null;
-}
-
-export const useMenuAnimation = (navigationLinks: NavLink[]) => {
+export const useMenuAnimation = (navLinks = navigationLinks) => {
   const location = useLocation();
   const isHomePage = location.pathname === "/" || location.pathname === "/index";
   
@@ -26,21 +20,21 @@ export const useMenuAnimation = (navigationLinks: NavLink[]) => {
     
     if (location.pathname !== "/" && location.pathname !== "/index") {
       // Find the matching route path
-      const pathMatch = navigationLinks.findIndex(link => link.path === location.pathname);
+      const pathMatch = navLinks.findIndex(link => link.path === location.pathname);
       if (pathMatch !== -1) {
         foundActiveIndex = pathMatch;
       }
     } else if (location.hash) {
       // If we're on homepage and have a hash, find the matching id
       const hashId = location.hash.substring(1);
-      const hashMatch = navigationLinks.findIndex(link => link.id === hashId);
+      const hashMatch = navLinks.findIndex(link => link.id === hashId);
       if (hashMatch !== -1) {
         foundActiveIndex = hashMatch;
       }
     }
     
     setActiveIndex(foundActiveIndex);
-  }, [location.pathname, location.hash, navigationLinks]);
+  }, [location.pathname, location.hash, navLinks]);
 
   // Handle hover animation
   useEffect(() => {
