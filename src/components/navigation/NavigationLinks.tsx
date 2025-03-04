@@ -1,3 +1,4 @@
+
 import { Button } from "@/components/ui/button";
 import { useLocation } from "react-router-dom";
 import { 
@@ -52,6 +53,7 @@ export const NavigationLinks = ({
     }
   };
 
+  // Always render the same navigation items with icons, regardless of device
   if (isMobile) {
     return (
       <div className="flex flex-col space-y-2">
