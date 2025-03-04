@@ -58,7 +58,7 @@ const GlampingUnits = ({ units, isLoading }: GlampingUnitsProps) => {
                         <span>Vista al bosque</span>
                       </div>
                     </div>
-                    <span className="text-lg font-semibold text-white">${unit.price_per_night.toLocaleString()}/noche</span>
+                    <span className="text-lg font-semibold text-white">${unit.prices.base_price.toLocaleString()}/noche</span>
                   </div>
                 </div>
                 
