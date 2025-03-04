@@ -145,6 +145,9 @@ export type Database = {
           activities: string[] | null
           check_in: string
           check_out: string
+          client_email: string | null
+          client_name: string | null
+          client_phone: string | null
           created_at: string | null
           guests: number
           id: string
@@ -163,6 +166,9 @@ export type Database = {
           activities?: string[] | null
           check_in: string
           check_out: string
+          client_email?: string | null
+          client_name?: string | null
+          client_phone?: string | null
           created_at?: string | null
           guests: number
           id?: string
@@ -181,6 +187,9 @@ export type Database = {
           activities?: string[] | null
           check_in?: string
           check_out?: string
+          client_email?: string | null
+          client_name?: string | null
+          client_phone?: string | null
           created_at?: string | null
           guests?: number
           id?: string

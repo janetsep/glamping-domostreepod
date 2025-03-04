@@ -44,9 +44,9 @@ serve(async (req) => {
       throw new Error("Faltan variables de entorno SUPABASE_URL o SUPABASE_SERVICE_ROLE_KEY");
     }
     
-    // Buscar la reserva
+    // Buscar la reserva con la nueva estructura que incluye información del cliente
     const reservationResponse = await fetch(
-      `${supabaseUrl}/rest/v1/reservations?id=eq.${reservationId}&select=*,unit_id`, 
+      `${supabaseUrl}/rest/v1/reservations?id=eq.${reservationId}&select=*,unit_id,client_name,client_email,client_phone`, 
       {
         method: 'GET',
         headers: {
@@ -106,7 +106,12 @@ serve(async (req) => {
       checkOut,
       guests: reservation.guests,
       totalPrice: reservation.total_price,
-      status: reservation.status
+      status: reservation.status,
+      clientInfo: {
+        name: reservation.client_name || name,
+        email: reservation.client_email || email,
+        phone: reservation.client_phone || phone
+      }
     });
     
     // Registrar la comunicación en la base de datos
@@ -131,7 +136,10 @@ serve(async (req) => {
             check_out: checkOut,
             guests: reservation.guests,
             total_price: reservation.total_price,
-            status: reservation.status
+            status: reservation.status,
+            client_name: reservation.client_name || name,
+            client_email: reservation.client_email || email,
+            client_phone: reservation.client_phone || phone
           }
         })
       }

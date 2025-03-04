@@ -77,9 +77,9 @@ export const ReservationConfirmation = forwardRef<HTMLDivElement, ReservationCon
           <>
             <div className="mb-4 p-4 bg-blue-50 border border-blue-200 rounded-md">
               <p className="text-blue-800 text-sm">
-                Para completar tu reserva y establecer la relación cliente-reserva, 
-                necesitamos que nos proporciones tus datos de contacto.
-                Esta información quedará asociada directamente con tu reserva.
+                Para completar tu reserva, necesitamos tus datos de contacto.
+                Esta información quedará directamente asociada con tu reserva 
+                para que podamos contactarte y enviarte las confirmaciones necesarias.
               </p>
             </div>
             <ClientInformationForm 

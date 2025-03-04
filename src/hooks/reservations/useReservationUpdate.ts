@@ -73,11 +73,12 @@ export const useMutateReservationStatus = () => {
       }
 
       // Luego actualizamos la reserva para establecer la relación con el cliente
+      // usando los nuevos campos añadidos en la migración
       const { error: reservationError } = await supabase
         .from('reservations')
         .update({
-          client_email: clientInfo.email,
           client_name: clientInfo.name,
+          client_email: clientInfo.email,
           client_phone: clientInfo.phone
         })
         .eq('id', reservationId);
