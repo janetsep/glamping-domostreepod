@@ -3,7 +3,7 @@ import { useReservationStatus } from './useReservationStatus';
 import { useClientInformation } from './useClientInformation';
 import type { ClientInformation } from './useClientInformation';
 
-export { ClientInformation } from './useClientInformation';
+export type { ClientInformation } from './useClientInformation';
 
 export const useMutateReservationStatus = () => {
   const reservationStatus = useReservationStatus();
