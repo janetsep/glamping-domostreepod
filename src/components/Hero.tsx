@@ -1,13 +1,14 @@
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Button } from "@/components/ui/button";
-import { ChevronDown } from "lucide-react";
 import { useNavigation } from "./navigation/useNavigation";
+import ScrollArrow from "./ScrollArrow";
 
 const Hero = () => {
   const { handleReserveClick } = useNavigation();
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [isLoaded, setIsLoaded] = useState(false);
+  const benefitsRef = useRef<HTMLElement>(null);
   
   const images = [
     "/lovable-uploads/65a640f0-862a-47e4-bc80-4d6cc1f2599b.png",
@@ -24,6 +25,12 @@ const Hero = () => {
     
     // Set loaded after a short delay for animation
     setTimeout(() => setIsLoaded(true), 300);
+    
+    // Find the benefits section for the scroll arrow
+    const benefitsElement = document.getElementById("benefits");
+    if (benefitsElement && benefitsRef.current !== benefitsElement) {
+      benefitsRef.current = benefitsElement as HTMLElement;
+    }
     
     return () => clearInterval(interval);
   }, [images.length]);
@@ -82,11 +89,8 @@ const Hero = () => {
         ))}
       </div>
       
-      {/* Indicador de scroll con forma de domo */}
-      <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 z-10 animate-bounce flex flex-col items-center">
-        <span className="text-white/80 text-xs mb-2 text-shadow">Explora más</span>
-        <ChevronDown className="text-white/90 h-6 w-6" />
-      </div>
+      {/* ScrollArrow component replacing the previous Explora más indicator */}
+      <ScrollArrow targetRef={benefitsRef} />
     </section>
   );
 };

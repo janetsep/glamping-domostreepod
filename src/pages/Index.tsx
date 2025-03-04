@@ -39,7 +39,7 @@ const Index = () => {
   return (
     <div className="min-h-screen bg-white">
       <Hero />
-      <div className="my-8 md:my-16">
+      <div id="benefits" className="my-8 md:my-16">
         <Benefits />
       </div>
       <div className="my-8 md:my-16 bg-gray-50 py-12">
