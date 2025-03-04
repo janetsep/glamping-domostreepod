@@ -18,25 +18,48 @@ export async function confirmWebPayTransaction(
 ): Promise<WebPayResponse> {
   console.log(`Confirmando transacción WebPay con token: ${token}`);
 
-  // Llamada a WebPay para confirmar la transacción
-  const response = await fetch(`${config.endpoint}/${token}`, {
-    method: 'PUT',
-    headers: {
-      'Content-Type': 'application/json',
-      'Tbk-Api-Key-Id': config.apiKey,
-      'Tbk-Api-Key-Secret': config.sharedSecret,
-    },
-    body: JSON.stringify({})
-  });
-  
-  // Verificar respuesta
-  const responseData = await response.json();
-  console.log("Respuesta de confirmación de WebPay:", JSON.stringify(responseData));
-  
-  if (!response.ok) {
-    console.error("Error en la respuesta de confirmación WebPay:", responseData);
-    throw new Error("Error al confirmar la transacción con WebPay");
+  try {
+    // Llamada a WebPay para confirmar la transacción
+    const response = await fetch(`${config.endpoint}/${token}`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+        'Tbk-Api-Key-Id': config.apiKey,
+        'Tbk-Api-Key-Secret': config.sharedSecret,
+      },
+      body: JSON.stringify({})
+    });
+    
+    // Capturar respuesta completa para depuración
+    let responseText = '';
+    
+    try {
+      responseText = await response.text();
+      console.log("Respuesta de WebPay (texto completo):", responseText);
+    } catch (textError) {
+      console.error("Error al leer el texto de la respuesta:", textError);
+      throw new Error("Error al leer respuesta de WebPay");
+    }
+    
+    // Intentar parsear como JSON
+    let responseData;
+    try {
+      responseData = JSON.parse(responseText);
+    } catch (parseError) {
+      console.error("Error al parsear JSON de WebPay:", parseError, "Texto recibido:", responseText);
+      throw new Error(`Error al parsear respuesta de WebPay: ${responseText}`);
+    }
+    
+    console.log("Respuesta de confirmación de WebPay (objeto):", responseData);
+    
+    if (!response.ok) {
+      console.error("Error en la respuesta de WebPay:", response.status, responseData);
+      throw new Error(`Error en respuesta de WebPay: ${response.status} - ${responseText}`);
+    }
+    
+    return responseData;
+  } catch (error) {
+    console.error("Error completo en confirmWebPayTransaction:", error);
+    throw error;
   }
-  
-  return responseData;
 }

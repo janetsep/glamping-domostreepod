@@ -16,22 +16,24 @@ export async function confirmTransaction(token_ws: string): Promise<TransactionR
       body: JSON.stringify({ token_ws })
     });
 
+    // Capture full response text for debugging
     const responseText = await confirmResponse.text();
-    console.log('Respuesta de confirmación (texto):', responseText);
+    console.log('Respuesta de confirmación (texto completo):', responseText);
     
+    // Try to parse as JSON, but handle non-JSON responses gracefully
     let responseData;
     try {
       responseData = JSON.parse(responseText);
     } catch (e) {
-      console.error('Error al parsear la respuesta JSON:', e);
+      console.error('Error al parsear la respuesta JSON:', e, 'Texto de respuesta:', responseText);
       throw new Error(`Error al parsear la respuesta: ${responseText}`);
     }
     
     console.log('Respuesta de confirmación (objeto):', responseData);
 
     if (!confirmResponse.ok) {
-      const errorMessage = responseData.error || 'Error al confirmar la transacción';
-      console.error(`Error en respuesta de confirmación: ${errorMessage}`);
+      const errorMessage = responseData.error || `Error HTTP: ${confirmResponse.status}`;
+      console.error(`Error en respuesta de confirmación: ${errorMessage}`, responseData);
       throw new Error(errorMessage);
     }
 
@@ -95,8 +97,8 @@ export async function updateReservationIfNeeded(responseData: TransactionResult)
           });
           
           if (!response.ok) {
-            const errorText = await response.text();
-            console.error(`Error al actualizar reserva con fetch: ${errorText}`);
+            const responseText = await response.text();
+            console.error(`Error al actualizar reserva con fetch: ${responseText}`);
             return undefined;
           }
           

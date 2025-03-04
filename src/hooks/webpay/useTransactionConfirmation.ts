@@ -46,7 +46,7 @@ export const useTransactionConfirmation = () => {
         
         console.log(`Información del cliente recuperada desde localStorage: ${clientName}, ${clientEmail}, ${clientPhone}`);
 
-        // Call Supabase edge function to confirm payment
+        // Call Supabase edge function to confirm payment with improved error handling
         const response = await fetch('https://gtxjfmvnzrsuaxryffnt.supabase.co/functions/v1/webpay-confirm', {
           method: 'POST',
           headers: {
@@ -65,12 +65,22 @@ export const useTransactionConfirmation = () => {
           })
         });
 
+        // Enhanced error handling for non-200 responses
         if (!response.ok) {
-          const errorData = await response.text();
-          console.error('Error en la respuesta del servidor:', errorData);
-          throw new Error(`Error en la confirmación: ${errorData}`);
+          let errorMessage = 'Error en la confirmación';
+          try {
+            const errorData = await response.json();
+            errorMessage = errorData.error || `Error HTTP: ${response.status}`;
+            console.error('Error detallado en la respuesta del servidor:', errorData);
+          } catch (jsonError) {
+            const errorText = await response.text();
+            errorMessage = `Error HTTP ${response.status}: ${errorText || 'Sin detalle'}`;
+            console.error('Error en texto plano:', errorText);
+          }
+          throw new Error(errorMessage);
         }
 
+        // Process successful response
         const data = await response.json();
         console.log('Transacción confirmada:', data);
         
@@ -92,7 +102,7 @@ export const useTransactionConfirmation = () => {
             if (success) {
               console.log('Estado de reserva actualizado correctamente a confirmed');
             } else {
-              console.error('No se pudo actualizar el estado de la reserva');
+              console.warn('No se pudo actualizar el estado de la reserva con updateReservation');
               
               // Intento alternativo directo a la base de datos
               try {

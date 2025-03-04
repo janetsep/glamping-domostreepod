@@ -21,14 +21,23 @@ serve(async (req) => {
     try {
       requestData = await req.json();
     } catch (e) {
-      return createResponse({ error: 'Formato de solicitud inválido' }, 400);
+      console.error("Error al parsear JSON de la solicitud:", e);
+      const bodyText = await req.text();
+      console.error("Cuerpo de la solicitud:", bodyText);
+      return createResponse({ 
+        error: 'Formato de solicitud inválido', 
+        details: e.message,
+        body: bodyText.substring(0, 200) // Truncar para evitar logs muy largos
+      }, 400);
     }
     
     const { token_ws, is_package_unit, reservation_id, client_info } = requestData;
     
     if (!token_ws) {
+      console.error("Solicitud sin token_ws", requestData);
       return createResponse({ 
-        error: 'Falta el parámetro requerido: token_ws' 
+        error: 'Falta el parámetro requerido: token_ws',
+        received: requestData 
       }, 400);
     }
     
@@ -37,21 +46,30 @@ serve(async (req) => {
     console.log(`[webpay-confirm] Información del cliente:`, client_info || 'No proporcionada');
     
     // Procesar la confirmación
-    const result = await processWebPayConfirmation(
-      token_ws, 
-      !!is_package_unit,
-      reservation_id,
-      client_info
-    );
-    
-    // Devolver el resultado
-    return createResponse(result);
+    try {
+      const result = await processWebPayConfirmation(
+        token_ws, 
+        !!is_package_unit,
+        reservation_id,
+        client_info
+      );
+      
+      // Devolver el resultado
+      return createResponse(result);
+    } catch (processingError) {
+      console.error(`[webpay-confirm] Error en procesamiento:`, processingError);
+      return createResponse({
+        error: processingError.message || 'Error al procesar la confirmación con WebPay',
+        details: typeof processingError === 'object' ? JSON.stringify(processingError) : String(processingError)
+      }, 500);
+    }
     
   } catch (error) {
-    console.error(`[webpay-confirm] Error general: ${error.message}`);
+    console.error(`[webpay-confirm] Error general:`, error);
     console.error(error.stack);
     return createResponse({ 
-      error: error instanceof Error ? error.message : 'Error interno del servidor' 
+      error: error instanceof Error ? error.message : 'Error interno del servidor',
+      details: error instanceof Error ? error.stack : 'Sin detalles'
     }, 500);
   }
 });
