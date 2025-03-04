@@ -4,7 +4,7 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import PaymentSuccess from '@/components/webpay/PaymentSuccess';
 import PaymentError from '@/components/webpay/PaymentError';
 import PaymentProcessing from '@/components/webpay/PaymentProcessing';
-import { TransactionResult } from '@/services/webPayService';
+import { TransactionResult, updateReservationIfNeeded } from '@/services/webPayService';
 import { useMutateReservationStatus } from '@/hooks/reservations/useReservationUpdate';
 
 const WebPayReturn = () => {

@@ -26,6 +26,16 @@ export const useUnitDetailState = (unitId: string | undefined) => {
   const [activitiesTotal, setActivitiesTotal] = useState(0);
   const [packagesTotal, setPackagesTotal] = useState(0);
   const [reservationTab, setReservationTab] = useState("dates");
+  const [confirmedReservationId, setConfirmedReservationId] = useState<string | null>(null);
+  const [clientInformation, setClientInformation] = useState<{
+    name: string;
+    email: string;
+    phone: string;
+  }>({
+    name: '',
+    email: '',
+    phone: ''
+  });
   const confirmationRef = useRef<HTMLDivElement>(null);
 
   // Calculate totals for activities and packages
@@ -163,6 +173,10 @@ export const useUnitDetailState = (unitId: string | undefined) => {
     packagesTotal,
     reservationTab,
     setReservationTab,
+    confirmedReservationId,
+    setConfirmedReservationId,
+    clientInformation,
+    setClientInformation,
     confirmationRef
   };
 };

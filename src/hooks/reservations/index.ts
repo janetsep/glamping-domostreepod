@@ -13,7 +13,7 @@ export const useReservations = () => {
   const { toast } = useToast();
   
   // Import other hooks
-  const { checkAvailability, checkGeneralAvailability } = useAvailabilityCheck();
+  const { checkAvailability, checkGeneralDomosAvailability } = useAvailabilityCheck({ setIsLoading, toast });
   const { calculateQuote } = usePricing();
   const { createReservation } = useReservationCreation({ 
     setIsLoading, 
@@ -75,7 +75,7 @@ export const useReservations = () => {
     isLoading,
     setIsLoading,
     checkAvailability,
-    checkGeneralAvailability,
+    checkGeneralAvailability: checkGeneralDomosAvailability,
     calculateQuote,
     createReservation,
     redirectToWebpay,

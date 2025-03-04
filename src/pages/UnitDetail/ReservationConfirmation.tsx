@@ -1,260 +1,228 @@
 
-import { forwardRef, useState, useEffect } from "react";
+import React, { forwardRef, useState } from "react";
 import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { toast } from "sonner";
-import { Loader2, Mail, MessageSquare } from "lucide-react";
-import { supabase } from '@/lib/supabase';
+import { Label } from "@/components/ui/label";
+import { Activity, ThemedPackage } from "@/types";
+import { Separator } from "@/components/ui/separator";
+import { formatCurrency } from "@/lib/utils";
+import { supabase } from "@/lib/supabase";
+import { useToast } from "@/components/ui/use-toast";
+import { ClientInformationForm } from "./ClientInformationForm";
 
 interface ReservationConfirmationProps {
   startDate?: Date;
   endDate?: Date;
-  guests: number;
+  guests?: number;
   quote: any;
   paymentDetails: any;
   onNewQuote: () => void;
-  reservationId?: string;
+  reservationId?: string | null;
 }
 
 export const ReservationConfirmation = forwardRef<HTMLDivElement, ReservationConfirmationProps>(
   ({ startDate, endDate, guests, quote, paymentDetails, onNewQuote, reservationId }, ref) => {
-    const [name, setName] = useState("");
-    const [email, setEmail] = useState("");
-    const [phone, setPhone] = useState("");
-    const [isSending, setIsSending] = useState(false);
-    const [isContactInfoSent, setIsContactInfoSent] = useState(false);
+    const { toast } = useToast();
+    const [isSubmitting, setIsSubmitting] = useState(false);
+    const [clientInfoSubmitted, setClientInfoSubmitted] = useState(false);
+    
+    const formatDateShort = (date?: Date) => {
+      if (!date) return "";
+      return date.toLocaleDateString("es-CL", {
+        year: "numeric",
+        month: "short",
+        day: "numeric",
+      });
+    };
 
-    // Reset contact form state if payment details change (new reservation)
-    useEffect(() => {
-      if (paymentDetails) {
-        setIsContactInfoSent(false);
+    const formatActivitiesAndPackages = () => {
+      const activities = quote?.selectedActivities || [];
+      const packages = quote?.selectedPackages || [];
+      
+      let items = [];
+      
+      if (activities.length > 0) {
+        items.push(`${activities.length} actividades: ${activities.map((a: Activity) => a.name).join(", ")}`);
       }
-    }, [paymentDetails]);
+      
+      if (packages.length > 0) {
+        items.push(`${packages.length} paquetes: ${packages.map((p: ThemedPackage) => p.name).join(", ")}`);
+      }
+      
+      return items.join(" y ");
+    };
 
-    const handleSendDetails = async () => {
-      if (!name || !email || !phone) {
-        toast.error("Por favor, completa todos los campos");
+    const handleClientInfoSubmit = async (clientInfo: { name: string; email: string; phone: string }) => {
+      if (!reservationId) {
+        toast({
+          variant: "destructive",
+          title: "Error",
+          description: "No se encontró el ID de la reserva",
+        });
         return;
       }
 
-      setIsSending(true);
+      setIsSubmitting(true);
+      
       try {
-        // First save client information to database if we have a reservation ID
-        if (reservationId) {
-          const { error: clientError } = await supabase
-            .from('reservation_clients')
-            .upsert({
-              id: reservationId,
-              name,
-              email,
-              phone,
-              created_at: new Date().toISOString()
-            });
+        // Save client information to the database
+        const { error } = await supabase
+          .from('reservation_clients')
+          .insert({
+            id: reservationId,
+            name: clientInfo.name,
+            email: clientInfo.email,
+            phone: clientInfo.phone
+          });
 
-          if (clientError) {
-            console.error("Error saving client information:", clientError);
-            throw new Error("Error al guardar la información del cliente");
-          }
+        if (error) {
+          throw error;
         }
 
-        // Send email confirmation
-        const emailResponse = await fetch("https://gtxjfmvnzrsuaxryffnt.supabase.co/functions/v1/send-reservation-email", {
-          method: "POST",
+        // Send confirmation email via edge function
+        const emailResponse = await fetch(`${supabase.supabaseUrl}/functions/v1/send-reservation-email`, {
+          method: 'POST',
           headers: {
-            "Content-Type": "application/json",
-            "Authorization": `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imd0eGpmbXZuenJzdWF4cnlmZm50Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDA1MTg5ODIsImV4cCI6MjA1NjA5NDk4Mn0.WwPCyeZX42Jp4A4lW0jl7arXt0lzwRwm18-Ay_D4Ci8`
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${supabase.supabaseKey}`
           },
           body: JSON.stringify({
-            email,
-            phone,
-            name,
+            email: clientInfo.email,
+            name: clientInfo.name,
+            phone: clientInfo.phone,
             reservationDetails: {
+              id: reservationId,
               startDate: startDate?.toISOString(),
               endDate: endDate?.toISOString(),
               guests,
-              totalPrice: quote?.totalPrice,
-              paymentDetails: {
-                authorization_code: paymentDetails?.authorization_code,
-                card_number: paymentDetails?.card_detail?.card_number,
-                status: paymentDetails?.status
-              }
+              quote,
+              paymentDetails
             }
           })
         });
 
         if (!emailResponse.ok) {
-          throw new Error("Error al enviar el correo electrónico");
+          console.error('Error sending email:', await emailResponse.text());
         }
-
-        const responseData = await emailResponse.json();
-        console.log("Email response:", responseData);
-
-        // Also store the communication record
-        if (!reservationId) {
-          await supabase
-            .from('reservation_communications')
-            .insert({
-              email,
-              phone,
-              type: 'confirmation',
-              reservation_details: {
-                name,
-                startDate: startDate?.toISOString(),
-                endDate: endDate?.toISOString(),
-                guests,
-                totalPrice: quote?.totalPrice,
-                paymentInfo: paymentDetails
-              }
-            });
-        }
-
-        toast.success("¡Información enviada correctamente!", {
-          description: "Te hemos enviado un correo con los detalles de tu reserva"
+        
+        setClientInfoSubmitted(true);
+        toast({
+          title: "Información guardada",
+          description: "¡Gracias! Hemos registrado tu información y te enviamos un correo con los detalles de tu reserva.",
         });
-        setIsContactInfoSent(true);
       } catch (error) {
-        console.error("Error sending reservation details:", error);
-        toast.error("Error al enviar la información", {
-          description: "Por favor, intenta nuevamente más tarde"
+        console.error('Error guardando información del cliente:', error);
+        toast({
+          variant: "destructive",
+          title: "Error",
+          description: "No se pudo guardar la información del cliente. Por favor, inténtalo de nuevo.",
         });
       } finally {
-        setIsSending(false);
+        setIsSubmitting(false);
       }
-    };
-
-    const openWhatsApp = () => {
-      if (!phone) {
-        toast.error("Por favor, ingresa tu número de teléfono primero");
-        return;
-      }
-      
-      // Format phone for WhatsApp - remove any non-numeric characters
-      const formattedPhone = phone.replace(/\D/g, "");
-      // Add country code if not present
-      const whatsappPhone = formattedPhone.startsWith("56") ? formattedPhone : `56${formattedPhone}`;
-      
-      const message = encodeURIComponent(
-        `¡Hola ${name}! Gracias por tu reserva en Domos TreePod.\n\n` +
-        `Fechas: ${startDate?.toLocaleDateString()} al ${endDate?.toLocaleDateString()}\n` +
-        `Huéspedes: ${guests}\n` +
-        `Total: $${quote?.totalPrice.toLocaleString()}\n\n` +
-        `Para cualquier consulta, estamos a tu disposición.`
-      );
-      
-      window.open(`https://wa.me/${whatsappPhone}?text=${message}`, "_blank");
     };
 
     return (
-      <div ref={ref} className="text-center p-8 space-y-6">
-        <div className="text-6xl mb-4">🎉</div>
-        <h2 className="text-2xl font-display font-bold">¡Reserva confirmada!</h2>
-        <p>
-          Gracias por tu reserva en Domos TreePod. 
-        </p>
-        
-        <div className="text-sm text-muted-foreground mt-4 space-y-2">
-          <p>Fechas reservadas:</p>
-          <p>Entrada: {startDate?.toLocaleDateString()}</p>
-          <p>Salida: {endDate?.toLocaleDateString()}</p>
-          <p>Huéspedes: {guests}</p>
-          <p className="font-semibold mt-2">Total: ${quote?.totalPrice.toLocaleString()}</p>
-          
-          {paymentDetails && (
-            <div className="mt-4 pt-4 border-t text-left">
-              <p className="font-semibold mb-2">Detalles del pago:</p>
-              <p>Método: WebPay Plus</p>
-              <p>Tarjeta: {paymentDetails.card_detail?.card_number}</p>
-              <p>Código de autorización: {paymentDetails.authorization_code}</p>
-              <p>Estado: {paymentDetails.status}</p>
-            </div>
-          )}
+      <div ref={ref} className="space-y-6">
+        <div className="text-center">
+          <h2 className="text-2xl font-display font-bold text-primary mb-2">
+            ¡Reserva Confirmada!
+          </h2>
+          <p className="text-lg mb-4">
+            Tu pago ha sido procesado con éxito
+          </p>
         </div>
-        
-        {!isContactInfoSent ? (
-          <div className="mt-6 pt-6 border-t">
-            <h3 className="text-lg font-semibold mb-4">Ingresa tus datos para completar la reserva</h3>
-            <div className="space-y-4">
-              <div className="text-left">
-                <label htmlFor="name" className="block text-sm font-medium mb-1">
-                  Nombre completo
-                </label>
-                <Input
-                  id="name"
-                  type="text"
-                  value={name}
-                  onChange={(e) => setName(e.target.value)}
-                  placeholder="Tu nombre completo"
-                  required
-                />
+
+        <Card className="p-6 bg-white">
+          <div className="space-y-4">
+            <div className="flex justify-between items-center">
+              <span className="font-medium">Fechas:</span>
+              <span>
+                {formatDateShort(startDate)} - {formatDateShort(endDate)}
+              </span>
+            </div>
+
+            {guests && (
+              <div className="flex justify-between items-center">
+                <span className="font-medium">Huéspedes:</span>
+                <span>{guests}</span>
               </div>
-              <div className="text-left">
-                <label htmlFor="email" className="block text-sm font-medium mb-1">
-                  Correo electrónico
-                </label>
-                <Input
-                  id="email"
-                  type="email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  placeholder="tu@email.com"
-                  required
-                />
-              </div>
-              <div className="text-left">
-                <label htmlFor="phone" className="block text-sm font-medium mb-1">
-                  Número de teléfono (WhatsApp)
-                </label>
-                <Input
-                  id="phone"
-                  type="tel"
-                  value={phone}
-                  onChange={(e) => setPhone(e.target.value)}
-                  placeholder="+56 9 1234 5678"
-                  required
-                />
-              </div>
-              
-              <Button 
-                className="w-full" 
-                onClick={handleSendDetails}
-                disabled={isSending}
-              >
-                {isSending ? (
-                  <>
-                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                    Enviando...
-                  </>
-                ) : (
-                  "Enviar detalles de reserva"
+            )}
+
+            {quote && (
+              <>
+                <div className="flex justify-between items-center">
+                  <span className="font-medium">Noches:</span>
+                  <span>{quote.nights}</span>
+                </div>
+                
+                {quote.basePrice && (
+                  <div className="flex justify-between items-center">
+                    <span className="font-medium">Precio base:</span>
+                    <span>{formatCurrency(quote.basePrice)}</span>
+                  </div>
                 )}
-              </Button>
-            </div>
+                
+                {quote.activitiesTotal > 0 && (
+                  <div className="flex justify-between items-center">
+                    <span className="font-medium">Actividades:</span>
+                    <span>{formatCurrency(quote.activitiesTotal)}</span>
+                  </div>
+                )}
+                
+                {quote.packagesTotal > 0 && (
+                  <div className="flex justify-between items-center">
+                    <span className="font-medium">Paquetes temáticos:</span>
+                    <span>{formatCurrency(quote.packagesTotal)}</span>
+                  </div>
+                )}
+                
+                <Separator />
+                
+                <div className="flex justify-between items-center font-bold">
+                  <span>Total:</span>
+                  <span>{formatCurrency(quote.totalPrice)}</span>
+                </div>
+              </>
+            )}
+
+            {paymentDetails && (
+              <div className="mt-4 p-3 bg-green-50 rounded-md">
+                <h4 className="font-medium text-green-800 mb-1">Detalles del pago</h4>
+                <div className="text-sm text-green-700">
+                  <p>Código de autorización: {paymentDetails.authorization_code || 'N/A'}</p>
+                  <p>Número de tarjeta: {paymentDetails.card_detail?.card_number || 'N/A'}</p>
+                </div>
+              </div>
+            )}
+
+            {formatActivitiesAndPackages() && (
+              <div className="mt-2 p-3 bg-indigo-50 rounded-md">
+                <p className="text-sm text-indigo-700">
+                  <span className="font-medium text-indigo-800">Extras incluidos: </span> 
+                  {formatActivitiesAndPackages()}
+                </p>
+              </div>
+            )}
           </div>
+        </Card>
+
+        {!clientInfoSubmitted ? (
+          <ClientInformationForm 
+            onSubmit={handleClientInfoSubmit}
+            isSubmitting={isSubmitting}
+          />
         ) : (
-          <div className="mt-6 pt-6 border-t space-y-4">
-            <p className="text-green-600 font-medium">¡Información enviada correctamente!</p>
-            
-            <div className="flex flex-col sm:flex-row gap-3 justify-center">
-              <Button onClick={openWhatsApp} variant="outline" className="flex items-center">
-                <MessageSquare className="mr-2 h-4 w-4" />
-                Abrir WhatsApp
-              </Button>
-              
-              <Button 
-                onClick={() => window.open(`mailto:${email}`, "_blank")} 
-                variant="outline"
-                className="flex items-center"
-              >
-                <Mail className="mr-2 h-4 w-4" />
-                Abrir Email
-              </Button>
-            </div>
+          <div className="mt-6 text-center">
+            <p className="text-green-600 mb-4">
+              ¡Gracias por completar tu información! Hemos enviado los detalles de tu reserva a tu correo electrónico.
+            </p>
+            <Button onClick={onNewQuote} variant="outline">
+              Realizar otra reserva
+            </Button>
           </div>
         )}
-        
-        <Button className="mt-6" onClick={onNewQuote}>
-          Hacer nueva reserva
-        </Button>
       </div>
     );
   }
