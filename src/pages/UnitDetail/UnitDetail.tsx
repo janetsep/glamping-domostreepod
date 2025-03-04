@@ -74,6 +74,7 @@ const UnitDetail = () => {
                     quote={state.quote}
                     paymentDetails={state.paymentDetails}
                     onNewQuote={handleNewQuote}
+                    reservationId={state.confirmedReservationId}
                   />
                 ) : (
                   <ReservationPanel

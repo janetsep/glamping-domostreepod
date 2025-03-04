@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
 import { Loader2, Mail, MessageSquare } from "lucide-react";
+import { supabase } from '@/lib/supabase';
 
 interface ReservationConfirmationProps {
   startDate?: Date;
@@ -12,10 +13,12 @@ interface ReservationConfirmationProps {
   quote: any;
   paymentDetails: any;
   onNewQuote: () => void;
+  reservationId?: string;
 }
 
 export const ReservationConfirmation = forwardRef<HTMLDivElement, ReservationConfirmationProps>(
-  ({ startDate, endDate, guests, quote, paymentDetails, onNewQuote }, ref) => {
+  ({ startDate, endDate, guests, quote, paymentDetails, onNewQuote, reservationId }, ref) => {
+    const [name, setName] = useState("");
     const [email, setEmail] = useState("");
     const [phone, setPhone] = useState("");
     const [isSending, setIsSending] = useState(false);
@@ -29,13 +32,31 @@ export const ReservationConfirmation = forwardRef<HTMLDivElement, ReservationCon
     }, [paymentDetails]);
 
     const handleSendDetails = async () => {
-      if (!email || !phone) {
+      if (!name || !email || !phone) {
         toast.error("Por favor, completa todos los campos");
         return;
       }
 
       setIsSending(true);
       try {
+        // First save client information to database if we have a reservation ID
+        if (reservationId) {
+          const { error: clientError } = await supabase
+            .from('reservation_clients')
+            .upsert({
+              id: reservationId,
+              name,
+              email,
+              phone,
+              created_at: new Date().toISOString()
+            });
+
+          if (clientError) {
+            console.error("Error saving client information:", clientError);
+            throw new Error("Error al guardar la información del cliente");
+          }
+        }
+
         // Send email confirmation
         const emailResponse = await fetch("https://gtxjfmvnzrsuaxryffnt.supabase.co/functions/v1/send-reservation-email", {
           method: "POST",
@@ -46,6 +67,7 @@ export const ReservationConfirmation = forwardRef<HTMLDivElement, ReservationCon
           body: JSON.stringify({
             email,
             phone,
+            name,
             reservationDetails: {
               startDate: startDate?.toISOString(),
               endDate: endDate?.toISOString(),
@@ -66,6 +88,25 @@ export const ReservationConfirmation = forwardRef<HTMLDivElement, ReservationCon
 
         const responseData = await emailResponse.json();
         console.log("Email response:", responseData);
+
+        // Also store the communication record
+        if (!reservationId) {
+          await supabase
+            .from('reservation_communications')
+            .insert({
+              email,
+              phone,
+              type: 'confirmation',
+              reservation_details: {
+                name,
+                startDate: startDate?.toISOString(),
+                endDate: endDate?.toISOString(),
+                guests,
+                totalPrice: quote?.totalPrice,
+                paymentInfo: paymentDetails
+              }
+            });
+        }
 
         toast.success("¡Información enviada correctamente!", {
           description: "Te hemos enviado un correo con los detalles de tu reserva"
@@ -93,7 +134,7 @@ export const ReservationConfirmation = forwardRef<HTMLDivElement, ReservationCon
       const whatsappPhone = formattedPhone.startsWith("56") ? formattedPhone : `56${formattedPhone}`;
       
       const message = encodeURIComponent(
-        `¡Hola! Gracias por tu reserva en Domos TreePod.\n\n` +
+        `¡Hola ${name}! Gracias por tu reserva en Domos TreePod.\n\n` +
         `Fechas: ${startDate?.toLocaleDateString()} al ${endDate?.toLocaleDateString()}\n` +
         `Huéspedes: ${guests}\n` +
         `Total: $${quote?.totalPrice.toLocaleString()}\n\n` +
@@ -131,8 +172,21 @@ export const ReservationConfirmation = forwardRef<HTMLDivElement, ReservationCon
         
         {!isContactInfoSent ? (
           <div className="mt-6 pt-6 border-t">
-            <h3 className="text-lg font-semibold mb-4">Ingresa tus datos para recibir la confirmación</h3>
+            <h3 className="text-lg font-semibold mb-4">Ingresa tus datos para completar la reserva</h3>
             <div className="space-y-4">
+              <div className="text-left">
+                <label htmlFor="name" className="block text-sm font-medium mb-1">
+                  Nombre completo
+                </label>
+                <Input
+                  id="name"
+                  type="text"
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                  placeholder="Tu nombre completo"
+                  required
+                />
+              </div>
               <div className="text-left">
                 <label htmlFor="email" className="block text-sm font-medium mb-1">
                   Correo electrónico

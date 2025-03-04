@@ -1,6 +1,6 @@
 
 import { useCallback } from 'react';
-import { supabase } from '@/lib/supabase';
+import { toast } from 'sonner';
 
 const SUPABASE_URL = 'https://gtxjfmvnzrsuaxryffnt.supabase.co';
 const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imd0eGpmbXZuenJzdWF4cnlmZm50Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDA1MTg5ODIsImV4cCI6MjA1NjA5NDk4Mn0.WwPCyeZX42Jp4A4lW0jl7arXt0lzwRwm18-Ay_D4Ci8';
@@ -9,116 +9,78 @@ interface UsePaymentProps {
   setIsLoading: (isLoading: boolean) => void;
 }
 
-export const usePayment = ({ setIsLoading }: UsePaymentProps) => {
-  const redirectToWebpay = useCallback(async (reservationId: string, amount: number) => {
-    console.log(`Iniciando proceso WebPay para la reserva ${reservationId} por $${amount}`);
+export const usePayment = ({ 
+  setIsLoading 
+}: UsePaymentProps) => {
+  const redirectToWebpay = useCallback(async (
+    reservationId: string,
+    amount: number,
+    isPackageUnit: boolean = false,
+    unitId: string = ''
+  ) => {
+    setIsLoading(true);
     
     try {
-      setIsLoading(true);
+      console.log(`Inicializando WebPay para reserva ${reservationId} por $${amount}`);
       
-      const origin = window.location.origin;
-      const requestData = {
-        reservationId,
-        amount,
-        origin
-      };
+      // Store information for later reference
+      localStorage.setItem('current_reservation_id', reservationId);
+      if (unitId) {
+        localStorage.setItem('current_unit_id', unitId);
+      }
+      localStorage.setItem('is_package_unit', isPackageUnit ? 'true' : 'false');
       
-      const initResponse = await fetch(`${SUPABASE_URL}/functions/v1/webpay-init`, {
+      // Call WebPay initialization
+      const response = await fetch(`${SUPABASE_URL}/functions/v1/webpay-init`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${SUPABASE_ANON_KEY}`
         },
-        body: JSON.stringify(requestData)
+        body: JSON.stringify({
+          amount,
+          buy_order: `BO-${Date.now()}-${reservationId.substring(0, 8)}`,
+          return_url: window.location.origin + '/webpay-return',
+          session_id: `SESSION-${reservationId}`,
+          unit_id: unitId
+        })
       });
-
-      if (!initResponse.ok) {
-        const errorText = await initResponse.text();
-        console.error(`Error al iniciar WebPay: ${errorText}`);
-        return {
-          status: 'error',
-          message: `Error al iniciar WebPay: ${initResponse.status}`,
-          details: errorText
-        };
-      }
-
-      const responseText = await initResponse.text();
-      let transactionData;
-      try {
-        transactionData = JSON.parse(responseText);
-      } catch (e) {
-        console.error(`Error al parsear respuesta JSON: ${e.message}`);
-        return {
-          status: 'error',
-          message: 'Error al parsear respuesta',
-          details: null
-        };
-      }
-
-      if (!transactionData.url || !transactionData.token) {
-        console.error(`Respuesta incompleta de WebPay: ${JSON.stringify(transactionData)}`);
-        return {
-          status: 'error',
-          message: 'Respuesta incompleta de WebPay',
-          details: null
-        };
-      }
-
-      // Guardar el token en la reserva para poder identificarla después
-      if (!transactionData.is_package_unit) {
-        try {
-          await supabase
-            .from('reservations')
-            .update({
-              payment_details: {
-                token: transactionData.token,
-                transaction_created: new Date().toISOString()
-              }
-            })
-            .eq('id', reservationId);
-            
-          console.log(`Token WebPay ${transactionData.token} guardado en reserva ${reservationId}`);
-        } catch (e) {
-          console.error(`Error al guardar token en reserva: ${e.message}`);
-        }
-      }
-
-      // Crear y enviar formulario para redirigir a WebPay
-      const form = document.createElement('form');
-      form.method = 'POST';
-      form.action = transactionData.url;
-      form.style.display = 'none';
       
-      const tokenField = document.createElement('input');
-      tokenField.type = 'hidden';
-      tokenField.name = 'token_ws';
-      tokenField.value = transactionData.token;
-      form.appendChild(tokenField);
+      if (!response.ok) {
+        const errorText = await response.text();
+        throw new Error(`Error en inicialización de WebPay: ${response.status} ${errorText}`);
+      }
       
-      document.body.appendChild(form);
-      setTimeout(() => {
+      const data = await response.json();
+      console.log('WebPay initialization response:', data);
+      
+      if (data.url && data.token) {
+        // Create the form dynamically
+        const form = document.createElement('form');
+        form.method = 'POST';
+        form.action = data.url;
+        
+        const tokenInput = document.createElement('input');
+        tokenInput.type = 'hidden';
+        tokenInput.name = 'token_ws';
+        tokenInput.value = data.token;
+        
+        form.appendChild(tokenInput);
+        document.body.appendChild(form);
+        
+        // Submit the form to redirect
         form.submit();
-      }, 10);
-      
-      return {
-        status: 'pending',
-        message: 'Redirigiendo a WebPay Plus',
-        details: {
-          token: transactionData.token,
-          url: transactionData.url
-        }
-      };
+      } else {
+        throw new Error('Respuesta inválida de WebPay');
+      }
     } catch (error) {
-      console.error(`Error en el proceso de pago: ${error instanceof Error ? error.message : 'Error desconocido'}`);
-      return {
-        status: 'error',
-        message: error instanceof Error ? error.message : 'Error desconocido en el proceso de pago',
-        details: null
-      };
-    } finally {
+      console.error('Error redirecting to WebPay:', error);
+      toast.error('Error al procesar el pago', {
+        description: 'No se pudo iniciar el proceso de pago. Por favor, inténtalo de nuevo.'
+      });
       setIsLoading(false);
     }
   }, [setIsLoading]);
-
+  
   return { redirectToWebpay };
 };
