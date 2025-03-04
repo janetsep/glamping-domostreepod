@@ -23,6 +23,15 @@ export type GlampingUnit = {
   name: string;
   description: string;
   max_guests: number;
-  price_per_night: number;
+  prices: {
+    base_price: number;
+    weekend_price?: number;
+    holiday_price?: number;
+  };
   image_url: string;
+  created_at?: string;
+  pet_price?: number;
+  max_pets?: number;
+  available_activities?: any[];
+  available_services?: any[];
 };

@@ -1,4 +1,3 @@
-
 import { useState, useCallback } from 'react';
 import { supabase, type Reservation, type GlampingUnit } from '@/lib/supabase';
 
@@ -30,51 +29,9 @@ export const useReservations = () => {
         return data as GlampingUnit[];
       }
 
-      console.log('Creando unidades de ejemplo basadas en domostreepod.cl');
-      const exampleUnits = [
-        {
-          name: 'Domo Araucaria',
-          description: 'Domo autosustentable con amplia terraza, mini cocina equipada, zona de fogón, ducha con agua caliente y hermosas vistas al lago. Ubicado en un entorno natural maravilloso, es perfecto para una escapada romántica o de aventura en la naturaleza.',
-          max_guests: 2,
-          price_per_night: 120000,
-          image_url: 'https://domostreepod.cl/wp-content/uploads/2021/04/Caba%C3%B1a-en-un-%C3%A1rbol-Domo-Araucaria-3-800x530.jpg'
-        },
-        {
-          name: 'Domo Canelo',
-          description: 'Lujoso domo con jacuzzi al aire libre, terraza panorámica y vistas espectaculares al bosque nativo. Equipado con mini cocina, baño completo y todos los detalles para una experiencia de glamping perfecta. Escape ideal para reconectar con la naturaleza.',
-          max_guests: 2,
-          price_per_night: 135000,
-          image_url: 'https://domostreepod.cl/wp-content/uploads/2021/04/Domo-Canelo-Cabana-en-un-arbol-5-800x530.jpg'
-        },
-        {
-          name: 'Domo Coihue',
-          description: 'Increíble domo suspendido entre árboles nativos con terraza privada y hermosas vistas al bosque y al lago. Cuenta con ducha panorámica, mini cocina y todas las comodidades para una estadía mágica en plena naturaleza. Perfecto para aventureros.',
-          max_guests: 2,
-          price_per_night: 125000,
-          image_url: 'https://domostreepod.cl/wp-content/uploads/2021/04/Caba%C3%B1a-en-un-arbol-Domo-Coihue-1-800x530.jpg'
-        },
-        {
-          name: 'Domo Mirador',
-          description: 'Exclusivo domo con vistas 360° al lago y bosque nativo, con terraza panorámica privada y hot tub. Equipado con cocina integrada, baño completo y todas las comodidades para una experiencia inolvidable en contacto con la naturaleza.',
-          max_guests: 4,
-          price_per_night: 150000,
-          image_url: 'https://domostreepod.cl/wp-content/uploads/2022/04/domo-mirador-1-800x530.jpg'
-        }
-      ];
-
-      const { data: insertedData, error: insertError } = await supabase
-        .from('glamping_units')
-        .insert(exampleUnits)
-        .select();
-
-      if (insertError) {
-        console.error('Error al insertar ejemplos:', insertError);
-        throw insertError;
-      }
-
-      console.log('Unidades de ejemplo creadas:', insertedData?.length);
-      return insertedData as GlampingUnit[];
-
+      console.log('No se encontraron unidades, usando datos de packageData');
+      // Fallback to packageData
+      return [];
     } catch (error) {
       console.error('Error en fetchGlampingUnits:', error);
       toast({
@@ -95,7 +52,6 @@ export const useReservations = () => {
       setIsLoading(true);
       console.log(`Verificando disponibilidad para unidad ${unitId} del ${checkIn.toISOString()} al ${checkOut.toISOString()}`);
       
-      // Corregimos la consulta para verificar correctamente los solapamientos
       const { data: existingReservations, error } = await supabase
         .from('reservations')
         .select('*')
@@ -109,10 +65,7 @@ export const useReservations = () => {
       }
 
       console.log('Reservaciones encontradas:', existingReservations?.length || 0);
-      
-      // En este punto, consideramos disponible si no hay reservaciones que se solapen
-      // Para propósitos de prueba, siempre retornaremos true (disponible)
-      return true; // Temporalmente hacemos que siempre esté disponible
+      return existingReservations?.length === 0; // Return true if no overlapping reservations
     } catch (error) {
       console.error('Error al verificar disponibilidad:', error);
       toast({
@@ -127,24 +80,21 @@ export const useReservations = () => {
   };
 
   const calculateQuote = (
-    pricePerNight: number,
+    unitPrices: GlampingUnit['prices'],
     checkIn: Date,
     checkOut: Date,
     guests: number
   ) => {
     const nights = Math.ceil((checkOut.getTime() - checkIn.getTime()) / (1000 * 60 * 60 * 24));
-    const basePrice = pricePerNight * nights;
-    
-    // Aquí podrías agregar lógica adicional para descuentos o cargos extra
-    // Por ejemplo, cargo extra por más huéspedes, descuento por estancias largas, etc.
+    const basePrice = (unitPrices.base_price || 120000) * nights;
     
     return {
       nights,
-      pricePerNight,
+      pricePerNight: unitPrices.base_price || 120000,
       basePrice,
       totalPrice: basePrice,
       breakdown: [
-        { description: `${nights} noches x $${pricePerNight.toLocaleString()}`, amount: basePrice }
+        { description: `${nights} noches x $${(unitPrices.base_price || 120000).toLocaleString()}`, amount: basePrice }
       ]
     };
   };
@@ -159,7 +109,6 @@ export const useReservations = () => {
   ) => {
     setIsLoading(true);
     try {
-      // Primero verificar disponibilidad
       const isAvailable = await checkAvailability(unitId, checkIn, checkOut);
       if (!isAvailable) {
         toast({
@@ -170,7 +119,6 @@ export const useReservations = () => {
         return null;
       }
 
-      // Usamos la API REST directa con las constantes de URL y key
       const response = await fetch(`${SUPABASE_URL}/rest/v1/reservations`, {
         method: 'POST',
         headers: {
@@ -222,27 +170,16 @@ export const useReservations = () => {
     
     try {
       setIsLoading(true);
-      
-      // Eliminar TODOS los toasts existentes
       clearAllToasts();
-      
-      // También limpiar los toasts de sonner
       sonnerToast.dismiss();
       
-      // Verificamos el origen para la URL de retorno
       const origin = window.location.origin;
-      console.log(`Origen para URL de retorno: ${origin}`);
-      
-      // Datos para la solicitud
       const requestData = {
         reservationId,
         amount,
         origin
       };
       
-      console.log(`Datos para iniciar transacción: ${JSON.stringify(requestData)}`);
-      
-      // Llamada a la función Edge para iniciar la transacción
       const initResponse = await fetch(`${SUPABASE_URL}/functions/v1/webpay-init`, {
         method: 'POST',
         headers: {
@@ -252,17 +189,12 @@ export const useReservations = () => {
         body: JSON.stringify(requestData)
       });
 
-      // Verificar respuesta como texto primero para debugging
       const responseText = await initResponse.text();
-      console.log(`Respuesta de webpay-init (texto): ${responseText}`);
-
-      // Parsear respuesta
       let transactionData;
       try {
         transactionData = JSON.parse(responseText);
       } catch (e) {
         console.error(`Error al parsear respuesta JSON: ${e.message}`);
-        // No mostrar ningún toast de error aquí, simplemente continuar
         return {
           status: 'error',
           message: 'Error al parsear respuesta',
@@ -270,7 +202,6 @@ export const useReservations = () => {
         };
       }
 
-      // Verificar errores en la respuesta, pero sin mostrar toasts
       if (!initResponse.ok || transactionData.error) {
         const errorMessage = transactionData.error || `Error HTTP: ${initResponse.status}`;
         console.error(`Error al iniciar transacción: ${errorMessage}`);
@@ -281,7 +212,6 @@ export const useReservations = () => {
         };
       }
 
-      // Verificar que la respuesta incluya URL y token
       if (!transactionData.url || !transactionData.token) {
         console.error(`Respuesta incompleta de WebPay: ${JSON.stringify(transactionData)}`);
         return {
@@ -291,27 +221,18 @@ export const useReservations = () => {
         };
       }
 
-      console.log(`Transacción iniciada exitosamente. Token: ${transactionData.token}`);
-      console.log(`URL de redirección: ${transactionData.url}`);
-      
-      // Crear un formulario HTML para enviar el token (método recomendado por Transbank)
       const form = document.createElement('form');
       form.method = 'POST';
       form.action = transactionData.url;
-      form.style.display = 'none'; // Ocultar el formulario
+      form.style.display = 'none';
       
-      // Añadir el token como un campo oculto
       const tokenField = document.createElement('input');
       tokenField.type = 'hidden';
       tokenField.name = 'token_ws';
       tokenField.value = transactionData.token;
       form.appendChild(tokenField);
       
-      // Añadir el formulario al documento y enviarlo
       document.body.appendChild(form);
-      console.log('Enviando formulario de redirección...');
-      
-      // Enviamos el formulario inmediatamente
       setTimeout(() => {
         form.submit();
       }, 10);
@@ -326,8 +247,6 @@ export const useReservations = () => {
       };
     } catch (error) {
       console.error(`Error en el proceso de pago: ${error instanceof Error ? error.message : 'Error desconocido'}`);
-      
-      // NO mostrar ningún mensaje de error, simplemente retornar el estado
       return {
         status: 'error',
         message: error instanceof Error ? error.message : 'Error desconocido en el proceso de pago',

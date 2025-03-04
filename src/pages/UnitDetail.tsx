@@ -13,6 +13,7 @@ import { GuestSelector } from "@/components/unit-detail/GuestSelector";
 import { ReservationSummary } from "@/components/unit-detail/ReservationSummary";
 import { clearAllToasts } from "@/hooks/use-toast";
 import { toast as sonnerToast } from "sonner";
+import { packageData } from "@/components/packages/packageData";
 
 const UnitDetail = () => {
   const { unitId } = useParams<{ unitId: string }>();
@@ -34,6 +35,26 @@ const UnitDetail = () => {
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
+
+  // Use packageData as fallback when database fails
+  useEffect(() => {
+    if (unitId) {
+      const packageItem = packageData.find(pkg => pkg.id === unitId);
+      if (packageItem) {
+        const packageUnit: GlampingUnit = {
+          id: packageItem.id,
+          name: packageItem.title,
+          description: packageItem.detailedDescription,
+          max_guests: 2,
+          prices: {
+            base_price: packageItem.price
+          },
+          image_url: packageItem.image,
+        };
+        setFallbackUnit(packageUnit);
+      }
+    }
+  }, [unitId]);
 
   // Intentar obtener la unidad por ID
   const { data: unit, isError } = useQuery<GlampingUnit | null>({
@@ -70,7 +91,7 @@ const UnitDetail = () => {
   // Si no se encuentra por ID, cargar la primera unidad disponible
   useEffect(() => {
     const loadFallbackUnit = async () => {
-      if (isError || (!unit && unitId)) {
+      if (isError || (!unit && unitId && !fallbackUnit)) {
         console.log("Cargando unidad alternativa...");
         const units = await fetchGlampingUnits();
         if (units && units.length > 0) {
@@ -81,7 +102,7 @@ const UnitDetail = () => {
     };
 
     loadFallbackUnit();
-  }, [unitId, unit, isError, fetchGlampingUnits]);
+  }, [unitId, unit, isError, fetchGlampingUnits, fallbackUnit]);
 
   // Usar la unidad directa o la alternativa
   const displayUnit = unit || fallbackUnit;
@@ -94,7 +115,7 @@ const UnitDetail = () => {
 
     if (available) {
       const quoteDetails = calculateQuote(
-        displayUnit.price_per_night,
+        displayUnit.prices,
         startDate,
         endDate,
         guests

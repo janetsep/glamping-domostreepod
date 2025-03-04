@@ -1,4 +1,3 @@
-
 import { Users, Coffee, Droplets, Wifi, Flame, BedDouble, Mountain, Utensils } from "lucide-react";
 import type { GlampingUnit } from "@/lib/supabase";
 import { useState } from "react";
@@ -36,7 +35,7 @@ export const UnitInfo = ({ unit }: UnitInfoProps) => {
     return [
       unit.image_url || "/placeholder.svg",
       "/lovable-uploads/f0a226af-4b5a-47f8-9a16-71ebc00d5039.png",
-      "/lovable-uploads/04ce7b83-26de-4148-a84b-6b62dd46101f.png"
+      "/lovable-uploads/04lovable-uploads/04ce7b83-26de-4148-a84b-6b62dd46101f.png"
     ];
   };
 
