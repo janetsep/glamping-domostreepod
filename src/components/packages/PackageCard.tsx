@@ -1,5 +1,5 @@
 
-import { Coffee, Droplets, Wifi, Flame, BedDouble, Mountain } from "lucide-react";
+import { Coffee, Droplets, Wifi, Flame, BedDouble, Mountain, Users } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import React from "react";
 
@@ -18,6 +18,7 @@ export interface PackageItem {
   image: string;
   interiorImage: string;
   size: string;
+  maxGuests: number;
   features: string[];
   amenities: PackageAmenity[];
 }
@@ -64,8 +65,8 @@ const PackageCard = ({
             <p className="text-gray-700">{pkg.detailedDescription}</p>
             
             <div className="flex items-center text-gray-700 font-medium">
-              <BedDouble size={18} className="mr-2" />
-              <span>Capacidad: 2 personas</span>
+              <Users size={18} className="mr-2" />
+              <span>Capacidad: {pkg.maxGuests} personas</span>
               <span className="mx-3">•</span>
               <span>{pkg.size}</span>
             </div>
@@ -140,6 +141,10 @@ const PackageCard = ({
             >
               <h3 className="text-2xl font-display font-bold text-white mb-2">{pkg.title}</h3>
               <p className="text-white/90 text-sm mb-3">{pkg.description}</p>
+              <div className="flex items-center text-white/80 text-sm mb-2">
+                <Users size={16} className="mr-1" />
+                <span>Hasta {pkg.maxGuests} personas</span>
+              </div>
               <div className="flex justify-between items-end">
                 <div>
                   <span className="text-white/70 line-through text-sm">
