@@ -1,4 +1,3 @@
-
 import { Button } from "@/components/ui/button";
 import { useLocation } from "react-router-dom";
 import { 
@@ -7,7 +6,6 @@ import {
   MessageSquare, 
   MapPin, 
   Leaf, 
-  Trees, 
   Mail,
   BedDouble
 } from "lucide-react";
@@ -39,7 +37,6 @@ export const NavigationLinks = ({
     { name: "Comentarios", id: "testimonials", icon: MessageSquare },
     { name: "Ubicación", id: "location", icon: MapPin, description: "Sur de Chile" },
     { name: "Blog", id: "blog", icon: Leaf },
-    { name: "Sobre Nosotros", path: "/sobre-nosotros", icon: Trees },
     { name: "Contacto", id: "contact", icon: Mail },
   ];
 

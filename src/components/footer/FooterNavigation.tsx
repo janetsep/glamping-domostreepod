@@ -22,10 +22,10 @@ const FooterNavigation = ({ navigateTo }: FooterNavigationProps) => {
           <li key={item.name}>
             <button 
               onClick={() => navigateTo(item.href)} 
-              className="text-gray-600 hover:text-primary flex items-center transition-colors cursor-pointer"
+              className="text-gray-600 hover:text-primary flex items-center transition-colors cursor-pointer group"
             >
-              <ChevronRight className="h-4 w-4 mr-1" />
-              {item.name}
+              <ChevronRight className="h-4 w-4 mr-1 group-hover:text-cyan-500" />
+              <span className="group-hover:text-cyan-500 transition-colors">{item.name}</span>
             </button>
           </li>
         ))}
