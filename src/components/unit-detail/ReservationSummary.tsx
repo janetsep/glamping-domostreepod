@@ -1,7 +1,7 @@
 
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
-import { Calendar, ShieldCheck } from "lucide-react";
+import { Calendar, ShieldCheck, CheckCircle2 } from "lucide-react";
 
 interface ReservationSummaryProps {
   quote: {
@@ -48,6 +48,14 @@ export const ReservationSummary = ({
 
   return (
     <div className="space-y-4">
+      {/* Mensaje de disponibilidad destacado */}
+      {isAvailable && (
+        <div className="bg-green-50 border border-green-200 p-4 rounded-md text-green-700 flex items-center gap-2 mb-4">
+          <CheckCircle2 className="h-5 w-5 text-green-500" />
+          <span className="font-medium">¡Fechas disponibles para reservar!</span>
+        </div>
+      )}
+      
       <div className="border-t pt-4 mt-4 space-y-3">
         {quote.breakdown.map((item, index) => (
           <div key={index} className="flex justify-between text-sm">

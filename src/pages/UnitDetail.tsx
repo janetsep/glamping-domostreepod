@@ -1,5 +1,5 @@
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { ArrowLeft } from "lucide-react";
@@ -30,11 +30,20 @@ const UnitDetail = () => {
   const [fallbackUnit, setFallbackUnit] = useState<GlampingUnit | null>(null);
   const [isProcessingPayment, setIsProcessingPayment] = useState(false);
   const [paymentDetails, setPaymentDetails] = useState<any>(null);
+  const [checkedAvailability, setCheckedAvailability] = useState(false);
+  const confirmationRef = useRef<HTMLDivElement>(null);
 
   // Scroll to top when page loads
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
+
+  // Scroll to confirmation when reservation is confirmed
+  useEffect(() => {
+    if (isReservationConfirmed && confirmationRef.current) {
+      confirmationRef.current.scrollIntoView({ behavior: 'smooth' });
+    }
+  }, [isReservationConfirmed]);
 
   // Use packageData as fallback when database fails
   useEffect(() => {
@@ -107,6 +116,40 @@ const UnitDetail = () => {
   // Usar la unidad directa o la alternativa
   const displayUnit = unit || fallbackUnit;
 
+  // Verificar disponibilidad automáticamente cuando se seleccionan fechas
+  useEffect(() => {
+    const checkDatesAvailability = async () => {
+      if (startDate && endDate && displayUnit && !checkedAvailability) {
+        const available = await checkAvailability(displayUnit.id, startDate, endDate);
+        setIsAvailable(available);
+        setCheckedAvailability(true);
+        
+        if (available) {
+          toast({
+            title: "Fechas disponibles",
+            description: "Las fechas seleccionadas están disponibles para reserva.",
+            variant: "default",
+          });
+        } else {
+          toast({
+            variant: "destructive",
+            title: "No disponible",
+            description: "Las fechas seleccionadas no están disponibles. Por favor, elige otras fechas.",
+          });
+        }
+      }
+    };
+    
+    checkDatesAvailability();
+  }, [startDate, endDate, displayUnit, checkAvailability, toast, checkedAvailability]);
+
+  // Resetear el estado de verificación cuando cambien las fechas
+  useEffect(() => {
+    setCheckedAvailability(false);
+    setShowQuote(false);
+    setQuote(null);
+  }, [startDate, endDate]);
+
   const checkAvailabilityAndQuote = async () => {
     if (!startDate || !endDate || !displayUnit) return;
 
@@ -133,12 +176,6 @@ const UnitDetail = () => {
     }
   };
 
-  useEffect(() => {
-    // Resetear la cotización cuando cambien las fechas o el número de huéspedes
-    setShowQuote(false);
-    setQuote(null);
-  }, [startDate, endDate, guests]);
-
   const handleReservation = async () => {
     if (!startDate || !endDate) {
       toast({
@@ -160,6 +197,7 @@ const UnitDetail = () => {
     setQuote(null);
     setIsReservationConfirmed(false);
     setPaymentDetails(null);
+    setCheckedAvailability(false);
   };
 
   const handleConfirmReservation = async () => {
@@ -220,7 +258,7 @@ const UnitDetail = () => {
 
               <div className="bg-secondary/20 p-6 rounded-lg shadow-sm">
                 {isReservationConfirmed ? (
-                  <div className="text-center p-8 space-y-4">
+                  <div ref={confirmationRef} className="text-center p-8 space-y-4">
                     <div className="text-6xl mb-4">🎉</div>
                     <h2 className="text-2xl font-display font-bold">¡Reserva confirmada!</h2>
                     <p>
@@ -267,6 +305,24 @@ const UnitDetail = () => {
                             guests={guests}
                             onGuestsChange={setGuests}
                           />
+                          
+                          {isAvailable !== null && (
+                            <div className={`p-3 rounded-md mt-4 text-sm font-medium flex items-center gap-2 ${
+                              isAvailable ? 'bg-green-50 text-green-700 border border-green-200' : 'bg-red-50 text-red-700 border border-red-200'
+                            }`}>
+                              {isAvailable ? (
+                                <>
+                                  <span className="h-2 w-2 rounded-full bg-green-500"></span>
+                                  ¡Fechas disponibles! Puedes continuar con tu reserva.
+                                </>
+                              ) : (
+                                <>
+                                  <span className="h-2 w-2 rounded-full bg-red-500"></span>
+                                  Fechas no disponibles. Por favor, selecciona otras fechas.
+                                </>
+                              )}
+                            </div>
+                          )}
 
                           <div className="mt-8 text-sm text-gray-600 p-3 bg-amber-50 border border-amber-100 rounded">
                             <p className="font-medium text-amber-800 mb-1">Política de reserva</p>
@@ -277,9 +333,9 @@ const UnitDetail = () => {
                             className="w-full mt-2" 
                             size="lg"
                             onClick={handleReservation}
-                            disabled={!startDate || !endDate}
+                            disabled={!startDate || !endDate || isAvailable === false}
                           >
-                            Cotizar estadía
+                            {isAvailable === true ? 'Cotizar estadía' : 'Verificar disponibilidad'}
                           </Button>
                         </>
                       ) : quote && (
@@ -290,7 +346,7 @@ const UnitDetail = () => {
                             isLoading={isProcessingPayment}
                             onReserve={handleNewQuote}
                             onConfirm={handleConfirmReservation}
-                            buttonText="Aceptar cotización"
+                            buttonText={isAvailable ? "Aceptar cotización" : "Nueva cotización"}
                           />
                           <div className="text-sm text-muted-foreground mt-4">
                             <p>Fechas seleccionadas:</p>
