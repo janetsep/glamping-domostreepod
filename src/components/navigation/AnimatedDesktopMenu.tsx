@@ -6,7 +6,7 @@ import NavTabs from "./NavTabs";
 import ThemeToggle from "./ThemeToggle";
 import ReserveButton from "./ReserveButton";
 import { useMenuAnimation } from "./useMenuAnimation";
-import { navigationLinks } from "./navigationLinks";
+import { navigationLinks } from "./NavigationLinks";
 
 interface AnimatedDesktopMenuProps {
   isScrolled: boolean;
