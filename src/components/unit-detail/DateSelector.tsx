@@ -15,6 +15,8 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { useCallback, useEffect } from "react";
+import { checkGeneralAvailability } from "@/hooks/reservations/utils/availabilityChecker";
 
 interface DateSelectorProps {
   startDate: Date | undefined;
@@ -29,6 +31,59 @@ export const DateSelector = ({
   onStartDateChange,
   onEndDateChange,
 }: DateSelectorProps) => {
+  // Check availability for a specific date
+  const checkDateAvailability = useCallback(async (date: Date): Promise<boolean> => {
+    try {
+      const dayEnd = new Date(date);
+      dayEnd.setHours(23, 59, 59, 999);
+      
+      const { isAvailable } = await checkGeneralAvailability(date, dayEnd)
+        .catch(() => ({ isAvailable: false, availableUnits: 0, totalUnits: 4 }));
+      
+      return isAvailable;
+    } catch (error) {
+      console.error("Error checking date availability:", error);
+      return false;
+    }
+  }, []);
+
+  // Handle start date selection with availability check
+  const handleStartDateSelect = async (date: Date | undefined) => {
+    if (date) {
+      const isAvailable = await checkDateAvailability(date);
+      if (isAvailable) {
+        onStartDateChange(date);
+        // If there's no end date or the end date is before the new start date,
+        // set a default end date 2 days later
+        if (!endDate || endDate <= date) {
+          const newEndDate = new Date(date);
+          newEndDate.setDate(newEndDate.getDate() + 2);
+          onEndDateChange(newEndDate);
+        }
+      } else {
+        // Date not available, don't update
+        console.log("Selected start date is not available");
+      }
+    } else {
+      onStartDateChange(undefined);
+    }
+  };
+
+  // Handle end date selection with availability check
+  const handleEndDateSelect = async (date: Date | undefined) => {
+    if (date) {
+      const isAvailable = await checkDateAvailability(date);
+      if (isAvailable) {
+        onEndDateChange(date);
+      } else {
+        // Date not available, don't update
+        console.log("Selected end date is not available");
+      }
+    } else {
+      onEndDateChange(undefined);
+    }
+  };
+
   return (
     <div className="space-y-2">
       <div className="flex justify-between items-center">
@@ -40,7 +95,8 @@ export const DateSelector = ({
             </TooltipTrigger>
             <TooltipContent>
               <p className="text-xs max-w-xs">
-                Selecciona las fechas de entrada y salida para verificar la disponibilidad automáticamente
+                Selecciona las fechas de entrada y salida para verificar la disponibilidad automáticamente.
+                Solo podrás seleccionar fechas disponibles.
               </p>
             </TooltipContent>
           </Tooltip>
@@ -67,7 +123,7 @@ export const DateSelector = ({
             <Calendar
               mode="single"
               selected={startDate}
-              onSelect={onStartDateChange}
+              onSelect={handleStartDateSelect}
               disabled={(date) =>
                 date < new Date() || (endDate ? date >= endDate : false)
               }
@@ -96,7 +152,7 @@ export const DateSelector = ({
             <Calendar
               mode="single"
               selected={endDate}
-              onSelect={onEndDateChange}
+              onSelect={handleEndDateSelect}
               disabled={(date) =>
                 !startDate || date <= startDate || date <= new Date()
               }

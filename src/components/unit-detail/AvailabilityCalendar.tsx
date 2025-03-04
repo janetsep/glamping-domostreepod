@@ -8,20 +8,40 @@ import { CalendarWeekDays } from "./calendar/CalendarWeekDays";
 import { CalendarGrid } from "./calendar/CalendarGrid";
 import { CalendarLegend } from "./calendar/CalendarLegend";
 import { CalendarLoading } from "./calendar/CalendarLoading";
+import { toast } from "@/components/ui/use-toast";
 
 interface AvailabilityCalendarProps {
   unitId: string;
   onSelectDate?: (date: Date) => void;
+  checkDateRange?: boolean;
 }
 
-export const AvailabilityCalendar = ({ unitId, onSelectDate }: AvailabilityCalendarProps) => {
+export const AvailabilityCalendar = ({ unitId, onSelectDate, checkDateRange = false }: AvailabilityCalendarProps) => {
   const [currentMonth, setCurrentMonth] = useState(new Date());
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
   
-  const { calendarDays, isLoading } = useCalendarAvailability(unitId, currentMonth, selectedDate);
+  const { calendarDays, isLoading, isDateAvailable } = useCalendarAvailability(unitId, currentMonth, selectedDate);
 
-  const handleDateClick = (day: AvailabilityCalendarDay) => {
-    if (!day.isAvailable) return;
+  const handleDateClick = async (day: AvailabilityCalendarDay) => {
+    if (!day.isAvailable) {
+      toast({
+        variant: "destructive",
+        title: "Fecha no disponible",
+        description: "Esta fecha no está disponible para reserva."
+      });
+      return;
+    }
+    
+    // Check if date is truly available (double-check)
+    const isAvailable = await isDateAvailable(day.date);
+    if (!isAvailable) {
+      toast({
+        variant: "destructive",
+        title: "Fecha no disponible",
+        description: "Esta fecha acaba de ser reservada por otro usuario."
+      });
+      return;
+    }
     
     setSelectedDate(day.date);
     if (onSelectDate) {

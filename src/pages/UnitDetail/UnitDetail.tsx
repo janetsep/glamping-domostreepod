@@ -9,6 +9,7 @@ import { UnitHeader } from "./UnitHeader";
 import { UnitContent } from "./UnitContent";
 import { ReservationPanel } from "./ReservationPanel";
 import { ReservationConfirmation } from "./ReservationConfirmation";
+import { toast } from "@/components/ui/use-toast";
 
 const UnitDetail = () => {
   const { unitId } = useParams<{ unitId: string }>();
@@ -26,19 +27,23 @@ const UnitDetail = () => {
     getUpdatedQuoteTotal
   } = useReservationActions(state);
 
-  // Verificar disponibilidad automáticamente cuando se seleccionan fechas
+  // Check availability automatically when dates are selected
   useEffect(() => {
-    checkDatesAvailability();
+    if (state.startDate && state.endDate) {
+      checkDatesAvailability();
+    }
   }, [state.startDate, state.endDate, state.displayUnit]);
 
-  // Resetear el estado de verificación cuando cambien las fechas
+  // Reset verification state when dates change
   useEffect(() => {
-    state.setCheckedAvailability(false);
-    state.setShowQuote(false);
-    state.setQuote(null);
+    if (state.startDate || state.endDate) {
+      state.setCheckedAvailability(false);
+      state.setShowQuote(false);
+      state.setQuote(null);
+    }
   }, [state.startDate, state.endDate]);
 
-  // Mostrar un mensaje de carga mientras obtenemos la información de la unidad
+  // Show loading message while getting unit information
   if (!state.displayUnit) {
     return (
       <div className="min-h-screen bg-white pt-24">
