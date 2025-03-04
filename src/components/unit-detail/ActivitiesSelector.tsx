@@ -15,11 +15,13 @@ import { Skeleton } from "@/components/ui/skeleton";
 interface ActivitiesSelectorProps {
   selectedActivities: Activity[];
   onActivityToggle: (activity: Activity) => void;
+  total?: number; // Added total prop
 }
 
 export const ActivitiesSelector = ({
   selectedActivities,
   onActivityToggle,
+  total,
 }: ActivitiesSelectorProps) => {
   const [activities, setActivities] = useState<Activity[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -78,51 +80,58 @@ export const ActivitiesSelector = ({
   }
 
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-4">
-      {activities.map((activity) => (
-        <Card
-          key={activity.id}
-          className={`p-3 cursor-pointer transition-colors flex items-center ${
-            isSelected(activity)
-              ? "bg-primary/10 border-primary"
-              : "hover:bg-secondary/20"
-          }`}
-          onClick={() => onActivityToggle(activity)}
-        >
-          <div className="flex-1">
-            <div className="flex items-center justify-between">
-              <div className="font-medium">{activity.name}</div>
-              <div className="text-sm font-semibold text-primary">
-                ${activity.price.toLocaleString()}
-              </div>
-            </div>
-            <div className="flex items-center mt-1">
-              <div className="text-xs text-muted-foreground mr-2 line-clamp-1">
-                {activity.description}
-              </div>
-              <TooltipProvider>
-                <Tooltip>
-                  <TooltipTrigger>
-                    <Info className="h-3 w-3 text-muted-foreground" />
-                  </TooltipTrigger>
-                  <TooltipContent>
-                    <p className="max-w-xs text-xs">{activity.description}</p>
-                  </TooltipContent>
-                </Tooltip>
-              </TooltipProvider>
-            </div>
-          </div>
-          <div
-            className={`h-5 w-5 rounded border flex items-center justify-center ml-3 ${
+    <div className="space-y-4">
+      {total !== undefined && total > 0 && (
+        <div className="text-right text-sm font-medium text-primary">
+          Total actividades: ${total.toLocaleString()}
+        </div>
+      )}
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+        {activities.map((activity) => (
+          <Card
+            key={activity.id}
+            className={`p-3 cursor-pointer transition-colors flex items-center ${
               isSelected(activity)
-                ? "bg-primary border-primary text-white"
-                : "border-gray-300"
+                ? "bg-primary/10 border-primary"
+                : "hover:bg-secondary/20"
             }`}
+            onClick={() => onActivityToggle(activity)}
           >
-            {isSelected(activity) && <Check className="h-3 w-3" />}
-          </div>
-        </Card>
-      ))}
+            <div className="flex-1">
+              <div className="flex items-center justify-between">
+                <div className="font-medium">{activity.name}</div>
+                <div className="text-sm font-semibold text-primary">
+                  ${activity.price.toLocaleString()}
+                </div>
+              </div>
+              <div className="flex items-center mt-1">
+                <div className="text-xs text-muted-foreground mr-2 line-clamp-1">
+                  {activity.description}
+                </div>
+                <TooltipProvider>
+                  <Tooltip>
+                    <TooltipTrigger>
+                      <Info className="h-3 w-3 text-muted-foreground" />
+                    </TooltipTrigger>
+                    <TooltipContent>
+                      <p className="max-w-xs text-xs">{activity.description}</p>
+                    </TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
+              </div>
+            </div>
+            <div
+              className={`h-5 w-5 rounded border flex items-center justify-center ml-3 ${
+                isSelected(activity)
+                  ? "bg-primary border-primary text-white"
+                  : "border-gray-300"
+              }`}
+            >
+              {isSelected(activity) && <Check className="h-3 w-3" />}
+            </div>
+          </Card>
+        ))}
+      </div>
     </div>
   );
 };
