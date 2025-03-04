@@ -33,45 +33,66 @@ export const useMutateReservationStatus = () => {
         updateData.payment_details = paymentDetails;
       }
 
-      // Usar directamente fetch para asegurar que se realiza la actualización
-      const response = await fetch(`${SUPABASE_URL}/rest/v1/reservations?id=eq.${reservationId}`, {
-        method: 'PATCH',
-        headers: {
-          'Content-Type': 'application/json',
-          'apikey': SUPABASE_ANON_KEY,
-          'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
-          'Prefer': 'return=minimal'
-        },
-        body: JSON.stringify(updateData)
-      });
+      // Primer intento: Usar cliente supabase
+      try {
+        const { error: supabaseError } = await supabase
+          .from('reservations')
+          .update(updateData)
+          .eq('id', reservationId);
+          
+        if (supabaseError) {
+          console.error('Error con cliente supabase:', supabaseError);
+          throw supabaseError;
+        }
+        
+        console.log(`Reserva ${reservationId} actualizada correctamente usando cliente supabase`);
+      } catch (clientError) {
+        console.warn('Fallo con cliente supabase, intentando con fetch directo:', clientError);
+        
+        // Segundo intento: Usar fetch directo
+        const response = await fetch(`${SUPABASE_URL}/rest/v1/reservations?id=eq.${reservationId}`, {
+          method: 'PATCH',
+          headers: {
+            'Content-Type': 'application/json',
+            'apikey': SUPABASE_ANON_KEY,
+            'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
+            'Prefer': 'return=minimal'
+          },
+          body: JSON.stringify(updateData)
+        });
 
-      if (!response.ok) {
-        const errorText = await response.text();
-        console.error(`Error al actualizar reserva (HTTP ${response.status}):`, errorText);
-        throw new Error(`Error al actualizar reserva: ${response.status} ${errorText}`);
+        if (!response.ok) {
+          const errorText = await response.text();
+          console.error(`Error al actualizar reserva (HTTP ${response.status}):`, errorText);
+          throw new Error(`Error al actualizar reserva: ${response.status} ${errorText}`);
+        }
+
+        console.log(`Reserva ${reservationId} actualizada correctamente usando fetch directo`);
       }
-
-      console.log(`Reserva ${reservationId} actualizada correctamente a "${status}"`);
       
       // Verificar que el estado se haya actualizado correctamente
-      const verifyResponse = await fetch(`${SUPABASE_URL}/rest/v1/reservations?id=eq.${reservationId}&select=status`, {
-        headers: {
-          'Content-Type': 'application/json',
-          'apikey': SUPABASE_ANON_KEY,
-          'Authorization': `Bearer ${SUPABASE_ANON_KEY}`
+      try {
+        const verifyResponse = await fetch(`${SUPABASE_URL}/rest/v1/reservations?id=eq.${reservationId}&select=status`, {
+          headers: {
+            'Content-Type': 'application/json',
+            'apikey': SUPABASE_ANON_KEY,
+            'Authorization': `Bearer ${SUPABASE_ANON_KEY}`
+          }
+        });
+        
+        if (verifyResponse.ok) {
+          const verifyData = await verifyResponse.json();
+          if (verifyData.length > 0) {
+            console.log(`Estado actual de la reserva ${reservationId}: ${verifyData[0].status}`);
+          }
         }
-      });
-      
-      if (verifyResponse.ok) {
-        const verifyData = await verifyResponse.json();
-        if (verifyData.length > 0) {
-          console.log(`Estado actual de la reserva ${reservationId}: ${verifyData[0].status}`);
-        }
+      } catch (verifyError) {
+        console.error('Error al verificar estado final:', verifyError);
       }
 
       return true;
     } catch (err: any) {
-      console.error('Error actualizing reservation:', err);
+      console.error('Error actualizando reserva:', err);
       setError(err.message || 'Error al actualizar la reserva');
       return false;
     } finally {
@@ -89,30 +110,81 @@ export const useMutateReservationStatus = () => {
     try {
       console.log(`Guardando información del cliente para la reserva ${reservationId}:`, clientInfo);
       
-      // Actualizar directamente la reserva para establecer la información del cliente
-      const response = await fetch(`${SUPABASE_URL}/rest/v1/reservations?id=eq.${reservationId}`, {
-        method: 'PATCH',
-        headers: {
-          'Content-Type': 'application/json',
-          'apikey': SUPABASE_ANON_KEY,
-          'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
-          'Prefer': 'return=minimal'
-        },
-        body: JSON.stringify({
-          client_name: clientInfo.name,
-          client_email: clientInfo.email,
-          client_phone: clientInfo.phone,
-          updated_at: new Date().toISOString()
-        })
-      });
+      // Primer intento: Cliente supabase
+      try {
+        const { error: supabaseError } = await supabase
+          .from('reservations')
+          .update({
+            client_name: clientInfo.name,
+            client_email: clientInfo.email,
+            client_phone: clientInfo.phone,
+            updated_at: new Date().toISOString()
+          })
+          .eq('id', reservationId);
+          
+        if (supabaseError) {
+          console.error('Error con cliente supabase:', supabaseError);
+          throw supabaseError;
+        }
+        
+        console.log(`Información del cliente guardada con supabase cliente para reserva ${reservationId}`);
+      } catch (clientError) {
+        console.warn('Fallo con cliente supabase, intentando con fetch directo:', clientError);
+      
+        // Segundo intento: Fetch directo
+        const response = await fetch(`${SUPABASE_URL}/rest/v1/reservations?id=eq.${reservationId}`, {
+          method: 'PATCH',
+          headers: {
+            'Content-Type': 'application/json',
+            'apikey': SUPABASE_ANON_KEY,
+            'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
+            'Prefer': 'return=minimal'
+          },
+          body: JSON.stringify({
+            client_name: clientInfo.name,
+            client_email: clientInfo.email,
+            client_phone: clientInfo.phone,
+            updated_at: new Date().toISOString()
+          })
+        });
 
-      if (!response.ok) {
-        const errorText = await response.text();
-        console.error(`Error al actualizar información del cliente (HTTP ${response.status}):`, errorText);
-        throw new Error(`Error al actualizar información del cliente: ${response.status} ${errorText}`);
+        if (!response.ok) {
+          const errorText = await response.text();
+          console.error(`Error al actualizar información del cliente (HTTP ${response.status}):`, errorText);
+          throw new Error(`Error al actualizar información del cliente: ${response.status} ${errorText}`);
+        }
+
+        console.log(`Información del cliente guardada con fetch directo para la reserva ${reservationId}`);
       }
 
-      console.log(`Información del cliente guardada correctamente para la reserva ${reservationId}`);
+      // Registrar también la comunicación enviada
+      try {
+        const logCommunicationResponse = await fetch(`${SUPABASE_URL}/rest/v1/reservation_communications`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'apikey': SUPABASE_ANON_KEY,
+            'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
+            'Prefer': 'return=minimal'
+          },
+          body: JSON.stringify({
+            email: clientInfo.email,
+            phone: clientInfo.phone,
+            type: 'reservation_confirmation',
+            reservation_details: {
+              reservation_id: reservationId,
+              client_name: clientInfo.name,
+              created_at: new Date().toISOString()
+            }
+          })
+        });
+        
+        if (!logCommunicationResponse.ok) {
+          console.warn('No se pudo registrar la comunicación pero continuamos el proceso');
+        }
+      } catch (logError) {
+        console.warn('Error al registrar comunicación:', logError);
+      }
 
       // Enviar correo de confirmación
       try {

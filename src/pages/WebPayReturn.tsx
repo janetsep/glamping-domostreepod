@@ -96,14 +96,18 @@ const WebPayReturn = () => {
               console.log('Estado de reserva actualizado correctamente a confirmed');
             } else {
               console.error('No se pudo actualizar el estado de la reserva');
+              
+              // Intento alternativo directo a la base de datos
+              try {
+                const alternativeUpdateResult = await updateReservationIfNeeded(data);
+                console.log(`Resultado de updateReservationIfNeeded: ${alternativeUpdateResult || 'sin resultado'}`);
+              } catch (alternativeError) {
+                console.error('Error en updateReservationIfNeeded:', alternativeError);
+              }
             }
           } catch (updateError) {
             console.error('Error al actualizar el estado de la reserva:', updateError);
           }
-          
-          // También intentar actualizar a través del servicio
-          const unitId = await updateReservationIfNeeded(data);
-          console.log(`Resultado de updateReservationIfNeeded: ${unitId || 'sin resultado'}`);
         }
         
         // Auto-redirect to detail page after a few seconds

@@ -6,6 +6,7 @@ import { ReservationDetails } from "@/components/unit-detail/ReservationDetails"
 import { ReservationHeader } from "@/components/unit-detail/ReservationHeader";
 import { ReservationSuccess } from "@/components/unit-detail/ReservationSuccess";
 import { useMutateReservationStatus, ClientInformation } from "@/hooks/reservations/useReservationUpdate";
+import { supabase } from "@/lib/supabase";
 
 interface ReservationConfirmationProps {
   startDate?: Date;
@@ -24,6 +25,30 @@ export const ReservationConfirmation = forwardRef<HTMLDivElement, ReservationCon
     const [clientInfoSubmitted, setClientInfoSubmitted] = useState(false);
     const { saveClientInformation } = useMutateReservationStatus();
 
+    // Verificar si ya existe información del cliente para esta reserva
+    React.useEffect(() => {
+      const checkExistingClientInfo = async () => {
+        if (reservationId) {
+          try {
+            const { data } = await supabase
+              .from('reservations')
+              .select('client_name, client_email')
+              .eq('id', reservationId)
+              .single();
+              
+            if (data && data.client_name && data.client_email) {
+              console.log('Ya existe información del cliente para esta reserva:', data);
+              setClientInfoSubmitted(true);
+            }
+          } catch (error) {
+            console.error('Error al verificar información del cliente:', error);
+          }
+        }
+      };
+      
+      checkExistingClientInfo();
+    }, [reservationId]);
+
     const handleClientInfoSubmit = async (clientInfo: ClientInformation) => {
       if (!reservationId) {
         toast({
@@ -39,11 +64,12 @@ export const ReservationConfirmation = forwardRef<HTMLDivElement, ReservationCon
       try {
         console.log(`Asociando cliente a la reserva ${reservationId}:`, clientInfo);
         
-        // Store client info in localStorage for payment process
+        // Store client info in localStorage for future payment process
         localStorage.setItem('client_name', clientInfo.name);
         localStorage.setItem('client_email', clientInfo.email);
         localStorage.setItem('client_phone', clientInfo.phone);
         
+        // Guardar la información del cliente en la reserva
         const success = await saveClientInformation(reservationId, clientInfo);
         
         if (success) {
@@ -52,6 +78,15 @@ export const ReservationConfirmation = forwardRef<HTMLDivElement, ReservationCon
             title: "Información guardada",
             description: "¡Gracias! Hemos registrado tus datos y los hemos asociado a tu reserva. Te hemos enviado un correo con los detalles.",
           });
+          
+          // Verificar que la información se haya guardado correctamente
+          const { data } = await supabase
+            .from('reservations')
+            .select('client_name, client_email, client_phone')
+            .eq('id', reservationId)
+            .single();
+            
+          console.log('Información del cliente guardada en base de datos:', data);
         } else {
           throw new Error("Error al guardar información del cliente");
         }

@@ -19,24 +19,26 @@ export async function processWebPayConfirmation(
   reservationId?: string,
   clientInfo?: {name?: string; email?: string; phone?: string}
 ): Promise<TransactionResult> {
-  // Confirmar transacción con WebPay
-  const webpayConfig = getWebPayConfig();
-  const responseData = await confirmWebPayTransaction(token, webpayConfig);
-  
-  let foundReservationId = reservationId || null;
-  
-  // Solo actualizar reserva en Supabase si no es una unidad de paquete
-  if (!isPackageUnit) {
-    // Obtener credenciales de Supabase
-    const supabaseUrl = Deno.env.get("SUPABASE_URL") || "";
-    const supabaseKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") || "";
+  try {
+    // Confirmar transacción con WebPay
+    const webpayConfig = getWebPayConfig();
+    const responseData = await confirmWebPayTransaction(token, webpayConfig);
     
-    if (!supabaseUrl || !supabaseKey) {
-      console.error("Variables de entorno SUPABASE_URL o SUPABASE_SERVICE_ROLE_KEY no definidas");
-      throw new Error("Error de configuración del servidor");
-    }
+    console.log(`Respuesta de confirmación de WebPay: ${JSON.stringify(responseData)}`);
     
-    try {
+    let foundReservationId = reservationId || null;
+    
+    // Solo actualizar reserva en Supabase si no es una unidad de paquete
+    if (!isPackageUnit) {
+      // Obtener credenciales de Supabase
+      const supabaseUrl = Deno.env.get("SUPABASE_URL") || "";
+      const supabaseKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") || "";
+      
+      if (!supabaseUrl || !supabaseKey) {
+        console.error("Variables de entorno SUPABASE_URL o SUPABASE_SERVICE_ROLE_KEY no definidas");
+        throw new Error("Error de configuración del servidor");
+      }
+      
       let reservations = [];
       
       // Primero intentamos con el ID directo si está disponible
@@ -67,6 +69,8 @@ export async function processWebPayConfirmation(
         // Actualizar estado de la reserva si el pago fue exitoso
         if (responseData.response_code === 0) { // 0 = pago exitoso en WebPay
           console.log(`Actualizando estado de reserva ${foundReservationId} a 'confirmed'`);
+          
+          // Primer intento de actualización
           const updateSuccess = await updateReservationStatus(supabaseUrl, supabaseKey, foundReservationId, 'confirmed', responseData);
           
           if (updateSuccess) {
@@ -76,6 +80,7 @@ export async function processWebPayConfirmation(
             
             // Intentar actualizar nuevamente con un método alternativo
             try {
+              console.log(`Intentando actualización alternativa para ${foundReservationId}`);
               const directUpdateResponse = await fetch(`${supabaseUrl}/rest/v1/reservations?id=eq.${foundReservationId}`, {
                 method: 'PATCH',
                 headers: {
@@ -95,6 +100,28 @@ export async function processWebPayConfirmation(
                 console.log(`Reserva ${foundReservationId} actualizada correctamente con método alternativo`);
               } else {
                 console.error(`Error al actualizar reserva con método alternativo: ${await directUpdateResponse.text()}`);
+                
+                // Tercer intento con otro endpoint
+                console.log(`Intentando tercer método de actualización para ${foundReservationId}`);
+                const thirdAttemptResponse = await fetch(`${supabaseUrl}/rest/v1/rpc/update_reservation_status`, {
+                  method: 'POST',
+                  headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${supabaseKey}`,
+                    'apikey': supabaseKey
+                  },
+                  body: JSON.stringify({
+                    p_reservation_id: foundReservationId,
+                    p_status: 'confirmed',
+                    p_payment_details: responseData
+                  })
+                });
+                
+                if (!thirdAttemptResponse.ok) {
+                  console.error(`Error en tercer intento: ${await thirdAttemptResponse.text()}`);
+                } else {
+                  console.log(`Reserva actualizada con tercer método`);
+                }
               }
             } catch (directUpdateError) {
               console.error(`Error en actualización alternativa: ${directUpdateError}`);
@@ -104,7 +131,40 @@ export async function processWebPayConfirmation(
           // Si hay información de cliente, actualizarla
           if (clientInfo && (clientInfo.name || clientInfo.email || clientInfo.phone)) {
             console.log(`Actualizando información del cliente para reserva ${foundReservationId}`);
-            await updateClientInformation(supabaseUrl, supabaseKey, foundReservationId, clientInfo);
+            const clientUpdateSuccess = await updateClientInformation(supabaseUrl, supabaseKey, foundReservationId, clientInfo);
+            
+            if (clientUpdateSuccess) {
+              console.log(`Información del cliente actualizada correctamente para ${foundReservationId}`);
+            } else {
+              console.warn(`No se pudo actualizar información del cliente para ${foundReservationId}`);
+              
+              // Intentar actualizar cliente con método alternativo
+              try {
+                const directClientUpdateResponse = await fetch(`${supabaseUrl}/rest/v1/reservations?id=eq.${foundReservationId}`, {
+                  method: 'PATCH',
+                  headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${supabaseKey}`,
+                    'apikey': supabaseKey,
+                    'Prefer': 'return=minimal'
+                  },
+                  body: JSON.stringify({
+                    client_name: clientInfo.name,
+                    client_email: clientInfo.email,
+                    client_phone: clientInfo.phone,
+                    updated_at: new Date().toISOString()
+                  })
+                });
+                
+                if (directClientUpdateResponse.ok) {
+                  console.log(`Información del cliente actualizada correctamente con método alternativo`);
+                } else {
+                  console.error(`Error al actualizar información del cliente con método alternativo: ${await directClientUpdateResponse.text()}`);
+                }
+              } catch (directClientUpdateError) {
+                console.error(`Error en actualización alternativa de cliente: ${directClientUpdateError}`);
+              }
+            }
           }
         } else {
           // Actualizar con los detalles del pago fallido pero sin cambiar estado
@@ -138,7 +198,7 @@ export async function processWebPayConfirmation(
       // Después de intentar actualizar, verificar el estado actual
       if (foundReservationId) {
         try {
-          const verifyResponse = await fetch(`${supabaseUrl}/rest/v1/reservations?id=eq.${foundReservationId}&select=status`, {
+          const verifyResponse = await fetch(`${supabaseUrl}/rest/v1/reservations?id=eq.${foundReservationId}&select=status,client_name,client_email`, {
             headers: {
               'Content-Type': 'application/json',
               'Authorization': `Bearer ${supabaseKey}`,
@@ -150,25 +210,27 @@ export async function processWebPayConfirmation(
             const verifyData = await verifyResponse.json();
             if (verifyData.length > 0) {
               console.log(`Estado final de la reserva ${foundReservationId}: ${verifyData[0].status}`);
+              console.log(`Información del cliente: ${verifyData[0].client_name} (${verifyData[0].client_email})`);
             }
           }
         } catch (verifyError) {
           console.error(`Error al verificar estado final: ${verifyError}`);
         }
       }
-    } catch (error) {
-      console.error(`Error al procesar reserva en Supabase: ${error instanceof Error ? error.message : 'Error desconocido'}`);
+    } else {
+      console.log("Reserva de paquete temporal, no se busca en la base de datos");
+      // Para reservas de paquete, usamos un ID fijo o generado en la respuesta
+      foundReservationId = reservationId || "package-reservation";
     }
-  } else {
-    console.log("Reserva de paquete temporal, no se busca en la base de datos");
-    // Para reservas de paquete, usamos un ID fijo o generado en la respuesta
-    foundReservationId = reservationId || "package-reservation";
+    
+    // Añadir el ID de la reserva a la respuesta para facilitar la redirección
+    return {
+      ...responseData,
+      reservation_id: foundReservationId,
+      is_package_unit: !!isPackageUnit
+    };
+  } catch (error) {
+    console.error(`Error en processWebPayConfirmation: ${error.message || 'Error desconocido'}`);
+    throw error;
   }
-  
-  // Añadir el ID de la reserva a la respuesta para facilitar la redirección
-  return {
-    ...responseData,
-    reservation_id: foundReservationId,
-    is_package_unit: !!isPackageUnit
-  };
 }
