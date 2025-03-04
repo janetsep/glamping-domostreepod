@@ -29,7 +29,7 @@ const AnimatedDesktopMenu = ({
     setHoveredIndex,
     hoverStyle,
     activeStyle
-  } = useMenuAnimation(navigationLinks);
+  } = useMenuAnimation();
 
   // Handle navigation
   const handleNavClick = (index: number) => {

@@ -1,4 +1,3 @@
-
 import { Button } from "@/components/ui/button";
 import { useLocation } from "react-router-dom";
 import { 
@@ -122,8 +121,8 @@ export const NavigationLinks = ({
             className={`relative overflow-hidden text-base font-medium px-3 py-2 gap-2 group ${
               isScrolled 
                 ? 'text-gray-700 hover:text-cyan-500 hover:bg-cyan-50/50' 
-                : 'text-white text-shadow hover:text-white/90'
-            } ${isActive ? (isScrolled ? 'bg-cyan-50 text-cyan-500' : 'bg-white/10') : ''}`}
+                : 'text-white text-shadow hover:text-white'
+            } ${isActive ? (isScrolled ? 'bg-cyan-50 text-cyan-500' : 'bg-white/20') : ''}`}
           >
             <span className={`absolute bottom-0 left-0 w-full h-0.5 transform origin-left transition-transform duration-300 ease-out ${
               isActive 
