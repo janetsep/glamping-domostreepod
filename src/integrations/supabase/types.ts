@@ -78,6 +78,36 @@ export type Database = {
         }
         Relationships: []
       }
+      reservation_communications: {
+        Row: {
+          created_at: string | null
+          email: string
+          id: string
+          phone: string
+          reservation_details: Json | null
+          sent_at: string | null
+          type: string
+        }
+        Insert: {
+          created_at?: string | null
+          email: string
+          id?: string
+          phone: string
+          reservation_details?: Json | null
+          sent_at?: string | null
+          type: string
+        }
+        Update: {
+          created_at?: string | null
+          email?: string
+          id?: string
+          phone?: string
+          reservation_details?: Json | null
+          sent_at?: string | null
+          type?: string
+        }
+        Relationships: []
+      }
       reservations: {
         Row: {
           activities: string[] | null
