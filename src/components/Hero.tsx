@@ -36,8 +36,8 @@ const Hero = () => {
   }, [images.length]);
 
   return (
-    <section id="hero" className="h-screen relative overflow-hidden -mt-[72px]">
-      {/* Background images carousel with overlay - positioned below the navigation */}
+    <section id="hero" className="h-screen relative overflow-hidden -mt-[76px]">
+      {/* Background images carousel with overlay */}
       <div className="absolute inset-0 z-0">
         {images.map((image, index) => (
           <div
@@ -53,10 +53,10 @@ const Hero = () => {
             />
           </div>
         ))}
-        <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-black/40 to-black/60 backdrop-blur-[1px]"></div>
+        <div className="absolute inset-0 bg-gradient-to-b from-black/70 via-black/40 to-black/60 backdrop-blur-[1px]"></div>
       </div>
       
-      <div className="container mx-auto px-4 relative z-10 h-full flex flex-col items-center justify-center pt-[72px]">
+      <div className="container mx-auto px-4 relative z-10 h-full flex flex-col items-center justify-center pt-[76px]">
         <div className={`max-w-3xl mx-auto text-center transition-all duration-1000 ${isLoaded ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}>
           <h1 className="text-3xl md:text-4xl lg:text-5xl font-display font-bold text-white mb-6 text-shadow tracking-wide leading-tight">
             Un refugio entre las copas de los árboles
