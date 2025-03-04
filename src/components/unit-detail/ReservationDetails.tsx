@@ -4,6 +4,8 @@ import { Card } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { formatCurrency } from "@/lib/utils";
 import { Activity, ThemedPackage } from "@/types";
+import { PaymentDetails } from "./PaymentDetails";
+import { ExtrasDetails } from "./ExtrasDetails";
 
 interface ReservationDetailsProps {
   startDate?: Date;
@@ -27,23 +29,6 @@ export const ReservationDetails: React.FC<ReservationDetailsProps> = ({
       month: "short",
       day: "numeric",
     });
-  };
-
-  const formatActivitiesAndPackages = () => {
-    const activities = quote?.selectedActivities || [];
-    const packages = quote?.selectedPackages || [];
-    
-    let items = [];
-    
-    if (activities.length > 0) {
-      items.push(`${activities.length} actividades: ${activities.map((a: Activity) => a.name).join(", ")}`);
-    }
-    
-    if (packages.length > 0) {
-      items.push(`${packages.length} paquetes: ${packages.map((p: ThemedPackage) => p.title).join(", ")}`);
-    }
-    
-    return items.join(" y ");
   };
 
   return (
@@ -100,24 +85,12 @@ export const ReservationDetails: React.FC<ReservationDetailsProps> = ({
           </>
         )}
 
-        {paymentDetails && (
-          <div className="mt-4 p-3 bg-green-50 rounded-md">
-            <h4 className="font-medium text-green-800 mb-1">Detalles del pago</h4>
-            <div className="text-sm text-green-700">
-              <p>Código de autorización: {paymentDetails.authorization_code || 'N/A'}</p>
-              <p>Número de tarjeta: {paymentDetails.card_detail?.card_number || 'N/A'}</p>
-            </div>
-          </div>
-        )}
+        <PaymentDetails paymentDetails={paymentDetails} />
 
-        {formatActivitiesAndPackages() && (
-          <div className="mt-2 p-3 bg-indigo-50 rounded-md">
-            <p className="text-sm text-indigo-700">
-              <span className="font-medium text-indigo-800">Extras incluidos: </span> 
-              {formatActivitiesAndPackages()}
-            </p>
-          </div>
-        )}
+        <ExtrasDetails 
+          selectedActivities={quote?.selectedActivities} 
+          selectedPackages={quote?.selectedPackages} 
+        />
       </div>
     </Card>
   );
