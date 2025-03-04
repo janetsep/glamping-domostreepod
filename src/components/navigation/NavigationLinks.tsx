@@ -3,15 +3,12 @@ import { Button } from "@/components/ui/button";
 import { useLocation } from "react-router-dom";
 import { 
   Home, 
-  Moon, 
-  Sun, 
+  Coffee, 
   MessageSquare, 
   MapPin, 
   Leaf, 
   Trees, 
   Mail,
-  Coffee,
-  Mountain,
   BedDouble
 } from "lucide-react";
 import { packageData } from "../packages/packageData";

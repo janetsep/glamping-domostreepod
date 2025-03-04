@@ -1,6 +1,5 @@
 
 import React from "react";
-import Navigation from "@/components/Navigation";
 import Footer from "@/components/footer";
 import { Leaf, Users, Award, Heart, Recycle, TreePine } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
@@ -8,8 +7,6 @@ import { Separator } from "@/components/ui/separator";
 const AboutUs = () => {
   return (
     <div className="min-h-screen bg-white">
-      <Navigation />
-      
       {/* Hero Section */}
       <section className="relative h-[50vh] bg-cover bg-center" style={{ backgroundImage: "url('https://images.unsplash.com/photo-1501854140801-50d01698950b?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80')" }}>
         <div className="absolute inset-0 bg-black/40"></div>
