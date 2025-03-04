@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { TransactionResult } from '@/services/webPayService';
+import { TransactionResult } from '@/services/webpay';
 
 interface PaymentSuccessProps {
   transaction: TransactionResult;
