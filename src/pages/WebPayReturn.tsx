@@ -1,10 +1,10 @@
-
+// Keep most of the imports, but update the webpay service import
 import { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import PaymentSuccess from '@/components/webpay/PaymentSuccess';
 import PaymentError from '@/components/webpay/PaymentError';
 import PaymentProcessing from '@/components/webpay/PaymentProcessing';
-import { TransactionResult, updateReservationIfNeeded } from '@/services/webPayService';
+import { TransactionResult, updateReservationIfNeeded } from '@/services/webpay';
 import { useMutateReservationStatus } from '@/hooks/reservations/useReservationUpdate';
 import { toast } from 'sonner';
 
