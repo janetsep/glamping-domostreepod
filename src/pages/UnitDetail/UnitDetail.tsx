@@ -4,7 +4,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { ArrowLeft, CalendarRange } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { useReservations } from "@/hooks/useReservations";
+import { useReservations } from "@/hooks/reservations";
 import { supabase, type GlampingUnit } from "@/lib/supabase";
 import { useToast } from "@/components/ui/use-toast";
 import { packageData } from "@/components/packages/packageData";

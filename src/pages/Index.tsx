@@ -1,5 +1,5 @@
 
-import { useReservations } from "@/hooks/useReservations";
+import { useReservations } from "@/hooks/reservations";
 import Hero from "@/components/Hero";
 import Benefits from "@/components/Benefits";
 import Testimonials from "@/components/Testimonials";
