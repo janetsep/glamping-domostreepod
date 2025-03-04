@@ -1,4 +1,3 @@
-
 import { useState, useCallback } from 'react';
 import { supabase, type Reservation, type GlampingUnit } from '@/lib/supabase';
 

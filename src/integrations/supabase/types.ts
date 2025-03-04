@@ -9,6 +9,33 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
+      activities: {
+        Row: {
+          created_at: string | null
+          description: string | null
+          id: string
+          image_url: string | null
+          name: string
+          price: number
+        }
+        Insert: {
+          created_at?: string | null
+          description?: string | null
+          id?: string
+          image_url?: string | null
+          name: string
+          price: number
+        }
+        Update: {
+          created_at?: string | null
+          description?: string | null
+          id?: string
+          image_url?: string | null
+          name?: string
+          price?: number
+        }
+        Relationships: []
+      }
       glamping_units: {
         Row: {
           available_activities: Json[] | null
@@ -61,6 +88,8 @@ export type Database = {
           id: string
           payment_method: string
           pets: number | null
+          selected_activities: string[] | null
+          selected_packages: string[] | null
           services: string[] | null
           status: string
           total_price: number
@@ -76,6 +105,8 @@ export type Database = {
           id?: string
           payment_method?: string
           pets?: number | null
+          selected_activities?: string[] | null
+          selected_packages?: string[] | null
           services?: string[] | null
           status?: string
           total_price: number
@@ -91,6 +122,8 @@ export type Database = {
           id?: string
           payment_method?: string
           pets?: number | null
+          selected_activities?: string[] | null
+          selected_packages?: string[] | null
           services?: string[] | null
           status?: string
           total_price?: number
@@ -106,6 +139,33 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      themed_packages: {
+        Row: {
+          created_at: string | null
+          description: string | null
+          id: string
+          image_url: string | null
+          name: string
+          price: number
+        }
+        Insert: {
+          created_at?: string | null
+          description?: string | null
+          id?: string
+          image_url?: string | null
+          name: string
+          price: number
+        }
+        Update: {
+          created_at?: string | null
+          description?: string | null
+          id?: string
+          image_url?: string | null
+          name?: string
+          price?: number
+        }
+        Relationships: []
       }
     }
     Views: {
