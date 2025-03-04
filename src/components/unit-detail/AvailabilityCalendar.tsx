@@ -31,7 +31,8 @@ export const AvailabilityCalendar = ({ unitId, onSelectDate }: AvailabilityCalen
         .select("*")
         .eq("unit_id", unitId)
         .eq("status", "confirmed")
-        .or(`check_in.lte.${end.toISOString()},check_out.gte.${start.toISOString()}`);
+        .lte('check_in', end.toISOString())
+        .gte('check_out', start.toISOString());
       
       if (error) {
         console.error("Error fetching reservations:", error);
