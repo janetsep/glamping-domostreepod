@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 import { useAvailabilityCheck } from './useAvailabilityCheck';
 import { usePricing } from './usePricing';
@@ -21,8 +20,8 @@ export const useReservations = () => {
     checkAvailability
   });
   const { redirectToWebpay } = usePayment({ setIsLoading });
-  // Fix: Pass the required parameter to useGlampingUnits
-  const { fetchGlampingUnits } = useGlampingUnits({ setIsLoading });
+  // Fix: Pass both required parameters to useGlampingUnits
+  const { fetchGlampingUnits } = useGlampingUnits({ setIsLoading, toast });
   
   const createReservationAndRedirect = async (
     unitId: string,
