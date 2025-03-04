@@ -21,7 +21,8 @@ export const useReservations = () => {
     checkAvailability
   });
   const { redirectToWebpay } = usePayment({ setIsLoading });
-  const { fetchGlampingUnits } = useGlampingUnits();
+  // Fix: Pass the required parameter to useGlampingUnits
+  const { fetchGlampingUnits } = useGlampingUnits({ setIsLoading });
   
   const createReservationAndRedirect = async (
     unitId: string,
