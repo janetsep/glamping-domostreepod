@@ -2,6 +2,7 @@
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
 import { Calendar, ShieldCheck, CheckCircle2 } from "lucide-react";
+import { Activity, ThemedPackage } from "@/types";
 
 interface ReservationSummaryProps {
   quote: {
@@ -13,6 +14,9 @@ interface ReservationSummaryProps {
   onReserve: () => void;
   onConfirm?: () => void;
   buttonText?: string;
+  selectedActivities?: Activity[];
+  selectedPackages?: ThemedPackage[];
+  hasSelectedExtras?: boolean;
 }
 
 export const ReservationSummary = ({
@@ -21,7 +25,10 @@ export const ReservationSummary = ({
   isLoading,
   onReserve,
   onConfirm,
-  buttonText = "Reservar ahora"
+  buttonText = "Reservar ahora",
+  selectedActivities = [],
+  selectedPackages = [],
+  hasSelectedExtras = false
 }: ReservationSummaryProps) => {
   const [showPaymentOptions, setShowPaymentOptions] = useState(false);
   const [selectedPayment, setSelectedPayment] = useState<string | null>(null);
@@ -63,6 +70,37 @@ export const ReservationSummary = ({
             <span>${item.amount.toLocaleString()}</span>
           </div>
         ))}
+        
+        {/* Display selected activities */}
+        {selectedActivities && selectedActivities.length > 0 && (
+          <>
+            <div className="border-t pt-2 mt-2">
+              <div className="font-medium text-sm mb-2">Actividades seleccionadas:</div>
+              {selectedActivities.map((activity) => (
+                <div key={activity.id} className="flex justify-between text-sm">
+                  <span>{activity.name}</span>
+                  <span>${activity.price.toLocaleString()}</span>
+                </div>
+              ))}
+            </div>
+          </>
+        )}
+        
+        {/* Display selected packages */}
+        {selectedPackages && selectedPackages.length > 0 && (
+          <>
+            <div className="border-t pt-2 mt-2">
+              <div className="font-medium text-sm mb-2">Paquetes temáticos:</div>
+              {selectedPackages.map((pkg) => (
+                <div key={pkg.id} className="flex justify-between text-sm">
+                  <span>{pkg.name}</span>
+                  <span>${pkg.price.toLocaleString()}</span>
+                </div>
+              ))}
+            </div>
+          </>
+        )}
+        
         <div className="text-lg font-semibold flex justify-between pt-2 border-t">
           <span>Total</span>
           <span>${quote.totalPrice.toLocaleString()}</span>

@@ -130,7 +130,9 @@ export const useReservations = () => {
     checkOut: Date,
     guests: number,
     totalPrice: number,
-    paymentMethod: string = 'webpay'
+    paymentMethod: string = 'webpay',
+    selectedActivities: string[] = [],
+    selectedPackages: string[] = []
   ) => {
     setIsLoading(true);
     try {
@@ -163,7 +165,9 @@ export const useReservations = () => {
           total_price: totalPrice,
           status: 'pending',
           payment_method: paymentMethod,
-          is_package_unit: true // Flag to identify package units
+          is_package_unit: true, // Flag to identify package units
+          selected_activities: selectedActivities,
+          selected_packages: selectedPackages
         };
       } else {
         // For database units, create the reservation normally
@@ -183,7 +187,9 @@ export const useReservations = () => {
             guests,
             total_price: totalPrice,
             status: 'pending',
-            payment_method: paymentMethod
+            payment_method: paymentMethod,
+            selected_activities: selectedActivities,
+            selected_packages: selectedPackages
           })
         });
 
