@@ -4,7 +4,7 @@ import { useScrollDetection } from "./navigation/useScrollDetection";
 import { useNavigation } from "./navigation/useNavigation";
 import Logo from "./navigation/Logo";
 import MobileMenu from "./navigation/MobileMenu";
-import DesktopMenu from "./navigation/DesktopMenu";
+import AnimatedDesktopMenu from "./navigation/AnimatedDesktopMenu";
 
 const Navigation = () => {
   const isMobile = useMobile();
@@ -13,7 +13,7 @@ const Navigation = () => {
 
   return (
     <nav className={`py-4 sticky top-0 z-50 transition-all duration-300 ${
-      isScrolled ? 'bg-white/95 backdrop-blur-sm shadow-sm' : 'bg-transparent'
+      isScrolled ? 'bg-white/95 backdrop-blur-sm shadow-sm dark:bg-[#0e0f11]/95' : 'bg-transparent'
     }`}>
       <div className="container mx-auto px-4 flex items-center justify-between">
         <Logo isScrolled={isScrolled} />
@@ -26,7 +26,7 @@ const Navigation = () => {
             navigateToPage={navigateToPage} 
           />
         ) : (
-          <DesktopMenu 
+          <AnimatedDesktopMenu 
             isScrolled={isScrolled} 
             handleReserveClick={handleReserveClick} 
             scrollToSection={scrollToSection} 

@@ -7,7 +7,7 @@ import Navigation from './components/Navigation';
 
 const App = () => {
   return (
-    <div className="min-h-screen flex flex-col">
+    <div className="min-h-screen flex flex-col bg-white dark:bg-[#0e0f11] dark:text-white transition-colors duration-300">
       <Navigation />
       <main className="flex-grow">
         <Outlet />
