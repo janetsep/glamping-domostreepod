@@ -32,12 +32,16 @@ export const AvailabilityCalendar = ({ unitId, onSelectDate }: AvailabilityCalen
         .select("*")
         .eq("unit_id", unitId)
         .eq("status", "confirmed")
-        .lt('check_in', end.toISOString())
-        .gt('check_out', start.toISOString());
+        .or(`check_in.lte.${end.toISOString()},check_out.gte.${start.toISOString()}`);
       
       if (error) {
         console.error("Error fetching reservations:", error);
         return [];
+      }
+      
+      console.log("Calendario: Reservaciones encontradas:", reservations?.length || 0);
+      if (reservations && reservations.length > 0) {
+        console.log("Calendario: Detalles de reservaciones:", JSON.stringify(reservations));
       }
       
       // Mark days as unavailable if they fall within any reservation period

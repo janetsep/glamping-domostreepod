@@ -27,15 +27,16 @@ export const useAvailability = ({ setIsLoading, toast }: UseAvailabilityProps) =
       
       // Buscamos reservaciones que se solapan con las fechas solicitadas
       // Un solapamiento ocurre cuando:
-      // - La entrada de una reserva es anterior a la salida solicitada Y
-      // - La salida de una reserva es posterior a la entrada solicitada
+      // - La fecha de check-in solicitada está entre la entrada y salida de una reserva existente
+      // - La fecha de check-out solicitada está entre la entrada y salida de una reserva existente
+      // - El período solicitado engloba completamente una reserva existente
+      
       const { data: existingReservations, error } = await supabase
         .from('reservations')
         .select('*')
         .eq('unit_id', unitId)
         .eq('status', 'confirmed')
-        .lt('check_in', checkOut.toISOString())
-        .gt('check_out', checkIn.toISOString());
+        .or(`check_in.lte.${checkOut.toISOString()},check_out.gte.${checkIn.toISOString()}`);
 
       if (error) {
         console.error('Error al verificar disponibilidad:', error);
@@ -43,6 +44,9 @@ export const useAvailability = ({ setIsLoading, toast }: UseAvailabilityProps) =
       }
 
       console.log('Reservaciones encontradas:', existingReservations?.length || 0);
+      if (existingReservations && existingReservations.length > 0) {
+        console.log('Detalles de reservaciones encontradas:', JSON.stringify(existingReservations));
+      }
       return existingReservations?.length === 0; // Return true if no overlapping reservations
     } catch (error) {
       console.error('Error al verificar disponibilidad:', error);
