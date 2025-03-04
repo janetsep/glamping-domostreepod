@@ -1,12 +1,13 @@
 
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
-import { useNavigate } from "react-router-dom";
+import { ChevronDown } from "lucide-react";
 import { useNavigation } from "./navigation/useNavigation";
 
 const Hero = () => {
   const { handleReserveClick } = useNavigation();
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  const [isLoaded, setIsLoaded] = useState(false);
   
   const images = [
     "/lovable-uploads/65a640f0-862a-47e4-bc80-4d6cc1f2599b.png",
@@ -21,6 +22,9 @@ const Hero = () => {
       setCurrentImageIndex((prevIndex) => (prevIndex + 1) % images.length);
     }, 5000); // Cambiar imagen cada 5 segundos
     
+    // Set loaded after a short delay for animation
+    setTimeout(() => setIsLoaded(true), 300);
+    
     return () => clearInterval(interval);
   }, [images.length]);
 
@@ -31,22 +35,22 @@ const Hero = () => {
         {images.map((image, index) => (
           <div
             key={index}
-            className={`absolute inset-0 transition-opacity duration-1000 ease-in-out ${
+            className={`absolute inset-0 transition-opacity duration-1500 ease-in-out ${
               currentImageIndex === index ? "opacity-100" : "opacity-0"
             }`}
           >
             <img 
               src={image} 
               alt={`Bosque y naturaleza ${index + 1}`}
-              className="w-full h-full object-cover object-center scale-105"
+              className="w-full h-full object-cover object-center scale-105 transition-transform duration-10000 ease-in-out"
             />
           </div>
         ))}
-        <div className="absolute inset-0 bg-black/45 backdrop-blur-[1px]"></div>
+        <div className="absolute inset-0 bg-gradient-to-b from-black/50 via-black/40 to-black/60 backdrop-blur-[1px]"></div>
       </div>
       
       <div className="container mx-auto px-4 relative z-10 h-full flex items-center">
-        <div className="max-w-3xl mx-auto text-center animate-fadeIn">
+        <div className={`max-w-3xl mx-auto text-center transition-all duration-1000 ${isLoaded ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}>
           <h1 className="text-3xl md:text-4xl lg:text-5xl font-display font-bold text-white mb-6 text-shadow tracking-wide leading-tight">
             Un refugio entre las copas de los árboles
           </h1>
@@ -55,10 +59,11 @@ const Hero = () => {
           </p>
           <Button 
             size="lg" 
-            className="bg-cyan-500 hover:bg-cyan-600 text-white text-base md:text-lg font-medium px-8 py-6 rounded-full shadow-lg transition-all duration-300 hover:scale-105"
+            className="bg-gradient-to-r from-cyan-500 to-cyan-400 hover:from-cyan-600 hover:to-cyan-500 text-white text-base md:text-lg font-medium px-8 py-6 rounded-full shadow-lg transition-all duration-300 hover:scale-105 relative overflow-hidden group"
             onClick={handleReserveClick}
           >
-            Reserva tu Experiencia
+            <span className="absolute inset-0 w-full h-full bg-gradient-to-r from-cyan-400 to-cyan-300 transform translate-y-full group-hover:translate-y-0 transition-transform duration-500"></span>
+            <span className="relative z-10">Reserva tu Experiencia</span>
           </Button>
         </div>
       </div>
@@ -69,7 +74,7 @@ const Hero = () => {
           <button
             key={index}
             className={`w-2 h-2 rounded-full transition-all duration-300 ${
-              currentImageIndex === index ? "bg-white w-4" : "bg-white/50"
+              currentImageIndex === index ? "bg-cyan-400 w-6" : "bg-white/50 hover:bg-white/80"
             }`}
             onClick={() => setCurrentImageIndex(index)}
             aria-label={`Ver imagen ${index + 1}`}
@@ -78,14 +83,9 @@ const Hero = () => {
       </div>
       
       {/* Indicador de scroll con forma de domo */}
-      <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 z-10 animate-bounce">
-        <svg width="40" height="32" viewBox="0 0 40 32" fill="none" xmlns="http://www.w3.org/2000/svg" className="text-white/90">
-          <path d="M20 0C12.268 0 6 11.789 6 16C6 20.211 12.268 32 20 32C27.732 32 34 20.211 34 16C34 11.789 27.732 0 20 0Z" stroke="currentColor" strokeWidth="1.5" />
-          <path d="M6 16H34" stroke="currentColor" strokeWidth="1.5" />
-          <path d="M20 0V32" stroke="currentColor" strokeWidth="1.5" />
-          <path d="M13 8C13 8 20 10 27 8" stroke="currentColor" strokeWidth="1.5" />
-          <path d="M13 24C13 24 20 22 27 24" stroke="currentColor" strokeWidth="1.5" />
-        </svg>
+      <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 z-10 animate-bounce flex flex-col items-center">
+        <span className="text-white/80 text-xs mb-2 text-shadow">Explora más</span>
+        <ChevronDown className="text-white/90 h-6 w-6" />
       </div>
     </section>
   );
