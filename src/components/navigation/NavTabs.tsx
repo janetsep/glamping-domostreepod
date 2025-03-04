@@ -49,10 +49,10 @@ const NavTabs = ({
               isActive 
                 ? isScrolled 
                   ? 'text-cyan-500 dark:text-cyan-400' 
-                  : 'text-white font-semibold dark:text-white' 
+                  : 'text-white font-semibold text-shadow-sm dark:text-white' 
                 : isScrolled 
                   ? 'text-gray-600 dark:text-gray-400'
-                  : 'text-white/90 font-medium dark:text-white/90'
+                  : 'text-white font-medium text-shadow-sm dark:text-white'
             }`}
             onMouseEnter={() => setHoveredIndex(index)}
             onMouseLeave={() => setHoveredIndex(null)}

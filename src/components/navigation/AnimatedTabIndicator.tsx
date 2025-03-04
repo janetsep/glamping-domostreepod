@@ -21,7 +21,7 @@ const AnimatedTabIndicator = ({
         className={`absolute h-[34px] transition-all duration-300 ease-out rounded-[6px] flex items-center ${
           isScrolled 
             ? 'bg-[#0e0f1114] dark:bg-[#ffffff1a]' 
-            : 'bg-white/25 dark:bg-[#ffffff25]'
+            : 'bg-white/30 dark:bg-white/30'
         }`}
         style={{
           ...hoverStyle,

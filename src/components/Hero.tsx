@@ -1,3 +1,4 @@
+
 import { useState, useEffect, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { useNavigation } from "./navigation/useNavigation";
@@ -20,7 +21,7 @@ const Hero = () => {
   useEffect(() => {
     const interval = setInterval(() => {
       setCurrentImageIndex((prevIndex) => (prevIndex + 1) % images.length);
-    }, 5000); // Cambiar imagen cada 5 segundos
+    }, 5000);
     
     // Set loaded after a short delay for animation
     setTimeout(() => setIsLoaded(true), 300);
@@ -35,8 +36,8 @@ const Hero = () => {
   }, [images.length]);
 
   return (
-    <section id="hero" className="h-screen relative overflow-hidden">
-      {/* Carrusel de imágenes de fondo con overlay */}
+    <section id="hero" className="h-screen relative overflow-hidden -mt-[72px]">
+      {/* Background images carousel with overlay - positioned below the navigation */}
       <div className="absolute inset-0 z-0">
         {images.map((image, index) => (
           <div
@@ -52,10 +53,10 @@ const Hero = () => {
             />
           </div>
         ))}
-        <div className="absolute inset-0 bg-gradient-to-b from-black/50 via-black/40 to-black/60 backdrop-blur-[1px]"></div>
+        <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-black/40 to-black/60 backdrop-blur-[1px]"></div>
       </div>
       
-      <div className="container mx-auto px-4 relative z-10 h-full flex flex-col items-center justify-center">
+      <div className="container mx-auto px-4 relative z-10 h-full flex flex-col items-center justify-center pt-[72px]">
         <div className={`max-w-3xl mx-auto text-center transition-all duration-1000 ${isLoaded ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}>
           <h1 className="text-3xl md:text-4xl lg:text-5xl font-display font-bold text-white mb-6 text-shadow tracking-wide leading-tight">
             Un refugio entre las copas de los árboles
@@ -77,7 +78,7 @@ const Hero = () => {
         </div>
       </div>
       
-      {/* Indicadores del carrusel */}
+      {/* Carousel indicators */}
       <div className="absolute bottom-20 left-1/2 transform -translate-x-1/2 z-10 flex space-x-2">
         {images.map((_, index) => (
           <button
