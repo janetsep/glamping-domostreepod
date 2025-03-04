@@ -1,10 +1,11 @@
+
 import { useState, useCallback } from 'react';
 import { supabase, type Reservation, type GlampingUnit } from '@/lib/supabase';
 
 const SUPABASE_URL = 'https://gtxjfmvnzrsuaxryffnt.supabase.co';
 const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imd0eGpmbXZuenJzdWF4cnlmZm50Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDA1MTg5ODIsImV4cCI6MjA1NjA5NDk4Mn0.WwPCyeZX42Jp4A4lW0jl7arXt0lzwRwm18-Ay_D4Ci8';
 
-import { useToast, clearAllToasts } from '@/hooks/use-toast';
+import { useToast } from '@/components/ui/use-toast';
 import { toast as sonnerToast } from 'sonner';
 import { packageData } from '@/components/packages/packageData';
 
@@ -150,8 +151,7 @@ export const useReservations = () => {
       let reservationData;
       
       if (isPackageUnit) {
-        // For package units, create a temporary reservation object
-        // with a generated ID since we can't add it to the database
+        // Para package units, crear un objeto temporal
         console.log('Creando reserva temporal para unidad de paquete');
         const tempId = `temp-${Date.now()}-${Math.random().toString(36).substring(2, 9)}`;
         reservationData = {
@@ -164,12 +164,15 @@ export const useReservations = () => {
           total_price: totalPrice,
           status: 'pending',
           payment_method: paymentMethod,
-          is_package_unit: true, // Flag to identify package units
+          is_package_unit: true,
           selected_activities: selectedActivities,
-          selected_packages: selectedPackages
+          selected_packages: selectedPackages,
+          payment_details: {
+            created_at: new Date().toISOString()
+          }
         };
       } else {
-        // For database units, create the reservation normally
+        // Para unidades reales, crear la reserva en la base de datos
         console.log('Creando reserva en la base de datos');
         const response = await fetch(`${SUPABASE_URL}/rest/v1/reservations`, {
           method: 'POST',
@@ -188,7 +191,10 @@ export const useReservations = () => {
             status: 'pending',
             payment_method: paymentMethod,
             selected_activities: selectedActivities,
-            selected_packages: selectedPackages
+            selected_packages: selectedPackages,
+            payment_details: {
+              created_at: new Date().toISOString()
+            }
           })
         });
 
@@ -226,8 +232,6 @@ export const useReservations = () => {
     
     try {
       setIsLoading(true);
-      clearAllToasts();
-      sonnerToast.dismiss();
       
       const origin = window.location.origin;
       const requestData = {
@@ -277,6 +281,26 @@ export const useReservations = () => {
         };
       }
 
+      // Guardar el token en la reserva para poder identificarla después
+      if (!transactionData.is_package_unit) {
+        try {
+          await supabase
+            .from('reservations')
+            .update({
+              payment_details: {
+                token: transactionData.token,
+                transaction_created: new Date().toISOString()
+              }
+            })
+            .eq('id', reservationId);
+            
+          console.log(`Token WebPay ${transactionData.token} guardado en reserva ${reservationId}`);
+        } catch (e) {
+          console.error(`Error al guardar token en reserva: ${e.message}`);
+        }
+      }
+
+      // Crear y enviar formulario para redirigir a WebPay
       const form = document.createElement('form');
       form.method = 'POST';
       form.action = transactionData.url;

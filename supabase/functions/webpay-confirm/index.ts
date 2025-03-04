@@ -89,7 +89,7 @@ serve(async (req) => {
       try {
         console.log(`Buscando reserva asociada al token: ${token_ws}`);
         
-        // Buscar la reserva por el token en payment_details
+        // Primero intentamos buscar por el token en el objeto payment_details
         const searchResponse = await fetch(
           `${supabaseUrl}/rest/v1/reservations?select=id,status&payment_details->>token=eq.${token_ws}`, 
           {
@@ -108,8 +108,32 @@ serve(async (req) => {
           throw new Error(`Error en la búsqueda: ${searchResponse.status}`);
         }
         
-        const reservations = await searchResponse.json();
-        console.log(`Reservaciones encontradas: ${JSON.stringify(reservations)}`);
+        let reservations = await searchResponse.json();
+        console.log(`Reservaciones encontradas por token: ${JSON.stringify(reservations)}`);
+        
+        // Si no encontramos por token, intentamos por buy_order
+        if (!reservations || reservations.length === 0) {
+          console.log(`No se encontró reserva con token ${token_ws}, buscando por buy_order: ${responseData.buy_order}`);
+          
+          if (responseData.buy_order) {
+            const buyOrderSearchResponse = await fetch(
+              `${supabaseUrl}/rest/v1/reservations?select=id,status&payment_details->>buy_order=eq.${responseData.buy_order}`, 
+              {
+                method: 'GET',
+                headers: {
+                  'Authorization': `Bearer ${supabaseKey}`,
+                  'apikey': supabaseKey,
+                  'Content-Type': 'application/json'
+                }
+              }
+            );
+            
+            if (buyOrderSearchResponse.ok) {
+              reservations = await buyOrderSearchResponse.json();
+              console.log(`Reservaciones encontradas por buy_order: ${JSON.stringify(reservations)}`);
+            }
+          }
+        }
         
         if (reservations && reservations.length > 0) {
           reservationId = reservations[0].id;
@@ -121,10 +145,7 @@ serve(async (req) => {
             
             const updateData = {
               status: 'confirmed',
-              payment_details: {
-                ...responseData,
-                transaction_confirmed: new Date().toISOString()
-              }
+              payment_details: responseData
             };
             
             console.log(`Datos de actualización: ${JSON.stringify(updateData)}`);
@@ -149,9 +170,70 @@ serve(async (req) => {
             }
           } else {
             console.log(`Pago no exitoso, código de respuesta: ${responseData.response_code}. No se actualiza estado.`);
+            
+            // Actualizar con los detalles del pago fallido pero sin cambiar estado
+            const updateResponse = await fetch(`${supabaseUrl}/rest/v1/reservations?id=eq.${reservationId}`, {
+              method: 'PATCH',
+              headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${supabaseKey}`,
+                'apikey': supabaseKey,
+                'Prefer': 'return=minimal'
+              },
+              body: JSON.stringify({
+                payment_details: responseData
+              })
+            });
+            
+            if (!updateResponse.ok) {
+              const errorText = await updateResponse.text();
+              console.error(`Error al actualizar detalles de pago fallido: ${errorText}`);
+            }
           }
         } else {
-          console.log(`No se encontró reserva para el token ${token_ws}`);
+          console.log(`No se encontró reserva para el token ${token_ws} ni buy_order ${responseData.buy_order}`);
+          
+          // Intentar buscar la reserva más reciente en estado 'pending'
+          const fallbackSearchResponse = await fetch(
+            `${supabaseUrl}/rest/v1/reservations?select=id,status&status=eq.pending&order=created_at.desc&limit=1`, 
+            {
+              method: 'GET',
+              headers: {
+                'Authorization': `Bearer ${supabaseKey}`,
+                'apikey': supabaseKey,
+                'Content-Type': 'application/json'
+              }
+            }
+          );
+          
+          if (fallbackSearchResponse.ok) {
+            const pendingReservations = await fallbackSearchResponse.json();
+            
+            if (pendingReservations && pendingReservations.length > 0) {
+              reservationId = pendingReservations[0].id;
+              console.log(`Usando reserva más reciente en estado pending: ${reservationId}`);
+              
+              if (responseData.response_code === 0) {
+                const updateResponse = await fetch(`${supabaseUrl}/rest/v1/reservations?id=eq.${reservationId}`, {
+                  method: 'PATCH',
+                  headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${supabaseKey}`,
+                    'apikey': supabaseKey,
+                    'Prefer': 'return=minimal'
+                  },
+                  body: JSON.stringify({
+                    status: 'confirmed',
+                    payment_details: responseData
+                  })
+                });
+                
+                if (updateResponse.ok) {
+                  console.log(`Actualización de reserva fallback completada: ${reservationId}`);
+                }
+              }
+            }
+          }
         }
       } catch (error) {
         console.error(`Error al conectar con Supabase: ${error instanceof Error ? error.message : 'Error desconocido'}`);

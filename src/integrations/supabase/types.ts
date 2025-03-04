@@ -86,6 +86,7 @@ export type Database = {
           created_at: string | null
           guests: number
           id: string
+          payment_details: Json | null
           payment_method: string
           pets: number | null
           selected_activities: string[] | null
@@ -103,6 +104,7 @@ export type Database = {
           created_at?: string | null
           guests: number
           id?: string
+          payment_details?: Json | null
           payment_method?: string
           pets?: number | null
           selected_activities?: string[] | null
@@ -120,6 +122,7 @@ export type Database = {
           created_at?: string | null
           guests?: number
           id?: string
+          payment_details?: Json | null
           payment_method?: string
           pets?: number | null
           selected_activities?: string[] | null

@@ -65,6 +65,30 @@ const WebPayReturn = () => {
       try {
         console.log(`Procesando confirmación de pago con token: ${token_ws}`);
         
+        // Primero guardar el token en la reserva más reciente para facilitar la búsqueda
+        // Esto es útil porque a veces WebPay nos devuelve antes de que nuestra Edge Function procese
+        try {
+          const { data: latestReservation } = await supabase
+            .from('reservations')
+            .select('id')
+            .eq('status', 'pending')
+            .order('created_at', { ascending: false })
+            .limit(1)
+            .single();
+            
+          if (latestReservation) {
+            console.log(`Guardando token ${token_ws} en reserva ${latestReservation.id}`);
+            await supabase
+              .from('reservations')
+              .update({ 
+                payment_details: { token: token_ws, updated_at: new Date().toISOString() }
+              })
+              .eq('id', latestReservation.id);
+          }
+        } catch (e) {
+          console.error('Error al pre-guardar token en reserva:', e);
+        }
+        
         // Llamar a nuestra Edge Function para confirmar la transacción
         const confirmResponse = await fetch(`${SUPABASE_URL}/functions/v1/webpay-confirm`, {
           method: 'POST',
@@ -139,9 +163,9 @@ const WebPayReturn = () => {
         } else if (responseData.buy_order) {
           // Buscar la reserva que tenga este buy_order en sus payment_details
           const { data: reservations, error: searchError } = await supabase
-            .from("reservations")
-            .select("id, unit_id, payment_details")
-            .eq("status", "confirmed");
+            .from('reservations')
+            .select('id, unit_id, payment_details')
+            .eq('status', 'confirmed');
           
           if (searchError) {
             console.error('Error al buscar reservas:', searchError);
@@ -149,7 +173,7 @@ const WebPayReturn = () => {
             return;
           }
           
-          const reservation = reservations.find(r => 
+          const reservation = reservations?.find(r => 
             r.payment_details && r.payment_details.buy_order === responseData.buy_order
           );
           
