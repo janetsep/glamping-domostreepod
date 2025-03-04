@@ -1,6 +1,7 @@
 
 import { useState } from 'react';
 import { supabase } from '@/lib/supabase';
+import { SUPABASE_URL, SUPABASE_ANON_KEY } from '@/lib/constants';
 
 export interface ClientInformation {
   name: string;
@@ -65,6 +66,25 @@ export const useMutateReservationStatus = () => {
 
       if (error) {
         throw error;
+      }
+
+      // Send confirmation email via edge function
+      const emailResponse = await fetch(`${SUPABASE_URL}/functions/v1/send-reservation-email`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${SUPABASE_ANON_KEY}`
+        },
+        body: JSON.stringify({
+          email: clientInfo.email,
+          name: clientInfo.name,
+          phone: clientInfo.phone,
+          reservationId
+        })
+      });
+
+      if (!emailResponse.ok) {
+        console.error('Error sending email:', await emailResponse.text());
       }
 
       return true;

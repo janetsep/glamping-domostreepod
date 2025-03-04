@@ -10,6 +10,7 @@ import { formatCurrency } from "@/lib/utils";
 import { supabase } from "@/lib/supabase";
 import { useToast } from "@/components/ui/use-toast";
 import { ClientInformationForm } from "./ClientInformationForm";
+import { SUPABASE_URL, SUPABASE_ANON_KEY } from "@/lib/constants";
 
 interface ReservationConfirmationProps {
   startDate?: Date;
@@ -47,7 +48,7 @@ export const ReservationConfirmation = forwardRef<HTMLDivElement, ReservationCon
       }
       
       if (packages.length > 0) {
-        items.push(`${packages.length} paquetes: ${packages.map((p: ThemedPackage) => p.name).join(", ")}`);
+        items.push(`${packages.length} paquetes: ${packages.map((p: ThemedPackage) => p.title).join(", ")}`);
       }
       
       return items.join(" y ");
@@ -81,11 +82,11 @@ export const ReservationConfirmation = forwardRef<HTMLDivElement, ReservationCon
         }
 
         // Send confirmation email via edge function
-        const emailResponse = await fetch(`${supabase.supabaseUrl}/functions/v1/send-reservation-email`, {
+        const emailResponse = await fetch(`${SUPABASE_URL}/functions/v1/send-reservation-email`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
-            'Authorization': `Bearer ${supabase.supabaseKey}`
+            'Authorization': `Bearer ${SUPABASE_ANON_KEY}`
           },
           body: JSON.stringify({
             email: clientInfo.email,
