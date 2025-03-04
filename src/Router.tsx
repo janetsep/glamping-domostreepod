@@ -11,6 +11,7 @@ import NotFound from "./pages/NotFound";
 import Index from "./pages/Index";
 import UnitDetail from "./pages/UnitDetail";
 import { useEffect } from "react";
+import WebPayReturn from "./pages/WebPayReturn";
 
 // Create the router with all our routes
 const router = createBrowserRouter(
@@ -19,6 +20,7 @@ const router = createBrowserRouter(
       <Route index element={<Index />} />
       <Route path="sobre-nosotros" element={<AboutUs />} />
       <Route path="unit/:unitId" element={<UnitDetail />} />
+      <Route path="webpay/return" element={<WebPayReturn />} />
     </Route>
   )
 );

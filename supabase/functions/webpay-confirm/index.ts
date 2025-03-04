@@ -91,12 +91,13 @@ serve(async (req) => {
         
         // Buscar la reserva por el token en payment_details
         const searchResponse = await fetch(
-          `${supabaseUrl}/rest/v1/reservations?select=id,status&payment_details->token=eq.${token_ws}`, 
+          `${supabaseUrl}/rest/v1/reservations?select=id,status&payment_details->>token=eq.${token_ws}`, 
           {
             method: 'GET',
             headers: {
               'Authorization': `Bearer ${supabaseKey}`,
               'apikey': supabaseKey,
+              'Content-Type': 'application/json'
             }
           }
         );
