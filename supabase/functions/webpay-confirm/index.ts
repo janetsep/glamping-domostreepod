@@ -72,66 +72,88 @@ serve(async (req) => {
     
     let reservationId = null;
     
+    // Buscar y actualizar la reserva en Supabase
+    const supabaseUrl = Deno.env.get("SUPABASE_URL") || "";
+    const supabaseKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") || "";
+    
+    if (!supabaseUrl || !supabaseKey) {
+      console.error("Variables de entorno SUPABASE_URL o SUPABASE_SERVICE_ROLE_KEY no definidas");
+      return new Response(JSON.stringify({ error: 'Error de configuración del servidor' }), { 
+        status: 500, 
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' } 
+      });
+    }
+    
     // Solo actualizar reserva en Supabase si no es una unidad de paquete
     if (!is_package_unit) {
-      // Buscar la reserva asociada a esta transacción
-      const supabaseUrl = Deno.env.get("SUPABASE_URL") || "";
-      const supabaseKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") || "";
-      
-      if (supabaseUrl && supabaseKey) {
-        try {
-          // Buscar la reserva por el token en payment_details
-          const searchResponse = await fetch(
-            `${supabaseUrl}/rest/v1/reservations?select=id,status&payment_details->token=eq.${token_ws}`, 
-            {
-              method: 'GET',
+      try {
+        console.log(`Buscando reserva asociada al token: ${token_ws}`);
+        
+        // Buscar la reserva por el token en payment_details
+        const searchResponse = await fetch(
+          `${supabaseUrl}/rest/v1/reservations?select=id,status&payment_details->token=eq.${token_ws}`, 
+          {
+            method: 'GET',
+            headers: {
+              'Authorization': `Bearer ${supabaseKey}`,
+              'apikey': supabaseKey,
+            }
+          }
+        );
+        
+        if (!searchResponse.ok) {
+          const errorText = await searchResponse.text();
+          console.error(`Error al buscar la reserva: ${errorText}`);
+          throw new Error(`Error en la búsqueda: ${searchResponse.status}`);
+        }
+        
+        const reservations = await searchResponse.json();
+        console.log(`Reservaciones encontradas: ${JSON.stringify(reservations)}`);
+        
+        if (reservations && reservations.length > 0) {
+          reservationId = reservations[0].id;
+          console.log(`Encontrada reserva con ID ${reservationId} para el token ${token_ws}`);
+          
+          // Actualizar estado de la reserva si el pago fue exitoso
+          if (responseData.response_code === 0) { // 0 = pago exitoso en WebPay
+            console.log(`Actualizando estado de reserva ${reservationId} a 'confirmed'`);
+            
+            const updateData = {
+              status: 'confirmed',
+              payment_details: {
+                ...responseData,
+                transaction_confirmed: new Date().toISOString()
+              }
+            };
+            
+            console.log(`Datos de actualización: ${JSON.stringify(updateData)}`);
+            
+            const updateResponse = await fetch(`${supabaseUrl}/rest/v1/reservations?id=eq.${reservationId}`, {
+              method: 'PATCH',
               headers: {
+                'Content-Type': 'application/json',
                 'Authorization': `Bearer ${supabaseKey}`,
                 'apikey': supabaseKey,
-              }
-            }
-          );
-          
-          if (searchResponse.ok) {
-            const reservations = await searchResponse.json();
-            if (reservations && reservations.length > 0) {
-              reservationId = reservations[0].id;
-              console.log(`Encontrada reserva con ID ${reservationId} para el token ${token_ws}`);
-              
-              // Actualizar estado de la reserva si el pago fue exitoso
-              if (responseData.response_code === 0) { // 0 = pago exitoso en WebPay
-                const updateResponse = await fetch(`${supabaseUrl}/rest/v1/reservations?id=eq.${reservationId}`, {
-                  method: 'PATCH',
-                  headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${supabaseKey}`,
-                    'apikey': supabaseKey,
-                    'Prefer': 'return=minimal'
-                  },
-                  body: JSON.stringify({
-                    status: 'confirmed',
-                    payment_details: {
-                      ...responseData,
-                      transaction_confirmed: new Date().toISOString()
-                    }
-                  })
-                });
-                
-                if (!updateResponse.ok) {
-                  console.error("Error al actualizar estado de la reserva:", await updateResponse.text());
-                } else {
-                  console.log(`Reserva ${reservationId} actualizada a estado 'confirmed'`);
-                }
-              }
+                'Prefer': 'return=minimal'
+              },
+              body: JSON.stringify(updateData)
+            });
+            
+            if (!updateResponse.ok) {
+              const errorText = await updateResponse.text();
+              console.error(`Error al actualizar estado de la reserva: ${errorText}`);
+              throw new Error(`Error en la actualización: ${updateResponse.status}`);
             } else {
-              console.log(`No se encontró reserva para el token ${token_ws}`);
+              console.log(`Reserva ${reservationId} actualizada correctamente a estado 'confirmed'`);
             }
           } else {
-            console.error("Error al buscar la reserva:", await searchResponse.text());
+            console.log(`Pago no exitoso, código de respuesta: ${responseData.response_code}. No se actualiza estado.`);
           }
-        } catch (error) {
-          console.error("Error al conectar con Supabase:", error);
+        } else {
+          console.log(`No se encontró reserva para el token ${token_ws}`);
         }
+      } catch (error) {
+        console.error(`Error al conectar con Supabase: ${error instanceof Error ? error.message : 'Error desconocido'}`);
       }
     } else {
       console.log("Reserva de paquete temporal, no se busca en la base de datos");
