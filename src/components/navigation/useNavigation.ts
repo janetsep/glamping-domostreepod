@@ -1,4 +1,3 @@
-
 import { useNavigate, useLocation } from "react-router-dom";
 import { packageData } from "../packages/packageData";
 
@@ -30,7 +29,26 @@ export const useNavigation = () => {
   };
 
   const navigateToPage = (path: string) => {
-    // Handle navigation and ensure scroll to top
+    // Check if this is a hash link to a section on the homepage
+    if (path.startsWith('/#')) {
+      const sectionId = path.substring(2);
+      
+      // If already on homepage, just scroll to section
+      if (location.pathname === '/' || location.pathname === '/index') {
+        const element = document.getElementById(sectionId);
+        if (element) {
+          element.scrollIntoView({ behavior: 'smooth' });
+          return;
+        }
+      }
+      
+      // Otherwise navigate to homepage with the hash
+      navigate(path);
+      // We'll let the URL hash handle the scroll
+      return;
+    }
+    
+    // Regular page navigation
     navigate(path);
     // Scroll to top after navigation
     window.scrollTo(0, 0);

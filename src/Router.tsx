@@ -10,6 +10,7 @@ import AboutUs from "./pages/AboutUs";
 import NotFound from "./pages/NotFound";
 import Index from "./pages/Index";
 import UnitDetail from "./pages/UnitDetail";
+import { useEffect } from "react";
 
 // Create the router with all our routes
 const router = createBrowserRouter(
@@ -23,6 +24,35 @@ const router = createBrowserRouter(
 );
 
 function Router() {
+  // Handle hash navigation when the page loads or changes
+  useEffect(() => {
+    const handleHashChange = () => {
+      // Check if there's a hash in the URL
+      if (window.location.hash) {
+        // Extract the ID from the hash
+        const id = window.location.hash.substring(1);
+        // Find the element by ID
+        const element = document.getElementById(id);
+        // If the element exists, scroll to it
+        if (element) {
+          setTimeout(() => {
+            element.scrollIntoView({ behavior: 'smooth' });
+          }, 100);
+        }
+      }
+    };
+
+    // Add event listener for hash changes
+    window.addEventListener('hashchange', handleHashChange);
+    // Handle hash on initial load
+    handleHashChange();
+
+    // Clean up the event listener
+    return () => {
+      window.removeEventListener('hashchange', handleHashChange);
+    };
+  }, []);
+
   return <RouterProvider router={router} />;
 }
 
