@@ -25,12 +25,17 @@ serve(async (req) => {
       return createResponse({ error: 'Formato de solicitud inválido' }, 400);
     }
     
-    const { reservationId, amount, origin, unit_id } = requestData;
+    const { reservationId, amount, origin, unit_id, client_info } = requestData;
     
     if (!reservationId || !amount || !origin) {
       return createResponse({ 
         error: 'Faltan parámetros requeridos: reservationId, amount y origin' 
       }, 400);
+    }
+    
+    console.log(`[webpay-init] Recibida solicitud para reserva ${reservationId}`);
+    if (client_info) {
+      console.log(`[webpay-init] Información del cliente recibida:`, client_info);
     }
     
     // Procesar la inicialización

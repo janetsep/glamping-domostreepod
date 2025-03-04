@@ -1,34 +1,50 @@
 
-// Definiciones de tipos para la función webpay-confirm
+// Definiciones de tipos para webpay-confirm
 
-// Configuración para WebPay
+// Configuración de WebPay/Transbank
 export interface WebPayConfig {
-  endpoint: string;
+  commerceCode: string;
   apiKey: string;
-  sharedSecret: string;
+  baseUrl: string;
 }
 
-// Respuesta de WebPay
-export interface WebPayResponse {
-  response_code: number;
-  authorization_code?: string;
-  buy_order?: string;
-  amount?: number;
-  card_detail?: {
-    card_number?: string;
-  };
-  status?: string;
-  [key: string]: any; // Para otros campos que pueda incluir WebPay
-}
-
-// Datos de la reserva
+// Datos de la reserva en Supabase
 export interface ReservationData {
   id: string;
   status: string;
+  client_name?: string;
+  client_email?: string;
+  client_phone?: string;
 }
 
-// Resultado de la transacción
+// Información del cliente para actualizar
+export interface ClientInfo {
+  name?: string;
+  email?: string;
+  phone?: string;
+}
+
+// Respuesta de Transbank/WebPay
+export interface WebPayResponse {
+  vci: string;
+  amount: number;
+  status: string;
+  buy_order: string;
+  session_id: string;
+  card_detail: {
+    card_number: string;
+  };
+  accounting_date: string;
+  transaction_date: string;
+  authorization_code: string;
+  payment_type_code: string;
+  response_code: number;
+  installments_amount?: number;
+  installments_number: number;
+}
+
+// Resultado final para el cliente
 export interface TransactionResult extends WebPayResponse {
-  reservation_id?: string;
+  reservation_id?: string | null;
   is_package_unit?: boolean;
 }

@@ -38,7 +38,15 @@ const WebPayReturn = () => {
         const storedReservationId = localStorage.getItem('current_reservation_id');
         if (storedReservationId) {
           setReservationId(storedReservationId);
+          console.log(`Retrieved reservation ID from localStorage: ${storedReservationId}`);
         }
+
+        // Get client information from localStorage if available
+        const clientName = localStorage.getItem('client_name');
+        const clientEmail = localStorage.getItem('client_email');
+        const clientPhone = localStorage.getItem('client_phone');
+        
+        console.log(`Client info retrieved from localStorage: ${clientName}, ${clientEmail}, ${clientPhone}`);
 
         // Call Supabase edge function to confirm payment
         const response = await fetch('https://gtxjfmvnzrsuaxryffnt.supabase.co/functions/v1/webpay-confirm', {
@@ -49,7 +57,13 @@ const WebPayReturn = () => {
           },
           body: JSON.stringify({
             token_ws: token,
-            is_package_unit: isPackageUnit
+            is_package_unit: isPackageUnit,
+            reservation_id: storedReservationId,
+            client_info: {
+              name: clientName,
+              email: clientEmail,
+              phone: clientPhone
+            }
           })
         });
 

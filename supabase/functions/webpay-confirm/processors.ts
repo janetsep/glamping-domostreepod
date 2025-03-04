@@ -5,21 +5,25 @@ import { getWebPayConfig, confirmWebPayTransaction } from "./transbank.ts";
 import { 
   findReservationByToken, 
   findReservationByBuyOrder,
+  findReservationByIdDirect,
   findLatestPendingReservation,
   updateReservationStatus,
-  updatePaymentDetails
+  updatePaymentDetails,
+  updateClientInformation
 } from "./supabase.ts";
 
 // Procesa la confirmación de WebPay y actualiza la reserva
 export async function processWebPayConfirmation(
   token: string,
-  isPackageUnit: boolean
+  isPackageUnit: boolean,
+  reservationId?: string,
+  clientInfo?: {name?: string; email?: string; phone?: string}
 ): Promise<TransactionResult> {
   // Confirmar transacción con WebPay
   const webpayConfig = getWebPayConfig();
   const responseData = await confirmWebPayTransaction(token, webpayConfig);
   
-  let reservationId = null;
+  let foundReservationId = reservationId || null;
   
   // Solo actualizar reserva en Supabase si no es una unidad de paquete
   if (!isPackageUnit) {
@@ -33,27 +37,47 @@ export async function processWebPayConfirmation(
     }
     
     try {
-      // Buscar reserva asociada al token
-      let reservations = await findReservationByToken(supabaseUrl, supabaseKey, token);
+      let reservations = [];
+      
+      // Primero intentamos con el ID directo si está disponible
+      if (foundReservationId) {
+        console.log(`Buscando reserva por ID directo: ${foundReservationId}`);
+        reservations = await findReservationByIdDirect(supabaseUrl, supabaseKey, foundReservationId);
+      }
+      
+      // Si no encontramos por ID directo, buscamos por token
+      if (!reservations || reservations.length === 0) {
+        console.log(`Buscando reserva por token: ${token}`);
+        reservations = await findReservationByToken(supabaseUrl, supabaseKey, token);
+      }
       
       // Si no encontramos por token, intentamos por buy_order
       if (!reservations || reservations.length === 0) {
         if (responseData.buy_order) {
+          console.log(`Buscando reserva por buy_order: ${responseData.buy_order}`);
           reservations = await findReservationByBuyOrder(supabaseUrl, supabaseKey, responseData.buy_order);
         }
       }
       
       // Si encontramos reserva, actualizamos su estado
       if (reservations && reservations.length > 0) {
-        reservationId = reservations[0].id;
-        console.log(`Encontrada reserva con ID ${reservationId} para el token ${token}`);
+        foundReservationId = reservations[0].id;
+        console.log(`Encontrada reserva con ID ${foundReservationId} para el token ${token}`);
         
         // Actualizar estado de la reserva si el pago fue exitoso
         if (responseData.response_code === 0) { // 0 = pago exitoso en WebPay
-          await updateReservationStatus(supabaseUrl, supabaseKey, reservationId, 'confirmed', responseData);
+          console.log(`Actualizando estado de reserva ${foundReservationId} a 'confirmed'`);
+          await updateReservationStatus(supabaseUrl, supabaseKey, foundReservationId, 'confirmed', responseData);
+          
+          // Si hay información de cliente, actualizarla
+          if (clientInfo && (clientInfo.name || clientInfo.email || clientInfo.phone)) {
+            console.log(`Actualizando información del cliente para reserva ${foundReservationId}`);
+            await updateClientInformation(supabaseUrl, supabaseKey, foundReservationId, clientInfo);
+          }
         } else {
           // Actualizar con los detalles del pago fallido pero sin cambiar estado
-          await updatePaymentDetails(supabaseUrl, supabaseKey, reservationId, responseData);
+          console.log(`Actualizando detalles de pago para reserva ${foundReservationId} (pago fallido)`);
+          await updatePaymentDetails(supabaseUrl, supabaseKey, foundReservationId, responseData);
         }
       } else {
         console.log(`No se encontró reserva para el token ${token} ni buy_order ${responseData.buy_order}`);
@@ -62,13 +86,19 @@ export async function processWebPayConfirmation(
         const pendingReservations = await findLatestPendingReservation(supabaseUrl, supabaseKey);
         
         if (pendingReservations && pendingReservations.length > 0) {
-          reservationId = pendingReservations[0].id;
-          console.log(`Usando reserva más reciente en estado pending: ${reservationId}`);
+          foundReservationId = pendingReservations[0].id;
+          console.log(`Usando reserva más reciente en estado pending: ${foundReservationId}`);
           
           if (responseData.response_code === 0) {
-            await updateReservationStatus(supabaseUrl, supabaseKey, reservationId, 'confirmed', responseData);
+            await updateReservationStatus(supabaseUrl, supabaseKey, foundReservationId, 'confirmed', responseData);
+            
+            // Si hay información de cliente, actualizarla
+            if (clientInfo && (clientInfo.name || clientInfo.email || clientInfo.phone)) {
+              console.log(`Actualizando información del cliente para reserva ${foundReservationId}`);
+              await updateClientInformation(supabaseUrl, supabaseKey, foundReservationId, clientInfo);
+            }
           } else {
-            await updatePaymentDetails(supabaseUrl, supabaseKey, reservationId, responseData);
+            await updatePaymentDetails(supabaseUrl, supabaseKey, foundReservationId, responseData);
           }
         }
       }
@@ -78,13 +108,13 @@ export async function processWebPayConfirmation(
   } else {
     console.log("Reserva de paquete temporal, no se busca en la base de datos");
     // Para reservas de paquete, usamos un ID fijo o generado en la respuesta
-    reservationId = "package-reservation";
+    foundReservationId = reservationId || "package-reservation";
   }
   
   // Añadir el ID de la reserva a la respuesta para facilitar la redirección
   return {
     ...responseData,
-    reservation_id: reservationId,
+    reservation_id: foundReservationId,
     is_package_unit: !!isPackageUnit
   };
 }

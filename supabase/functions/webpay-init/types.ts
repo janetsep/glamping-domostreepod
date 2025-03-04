@@ -8,12 +8,20 @@ export interface WebPayConfig {
   baseUrl: string;
 }
 
+// Información del cliente
+export interface ClientInfo {
+  name?: string;
+  email?: string;
+  phone?: string;
+}
+
 // Datos para iniciar una transacción
 export interface TransactionInitData {
   reservationId: string;
   amount: number;
   origin: string;
   unit_id?: string;
+  client_info?: ClientInfo;
 }
 
 // Datos para crear una transacción en WebPay

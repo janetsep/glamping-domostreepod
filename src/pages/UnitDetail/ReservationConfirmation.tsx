@@ -38,6 +38,12 @@ export const ReservationConfirmation = forwardRef<HTMLDivElement, ReservationCon
       
       try {
         console.log(`Asociando cliente a la reserva ${reservationId}:`, clientInfo);
+        
+        // Store client info in localStorage for payment process
+        localStorage.setItem('client_name', clientInfo.name);
+        localStorage.setItem('client_email', clientInfo.email);
+        localStorage.setItem('client_phone', clientInfo.phone);
+        
         const success = await saveClientInformation(reservationId, clientInfo);
         
         if (success) {

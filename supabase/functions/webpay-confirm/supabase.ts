@@ -34,6 +34,38 @@ export async function findReservationByToken(
   return reservations;
 }
 
+// Busca una reserva directamente por ID
+export async function findReservationByIdDirect(
+  supabaseUrl: string,
+  supabaseKey: string,
+  reservationId: string
+): Promise<ReservationData[]> {
+  console.log(`Buscando reserva directamente por ID: ${reservationId}`);
+  
+  const searchResponse = await fetch(
+    `${supabaseUrl}/rest/v1/reservations?select=id,status&id=eq.${reservationId}`, 
+    {
+      method: 'GET',
+      headers: {
+        'Authorization': `Bearer ${supabaseKey}`,
+        'apikey': supabaseKey,
+        'Content-Type': 'application/json'
+      }
+    }
+  );
+  
+  if (!searchResponse.ok) {
+    const errorText = await searchResponse.text();
+    console.error(`Error al buscar la reserva por ID: ${errorText}`);
+    throw new Error(`Error en la búsqueda por ID: ${searchResponse.status}`);
+  }
+  
+  const reservations = await searchResponse.json();
+  console.log(`Reservaciones encontradas por ID: ${JSON.stringify(reservations)}`);
+  
+  return reservations;
+}
+
 // Busca una reserva por buy_order de WebPay
 export async function findReservationByBuyOrder(
   supabaseUrl: string,
@@ -132,6 +164,49 @@ export async function updateReservationStatus(
   }
   
   console.log(`Reserva ${reservationId} actualizada correctamente a estado '${status}'`);
+  return true;
+}
+
+// Actualiza la información del cliente en una reserva
+export async function updateClientInformation(
+  supabaseUrl: string,
+  supabaseKey: string,
+  reservationId: string,
+  clientInfo: {name?: string; email?: string; phone?: string}
+): Promise<boolean> {
+  console.log(`Actualizando información del cliente para reserva ${reservationId}`);
+  
+  const updateData: {client_name?: string; client_email?: string; client_phone?: string} = {};
+  
+  if (clientInfo.name) updateData.client_name = clientInfo.name;
+  if (clientInfo.email) updateData.client_email = clientInfo.email;
+  if (clientInfo.phone) updateData.client_phone = clientInfo.phone;
+  
+  console.log(`Datos de cliente a actualizar: ${JSON.stringify(updateData)}`);
+  
+  if (Object.keys(updateData).length === 0) {
+    console.log("No hay información de cliente para actualizar");
+    return true;
+  }
+  
+  const updateResponse = await fetch(`${supabaseUrl}/rest/v1/reservations?id=eq.${reservationId}`, {
+    method: 'PATCH',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${supabaseKey}`,
+      'apikey': supabaseKey,
+      'Prefer': 'return=minimal'
+    },
+    body: JSON.stringify(updateData)
+  });
+  
+  if (!updateResponse.ok) {
+    const errorText = await updateResponse.text();
+    console.error(`Error al actualizar información del cliente: ${errorText}`);
+    return false;
+  }
+  
+  console.log(`Información del cliente actualizada para reserva ${reservationId}`);
   return true;
 }
 

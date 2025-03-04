@@ -30,6 +30,13 @@ export const usePayment = ({
       }
       localStorage.setItem('is_package_unit', isPackageUnit ? 'true' : 'false');
       
+      // Retrieve client information from localStorage if available
+      const clientName = localStorage.getItem('client_name');
+      const clientEmail = localStorage.getItem('client_email');
+      const clientPhone = localStorage.getItem('client_phone');
+      
+      console.log(`Información del cliente almacenada: ${clientName}, ${clientEmail}, ${clientPhone}`);
+      
       // Call WebPay initialization
       const response = await fetch(`${SUPABASE_URL}/functions/v1/webpay-init`, {
         method: 'POST',
@@ -41,7 +48,12 @@ export const usePayment = ({
           reservationId: reservationId,
           amount: amount,
           origin: window.location.origin,
-          unit_id: unitId
+          unit_id: unitId,
+          client_info: {
+            name: clientName,
+            email: clientEmail,
+            phone: clientPhone
+          }
         })
       });
       

@@ -17,24 +17,41 @@ serve(async (req) => {
     }
     
     // Parsear el cuerpo de la solicitud
-    const requestData = await req.json();
-    const { token_ws, is_package_unit } = requestData;
-    
-    if (!token_ws) {
-      return createResponse({ error: 'Falta el token de la transacción' }, 400);
+    let requestData;
+    try {
+      requestData = await req.json();
+    } catch (e) {
+      return createResponse({ error: 'Formato de solicitud inválido' }, 400);
     }
     
+    const { token_ws, is_package_unit, reservation_id, client_info } = requestData;
+    
+    if (!token_ws) {
+      return createResponse({ 
+        error: 'Falta el parámetro requerido: token_ws' 
+      }, 400);
+    }
+    
+    console.log(`[webpay-confirm] Procesando token: ${token_ws}`);
+    console.log(`[webpay-confirm] ID Reserva: ${reservation_id || 'No proporcionado'}`);
+    console.log(`[webpay-confirm] Información del cliente:`, client_info || 'No proporcionada');
+    
     // Procesar la confirmación
-    const result = await processWebPayConfirmation(token_ws, is_package_unit);
+    const result = await processWebPayConfirmation(
+      token_ws, 
+      !!is_package_unit,
+      reservation_id,
+      client_info
+    );
     
     // Devolver el resultado
     return createResponse(result);
     
   } catch (error) {
-    console.error("Error en el procesamiento de confirmación:", error);
-    return createResponse(
-      { error: error instanceof Error ? error.message : 'Error interno del servidor' }, 
-      500
-    );
+    console.error(`[webpay-confirm] Error general: ${error.message}`);
+    console.error(error.stack);
+    return createResponse({ 
+      error: error instanceof Error ? error.message : 'Error interno del servidor' 
+    }, 500);
   }
 });
