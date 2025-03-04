@@ -86,6 +86,26 @@ const WebPayReturn = () => {
         // Store the result
         setTransactionResult(data);
         
+        // Actualizar explícitamente el estado de la reserva si el pago fue exitoso
+        if (data.response_code === 0 && data.reservation_id) {
+          console.log(`Actualizando explícitamente el estado de la reserva ${data.reservation_id} a confirmed`);
+          
+          try {
+            const success = await updateReservation(data.reservation_id, 'confirmed', data);
+            if (success) {
+              console.log('Estado de reserva actualizado correctamente a confirmed');
+            } else {
+              console.error('No se pudo actualizar el estado de la reserva');
+            }
+          } catch (updateError) {
+            console.error('Error al actualizar el estado de la reserva:', updateError);
+          }
+          
+          // También intentar actualizar a través del servicio
+          const unitId = await updateReservationIfNeeded(data);
+          console.log(`Resultado de updateReservationIfNeeded: ${unitId || 'sin resultado'}`);
+        }
+        
         // Auto-redirect to detail page after a few seconds
         setTimeout(() => {
           // Get product/unit ID from localStorage
