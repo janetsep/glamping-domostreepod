@@ -45,6 +45,7 @@ const DesktopMenu = ({
         }`}
       >
         <span className="relative z-10 flex items-center gap-1">
+          <Sparkles className="h-4 w-4" />
           <span>Reservar</span>
           <span className="opacity-0 max-w-0 group-hover:opacity-100 group-hover:max-w-xs transition-all duration-500 overflow-hidden whitespace-nowrap">
             Ahora
