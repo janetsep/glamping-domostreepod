@@ -28,11 +28,18 @@ export const useCalendarAvailability = (unitId: string, currentMonth: Date, sele
       try {
         console.log(`Fetching reservations from ${format(start, 'yyyy-MM-dd')} to ${format(end, 'yyyy-MM-dd')}`);
         
+        // Extend the date range a bit to capture reservations that might overlap with the month
+        const extendedStart = new Date(start);
+        extendedStart.setDate(extendedStart.getDate() - 7);
+        
+        const extendedEnd = new Date(end);
+        extendedEnd.setDate(extendedEnd.getDate() + 7);
+        
         const { data, error } = await supabase
           .from('reservations')
           .select('*')
           .eq('status', 'confirmed')
-          .or(`check_in.lte.${end.toISOString()},check_out.gte.${start.toISOString()}`);
+          .or(`check_in.lte.${extendedEnd.toISOString()},check_out.gte.${extendedStart.toISOString()}`);
         
         if (error) {
           console.error("Error fetching reservations:", error);
@@ -59,9 +66,15 @@ export const useCalendarAvailability = (unitId: string, currentMonth: Date, sele
       const start = startOfMonth(currentMonth);
       const end = endOfMonth(currentMonth);
       setIsLoading(true);
-      const availabilityData = await fetchAvailability(start, end);
-      setCalendarDays(availabilityData);
-      setIsLoading(false);
+      
+      try {
+        const availabilityData = await fetchAvailability(start, end);
+        setCalendarDays(availabilityData);
+      } catch (error) {
+        console.error("Error loading calendar data:", error);
+      } finally {
+        setIsLoading(false);
+      }
     };
     
     loadCalendarData();
@@ -77,20 +90,36 @@ export const useCalendarAvailability = (unitId: string, currentMonth: Date, sele
       // Check availability for each day
       const availabilityMap = await Promise.all(
         daysInMonth.map(async (day) => {
-          // Check availability for this specific day
+          // Set the day to midnight for consistent comparison
+          const dayStart = new Date(day);
+          dayStart.setHours(0, 0, 0, 0);
+          
           const dayEnd = new Date(day);
           dayEnd.setHours(23, 59, 59, 999);
           
-          // Use the checkGeneralAvailability function
-          const { isAvailable, availableUnits, totalUnits } = await checkGeneralAvailability(day, dayEnd)
-            .catch(() => ({ isAvailable: false, availableUnits: 0, totalUnits: 4 }));  // Default in case of error
+          // Count reservations that overlap with this day
+          const reservationsOnDay = reservations.filter(reservation => {
+            const checkIn = new Date(reservation.check_in);
+            const checkOut = new Date(reservation.check_out);
+            
+            return (
+              (checkIn <= dayEnd && checkOut >= dayStart)
+            );
+          });
+          
+          // Calculate available units (total units - reserved units)
+          const TOTAL_UNITS = 4;
+          const reservedUnits = reservationsOnDay.length;
+          const availableUnits = Math.max(0, TOTAL_UNITS - reservedUnits);
+          
+          console.log(`Day ${format(day, 'yyyy-MM-dd')}: ${reservedUnits} reserved, ${availableUnits} available`);
           
           return {
             date: day,
-            isAvailable,
+            isAvailable: availableUnits > 0,
             isSelected: selectedDate ? isSameDay(day, selectedDate) : false,
             availableUnits,
-            totalUnits
+            totalUnits: TOTAL_UNITS
           };
         })
       );
@@ -107,14 +136,31 @@ export const useCalendarAvailability = (unitId: string, currentMonth: Date, sele
     try {
       console.log(`Checking availability for single date: ${format(date, 'yyyy-MM-dd')}`);
       
+      // Set the day to midnight for consistent comparison
+      const dayStart = new Date(date);
+      dayStart.setHours(0, 0, 0, 0);
+      
       const dayEnd = new Date(date);
       dayEnd.setHours(23, 59, 59, 999);
       
-      const { isAvailable, availableUnits } = await checkGeneralAvailability(date, dayEnd);
+      // Count reservations that overlap with this day
+      const reservationsOnDay = reservations.filter(reservation => {
+        const checkIn = new Date(reservation.check_in);
+        const checkOut = new Date(reservation.check_out);
+        
+        return (
+          (checkIn <= dayEnd && checkOut >= dayStart)
+        );
+      });
       
-      console.log(`Date ${format(date, 'yyyy-MM-dd')} availability: ${isAvailable ? 'Available' : 'Not available'} (${availableUnits} units)`);
+      // Calculate available units (total units - reserved units)
+      const TOTAL_UNITS = 4;
+      const reservedUnits = reservationsOnDay.length;
+      const availableUnits = Math.max(0, TOTAL_UNITS - reservedUnits);
       
-      return isAvailable;
+      console.log(`Date ${format(date, 'yyyy-MM-dd')} availability: ${availableUnits > 0 ? 'Available' : 'Not available'} (${availableUnits} units)`);
+      
+      return availableUnits > 0;
     } catch (error) {
       console.error("Error checking date availability:", error);
       return false;

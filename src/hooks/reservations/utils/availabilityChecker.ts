@@ -31,21 +31,9 @@ export const checkUnitAvailability = async (
     return true;
   }
   
-  // Buscamos reservaciones que se solapan con las fechas solicitadas
-  const { data: existingReservations, error } = await supabase
-    .from('reservations')
-    .select('*')
-    .eq('unit_id', unitId)
-    .eq('status', 'confirmed')
-    .or(`check_in.lt.${checkOut.toISOString()},check_out.gt.${checkIn.toISOString()}`);
-
-  if (error) {
-    console.error('Error al verificar disponibilidad específica:', error);
-    throw error;
-  }
-
-  console.log(`Reservaciones encontradas para unidad ${unitId}:`, existingReservations?.length || 0);
-  return existingReservations?.length === 0; // True si no hay reservaciones solapadas
+  // Verificamos si hay disponibilidad general para las fechas
+  const { isAvailable } = await checkGeneralAvailability(checkIn, checkOut);
+  return isAvailable;
 };
 
 /**
@@ -67,24 +55,38 @@ export const checkGeneralAvailability = async (
   console.log(`Verificando disponibilidad general del ${format(checkIn, 'yyyy-MM-dd')} al ${format(checkOut, 'yyyy-MM-dd')}`);
   
   try {
-    // Contamos cuántas unidades tienen reservaciones confirmadas solapadas con las fechas solicitadas
+    // Configurar fechas para comparison
+    const checkInDate = new Date(checkIn);
+    checkInDate.setHours(0, 0, 0, 0);
+    
+    const checkOutDate = new Date(checkOut);
+    checkOutDate.setHours(23, 59, 59, 999);
+    
+    // Buscamos reservas que se solapan con el rango de fechas solicitado
     const { data: overlappingReservations, error } = await supabase
       .from('reservations')
-      .select('unit_id')
+      .select('id, unit_id, check_in, check_out')
       .eq('status', 'confirmed')
-      .or(`check_in.lt.${checkOut.toISOString()},check_out.gt.${checkIn.toISOString()}`);
+      .or(`check_in.lte.${checkOutDate.toISOString()},check_out.gte.${checkInDate.toISOString()}`);
 
     if (error) {
       console.error('Error al verificar disponibilidad general:', error);
       throw error;
     }
 
-    // Obtenemos unidades únicas reservadas (eliminando duplicados)
+    console.log(`Encontradas ${overlappingReservations?.length || 0} reservas solapadas`);
+    
+    // Contamos cuántas unidades diferentes están reservadas
     const uniqueReservedUnits = new Set(overlappingReservations?.map(r => r.unit_id) || []);
     const reservedCount = uniqueReservedUnits.size;
-    const availableUnits = Math.max(0, TOTAL_DOMOS - reservedCount);
     
-    console.log(`Domos reservados: ${reservedCount}, Domos disponibles: ${availableUnits}`);
+    // Si las reservas no tienen unit_id específico, contamos cada reserva como una unidad reservada
+    const reservationsWithoutUnitId = (overlappingReservations || []).filter(r => !r.unit_id).length;
+    const totalReservedCount = Math.min(TOTAL_DOMOS, reservedCount + reservationsWithoutUnitId);
+    
+    const availableUnits = Math.max(0, TOTAL_DOMOS - totalReservedCount);
+    
+    console.log(`Domos reservados: ${totalReservedCount}, Domos disponibles: ${availableUnits}`);
     
     return {
       isAvailable: availableUnits > 0,
