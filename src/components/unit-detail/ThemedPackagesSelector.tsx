@@ -91,7 +91,7 @@ export const ThemedPackagesSelector = ({
         >
           <div className="flex-1">
             <div className="flex items-center justify-between">
-              <div className="font-medium">{pkg.name}</div>
+              <div className="font-medium">{pkg.title}</div>
               <div className="text-sm font-semibold text-primary">
                 ${pkg.price.toLocaleString()}
               </div>
