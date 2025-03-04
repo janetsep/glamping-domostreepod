@@ -1,6 +1,5 @@
 
 import { useState, useEffect } from "react";
-import { supabase } from "@/lib/supabase";
 import { 
   startOfMonth, 
   endOfMonth, 
@@ -8,6 +7,7 @@ import {
   isSameDay
 } from "date-fns";
 import { AvailabilityCalendarDay } from "@/types";
+import { checkUnitAvailability } from "./reservations/utils/availabilityChecker";
 
 export const useCalendarAvailability = (unitId: string, currentMonth: Date, selectedDate: Date | null) => {
   const [calendarDays, setCalendarDays] = useState<AvailabilityCalendarDay[]>([]);
@@ -31,48 +31,26 @@ export const useCalendarAvailability = (unitId: string, currentMonth: Date, sele
       // Get all days in the interval
       const daysInMonth = eachDayOfInterval({ start, end });
       
-      // Get reservations for this unit in this date range
-      // Usamos exactamente la misma lógica que en useAvailability.ts
-      const { data: reservations, error } = await supabase
-        .from("reservations")
-        .select("*")
-        .eq("unit_id", unitId)
-        .eq("status", "confirmed")
-        .or(`check_in.lte.${end.toISOString()},check_out.gte.${start.toISOString()}`);
-      
-      if (error) {
-        console.error("Error fetching reservations:", error);
-        return [];
-      }
-      
-      console.log("Calendario: Reservaciones encontradas:", reservations?.length || 0);
-      if (reservations && reservations.length > 0) {
-        console.log("Calendario: Detalles de reservaciones:", JSON.stringify(reservations));
-      }
-      
-      // Mark days as unavailable if they fall within any reservation period
-      const availabilityMap = daysInMonth.map(day => {
-        let isAvailable = true;
-        
-        // Check if the day falls within any reservation period
-        if (reservations && reservations.length > 0) {
-          for (const reservation of reservations) {
-            const checkIn = new Date(reservation.check_in);
-            const checkOut = new Date(reservation.check_out);
-            
-            if (day >= checkIn && day <= checkOut) {
-              isAvailable = false;
-              break;
-            }
-          }
-        }
-        
-        return {
-          date: day,
-          isAvailable,
-          isSelected: selectedDate ? isSameDay(day, selectedDate) : false
-        };
-      });
+      // We'll check each day's availability against existing reservations
+      const availabilityMap = await Promise.all(
+        daysInMonth.map(async (day) => {
+          // Check availability for this specific day (end date is same day for simplicity)
+          // This isn't perfect for real availability but works for calendar display purposes
+          // since we're just checking if the day falls within any reservation
+          const dayEnd = new Date(day);
+          dayEnd.setHours(23, 59, 59, 999);
+          
+          // We invert the result because we want to know if the day is available (not reserved)
+          const isAvailable = await checkUnitAvailability(unitId, day, dayEnd)
+            .catch(() => false);  // Default to unavailable if there's an error
+          
+          return {
+            date: day,
+            isAvailable,
+            isSelected: selectedDate ? isSameDay(day, selectedDate) : false
+          };
+        })
+      );
       
       return availabilityMap;
     } catch (error) {
