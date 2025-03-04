@@ -120,52 +120,61 @@ serve(async (req) => {
       });
     }
     
-    // Guardar detalles en Supabase
-    const supabaseUrl = Deno.env.get("SUPABASE_URL") || "";
-    const supabaseKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") || "";
+    // Check if this is a package unit (starts with "temp-")
+    const isPackageUnit = reservationId.startsWith('temp-');
     
-    if (supabaseUrl && supabaseKey) {
-      try {
-        const updateData = {
-          payment_details: {
-            token: responseData.token,
-            buy_order: buyOrder,
-            session_id: sessionId,
-            transaction_initiation: new Date().toISOString()
+    // Only save details in Supabase for non-package units
+    if (!isPackageUnit) {
+      // Guardar detalles en Supabase
+      const supabaseUrl = Deno.env.get("SUPABASE_URL") || "";
+      const supabaseKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") || "";
+      
+      if (supabaseUrl && supabaseKey) {
+        try {
+          const updateData = {
+            payment_details: {
+              token: responseData.token,
+              buy_order: buyOrder,
+              session_id: sessionId,
+              transaction_initiation: new Date().toISOString()
+            }
+          };
+          
+          console.log(`[webpay-init] Actualizando reserva ${reservationId} con datos: ${JSON.stringify(updateData)}`);
+          
+          const updateResponse = await fetch(`${supabaseUrl}/rest/v1/reservations?id=eq.${reservationId}`, {
+            method: 'PATCH',
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${supabaseKey}`,
+              'apikey': supabaseKey,
+              'Prefer': 'return=minimal'
+            },
+            body: JSON.stringify(updateData)
+          });
+          
+          if (!updateResponse.ok) {
+            const updateResponseText = await updateResponse.text();
+            console.error(`[webpay-init] Error al actualizar reserva: ${updateResponseText}`);
+            // Continuamos aunque falle la actualización
+          } else {
+            console.log(`[webpay-init] Reserva ${reservationId} actualizada correctamente`);
           }
-        };
-        
-        console.log(`[webpay-init] Actualizando reserva ${reservationId} con datos: ${JSON.stringify(updateData)}`);
-        
-        const updateResponse = await fetch(`${supabaseUrl}/rest/v1/reservations?id=eq.${reservationId}`, {
-          method: 'PATCH',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${supabaseKey}`,
-            'apikey': supabaseKey,
-            'Prefer': 'return=minimal'
-          },
-          body: JSON.stringify(updateData)
-        });
-        
-        if (!updateResponse.ok) {
-          const updateResponseText = await updateResponse.text();
-          console.error(`[webpay-init] Error al actualizar reserva: ${updateResponseText}`);
+        } catch (error) {
+          console.error(`[webpay-init] Error al actualizar reserva: ${error.message}`);
           // Continuamos aunque falle la actualización
-        } else {
-          console.log(`[webpay-init] Reserva ${reservationId} actualizada correctamente`);
         }
-      } catch (error) {
-        console.error(`[webpay-init] Error al actualizar reserva: ${error.message}`);
-        // Continuamos aunque falle la actualización
       }
+    } else {
+      console.log(`[webpay-init] Reserva temporal (paquete), no se actualiza en la base de datos`);
     }
     
     // Retornar datos de la transacción
     const responsePayload = {
       token: responseData.token,
       url: responseData.url,
-      buy_order: buyOrder
+      buy_order: buyOrder,
+      is_package_unit: isPackageUnit
     };
     
     console.log(`[webpay-init] Datos de respuesta: ${JSON.stringify(responsePayload)}`);

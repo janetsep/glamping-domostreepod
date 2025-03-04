@@ -9,13 +9,15 @@ export const supabase = createClient(supabaseUrl, supabaseKey);
 export type Reservation = {
   id: string;
   created_at: string;
-  user_id: string;
+  user_id?: string;
   unit_id: string;
   check_in: string;
   check_out: string;
   guests: number;
   total_price: number;
   status: 'pending' | 'confirmed' | 'cancelled';
+  payment_method?: string;
+  is_package_unit?: boolean;
 };
 
 export type GlampingUnit = {
