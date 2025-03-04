@@ -26,13 +26,14 @@ export const AvailabilityCalendar = ({ unitId, onSelectDate }: AvailabilityCalen
       const daysInMonth = eachDayOfInterval({ start, end });
       
       // Get reservations for this unit in this date range
+      // Usamos exactamente la misma lógica que en useAvailability.ts
       const { data: reservations, error } = await supabase
         .from("reservations")
         .select("*")
         .eq("unit_id", unitId)
         .eq("status", "confirmed")
-        .lte('check_in', end.toISOString())
-        .gte('check_out', start.toISOString());
+        .lt('check_in', end.toISOString())
+        .gt('check_out', start.toISOString());
       
       if (error) {
         console.error("Error fetching reservations:", error);

@@ -25,17 +25,17 @@ export const useAvailability = ({ setIsLoading, toast }: UseAvailabilityProps) =
         return true;
       }
       
-      // The query needs to find any reservations that overlap with the requested dates
-      // An overlap occurs when:
-      // - A reservation's check-in is before the requested check-out AND
-      // - A reservation's check-out is after the requested check-in
+      // Buscamos reservaciones que se solapan con las fechas solicitadas
+      // Un solapamiento ocurre cuando:
+      // - La entrada de una reserva es anterior a la salida solicitada Y
+      // - La salida de una reserva es posterior a la entrada solicitada
       const { data: existingReservations, error } = await supabase
         .from('reservations')
         .select('*')
         .eq('unit_id', unitId)
         .eq('status', 'confirmed')
-        .lte('check_in', checkOut.toISOString())
-        .gte('check_out', checkIn.toISOString());
+        .lt('check_in', checkOut.toISOString())
+        .gt('check_out', checkIn.toISOString());
 
       if (error) {
         console.error('Error al verificar disponibilidad:', error);
