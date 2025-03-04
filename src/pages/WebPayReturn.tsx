@@ -6,13 +6,14 @@ import PaymentError from '@/components/webpay/PaymentError';
 import PaymentProcessing from '@/components/webpay/PaymentProcessing';
 import { TransactionResult, updateReservationIfNeeded } from '@/services/webPayService';
 import { useMutateReservationStatus } from '@/hooks/reservations/useReservationUpdate';
+import { toast } from 'sonner';
 
 const WebPayReturn = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const [isLoading, setIsLoading] = useState(true);
   const [transactionResult, setTransactionResult] = useState<TransactionResult | null>(null);
-  const [error, setError] = useState<string | null>(null);
+  const [error, setError, setErrorCodigo] = useState<string | null>(null);
   const [reservationId, setReservationId] = useState<string | null>(null);
   const [isPackage, setIsPackage] = useState(false);
 
@@ -38,7 +39,7 @@ const WebPayReturn = () => {
         const storedReservationId = localStorage.getItem('current_reservation_id');
         if (storedReservationId) {
           setReservationId(storedReservationId);
-          console.log(`Retrieved reservation ID from localStorage: ${storedReservationId}`);
+          console.log(`Recuperado ID de reserva desde localStorage: ${storedReservationId}`);
         }
 
         // Get client information from localStorage if available
@@ -46,7 +47,7 @@ const WebPayReturn = () => {
         const clientEmail = localStorage.getItem('client_email');
         const clientPhone = localStorage.getItem('client_phone');
         
-        console.log(`Client info retrieved from localStorage: ${clientName}, ${clientEmail}, ${clientPhone}`);
+        console.log(`Información del cliente recuperada desde localStorage: ${clientName}, ${clientEmail}, ${clientPhone}`);
 
         // Call Supabase edge function to confirm payment
         const response = await fetch('https://gtxjfmvnzrsuaxryffnt.supabase.co/functions/v1/webpay-confirm', {
@@ -73,7 +74,7 @@ const WebPayReturn = () => {
         }
 
         const data = await response.json();
-        console.log('Transaction confirmed:', data);
+        console.log('Transacción confirmada:', data);
         
         // If the response contains a reservation_id, use it
         if (data.reservation_id && !reservationId) {
@@ -104,8 +105,18 @@ const WebPayReturn = () => {
         }, 5000);
         
       } catch (error) {
-        console.error('Error confirming transaction:', error);
+        console.error('Error al confirmar transacción:', error);
         setError(error instanceof Error ? error.message : 'Error desconocido');
+        
+        // Notify the user about the error
+        toast.error("Error en la transacción", {
+          description: error instanceof Error ? error.message : 'Ha ocurrido un error al procesar el pago',
+        });
+        
+        // Redirect to homepage after error
+        setTimeout(() => {
+          navigate('/');
+        }, 5000);
       } finally {
         setIsLoading(false);
       }

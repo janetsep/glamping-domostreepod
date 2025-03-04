@@ -11,7 +11,7 @@ export async function processWebPayInit(data: TransactionInitData): Promise<Init
   // Generar datos de la transacción
   const buyOrder = generateBuyOrder(data.reservationId);
   const sessionId = generateSessionId();
-  const returnUrl = `${data.origin}/webpay-return`;
+  const returnUrl = `${data.origin}/webpay/return`;
   
   console.log(`[webpay-init] Buy Order: ${buyOrder}, Session ID: ${sessionId}, Return URL: ${returnUrl}`);
   
