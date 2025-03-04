@@ -11,70 +11,91 @@ export type Database = {
     Tables: {
       glamping_units: {
         Row: {
+          available_activities: Json[] | null
+          available_services: Json[] | null
+          created_at: string | null
           description: string | null
           id: string
           image_url: string | null
           max_guests: number
+          max_pets: number
           name: string
-          price_per_night: number
+          pet_price: number
+          prices: Json
         }
         Insert: {
+          available_activities?: Json[] | null
+          available_services?: Json[] | null
+          created_at?: string | null
           description?: string | null
-          id?: string
+          id: string
           image_url?: string | null
-          max_guests: number
+          max_guests?: number
+          max_pets?: number
           name: string
-          price_per_night: number
+          pet_price?: number
+          prices: Json
         }
         Update: {
+          available_activities?: Json[] | null
+          available_services?: Json[] | null
+          created_at?: string | null
           description?: string | null
           id?: string
           image_url?: string | null
           max_guests?: number
+          max_pets?: number
           name?: string
-          price_per_night?: number
+          pet_price?: number
+          prices?: Json
         }
         Relationships: []
       }
       reservations: {
         Row: {
+          activities: string[] | null
           check_in: string
           check_out: string
-          created_at: string
+          created_at: string | null
           guests: number
           id: string
-          payment_details: Json | null
-          payment_method: string | null
+          payment_method: string
+          pets: number | null
+          services: string[] | null
           status: string
           total_price: number
-          unit_id: string
-          user_id: string | null
+          unit_id: string | null
+          updated_at: string | null
         }
         Insert: {
+          activities?: string[] | null
           check_in: string
           check_out: string
-          created_at?: string
+          created_at?: string | null
           guests: number
           id?: string
-          payment_details?: Json | null
-          payment_method?: string | null
-          status: string
+          payment_method?: string
+          pets?: number | null
+          services?: string[] | null
+          status?: string
           total_price: number
-          unit_id: string
-          user_id?: string | null
+          unit_id?: string | null
+          updated_at?: string | null
         }
         Update: {
+          activities?: string[] | null
           check_in?: string
           check_out?: string
-          created_at?: string
+          created_at?: string | null
           guests?: number
           id?: string
-          payment_details?: Json | null
-          payment_method?: string | null
+          payment_method?: string
+          pets?: number | null
+          services?: string[] | null
           status?: string
           total_price?: number
-          unit_id?: string
-          user_id?: string | null
+          unit_id?: string | null
+          updated_at?: string | null
         }
         Relationships: [
           {

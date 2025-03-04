@@ -1,6 +1,7 @@
 
 import { Button } from "@/components/ui/button";
 import { useLocation } from "react-router-dom";
+import { Home, Package, ListChecks, MessageSquare, MapPin, BookOpen, Info, Mail } from "lucide-react";
 
 interface NavigationLinksProps {
   isMobile: boolean;
@@ -19,26 +20,23 @@ export const NavigationLinks = ({
   const isHomePage = location.pathname === "/" || location.pathname === "/index";
   
   const links = [
-    { name: "Inicio", path: "/" },
-    { name: "Domos", id: "packages" },
-    { name: "Servicios", id: "benefits" },
-    { name: "Comentarios", id: "testimonials" },
-    { name: "Ubicación", id: "location" },
-    { name: "Blog", id: "blog" },
-    { name: "Sobre Nosotros", path: "/sobre-nosotros" },
-    { name: "Contacto", id: "contact" },
+    { name: "Inicio", path: "/", icon: Home },
+    { name: "Domos", id: "packages", icon: Package },
+    { name: "Servicios", id: "benefits", icon: ListChecks },
+    { name: "Comentarios", id: "testimonials", icon: MessageSquare },
+    { name: "Ubicación", id: "location", icon: MapPin },
+    { name: "Blog", id: "blog", icon: BookOpen },
+    { name: "Sobre Nosotros", path: "/sobre-nosotros", icon: Info },
+    { name: "Contacto", id: "contact", icon: Mail },
   ];
 
   const handleClick = (link: { name: string; id?: string; path?: string }) => {
     if (link.path) {
-      // For static pages like "Sobre Nosotros", use navigateToPage
       navigateToPage(link.path);
     } else if (link.id) {
       if (isHomePage) {
-        // If on home page, just scroll to section
         scrollToSection(link.id);
       } else {
-        // If on another page, navigate to home with hash
         navigateToPage(`/#${link.id}`);
       }
     }
@@ -47,31 +45,43 @@ export const NavigationLinks = ({
   if (isMobile) {
     return (
       <>
-        {links.map((link) => (
-          <button 
-            key={link.name}
-            onClick={() => handleClick(link)}
-            className="py-3 border-b border-gray-100 text-left text-lg"
-          >
-            {link.name}
-          </button>
-        ))}
+        {links.map((link) => {
+          const Icon = link.icon;
+          return (
+            <button 
+              key={link.name}
+              onClick={() => handleClick(link)}
+              className="w-full py-4 border-b border-gray-100 text-left text-lg flex items-center gap-3 hover:bg-gray-50 transition-colors duration-200 px-4"
+            >
+              <Icon className="h-5 w-5 text-cyan-500" />
+              {link.name}
+            </button>
+          );
+        })}
       </>
     );
   }
 
   return (
     <>
-      {links.map((link) => (
-        <Button
-          key={link.name}
-          variant={isScrolled ? "ghost" : "link"}
-          onClick={() => handleClick(link)}
-          className={`text-base md:text-lg font-medium ${isScrolled ? 'text-gray-700 hover:text-cyan-500' : 'text-white text-shadow'}`}
-        >
-          {link.name}
-        </Button>
-      ))}
+      {links.map((link) => {
+        const Icon = link.icon;
+        return (
+          <Button
+            key={link.name}
+            variant={isScrolled ? "ghost" : "link"}
+            onClick={() => handleClick(link)}
+            className={`text-base font-medium gap-2 ${
+              isScrolled 
+                ? 'text-gray-700 hover:text-cyan-500 hover:bg-gray-50/50' 
+                : 'text-white text-shadow hover:text-white/90'
+            }`}
+          >
+            <Icon className={`h-4 w-4 ${isScrolled ? 'text-cyan-500' : 'text-white'}`} />
+            {link.name}
+          </Button>
+        );
+      })}
     </>
   );
 };

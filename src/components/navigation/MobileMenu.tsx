@@ -36,18 +36,21 @@ const MobileMenu = ({
 
   return (
     <div className="md:hidden">
-      <button 
-        onClick={() => setMobileMenuOpen(!mobileMenuOpen)} 
-        className="p-2 text-gray-700"
+      <Button
+        variant="ghost"
+        size="icon"
+        onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+        className={`p-2 ${isScrolled ? 'text-gray-700' : 'text-white'}`}
       >
         {mobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
-      </button>
+      </Button>
       
-      {/* Panel desplegable */}
-      <div className={`fixed inset-0 bg-white z-40 transition-transform duration-300 pt-20 ${
-        mobileMenuOpen ? 'translate-x-0' : 'translate-x-full'
-      }`}>
-        <div className="container px-4 flex flex-col space-y-4">
+      <div 
+        className={`fixed inset-0 bg-white/95 backdrop-blur-sm z-40 transition-all duration-300 ${
+          mobileMenuOpen ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'
+        }`}
+      >
+        <div className="container px-4 flex flex-col pt-20">
           <NavigationLinks 
             isMobile={true} 
             isScrolled={isScrolled} 
@@ -58,7 +61,7 @@ const MobileMenu = ({
           <Button
             variant="default"
             onClick={onReserveClick}
-            className="mt-6 w-full py-6 text-lg bg-cyan-500 hover:bg-cyan-600 text-white"
+            className="mt-8 py-6 text-lg bg-cyan-500 hover:bg-cyan-600 text-white"
           >
             Reservar Ahora
           </Button>
