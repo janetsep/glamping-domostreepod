@@ -1,4 +1,3 @@
-
 import { useState, useEffect, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { useNavigation } from "./navigation/useNavigation";
@@ -56,7 +55,7 @@ const Hero = () => {
         <div className="absolute inset-0 bg-gradient-to-b from-black/50 via-black/40 to-black/60 backdrop-blur-[1px]"></div>
       </div>
       
-      <div className="container mx-auto px-4 relative z-10 h-full flex items-center">
+      <div className="container mx-auto px-4 relative z-10 h-full flex flex-col items-center justify-center">
         <div className={`max-w-3xl mx-auto text-center transition-all duration-1000 ${isLoaded ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}>
           <h1 className="text-3xl md:text-4xl lg:text-5xl font-display font-bold text-white mb-6 text-shadow tracking-wide leading-tight">
             Un refugio entre las copas de los árboles
@@ -72,6 +71,9 @@ const Hero = () => {
             <span className="absolute inset-0 w-full h-full bg-gradient-to-r from-cyan-400 to-cyan-300 transform translate-y-full group-hover:translate-y-0 transition-transform duration-500"></span>
             <span className="relative z-10">Reserva tu Experiencia</span>
           </Button>
+          
+          {/* ScrollArrow positioned below the button */}
+          <ScrollArrow targetRef={benefitsRef} />
         </div>
       </div>
       
@@ -88,9 +90,6 @@ const Hero = () => {
           />
         ))}
       </div>
-      
-      {/* ScrollArrow component replacing the previous Explora más indicator */}
-      <ScrollArrow targetRef={benefitsRef} />
     </section>
   );
 };
