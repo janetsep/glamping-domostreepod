@@ -40,7 +40,7 @@ serve(async (req) => {
       });
     }
     
-    const { reservationId, amount, origin } = requestData;
+    const { reservationId, amount, origin, unit_id } = requestData;
     
     if (!reservationId || !amount || !origin) {
       return new Response(JSON.stringify({ error: 'Faltan parámetros requeridos: reservationId, amount y origin' }), { 
@@ -54,7 +54,7 @@ serve(async (req) => {
     // Generar orden de compra única
     const buyOrder = `BO-${Date.now()}-${reservationId.substring(0, 6)}`;
     const sessionId = `SI-${Date.now()}`;
-    const returnUrl = `${origin}/webpay/return`;
+    const returnUrl = `${origin}/webpay-return`;
     
     console.log(`[webpay-init] Buy Order: ${buyOrder}, Session ID: ${sessionId}, Return URL: ${returnUrl}`);
     

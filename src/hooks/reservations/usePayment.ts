@@ -38,10 +38,9 @@ export const usePayment = ({
           'Authorization': `Bearer ${SUPABASE_ANON_KEY}`
         },
         body: JSON.stringify({
-          amount,
-          buy_order: `BO-${Date.now()}-${reservationId.substring(0, 8)}`,
-          return_url: window.location.origin + '/webpay-return',
-          session_id: `SESSION-${reservationId}`,
+          reservationId: reservationId,
+          amount: amount,
+          origin: window.location.origin,
           unit_id: unitId
         })
       });
