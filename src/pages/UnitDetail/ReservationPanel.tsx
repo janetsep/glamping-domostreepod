@@ -74,7 +74,9 @@ export const ReservationPanel = ({
       {/* Available dates calendar button */}
       <AvailabilityCalendarSheet 
         unitId={displayUnit.id} 
-        onSelectDate={handleCalendarDateSelect} 
+        onSelectDate={handleCalendarDateSelect}
+        selectedStartDate={startDate}
+        selectedEndDate={endDate}
       />
       
       <div className="space-y-4">
@@ -97,6 +99,7 @@ export const ReservationPanel = ({
               selectedPackages={selectedPackages}
               onPackageToggle={onPackageToggle}
               packagesTotal={packagesTotal}
+              unitId={displayUnit.id}
             />
 
             <div className="mt-8 text-sm text-gray-600 p-3 bg-amber-50 border border-amber-100 rounded">

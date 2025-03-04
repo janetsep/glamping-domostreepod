@@ -1,6 +1,7 @@
 
 import { packageData } from '@/components/packages/packageData';
 import { supabase } from '@/lib/supabase';
+import { format } from 'date-fns';
 
 /**
  * Número total de domos disponibles en el sistema
@@ -20,7 +21,7 @@ export const checkUnitAvailability = async (
   checkIn: Date,
   checkOut: Date
 ): Promise<boolean> => {
-  console.log(`Verificando disponibilidad para unidad ${unitId} del ${checkIn.toISOString()} al ${checkOut.toISOString()}`);
+  console.log(`Verificando disponibilidad para unidad ${unitId} del ${format(checkIn, 'yyyy-MM-dd')} al ${format(checkOut, 'yyyy-MM-dd')}`);
   
   // Primero verificamos si es una unidad de paquete (no en base de datos)
   const isPackageUnit = packageData.some(pkg => pkg.id === unitId);
@@ -36,7 +37,7 @@ export const checkUnitAvailability = async (
     .select('*')
     .eq('unit_id', unitId)
     .eq('status', 'confirmed')
-    .or(`check_in.lte.${checkOut.toISOString()},check_out.gte.${checkIn.toISOString()}`);
+    .or(`check_in.lt.${checkOut.toISOString()},check_out.gt.${checkIn.toISOString()}`);
 
   if (error) {
     console.error('Error al verificar disponibilidad específica:', error);
@@ -63,30 +64,39 @@ export const checkGeneralAvailability = async (
   availableUnits: number;
   totalUnits: number;
 }> => {
-  console.log(`Verificando disponibilidad general del ${checkIn.toISOString()} al ${checkOut.toISOString()}`);
+  console.log(`Verificando disponibilidad general del ${format(checkIn, 'yyyy-MM-dd')} al ${format(checkOut, 'yyyy-MM-dd')}`);
   
-  // Contamos cuántas unidades tienen reservaciones confirmadas solapadas con las fechas solicitadas
-  const { data: reservedUnits, error } = await supabase
-    .from('reservations')
-    .select('unit_id')
-    .eq('status', 'confirmed')
-    .or(`check_in.lte.${checkOut.toISOString()},check_out.gte.${checkIn.toISOString()}`);
+  try {
+    // Contamos cuántas unidades tienen reservaciones confirmadas solapadas con las fechas solicitadas
+    const { data: overlappingReservations, error } = await supabase
+      .from('reservations')
+      .select('unit_id')
+      .eq('status', 'confirmed')
+      .or(`check_in.lt.${checkOut.toISOString()},check_out.gt.${checkIn.toISOString()}`);
 
-  if (error) {
-    console.error('Error al verificar disponibilidad general:', error);
-    throw error;
+    if (error) {
+      console.error('Error al verificar disponibilidad general:', error);
+      throw error;
+    }
+
+    // Obtenemos unidades únicas reservadas (eliminando duplicados)
+    const uniqueReservedUnits = new Set(overlappingReservations?.map(r => r.unit_id) || []);
+    const reservedCount = uniqueReservedUnits.size;
+    const availableUnits = Math.max(0, TOTAL_DOMOS - reservedCount);
+    
+    console.log(`Domos reservados: ${reservedCount}, Domos disponibles: ${availableUnits}`);
+    
+    return {
+      isAvailable: availableUnits > 0,
+      availableUnits,
+      totalUnits: TOTAL_DOMOS
+    };
+  } catch (error) {
+    console.error('Error en checkGeneralAvailability:', error);
+    return {
+      isAvailable: false,
+      availableUnits: 0,
+      totalUnits: TOTAL_DOMOS
+    };
   }
-
-  // Obtenemos unidades únicas reservadas (eliminando duplicados)
-  const uniqueReservedUnits = new Set(reservedUnits?.map(r => r.unit_id) || []);
-  const reservedCount = uniqueReservedUnits.size;
-  const availableUnits = Math.max(0, TOTAL_DOMOS - reservedCount);
-  
-  console.log(`Domos reservados: ${reservedCount}, Domos disponibles: ${availableUnits}`);
-  
-  return {
-    isAvailable: availableUnits > 0,
-    availableUnits,
-    totalUnits: TOTAL_DOMOS
-  };
 };

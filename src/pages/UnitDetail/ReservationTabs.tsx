@@ -1,5 +1,4 @@
 
-import { ReactNode } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { DateSelector } from "@/components/unit-detail/DateSelector";
 import { GuestSelector } from "@/components/unit-detail/GuestSelector";
@@ -9,7 +8,7 @@ import { Activity, ThemedPackage } from "@/types";
 
 interface ReservationTabsProps {
   tab: string;
-  onTabChange: (value: string) => void;
+  onTabChange: (tab: string) => void;
   startDate?: Date;
   endDate?: Date;
   onStartDateChange: (date: Date | undefined) => void;
@@ -24,7 +23,7 @@ interface ReservationTabsProps {
   selectedPackages: ThemedPackage[];
   onPackageToggle: (pkg: ThemedPackage) => void;
   packagesTotal: number;
-  children?: ReactNode;
+  unitId: string;
 }
 
 export const ReservationTabs = ({
@@ -44,14 +43,19 @@ export const ReservationTabs = ({
   selectedPackages,
   onPackageToggle,
   packagesTotal,
-  children
+  unitId
 }: ReservationTabsProps) => {
   return (
-    <Tabs defaultValue="dates" value={tab} onValueChange={onTabChange}>
+    <Tabs 
+      defaultValue="dates" 
+      value={tab} 
+      onValueChange={onTabChange}
+      className="w-full"
+    >
       <TabsList className="grid grid-cols-3 mb-4">
         <TabsTrigger value="dates">Fechas y huéspedes</TabsTrigger>
         <TabsTrigger value="activities">Actividades</TabsTrigger>
-        <TabsTrigger value="packages">Paquetes</TabsTrigger>
+        <TabsTrigger value="packages">Paquetes temáticos</TabsTrigger>
       </TabsList>
       
       <TabsContent value="dates" className="space-y-4">
@@ -60,73 +64,36 @@ export const ReservationTabs = ({
           endDate={endDate}
           onStartDateChange={onStartDateChange}
           onEndDateChange={onEndDateChange}
+          unitId={unitId}
         />
-
+        
         <GuestSelector
           maxGuests={maxGuests}
           guests={guests}
           onGuestsChange={onGuestsChange}
         />
         
-        {isAvailable !== null && (
-          <div className={`p-3 rounded-md mt-4 text-sm font-medium flex items-center gap-2 ${
-            isAvailable ? 'bg-green-50 text-green-700 border border-green-200' : 'bg-red-50 text-red-700 border border-red-200'
-          }`}>
-            {isAvailable ? (
-              <>
-                <span className="h-2 w-2 rounded-full bg-green-500"></span>
-                ¡Fechas disponibles! Puedes continuar con tu reserva.
-              </>
-            ) : (
-              <>
-                <span className="h-2 w-2 rounded-full bg-red-500"></span>
-                Fechas no disponibles. Por favor, selecciona otras fechas.
-              </>
-            )}
+        {isAvailable === false && (
+          <div className="p-3 bg-red-50 border border-red-100 rounded text-red-800 text-sm mt-4">
+            No hay disponibilidad para las fechas seleccionadas. Por favor, selecciona otras fechas.
           </div>
         )}
       </TabsContent>
       
       <TabsContent value="activities">
-        <div className="mb-4">
-          <h3 className="text-lg font-semibold mb-2">Selecciona actividades</h3>
-          <p className="text-sm text-muted-foreground">
-            Añade experiencias a tu estadía para hacerla más especial
-          </p>
-        </div>
-        <ActivitiesSelector 
-          selectedActivities={selectedActivities} 
-          onActivityToggle={onActivityToggle} 
+        <ActivitiesSelector
+          selectedActivities={selectedActivities}
+          onActivityToggle={onActivityToggle}
+          total={activitiesTotal}
         />
-        {selectedActivities.length > 0 && (
-          <div className="mt-4 pt-2 border-t">
-            <div className="flex justify-between font-medium">
-              <span>Total actividades:</span>
-              <span>${activitiesTotal.toLocaleString()}</span>
-            </div>
-          </div>
-        )}
       </TabsContent>
       
       <TabsContent value="packages">
-        <div className="mb-4">
-          <h3 className="text-lg font-semibold mb-2">Paquetes temáticos</h3>
-          <p className="text-sm text-muted-foreground">
-            Personaliza tu experiencia con nuestros paquetes exclusivos
-          </p>
-        </div>
-        <ThemedPackagesSelector 
-          selectedPackages={selectedPackages} 
-          onPackageToggle={onPackageToggle} 
+        <ThemedPackagesSelector
+          selectedPackages={selectedPackages}
+          onPackageToggle={onPackageToggle}
+          total={packagesTotal}
         />
-        {selectedPackages.length > 0 && (
-          <div className="mt-4 pt-2 border-t">
-            <div className="flex justify-between font-medium">
-              <span>Total paquetes:</span>
-              <span>${packagesTotal.toLocaleString()}</span>
-            </div>
-          </div>
-        )}
       </TabsContent>
     </Tabs>
   );

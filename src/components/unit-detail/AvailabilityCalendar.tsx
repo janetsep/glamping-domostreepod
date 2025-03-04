@@ -14,13 +14,21 @@ interface AvailabilityCalendarProps {
   unitId: string;
   onSelectDate?: (date: Date) => void;
   checkDateRange?: boolean;
+  selectedStartDate?: Date | null;
+  selectedEndDate?: Date | null;
 }
 
-export const AvailabilityCalendar = ({ unitId, onSelectDate, checkDateRange = false }: AvailabilityCalendarProps) => {
+export const AvailabilityCalendar = ({ 
+  unitId, 
+  onSelectDate, 
+  checkDateRange = false,
+  selectedStartDate = null,
+  selectedEndDate = null 
+}: AvailabilityCalendarProps) => {
   const [currentMonth, setCurrentMonth] = useState(new Date());
-  const [selectedDate, setSelectedDate] = useState<Date | null>(null);
+  const [selectedDate, setSelectedDate] = useState<Date | null>(selectedStartDate);
   
-  const { calendarDays, isLoading, isDateAvailable } = useCalendarAvailability(unitId, currentMonth, selectedDate);
+  const { calendarDays, isLoading, isDateAvailable, isDateRangeAvailable } = useCalendarAvailability(unitId, currentMonth, selectedDate);
 
   const handleDateClick = async (day: AvailabilityCalendarDay) => {
     if (!day.isAvailable) {
@@ -41,6 +49,20 @@ export const AvailabilityCalendar = ({ unitId, onSelectDate, checkDateRange = fa
         description: "Esta fecha acaba de ser reservada por otro usuario."
       });
       return;
+    }
+    
+    // If we're in checkDateRange mode and we have a selected start date,
+    // check if the entire range is available
+    if (checkDateRange && selectedStartDate && day.date > selectedStartDate) {
+      const rangeAvailable = await isDateRangeAvailable(selectedStartDate, day.date);
+      if (!rangeAvailable) {
+        toast({
+          variant: "destructive",
+          title: "Rango no disponible",
+          description: "Alguna fecha en el rango seleccionado no está disponible."
+        });
+        return;
+      }
     }
     
     setSelectedDate(day.date);
@@ -76,6 +98,8 @@ export const AvailabilityCalendar = ({ unitId, onSelectDate, checkDateRange = fa
             calendarDays={calendarDays}
             currentMonth={currentMonth}
             onDateClick={handleDateClick}
+            selectedStartDate={selectedStartDate}
+            selectedEndDate={selectedEndDate}
           />
           
           <CalendarLegend />

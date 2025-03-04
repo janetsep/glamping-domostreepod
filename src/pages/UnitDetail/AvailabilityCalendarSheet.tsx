@@ -7,9 +7,16 @@ import { AvailabilityCalendar } from "@/components/unit-detail/AvailabilityCalen
 interface AvailabilityCalendarSheetProps {
   unitId: string;
   onSelectDate: (date: Date) => void;
+  selectedStartDate?: Date | null;
+  selectedEndDate?: Date | null;
 }
 
-export const AvailabilityCalendarSheet = ({ unitId, onSelectDate }: AvailabilityCalendarSheetProps) => {
+export const AvailabilityCalendarSheet = ({ 
+  unitId, 
+  onSelectDate,
+  selectedStartDate,
+  selectedEndDate
+}: AvailabilityCalendarSheetProps) => {
   return (
     <Sheet>
       <SheetTrigger asChild>
@@ -22,15 +29,15 @@ export const AvailabilityCalendarSheet = ({ unitId, onSelectDate }: Availability
         <SheetHeader>
           <SheetTitle>Fechas disponibles</SheetTitle>
           <SheetDescription>
-            Revisa nuestra disponibilidad para planificar tu estadía
+            Visualiza la disponibilidad de nuestros 4 domos para planificar tu estadía
           </SheetDescription>
         </SheetHeader>
         <div className="py-6">
           <AvailabilityCalendar 
             unitId={unitId} 
-            onSelectDate={(date) => {
-              onSelectDate(date);
-            }}
+            onSelectDate={onSelectDate}
+            selectedStartDate={selectedStartDate}
+            selectedEndDate={selectedEndDate}
           />
         </div>
       </SheetContent>

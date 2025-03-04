@@ -15,14 +15,17 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { useCallback, useEffect } from "react";
+import { useCallback, useEffect, useState } from "react";
+import { AvailabilityCalendar } from "./AvailabilityCalendar";
 import { checkGeneralAvailability } from "@/hooks/reservations/utils/availabilityChecker";
+import { toast } from "@/components/ui/use-toast";
 
 interface DateSelectorProps {
   startDate: Date | undefined;
   endDate: Date | undefined;
   onStartDateChange: (date: Date | undefined) => void;
   onEndDateChange: (date: Date | undefined) => void;
+  unitId: string;
 }
 
 export const DateSelector = ({
@@ -30,7 +33,11 @@ export const DateSelector = ({
   endDate,
   onStartDateChange,
   onEndDateChange,
+  unitId,
 }: DateSelectorProps) => {
+  const [startCalendarOpen, setStartCalendarOpen] = useState(false);
+  const [endCalendarOpen, setEndCalendarOpen] = useState(false);
+
   // Check availability for a specific date
   const checkDateAvailability = useCallback(async (date: Date): Promise<boolean> => {
     try {
@@ -47,7 +54,7 @@ export const DateSelector = ({
     }
   }, []);
 
-  // Handle start date selection with availability check
+  // Handle start date selection
   const handleStartDateSelect = async (date: Date | undefined) => {
     if (date) {
       const isAvailable = await checkDateAvailability(date);
@@ -58,26 +65,69 @@ export const DateSelector = ({
         if (!endDate || endDate <= date) {
           const newEndDate = new Date(date);
           newEndDate.setDate(newEndDate.getDate() + 2);
-          onEndDateChange(newEndDate);
+          
+          // Check if the proposed end date is available
+          const endDateAvailable = await checkDateAvailability(newEndDate);
+          if (endDateAvailable) {
+            onEndDateChange(newEndDate);
+          } else {
+            toast({
+              title: "Fecha de salida no disponible",
+              description: "La fecha de salida propuesta no está disponible. Por favor, selecciona otra fecha.",
+              variant: "destructive"
+            });
+          }
+        }
+        
+        // Close the start calendar and open the end calendar if no end date is selected
+        setStartCalendarOpen(false);
+        if (!endDate) {
+          setTimeout(() => setEndCalendarOpen(true), 300); // Open end calendar after a short delay
         }
       } else {
-        // Date not available, don't update
-        console.log("Selected start date is not available");
+        // Date not available, show message
+        toast({
+          title: "Fecha no disponible",
+          description: "No hay domos disponibles para esta fecha.",
+          variant: "destructive"
+        });
       }
     } else {
       onStartDateChange(undefined);
     }
   };
 
-  // Handle end date selection with availability check
+  // Handle end date selection
   const handleEndDateSelect = async (date: Date | undefined) => {
-    if (date) {
-      const isAvailable = await checkDateAvailability(date);
-      if (isAvailable) {
+    if (date && startDate) {
+      // Check if all dates in the range are available
+      const dateRange = [];
+      let currentDate = new Date(startDate);
+      
+      while (currentDate <= date) {
+        dateRange.push(new Date(currentDate));
+        currentDate.setDate(currentDate.getDate() + 1);
+      }
+      
+      // Check each date in the range
+      let allDatesAvailable = true;
+      for (const rangeDate of dateRange) {
+        const available = await checkDateAvailability(rangeDate);
+        if (!available) {
+          allDatesAvailable = false;
+          break;
+        }
+      }
+      
+      if (allDatesAvailable) {
         onEndDateChange(date);
+        setEndCalendarOpen(false);
       } else {
-        // Date not available, don't update
-        console.log("Selected end date is not available");
+        toast({
+          title: "Rango no disponible",
+          description: "Algunas fechas en el rango seleccionado no están disponibles.",
+          variant: "destructive"
+        });
       }
     } else {
       onEndDateChange(undefined);
@@ -95,15 +145,15 @@ export const DateSelector = ({
             </TooltipTrigger>
             <TooltipContent>
               <p className="text-xs max-w-xs">
-                Selecciona las fechas de entrada y salida para verificar la disponibilidad automáticamente.
-                Solo podrás seleccionar fechas disponibles.
+                Selecciona las fechas de entrada y salida. El sistema verificará automáticamente
+                la disponibilidad en todos nuestros domos (4 en total).
               </p>
             </TooltipContent>
           </Tooltip>
         </TooltipProvider>
       </div>
       <div className="grid grid-cols-2 gap-4">
-        <Popover>
+        <Popover open={startCalendarOpen} onOpenChange={setStartCalendarOpen}>
           <PopoverTrigger asChild>
             <Button
               variant="outline"
@@ -120,25 +170,25 @@ export const DateSelector = ({
             </Button>
           </PopoverTrigger>
           <PopoverContent className="w-auto p-0" align="start">
-            <Calendar
-              mode="single"
-              selected={startDate}
-              onSelect={handleStartDateSelect}
-              disabled={(date) =>
-                date < new Date() || (endDate ? date >= endDate : false)
-              }
-              initialFocus
-            />
+            <div className="p-3">
+              <AvailabilityCalendar 
+                unitId={unitId}
+                onSelectDate={handleStartDateSelect}
+                selectedStartDate={startDate}
+                selectedEndDate={endDate}
+              />
+            </div>
           </PopoverContent>
         </Popover>
 
-        <Popover>
+        <Popover open={endCalendarOpen} onOpenChange={setEndCalendarOpen}>
           <PopoverTrigger asChild>
             <Button
               variant="outline"
               className={`w-full justify-start text-left font-normal ${
                 !endDate && "text-muted-foreground"
               }`}
+              disabled={!startDate}
             >
               <CalendarIcon className="mr-2 h-4 w-4" />
               {endDate ? (
@@ -149,18 +199,24 @@ export const DateSelector = ({
             </Button>
           </PopoverTrigger>
           <PopoverContent className="w-auto p-0" align="start">
-            <Calendar
-              mode="single"
-              selected={endDate}
-              onSelect={handleEndDateSelect}
-              disabled={(date) =>
-                !startDate || date <= startDate || date <= new Date()
-              }
-              initialFocus
-            />
+            <div className="p-3">
+              <AvailabilityCalendar 
+                unitId={unitId}
+                onSelectDate={handleEndDateSelect}
+                checkDateRange={true}
+                selectedStartDate={startDate}
+                selectedEndDate={endDate}
+              />
+            </div>
           </PopoverContent>
         </Popover>
       </div>
+      
+      {startDate && !endDate && (
+        <div className="text-sm text-amber-600 mt-1">
+          Selecciona una fecha de salida para completar tu reserva
+        </div>
+      )}
     </div>
   );
 };

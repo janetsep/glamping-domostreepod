@@ -5,7 +5,8 @@ import {
   endOfMonth, 
   eachDayOfInterval, 
   isSameDay,
-  addDays
+  addDays,
+  format
 } from "date-fns";
 import { AvailabilityCalendarDay } from "@/types";
 import { checkGeneralAvailability } from "./reservations/utils/availabilityChecker";
@@ -19,10 +20,14 @@ export const useCalendarAvailability = (unitId: string, currentMonth: Date, sele
   // Fetch reservations for the current month
   useEffect(() => {
     const fetchReservations = async () => {
+      setIsLoading(true);
+      
       const start = startOfMonth(currentMonth);
       const end = endOfMonth(currentMonth);
       
       try {
+        console.log(`Fetching reservations from ${format(start, 'yyyy-MM-dd')} to ${format(end, 'yyyy-MM-dd')}`);
+        
         const { data, error } = await supabase
           .from('reservations')
           .select('*')
@@ -34,11 +39,14 @@ export const useCalendarAvailability = (unitId: string, currentMonth: Date, sele
           return [];
         }
         
+        console.log(`Found ${data?.length || 0} reservations for the selected month`);
         setReservations(data || []);
         return data;
       } catch (error) {
         console.error("Error in fetchReservations:", error);
         return [];
+      } finally {
+        setIsLoading(false);
       }
     };
     
@@ -50,8 +58,10 @@ export const useCalendarAvailability = (unitId: string, currentMonth: Date, sele
     const loadCalendarData = async () => {
       const start = startOfMonth(currentMonth);
       const end = endOfMonth(currentMonth);
+      setIsLoading(true);
       const availabilityData = await fetchAvailability(start, end);
       setCalendarDays(availabilityData);
+      setIsLoading(false);
     };
     
     loadCalendarData();
@@ -59,7 +69,7 @@ export const useCalendarAvailability = (unitId: string, currentMonth: Date, sele
 
   const fetchAvailability = async (start: Date, end: Date) => {
     try {
-      setIsLoading(true);
+      console.log(`Fetching availability for ${format(start, 'yyyy-MM-dd')} to ${format(end, 'yyyy-MM-dd')}`);
       
       // Get all days in month
       const daysInMonth = eachDayOfInterval({ start, end });
@@ -89,18 +99,20 @@ export const useCalendarAvailability = (unitId: string, currentMonth: Date, sele
     } catch (error) {
       console.error("Error in fetchAvailability:", error);
       return [];
-    } finally {
-      setIsLoading(false);
     }
   };
 
+  // Check if a single date is available
   const isDateAvailable = async (date: Date): Promise<boolean> => {
     try {
+      console.log(`Checking availability for single date: ${format(date, 'yyyy-MM-dd')}`);
+      
       const dayEnd = new Date(date);
       dayEnd.setHours(23, 59, 59, 999);
       
-      const { isAvailable } = await checkGeneralAvailability(date, dayEnd)
-        .catch(() => ({ isAvailable: false, availableUnits: 0, totalUnits: 4 }));
+      const { isAvailable, availableUnits } = await checkGeneralAvailability(date, dayEnd);
+      
+      console.log(`Date ${format(date, 'yyyy-MM-dd')} availability: ${isAvailable ? 'Available' : 'Not available'} (${availableUnits} units)`);
       
       return isAvailable;
     } catch (error) {
@@ -112,17 +124,23 @@ export const useCalendarAvailability = (unitId: string, currentMonth: Date, sele
   // Check if a range of dates is available
   const isDateRangeAvailable = async (startDate: Date, endDate: Date): Promise<boolean> => {
     try {
-      // Create an array of days between start and end date
+      console.log(`Checking availability for date range: ${format(startDate, 'yyyy-MM-dd')} to ${format(endDate, 'yyyy-MM-dd')}`);
+      
+      // Create an array of days between start and end date (including the start date, excluding the end date)
       const days = eachDayOfInterval({ start: startDate, end: addDays(endDate, -1) });
+      
+      console.log(`Checking ${days.length} days in the range`);
       
       // Check availability for each day in the range
       for (const day of days) {
         const available = await isDateAvailable(day);
         if (!available) {
+          console.log(`Date ${format(day, 'yyyy-MM-dd')} is not available in the range`);
           return false;
         }
       }
       
+      console.log('All dates in the range are available');
       return true;
     } catch (error) {
       console.error("Error checking date range availability:", error);
