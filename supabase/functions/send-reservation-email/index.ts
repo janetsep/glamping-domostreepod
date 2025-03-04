@@ -52,6 +52,7 @@ serve(async (req) => {
     }
     
     console.log(`Enviando confirmación de reserva a: ${email}, teléfono: ${phone}`);
+    console.log('Detalles de la reserva:', JSON.stringify(reservationDetails));
     
     // Format dates for display
     const startDate = new Date(reservationDetails.startDate).toLocaleDateString('es-CL');
@@ -107,14 +108,14 @@ serve(async (req) => {
     console.log("Destinatario:", emailContent.to);
     console.log("Asunto:", emailContent.subject);
     
-    // Store the reservation email details in the database (optional)
+    // Store the reservation email details in the database
     const supabaseUrl = Deno.env.get("SUPABASE_URL") || "";
     const supabaseKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") || "";
     
     if (supabaseUrl && supabaseKey) {
-      // This is just an example of storing email information
-      // In your actual implementation, you might want to create a separate table for this
+      // Store the communication in the reservation_communications table
       try {
+        console.log("Guardando detalles de comunicación en la base de datos");
         const response = await fetch(`${supabaseUrl}/rest/v1/reservation_communications`, {
           method: 'POST',
           headers: {
@@ -133,11 +134,16 @@ serve(async (req) => {
         });
         
         if (!response.ok) {
-          console.error(`Error al guardar la comunicación: ${await response.text()}`);
+          const errorData = await response.text();
+          console.error(`Error al guardar la comunicación: ${errorData}`);
+        } else {
+          console.log("Comunicación guardada correctamente en la base de datos");
         }
       } catch (error) {
         console.error("Error al guardar detalles de comunicación:", error);
       }
+    } else {
+      console.error("Variables de entorno SUPABASE_URL o SUPABASE_SERVICE_ROLE_KEY no definidas");
     }
     
     // Return success response  

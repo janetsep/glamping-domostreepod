@@ -1,5 +1,5 @@
 
-import { forwardRef, useState } from "react";
+import { forwardRef, useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
@@ -20,6 +20,13 @@ export const ReservationConfirmation = forwardRef<HTMLDivElement, ReservationCon
     const [phone, setPhone] = useState("");
     const [isSending, setIsSending] = useState(false);
     const [isContactInfoSent, setIsContactInfoSent] = useState(false);
+
+    // Reset contact form state if payment details change (new reservation)
+    useEffect(() => {
+      if (paymentDetails) {
+        setIsContactInfoSent(false);
+      }
+    }, [paymentDetails]);
 
     const handleSendDetails = async () => {
       if (!email || !phone) {
@@ -56,6 +63,9 @@ export const ReservationConfirmation = forwardRef<HTMLDivElement, ReservationCon
         if (!emailResponse.ok) {
           throw new Error("Error al enviar el correo electrónico");
         }
+
+        const responseData = await emailResponse.json();
+        console.log("Email response:", responseData);
 
         toast.success("¡Información enviada correctamente!", {
           description: "Te hemos enviado un correo con los detalles de tu reserva"

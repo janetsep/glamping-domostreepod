@@ -67,38 +67,83 @@ export const useReservationCreation = ({
       } else {
         // Para unidades reales, crear la reserva en la base de datos
         console.log('Creando reserva en la base de datos');
-        const response = await fetch(`${SUPABASE_URL}/rest/v1/reservations`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'apikey': SUPABASE_ANON_KEY,
-            'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
-            'Prefer': 'return=representation'
-          },
-          body: JSON.stringify({
-            unit_id: unitId,
-            check_in: checkIn.toISOString(),
-            check_out: checkOut.toISOString(),
-            guests,
-            total_price: totalPrice,
-            status: 'pending',
-            payment_method: paymentMethod,
-            selected_activities: selectedActivities,
-            selected_packages: selectedPackages,
-            payment_details: {
-              created_at: new Date().toISOString()
-            }
-          })
+        console.log('Datos de reserva:', {
+          unit_id: unitId,
+          check_in: checkIn.toISOString(),
+          check_out: checkOut.toISOString(),
+          guests,
+          total_price: totalPrice,
+          status: 'pending',
+          payment_method: paymentMethod,
+          selected_activities: selectedActivities,
+          selected_packages: selectedPackages
         });
+        
+        // Primero intentamos con la API del cliente Supabase
+        try {
+          const { data, error } = await supabase
+            .from('reservations')
+            .insert({
+              unit_id: unitId,
+              check_in: checkIn.toISOString(),
+              check_out: checkOut.toISOString(),
+              guests,
+              total_price: totalPrice,
+              status: 'pending',
+              payment_method: paymentMethod,
+              selected_activities: selectedActivities,
+              selected_packages: selectedPackages,
+              payment_details: {
+                created_at: new Date().toISOString()
+              }
+            })
+            .select()
+            .single();
+          
+          if (error) {
+            console.error('Error con cliente Supabase:', error);
+            throw error;
+          }
+          
+          reservationData = data;
+          console.log('Reserva creada con cliente Supabase:', reservationData);
+        } catch (supabaseError) {
+          // Si falla, intentamos con fetch directo a la API REST
+          console.log('Intentando crear reserva con fetch directo');
+          const response = await fetch(`${SUPABASE_URL}/rest/v1/reservations`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'apikey': SUPABASE_ANON_KEY,
+              'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
+              'Prefer': 'return=representation'
+            },
+            body: JSON.stringify({
+              unit_id: unitId,
+              check_in: checkIn.toISOString(),
+              check_out: checkOut.toISOString(),
+              guests,
+              total_price: totalPrice,
+              status: 'pending',
+              payment_method: paymentMethod,
+              selected_activities: selectedActivities,
+              selected_packages: selectedPackages,
+              payment_details: {
+                created_at: new Date().toISOString()
+              }
+            })
+          });
 
-        if (!response.ok) {
-          const errorText = await response.text();
-          console.error('Error al crear reserva:', errorText);
-          throw new Error(`Error al crear reserva: ${response.status} ${errorText}`);
+          if (!response.ok) {
+            const errorText = await response.text();
+            console.error('Error al crear reserva con fetch:', errorText);
+            throw new Error(`Error al crear reserva: ${response.status} ${errorText}`);
+          }
+
+          const data = await response.json();
+          reservationData = data[0];
+          console.log('Reserva creada con fetch directo:', reservationData);
         }
-
-        const data = await response.json();
-        reservationData = data[0];
       }
       
       toast({

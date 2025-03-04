@@ -66,7 +66,6 @@ const WebPayReturn = () => {
         console.log(`Procesando confirmación de pago con token: ${token_ws}`);
         
         // Primero guardar el token en la reserva más reciente para facilitar la búsqueda
-        // Esto es útil porque a veces WebPay nos devuelve antes de que nuestra Edge Function procese
         try {
           const { data: latestReservation } = await supabase
             .from('reservations')
@@ -128,6 +127,60 @@ const WebPayReturn = () => {
           sonnerToast.success("¡Pago exitoso!", {
             description: "Tu reserva ha sido confirmada."
           });
+          
+          // Asegurarse de actualizar la reserva a confirmed si no lo hizo la Edge Function
+          if (responseData.reservation_id) {
+            // Verificar estado actual
+            const { data: reservation } = await supabase
+              .from('reservations')
+              .select('status, unit_id')
+              .eq('id', responseData.reservation_id)
+              .single();
+              
+            if (reservation && reservation.status !== 'confirmed') {
+              console.log(`Actualizando estado de reserva ${responseData.reservation_id} a confirmed`);
+              await supabase
+                .from('reservations')
+                .update({ 
+                  status: 'confirmed',
+                  payment_details: responseData
+                })
+                .eq('id', responseData.reservation_id);
+            }
+            
+            // Redirigir al usuario a la página de la unidad
+            setTimeout(() => {
+              navigate(`/unit/${reservation?.unit_id}`);
+            }, 3000);
+          } else {
+            // Buscar alguna reserva por buy_order
+            if (responseData.buy_order) {
+              const { data: reservations } = await supabase
+                .from('reservations')
+                .select('id, unit_id, status')
+                .eq('status', 'pending');
+              
+              if (reservations && reservations.length > 0) {
+                // Actualizar la reserva más reciente
+                const latestReservation = reservations[0];
+                await supabase
+                  .from('reservations')
+                  .update({ 
+                    status: 'confirmed',
+                    payment_details: responseData
+                  })
+                  .eq('id', latestReservation.id);
+                  
+                setTimeout(() => {
+                  navigate(`/unit/${latestReservation.unit_id}`);
+                }, 3000);
+              } else {
+                setTimeout(() => navigate('/'), 5000);
+              }
+            } else {
+              setTimeout(() => navigate('/'), 5000);
+            }
+          }
         } else {
           setError(`Pago rechazado. Código: ${responseData.response_code}`);
           toast({
@@ -138,53 +191,6 @@ const WebPayReturn = () => {
           sonnerToast.error("Pago rechazado", {
             description: `Código de respuesta: ${responseData.response_code}`
           });
-        }
-
-        // Redirigir al usuario usando reservation_id o unidad extraída
-        if (responseData.reservation_id) {
-          // Obtener la unidad asociada a la reserva
-          const { data: reservation, error: reservationError } = await supabase
-            .from('reservations')
-            .select('unit_id')
-            .eq('id', responseData.reservation_id)
-            .single();
-            
-          if (reservationError) {
-            console.error('Error al obtener la reserva:', reservationError);
-          }
-            
-          setTimeout(() => {
-            if (reservation?.unit_id) {
-              navigate(`/unit/${reservation.unit_id}`);
-            } else {
-              navigate('/');
-            }
-          }, 5000);
-        } else if (responseData.buy_order) {
-          // Buscar la reserva que tenga este buy_order en sus payment_details
-          const { data: reservations, error: searchError } = await supabase
-            .from('reservations')
-            .select('id, unit_id, payment_details')
-            .eq('status', 'confirmed');
-          
-          if (searchError) {
-            console.error('Error al buscar reservas:', searchError);
-            setTimeout(() => navigate('/'), 5000);
-            return;
-          }
-          
-          const reservation = reservations?.find(r => 
-            r.payment_details && r.payment_details.buy_order === responseData.buy_order
-          );
-          
-          if (reservation) {
-            setTimeout(() => {
-              navigate(`/unit/${reservation.unit_id}`);
-            }, 5000);
-          } else {
-            setTimeout(() => navigate('/'), 5000);
-          }
-        } else {
           setTimeout(() => navigate('/'), 5000);
         }
 

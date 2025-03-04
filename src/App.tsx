@@ -2,6 +2,7 @@
 import React from 'react';
 import { BrowserRouter as Router, Route, Routes, Outlet } from 'react-router-dom';
 import Navigation from './components/Navigation';
+import Footer from './components/footer';
 
 const App = () => {
   return (
@@ -10,6 +11,7 @@ const App = () => {
       <main className="flex-grow">
         <Outlet />
       </main>
+      <Footer />
     </div>
   );
 };
