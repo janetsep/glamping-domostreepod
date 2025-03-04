@@ -55,42 +55,66 @@ export const useMutateReservationStatus = () => {
     setError(null);
 
     try {
-      const { error } = await supabase
+      console.log(`Guardando información del cliente para la reserva ${reservationId}:`, clientInfo);
+      
+      // Primero actualizamos la tabla de clientes
+      const { error: clientError } = await supabase
         .from('reservation_clients')
         .insert({
-          id: reservationId,
+          id: reservationId,  // Usando el ID de la reserva como identificador
           name: clientInfo.name,
           email: clientInfo.email,
           phone: clientInfo.phone
         });
 
-      if (error) {
-        throw error;
+      if (clientError) {
+        console.error('Error al guardar información del cliente:', clientError);
+        throw clientError;
       }
 
-      // Send confirmation email via edge function
-      const emailResponse = await fetch(`${SUPABASE_URL}/functions/v1/send-reservation-email`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${SUPABASE_ANON_KEY}`
-        },
-        body: JSON.stringify({
-          email: clientInfo.email,
-          name: clientInfo.name,
-          phone: clientInfo.phone,
-          reservationId
+      // Luego actualizamos la reserva para establecer la relación con el cliente
+      const { error: reservationError } = await supabase
+        .from('reservations')
+        .update({
+          client_email: clientInfo.email,
+          client_name: clientInfo.name,
+          client_phone: clientInfo.phone
         })
-      });
+        .eq('id', reservationId);
 
-      if (!emailResponse.ok) {
-        console.error('Error sending email:', await emailResponse.text());
+      if (reservationError) {
+        console.error('Error al actualizar la reserva con información del cliente:', reservationError);
+        throw reservationError;
+      }
+
+      // Enviar correo de confirmación
+      try {
+        const emailResponse = await fetch(`${SUPABASE_URL}/functions/v1/send-reservation-email`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${SUPABASE_ANON_KEY}`
+          },
+          body: JSON.stringify({
+            email: clientInfo.email,
+            name: clientInfo.name,
+            phone: clientInfo.phone,
+            reservationId
+          })
+        });
+
+        if (!emailResponse.ok) {
+          console.error('Error al enviar correo:', await emailResponse.text());
+        }
+      } catch (emailErr) {
+        // No interrumpimos el flujo principal si falla el envío del correo
+        console.error('Error al enviar correo de confirmación:', emailErr);
       }
 
       return true;
     } catch (err: any) {
-      console.error('Error saving client information:', err);
-      setError(err.message || 'Error saving client information');
+      console.error('Error al guardar información del cliente:', err);
+      setError(err.message || 'Error al guardar información del cliente');
       return false;
     } finally {
       setIsUpdating(false);

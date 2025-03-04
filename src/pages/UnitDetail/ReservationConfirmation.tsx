@@ -37,16 +37,17 @@ export const ReservationConfirmation = forwardRef<HTMLDivElement, ReservationCon
       setIsSubmitting(true);
       
       try {
+        console.log(`Asociando cliente a la reserva ${reservationId}:`, clientInfo);
         const success = await saveClientInformation(reservationId, clientInfo);
         
         if (success) {
           setClientInfoSubmitted(true);
           toast({
             title: "Información guardada",
-            description: "¡Gracias! Hemos registrado tu información y te enviamos un correo con los detalles de tu reserva.",
+            description: "¡Gracias! Hemos registrado tus datos y los hemos asociado a tu reserva. Te hemos enviado un correo con los detalles.",
           });
         } else {
-          throw new Error("Error saving client information");
+          throw new Error("Error al guardar información del cliente");
         }
       } catch (error) {
         console.error('Error guardando información del cliente:', error);
@@ -73,10 +74,19 @@ export const ReservationConfirmation = forwardRef<HTMLDivElement, ReservationCon
         />
 
         {!clientInfoSubmitted ? (
-          <ClientInformationForm 
-            onSubmit={handleClientInfoSubmit}
-            isSubmitting={isSubmitting}
-          />
+          <>
+            <div className="mb-4 p-4 bg-blue-50 border border-blue-200 rounded-md">
+              <p className="text-blue-800 text-sm">
+                Para completar tu reserva y establecer la relación cliente-reserva, 
+                necesitamos que nos proporciones tus datos de contacto.
+                Esta información quedará asociada directamente con tu reserva.
+              </p>
+            </div>
+            <ClientInformationForm 
+              onSubmit={handleClientInfoSubmit}
+              isSubmitting={isSubmitting}
+            />
+          </>
         ) : (
           <ReservationSuccess onNewQuote={onNewQuote} />
         )}
