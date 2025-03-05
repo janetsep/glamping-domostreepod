@@ -59,10 +59,13 @@ export const ReservationPanel = ({
 }: ReservationPanelProps) => {
   
   const handleCalendarDateSelect = (date: Date) => {
+    // Just set the start date without automatically setting the end date
     setStartDate(date);
-    const checkoutDate = new Date(date);
-    checkoutDate.setDate(checkoutDate.getDate() + 2); // Default 2 night stay
-    setEndDate(checkoutDate);
+    
+    // If there's an end date before the new start date, clear it
+    if (endDate && endDate <= date) {
+      setEndDate(undefined);
+    }
   };
 
   return (

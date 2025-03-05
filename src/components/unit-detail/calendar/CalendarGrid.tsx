@@ -1,5 +1,4 @@
-
-import { format, isSameMonth, isSameDay } from "date-fns";
+import { format, isSameMonth, isSameDay, isToday, isBefore } from "date-fns";
 import { AvailabilityCalendarDay } from "@/types";
 
 interface CalendarGridProps {
@@ -17,6 +16,27 @@ export const CalendarGrid = ({
   selectedStartDate,
   selectedEndDate
 }: CalendarGridProps) => {
+  // Function to check if a date is selectable
+  const isDateSelectable = (day: AvailabilityCalendarDay): boolean => {
+    const now = new Date();
+    
+    // If it's a past date, it's not selectable
+    if (isBefore(day.date, now) && !isToday(day.date)) {
+      return false;
+    }
+    
+    // If it's today but after 14:00, it's not selectable
+    if (isToday(day.date)) {
+      const currentHour = now.getHours();
+      if (currentHour >= 14) {
+        return false;
+      }
+    }
+    
+    // Check availability
+    return day.isAvailable;
+  };
+
   // Función para obtener la clase CSS para cada celda del día
   const getDayClass = (day: AvailabilityCalendarDay) => {
     let classes = "rounded-full w-8 h-8 flex items-center justify-center";
@@ -39,6 +59,10 @@ export const CalendarGrid = ({
              day.date < selectedEndDate) {
       classes += " bg-primary/20 text-primary-foreground";
     }
+    // Check if date is not selectable (past date or after 14:00 today)
+    else if (!isDateSelectable(day)) {
+      classes += " bg-gray-100 text-gray-400 cursor-not-allowed";
+    }
     // Otherwise use availability styling
     else if (day.isAvailable) {
       // Si hay pocos domos disponibles (menos de la mitad), usamos un color amarillo
@@ -59,7 +83,7 @@ export const CalendarGrid = ({
       {calendarDays.map((day, i) => (
         <div
           key={i}
-          onClick={() => day.isAvailable && onDateClick(day)}
+          onClick={() => isDateSelectable(day) && onDateClick(day)}
           className="p-1 text-center"
         >
           <div className={getDayClass(day)}>

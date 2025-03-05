@@ -1,6 +1,6 @@
 
 import { useState } from "react";
-import { addMonths, subMonths } from "date-fns";
+import { addMonths, subMonths, isToday, isBefore } from "date-fns";
 import { useCalendarAvailability } from "@/hooks/useCalendarAvailability";
 import { AvailabilityCalendarDay } from "@/types";
 import { CalendarHeader } from "./calendar/CalendarHeader";
@@ -31,6 +31,30 @@ export const AvailabilityCalendar = ({
   const { calendarDays, isLoading, isDateAvailable, isDateRangeAvailable } = useCalendarAvailability(unitId, currentMonth, selectedDate);
 
   const handleDateClick = async (day: AvailabilityCalendarDay) => {
+    // Check if date is in the past or if it's today after 14:00
+    const now = new Date();
+    if (isBefore(day.date, now) && !isToday(day.date)) {
+      toast({
+        variant: "destructive",
+        title: "Fecha no válida",
+        description: "No puedes seleccionar fechas pasadas."
+      });
+      return;
+    }
+    
+    // Check if it's today but after 14:00
+    if (isToday(day.date)) {
+      const currentHour = now.getHours();
+      if (currentHour >= 14) {
+        toast({
+          variant: "destructive",
+          title: "Fecha no válida",
+          description: "No se pueden realizar check-in después de las 14:00 del mismo día."
+        });
+        return;
+      }
+    }
+    
     if (!day.isAvailable) {
       toast({
         variant: "destructive",

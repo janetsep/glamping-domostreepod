@@ -60,23 +60,10 @@ export const DateSelector = ({
       const isAvailable = await checkDateAvailability(date);
       if (isAvailable) {
         onStartDateChange(date);
-        // If there's no end date or the end date is before the new start date,
-        // set a default end date 2 days later
-        if (!endDate || endDate <= date) {
-          const newEndDate = new Date(date);
-          newEndDate.setDate(newEndDate.getDate() + 2);
-          
-          // Check if the proposed end date is available
-          const endDateAvailable = await checkDateAvailability(newEndDate);
-          if (endDateAvailable) {
-            onEndDateChange(newEndDate);
-          } else {
-            toast({
-              title: "Fecha de salida no disponible",
-              description: "La fecha de salida propuesta no está disponible. Por favor, selecciona otra fecha.",
-              variant: "destructive"
-            });
-          }
+        
+        // If the end date is before the new start date, reset it
+        if (endDate && endDate <= date) {
+          onEndDateChange(undefined);
         }
         
         // Close the start calendar and open the end calendar if no end date is selected
