@@ -1,5 +1,5 @@
 
-import React, { forwardRef, useState } from "react";
+import React, { forwardRef, useState, useEffect } from "react";
 import { useToast } from "@/components/ui/use-toast";
 import { ClientInformationForm } from "./ClientInformationForm";
 import { ReservationDetails } from "@/components/unit-detail/ReservationDetails";
@@ -23,22 +23,39 @@ export const ReservationConfirmation = forwardRef<HTMLDivElement, ReservationCon
     const { toast } = useToast();
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [clientInfoSubmitted, setClientInfoSubmitted] = useState(false);
+    const [clientInfo, setClientInfo] = useState<ClientInformation>({
+      name: localStorage.getItem('client_name') || '',
+      email: localStorage.getItem('client_email') || '',
+      phone: localStorage.getItem('client_phone') || ''
+    });
     const { saveClientInformation } = useMutateReservationStatus();
 
     // Verificar si ya existe información del cliente para esta reserva
-    React.useEffect(() => {
+    useEffect(() => {
       const checkExistingClientInfo = async () => {
         if (reservationId) {
           try {
             const { data } = await supabase
               .from('reservations')
-              .select('client_name, client_email')
+              .select('client_name, client_email, client_phone')
               .eq('id', reservationId)
               .single();
               
-            if (data && data.client_name && data.client_email) {
-              console.log('Ya existe información del cliente para esta reserva:', data);
-              setClientInfoSubmitted(true);
+            if (data) {
+              // Update local state with database values if available
+              const updatedInfo = {
+                name: data.client_name || clientInfo.name,
+                email: data.client_email || clientInfo.email,
+                phone: data.client_phone || clientInfo.phone
+              };
+              
+              setClientInfo(updatedInfo);
+              
+              // If we have complete client info, mark as submitted
+              if (data.client_name && data.client_email && data.client_phone) {
+                console.log('Ya existe información completa del cliente para esta reserva:', data);
+                setClientInfoSubmitted(true);
+              }
             }
           } catch (error) {
             console.error('Error al verificar información del cliente:', error);
@@ -118,7 +135,9 @@ export const ReservationConfirmation = forwardRef<HTMLDivElement, ReservationCon
           <>
             <div className="mb-4 p-4 bg-blue-50 border border-blue-200 rounded-md">
               <p className="text-blue-800 text-sm">
-                Para completar tu reserva, necesitamos tus datos de contacto.
+                {paymentDetails ? 
+                  "Tu pago ha sido procesado correctamente. Para completar tu reserva, confirma tus datos de contacto." :
+                  "Para completar tu reserva, necesitamos tus datos de contacto."}
                 Esta información quedará directamente asociada con tu reserva 
                 para que podamos contactarte y enviarte las confirmaciones necesarias.
               </p>
@@ -126,6 +145,7 @@ export const ReservationConfirmation = forwardRef<HTMLDivElement, ReservationCon
             <ClientInformationForm 
               onSubmit={handleClientInfoSubmit}
               isSubmitting={isSubmitting}
+              initialValues={clientInfo}
             />
           </>
         ) : (

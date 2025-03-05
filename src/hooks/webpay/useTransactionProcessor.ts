@@ -37,9 +37,12 @@ export const useTransactionProcessor = () => {
       
       // Get the reservation ID if available
       const storedReservationId = localStorage.getItem('current_reservation_id');
+      const unitId = localStorage.getItem('current_unit_id');
+      
       if (storedReservationId) {
         setState(prev => ({ ...prev, reservationId: storedReservationId, isPackage: isPackageUnit }));
         console.log(`Recuperado ID de reserva desde localStorage: ${storedReservationId}`);
+        console.log(`Recuperado ID de unidad desde localStorage: ${unitId || 'No disponible'}`);
       }
 
       // Get client information from localStorage if available
@@ -62,9 +65,9 @@ export const useTransactionProcessor = () => {
             is_package_unit: isPackageUnit,
             reservation_id: storedReservationId,
             client_info: {
-              name: clientName,
-              email: clientEmail,
-              phone: clientPhone
+              name: clientName || undefined,
+              email: clientEmail || undefined,
+              phone: clientPhone || undefined
             }
           })
         });
@@ -91,7 +94,8 @@ export const useTransactionProcessor = () => {
                 setTimeout(() => {
                   const redirectData = {
                     reservation_id: storedReservationId,
-                    response_code: 0 // Asumimos que es exitoso para redirigir al usuario
+                    response_code: 0, // Asumimos que es exitoso para redirigir al usuario
+                    unit_id: unitId
                   };
                   setState(prev => ({ 
                     ...prev, 
@@ -115,6 +119,11 @@ export const useTransactionProcessor = () => {
         // Process successful response
         const data = await response.json();
         console.log('Transacción confirmada:', data);
+        
+        // Include unit_id in the transaction result for redirection
+        if (unitId && !data.unit_id) {
+          data.unit_id = unitId;
+        }
         
         // If the response contains a reservation_id, use it
         if (data.reservation_id && !storedReservationId) {

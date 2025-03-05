@@ -1,5 +1,5 @@
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -8,17 +8,31 @@ import { Label } from "@/components/ui/label";
 interface ClientInformationFormProps {
   onSubmit: (clientInfo: { name: string; email: string; phone: string }) => void;
   isSubmitting: boolean;
+  initialValues?: { name: string; email: string; phone: string };
 }
 
-export const ClientInformationForm = ({ onSubmit, isSubmitting }: ClientInformationFormProps) => {
-  const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
-  const [phone, setPhone] = useState("");
+export const ClientInformationForm = ({ 
+  onSubmit, 
+  isSubmitting, 
+  initialValues 
+}: ClientInformationFormProps) => {
+  const [name, setName] = useState(initialValues?.name || "");
+  const [email, setEmail] = useState(initialValues?.email || "");
+  const [phone, setPhone] = useState(initialValues?.phone || "");
   const [errors, setErrors] = useState<{
     name?: string;
     email?: string;
     phone?: string;
   }>({});
+
+  // Update form when initialValues change
+  useEffect(() => {
+    if (initialValues) {
+      if (initialValues.name) setName(initialValues.name);
+      if (initialValues.email) setEmail(initialValues.email);
+      if (initialValues.phone) setPhone(initialValues.phone);
+    }
+  }, [initialValues]);
 
   const validateForm = () => {
     const newErrors: {

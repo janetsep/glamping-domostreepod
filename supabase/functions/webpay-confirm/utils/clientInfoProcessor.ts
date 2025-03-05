@@ -15,6 +15,43 @@ export async function processClientInfo(
   }
 
   console.log(`Actualizando información del cliente para reserva ${reservationId}`);
+  
+  // Verificar si ya existe información del cliente
+  try {
+    const checkResponse = await fetch(`${supabaseUrl}/rest/v1/reservations?id=eq.${reservationId}&select=client_name,client_email,client_phone`, {
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${supabaseKey}`,
+        'apikey': supabaseKey
+      }
+    });
+    
+    if (checkResponse.ok) {
+      const reservationData = await checkResponse.json();
+      if (reservationData.length > 0) {
+        const existingData = reservationData[0];
+        
+        // Si ya hay información del cliente, solo actualizar campos faltantes
+        if (existingData.client_name && existingData.client_email && existingData.client_phone) {
+          console.log(`Ya existe información completa del cliente para la reserva ${reservationId}`);
+          return true;
+        }
+        
+        // Combinar datos existentes con nuevos
+        const updatedClientInfo = {
+          name: clientInfo.name || existingData.client_name,
+          email: clientInfo.email || existingData.client_email,
+          phone: clientInfo.phone || existingData.client_phone
+        };
+        
+        clientInfo = updatedClientInfo;
+      }
+    }
+  } catch (checkError) {
+    console.warn(`Error al verificar información existente: ${checkError}`);
+  }
+  
+  // Intentar actualizar información con el método principal
   const clientUpdateSuccess = await updateClientInformation(supabaseUrl, supabaseKey, reservationId, clientInfo);
   
   if (clientUpdateSuccess) {

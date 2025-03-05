@@ -15,8 +15,12 @@ const PaymentSuccess: React.FC<PaymentSuccessProps> = ({ transaction }) => {
         <p><span className="font-semibold">Código de autorización:</span> {transaction.authorization_code}</p>
         <p><span className="font-semibold">Tarjeta:</span> {transaction.card_detail?.card_number || "No disponible"}</p>
         <p><span className="font-semibold">Monto:</span> ${transaction.amount?.toLocaleString()}</p>
+        {transaction.reservation_id && (
+          <p><span className="font-semibold">ID de reserva:</span> {transaction.reservation_id}</p>
+        )}
       </div>
       <p className="text-sm text-muted-foreground">Serás redirigido a los detalles de tu reserva en unos momentos...</p>
+      <p className="text-sm text-muted-foreground mt-2">Si la redirección automática no funciona, puedes usar el menú para navegar a "Mis reservas".</p>
     </div>
   );
 };
