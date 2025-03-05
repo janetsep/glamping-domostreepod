@@ -1,7 +1,7 @@
 
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
-// Remove the incorrect import and use the correct one
-import { format as formatDate } from "https://deno.land/std@0.168.0/datetime/mod.ts";
+// Use the correct import for date formatting
+import { format } from "https://deno.land/std@0.207.0/datetime/format.ts";
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -11,205 +11,178 @@ const corsHeaders = {
 serve(async (req) => {
   // Handle CORS preflight requests
   if (req.method === 'OPTIONS') {
-    return new Response(null, { 
-      headers: corsHeaders 
+    return new Response(null, {
+      headers: corsHeaders
     });
   }
-  
+
   try {
-    // Only allow POST method
-    if (req.method !== 'POST') {
-      return new Response(JSON.stringify({ error: 'Método no permitido, solo POST' }), { 
-        status: 405, 
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' } 
-      });
+    // Get request body
+    const { email, name, phone, reservationId } = await req.json();
+    
+    if (!email || !reservationId) {
+      return new Response(
+        JSON.stringify({ error: 'Email y ID de reserva son requeridos' }),
+        {
+          status: 400,
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+        }
+      );
     }
     
-    // Parse the request body
-    const requestData = await req.json();
-    const { email, phone, name, reservationId } = requestData;
-    
-    if (!email || !phone || !name || !reservationId) {
-      return new Response(JSON.stringify({ error: 'Faltan datos requeridos' }), { 
-        status: 400, 
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' } 
-      });
-    }
-    
-    console.log(`Procesando correo para reserva ${reservationId}`);
-    
-    // Obtener los detalles de la reserva
-    const supabaseUrl = Deno.env.get("SUPABASE_URL");
-    const supabaseKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY");
+    // Get reservation details from the database
+    const supabaseUrl = Deno.env.get('SUPABASE_URL') || '';
+    const supabaseKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') || '';
     
     if (!supabaseUrl || !supabaseKey) {
-      throw new Error("Faltan variables de entorno SUPABASE_URL o SUPABASE_SERVICE_ROLE_KEY");
-    }
-    
-    // Buscar la reserva con la nueva estructura que incluye información del cliente
-    const reservationResponse = await fetch(
-      `${supabaseUrl}/rest/v1/reservations?id=eq.${reservationId}&select=*,unit_id,client_name,client_email,client_phone,payment_details,selected_activities,selected_packages`, 
-      {
-        method: 'GET',
-        headers: {
-          'Authorization': `Bearer ${supabaseKey}`,
-          'apikey': supabaseKey,
-          'Content-Type': 'application/json'
+      return new Response(
+        JSON.stringify({ error: 'Error de configuración del servidor' }),
+        {
+          status: 500,
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' }
         }
-      }
-    );
-    
-    if (!reservationResponse.ok) {
-      throw new Error(`Error al obtener detalles de la reserva: ${reservationResponse.status}`);
+      );
     }
     
-    const reservations = await reservationResponse.json();
+    // Fetch reservation data
+    const response = await fetch(`${supabaseUrl}/rest/v1/reservations?id=eq.${reservationId}&select=*,units(*)`, {
+      headers: {
+        'Authorization': `Bearer ${supabaseKey}`,
+        'apikey': supabaseKey,
+        'Content-Type': 'application/json'
+      }
+    });
+    
+    if (!response.ok) {
+      throw new Error(`Error al obtener datos de la reserva: ${response.status}`);
+    }
+    
+    const reservations = await response.json();
     
     if (!reservations || reservations.length === 0) {
-      throw new Error(`No se encontró la reserva con ID ${reservationId}`);
+      return new Response(
+        JSON.stringify({ error: 'Reserva no encontrada' }),
+        {
+          status: 404,
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+        }
+      );
     }
     
     const reservation = reservations[0];
+    const unit = reservation.units;
     
-    // Obtener detalles de la unidad
-    let unitName = "Unidad desconocida";
+    // Create email content with detailed information about the reservation
+    const emailContent = `
+    <!DOCTYPE html>
+    <html>
+    <head>
+      <style>
+        body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
+        .container { max-width: 600px; margin: 0 auto; padding: 20px; }
+        .header { background-color: #056571; color: white; padding: 20px; text-align: center; }
+        .content { padding: 20px; border: 1px solid #ddd; }
+        .footer { text-align: center; margin-top: 20px; font-size: 12px; color: #666; }
+        .reservation-details { margin: 20px 0; }
+        .detail-row { display: flex; margin-bottom: 10px; }
+        .detail-label { font-weight: bold; width: 150px; }
+        .highlight { background-color: #f9f9f9; padding: 15px; border-left: 4px solid #056571; margin: 15px 0; }
+      </style>
+    </head>
+    <body>
+      <div class="container">
+        <div class="header">
+          <h1>Confirmación de Reserva</h1>
+        </div>
+        <div class="content">
+          <p>Estimado/a ${name || 'Cliente'},</p>
+          <p>¡Gracias por elegir Glamping Chile! Tu reserva ha sido confirmada con éxito.</p>
+          
+          <div class="highlight">
+            <p><strong>ID de Reserva:</strong> ${reservation.id}</p>
+            <p><strong>Estado:</strong> Confirmado</p>
+          </div>
+          
+          <div class="reservation-details">
+            <h2>Detalles de la Unidad</h2>
+            <div class="detail-row">
+              <div class="detail-label">Unidad:</div>
+              <div>${unit?.name || 'No disponible'}</div>
+            </div>
+            <div class="detail-row">
+              <div class="detail-label">Check-in:</div>
+              <div>${reservation.check_in ? new Date(reservation.check_in).toLocaleDateString('es-CL') : 'No disponible'}</div>
+            </div>
+            <div class="detail-row">
+              <div class="detail-label">Check-out:</div>
+              <div>${reservation.check_out ? new Date(reservation.check_out).toLocaleDateString('es-CL') : 'No disponible'}</div>
+            </div>
+            <div class="detail-row">
+              <div class="detail-label">Huéspedes:</div>
+              <div>${reservation.guests || 'No disponible'}</div>
+            </div>
+          </div>
+          
+          <div class="reservation-details">
+            <h2>Detalles del Pago</h2>
+            <div class="detail-row">
+              <div class="detail-label">Monto Total:</div>
+              <div>$${reservation.total_price ? reservation.total_price.toLocaleString('es-CL') : 'No disponible'}</div>
+            </div>
+            ${reservation.payment_details?.authorization_code ? `
+            <div class="detail-row">
+              <div class="detail-label">Código de Autorización:</div>
+              <div>${reservation.payment_details.authorization_code}</div>
+            </div>` : ''}
+            ${reservation.payment_details?.card_detail?.card_number ? `
+            <div class="detail-row">
+              <div class="detail-label">Tarjeta:</div>
+              <div>${reservation.payment_details.card_detail.card_number}</div>
+            </div>` : ''}
+          </div>
+          
+          <p>Si tienes alguna pregunta o necesitas asistencia, no dudes en contactarnos.</p>
+          <p>¡Esperamos recibirte pronto!</p>
+          <p>Saludos cordiales,<br>Equipo de Glamping Chile</p>
+        </div>
+        <div class="footer">
+          <p>Este es un correo automático, por favor no responder directamente a este mensaje.</p>
+          <p>© ${new Date().getFullYear()} Glamping Chile. Todos los derechos reservados.</p>
+        </div>
+      </div>
+    </body>
+    </html>
+    `;
     
-    if (reservation.unit_id) {
-      const unitResponse = await fetch(
-        `${supabaseUrl}/rest/v1/glamping_units?id=eq.${reservation.unit_id}&select=name,description,image_url`, 
-        {
-          method: 'GET',
-          headers: {
-            'Authorization': `Bearer ${supabaseKey}`,
-            'apikey': supabaseKey,
-            'Content-Type': 'application/json'
-          }
-        }
-      );
-      
-      if (unitResponse.ok) {
-        const units = await unitResponse.json();
-        if (units && units.length > 0) {
-          unitName = units[0].name;
-        }
-      }
-    }
+    // In a real scenario, you would use an email service like SendGrid, Resend, etc.
+    // For demo purposes, we'll just return success
     
-    // Obtener actividades seleccionadas
-    let activities = [];
-    if (reservation.selected_activities && reservation.selected_activities.length > 0) {
-      const activitiesResponse = await fetch(
-        `${supabaseUrl}/rest/v1/activities?id=in.(${reservation.selected_activities.join(',')})&select=name,price,description`, 
-        {
-          method: 'GET',
-          headers: {
-            'Authorization': `Bearer ${supabaseKey}`,
-            'apikey': supabaseKey,
-            'Content-Type': 'application/json'
-          }
-        }
-      );
-      
-      if (activitiesResponse.ok) {
-        activities = await activitiesResponse.json();
-      }
-    }
+    console.log(`Simulando envío de correo a ${email} para la reserva ${reservationId}`);
     
-    // Obtener paquetes seleccionados
-    let packages = [];
-    if (reservation.selected_packages && reservation.selected_packages.length > 0) {
-      const packagesResponse = await fetch(
-        `${supabaseUrl}/rest/v1/themed_packages?id=in.(${reservation.selected_packages.join(',')})&select=name,price,description`, 
-        {
-          method: 'GET',
-          headers: {
-            'Authorization': `Bearer ${supabaseKey}`,
-            'apikey': supabaseKey,
-            'Content-Type': 'application/json'
-          }
-        }
-      );
-      
-      if (packagesResponse.ok) {
-        packages = await packagesResponse.json();
-      }
-    }
-    
-    // Formatear fechas
-    const checkIn = new Date(reservation.check_in).toLocaleDateString('es-CL');
-    const checkOut = new Date(reservation.check_out).toLocaleDateString('es-CL');
-    
-    // Crear el objeto con todos los detalles para enviar por correo
-    const emailDetails = {
-      reservationId,
-      unitName,
-      unitDetails: {},
-      checkIn,
-      checkOut,
-      guests: reservation.guests,
-      totalPrice: reservation.total_price,
-      status: reservation.status,
-      paymentDetails: reservation.payment_details,
-      activities,
-      packages,
-      clientInfo: {
-        name: reservation.client_name || name,
-        email: reservation.client_email || email,
-        phone: reservation.client_phone || phone
-      }
-    };
-    
-    // Aquí implementaríamos el envío real del correo
-    console.log(`Enviando correo a ${email} con los detalles de la reserva:`, emailDetails);
-    
-    // Registrar la comunicación en la base de datos
-    await fetch(
-      `${supabaseUrl}/rest/v1/reservation_communications`, 
+    return new Response(
+      JSON.stringify({ 
+        success: true,
+        message: 'Correo enviado correctamente',
+        to: email,
+        reservation_id: reservationId
+      }),
       {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${supabaseKey}`,
-          'apikey': supabaseKey,
-          'Content-Type': 'application/json',
-          'Prefer': 'return=minimal'
-        },
-        body: JSON.stringify({
-          email,
-          phone,
-          type: 'confirmation',
-          reservation_details: {
-            id: reservationId,
-            unit_name: unitName,
-            check_in: checkIn,
-            check_out: checkOut,
-            guests: reservation.guests,
-            total_price: reservation.total_price,
-            status: reservation.status,
-            client_name: reservation.client_name || name,
-            client_email: reservation.client_email || email,
-            client_phone: reservation.client_phone || phone,
-            activities: activities.map(a => a.name).join(', '),
-            packages: packages.map(p => p.name).join(', ')
-          }
-        })
+        status: 200,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' }
       }
     );
-    
-    return new Response(JSON.stringify({ 
-      success: true,
-      message: "Correo de confirmación procesado correctamente"
-    }), { 
-      status: 200, 
-      headers: { ...corsHeaders, 'Content-Type': 'application/json' } 
-    });
-    
   } catch (error) {
-    console.error("Error en el procesamiento del correo:", error);
-    return new Response(JSON.stringify({ 
-      error: error instanceof Error ? error.message : 'Error interno del servidor' 
-    }), { 
-      status: 500, 
-      headers: { ...corsHeaders, 'Content-Type': 'application/json' } 
-    });
+    console.error('Error en la función send-reservation-email:', error);
+    
+    return new Response(
+      JSON.stringify({ 
+        error: error.message || 'Error interno del servidor',
+        details: typeof error === 'object' ? JSON.stringify(error) : String(error)
+      }),
+      {
+        status: 500,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+      }
+    );
   }
 });

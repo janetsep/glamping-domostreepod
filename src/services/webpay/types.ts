@@ -10,6 +10,14 @@ export interface TransactionResult {
   };
   status?: string;
   reservation_id?: string;
+  reservation_data?: {
+    unit_name?: string;
+    check_in?: string;
+    check_out?: string;
+    guests?: number;
+    selected_activities?: any[];
+    selected_packages?: any[];
+  };
 }
 
 export interface ClientInfo {
