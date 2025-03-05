@@ -1,3 +1,4 @@
+
 import { format, isSameMonth, isSameDay, isToday, isBefore } from "date-fns";
 import { AvailabilityCalendarDay } from "@/types";
 
@@ -65,17 +66,22 @@ export const CalendarGrid = ({
     }
     // Otherwise use availability styling
     else if (day.isAvailable) {
-      // Si hay pocos domos disponibles (menos de la mitad), usamos un color amarillo
-      if (day.availableUnits && day.availableUnits < day.totalUnits) {
-        classes += " bg-amber-100 text-amber-800 hover:bg-amber-200 cursor-pointer";
-      } else {
-        classes += " bg-green-100 text-green-800 hover:bg-green-200 cursor-pointer";
-      }
+      classes += " bg-green-100 text-green-800 hover:bg-green-200 cursor-pointer";
     } else {
       classes += " bg-red-100 text-red-800 cursor-not-allowed";
     }
     
     return classes;
+  };
+
+  // Función para calcular el porcentaje de disponibilidad
+  const getAvailabilityPercentage = (day: AvailabilityCalendarDay): string => {
+    if (day.availableUnits === undefined || day.totalUnits === undefined) {
+      return "";
+    }
+    
+    const percentage = Math.round((day.availableUnits / day.totalUnits) * 100);
+    return `${percentage}%`;
   };
 
   return (
@@ -91,7 +97,7 @@ export const CalendarGrid = ({
           </div>
           {day.availableUnits !== undefined && isSameMonth(day.date, currentMonth) && (
             <div className="text-[10px] text-gray-600 mt-1">
-              {day.availableUnits}/{day.totalUnits}
+              {getAvailabilityPercentage(day)}
             </div>
           )}
         </div>

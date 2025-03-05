@@ -29,7 +29,7 @@ export const AvailabilityCalendarSheet = ({
         <SheetHeader>
           <SheetTitle>Fechas disponibles</SheetTitle>
           <SheetDescription>
-            Visualiza la disponibilidad de nuestros 4 domos para planificar tu estadía
+            Visualiza la disponibilidad de nuestros domos para planificar tu estadía
           </SheetDescription>
         </SheetHeader>
         <div className="py-6">
