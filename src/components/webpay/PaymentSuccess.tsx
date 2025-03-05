@@ -19,8 +19,7 @@ const PaymentSuccess: React.FC<PaymentSuccessProps> = ({ transaction }) => {
           <p><span className="font-semibold">ID de reserva:</span> {transaction.reservation_id}</p>
         )}
       </div>
-      <p className="text-sm text-muted-foreground">Serás redirigido a los detalles de tu reserva en unos momentos...</p>
-      <p className="text-sm text-muted-foreground mt-2">Si la redirección automática no funciona, puedes usar el menú para navegar a "Mis reservas".</p>
+      <p className="text-sm text-muted-foreground">Por favor, completa tus datos de contacto para finalizar la reserva.</p>
     </div>
   );
 };

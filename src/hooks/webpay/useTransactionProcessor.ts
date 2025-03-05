@@ -1,6 +1,5 @@
 
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { TransactionResult, confirmTransaction, updateReservationIfNeeded } from '@/services/webpay';
 import { useMutateReservationStatus } from '@/hooks/reservations/useReservationUpdate';
 import { toast } from 'sonner';
@@ -14,7 +13,6 @@ export interface TransactionProcessingState {
 }
 
 export const useTransactionProcessor = () => {
-  const navigate = useNavigate();
   const [state, setState] = useState<TransactionProcessingState>({
     isLoading: true,
     transactionResult: null,
