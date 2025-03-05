@@ -6,6 +6,8 @@ import { formatCurrency } from "@/lib/utils";
 import { Activity, ThemedPackage } from "@/types";
 import { PaymentDetails } from "./PaymentDetails";
 import { ExtrasDetails } from "./ExtrasDetails";
+import { format } from "date-fns";
+import { es } from "date-fns/locale";
 
 interface ReservationDetailsProps {
   startDate?: Date;
@@ -24,16 +26,20 @@ export const ReservationDetails: React.FC<ReservationDetailsProps> = ({
 }) => {
   const formatDateShort = (date?: Date) => {
     if (!date) return "";
-    return date.toLocaleDateString("es-CL", {
-      year: "numeric",
-      month: "short",
-      day: "numeric",
-    });
+    return format(date, 'PPP', {locale: es});
+  };
+
+  const calculateNights = () => {
+    if (!startDate || !endDate) return 0;
+    const diffTime = Math.abs(endDate.getTime() - startDate.getTime());
+    return Math.ceil(diffTime / (1000 * 60 * 60 * 24));
   };
 
   return (
     <Card className="p-6 bg-white">
       <div className="space-y-4">
+        <h3 className="text-lg font-semibold mb-3">Detalles de tu reserva</h3>
+        
         <div className="flex justify-between items-center">
           <span className="font-medium">Fechas:</span>
           <span>
@@ -52,10 +58,10 @@ export const ReservationDetails: React.FC<ReservationDetailsProps> = ({
           <>
             <div className="flex justify-between items-center">
               <span className="font-medium">Noches:</span>
-              <span>{quote.nights}</span>
+              <span>{quote.nights || calculateNights()}</span>
             </div>
             
-            {quote.basePrice && (
+            {quote.basePrice !== undefined && (
               <div className="flex justify-between items-center">
                 <span className="font-medium">Precio base:</span>
                 <span>{formatCurrency(quote.basePrice)}</span>
@@ -91,6 +97,17 @@ export const ReservationDetails: React.FC<ReservationDetailsProps> = ({
           selectedActivities={quote?.selectedActivities} 
           selectedPackages={quote?.selectedPackages} 
         />
+        
+        <div className="mt-6 p-3 bg-blue-50 border border-blue-100 rounded-md">
+          <p className="font-medium text-blue-800 mb-1">Información importante</p>
+          <ul className="text-sm text-blue-700 list-disc pl-5 space-y-1">
+            <li>Check-in: a partir de las 15:00 hrs.</li>
+            <li>Check-out: hasta las 12:00 hrs.</li>
+            <li>Llevar toallas y artículos de aseo personal.</li>
+            <li>Si traes mascotas, infórmanos con anticipación.</li>
+            <li>Contacto de emergencia: +56 9 1234 5678</li>
+          </ul>
+        </div>
       </div>
     </Card>
   );

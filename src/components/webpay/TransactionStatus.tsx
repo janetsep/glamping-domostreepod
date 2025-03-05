@@ -9,12 +9,18 @@ interface TransactionStatusProps {
   isLoading: boolean;
   error: string | null;
   transactionResult: TransactionResult | null;
+  onSendEmail?: () => Promise<void>;
+  isEmailSending?: boolean;
+  emailSent?: boolean;
 }
 
 const TransactionStatus: React.FC<TransactionStatusProps> = ({
   isLoading,
   error,
-  transactionResult
+  transactionResult,
+  onSendEmail,
+  isEmailSending,
+  emailSent
 }) => {
   // Loading state
   if (isLoading) {
@@ -29,7 +35,12 @@ const TransactionStatus: React.FC<TransactionStatusProps> = ({
   // Success state
   if (transactionResult) {
     return transactionResult.response_code === 0 ? (
-      <PaymentSuccess transaction={transactionResult} />
+      <PaymentSuccess 
+        transaction={transactionResult} 
+        onSendEmail={onSendEmail}
+        isEmailSending={isEmailSending}
+        emailSent={emailSent}
+      />
     ) : (
       <PaymentError errorMessage={`Error en el pago: Código ${transactionResult.response_code}`} />
     );

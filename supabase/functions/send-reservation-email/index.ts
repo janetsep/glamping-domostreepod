@@ -1,5 +1,6 @@
 
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
+import { format } from "https://deno.land/std@0.168.0/datetime/format.ts";
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -46,7 +47,7 @@ serve(async (req) => {
     
     // Buscar la reserva con la nueva estructura que incluye información del cliente
     const reservationResponse = await fetch(
-      `${supabaseUrl}/rest/v1/reservations?id=eq.${reservationId}&select=*,unit_id,client_name,client_email,client_phone`, 
+      `${supabaseUrl}/rest/v1/reservations?id=eq.${reservationId}&select=*,unit_id,client_name,client_email,client_phone,payment_details,selected_activities,selected_packages`, 
       {
         method: 'GET',
         headers: {
@@ -74,7 +75,7 @@ serve(async (req) => {
     
     if (reservation.unit_id) {
       const unitResponse = await fetch(
-        `${supabaseUrl}/rest/v1/glamping_units?id=eq.${reservation.unit_id}&select=name`, 
+        `${supabaseUrl}/rest/v1/glamping_units?id=eq.${reservation.unit_id}&select=name,description,image_url`, 
         {
           method: 'GET',
           headers: {
@@ -93,26 +94,72 @@ serve(async (req) => {
       }
     }
     
+    // Obtener actividades seleccionadas
+    let activities = [];
+    if (reservation.selected_activities && reservation.selected_activities.length > 0) {
+      const activitiesResponse = await fetch(
+        `${supabaseUrl}/rest/v1/activities?id=in.(${reservation.selected_activities.join(',')})&select=name,price,description`, 
+        {
+          method: 'GET',
+          headers: {
+            'Authorization': `Bearer ${supabaseKey}`,
+            'apikey': supabaseKey,
+            'Content-Type': 'application/json'
+          }
+        }
+      );
+      
+      if (activitiesResponse.ok) {
+        activities = await activitiesResponse.json();
+      }
+    }
+    
+    // Obtener paquetes seleccionados
+    let packages = [];
+    if (reservation.selected_packages && reservation.selected_packages.length > 0) {
+      const packagesResponse = await fetch(
+        `${supabaseUrl}/rest/v1/themed_packages?id=in.(${reservation.selected_packages.join(',')})&select=name,price,description`, 
+        {
+          method: 'GET',
+          headers: {
+            'Authorization': `Bearer ${supabaseKey}`,
+            'apikey': supabaseKey,
+            'Content-Type': 'application/json'
+          }
+        }
+      );
+      
+      if (packagesResponse.ok) {
+        packages = await packagesResponse.json();
+      }
+    }
+    
     // Formatear fechas
     const checkIn = new Date(reservation.check_in).toLocaleDateString('es-CL');
     const checkOut = new Date(reservation.check_out).toLocaleDateString('es-CL');
     
-    // Aquí implementaríamos el envío real del correo
-    console.log(`Enviando correo a ${email} con los detalles de la reserva:`);
-    console.log({
+    // Crear el objeto con todos los detalles para enviar por correo
+    const emailDetails = {
       reservationId,
       unitName,
+      unitDetails: {},
       checkIn,
       checkOut,
       guests: reservation.guests,
       totalPrice: reservation.total_price,
       status: reservation.status,
+      paymentDetails: reservation.payment_details,
+      activities,
+      packages,
       clientInfo: {
         name: reservation.client_name || name,
         email: reservation.client_email || email,
         phone: reservation.client_phone || phone
       }
-    });
+    };
+    
+    // Aquí implementaríamos el envío real del correo
+    console.log(`Enviando correo a ${email} con los detalles de la reserva:`, emailDetails);
     
     // Registrar la comunicación en la base de datos
     await fetch(
@@ -139,7 +186,9 @@ serve(async (req) => {
             status: reservation.status,
             client_name: reservation.client_name || name,
             client_email: reservation.client_email || email,
-            client_phone: reservation.client_phone || phone
+            client_phone: reservation.client_phone || phone,
+            activities: activities.map(a => a.name).join(', '),
+            packages: packages.map(p => p.name).join(', ')
           }
         })
       }
