@@ -15,6 +15,10 @@ export interface TransactionResult {
     check_in?: string;
     check_out?: string;
     guests?: number;
+    pets?: number;
+    pets_price?: number;
+    activities_total?: number;
+    packages_total?: number;
     selected_activities?: any[];
     selected_packages?: any[];
   };

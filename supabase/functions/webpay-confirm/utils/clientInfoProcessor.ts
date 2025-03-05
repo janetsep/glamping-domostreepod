@@ -2,6 +2,7 @@
 // Process and validate client information
 import { ClientInfo } from "../types.ts";
 import { updateClientInformation } from "./reservationUpdates.ts";
+import { createHeaders } from "./httpUtils.ts";
 
 export async function processClientInfo(
   supabaseUrl: string,
@@ -15,21 +16,19 @@ export async function processClientInfo(
   }
 
   console.log(`Actualizando información del cliente para reserva ${reservationId}`);
+  console.log(`Datos del cliente: `, JSON.stringify(clientInfo));
   
   // Verificar si ya existe información del cliente
   try {
     const checkResponse = await fetch(`${supabaseUrl}/rest/v1/reservations?id=eq.${reservationId}&select=client_name,client_email,client_phone`, {
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${supabaseKey}`,
-        'apikey': supabaseKey
-      }
+      headers: createHeaders(supabaseKey)
     });
     
     if (checkResponse.ok) {
       const reservationData = await checkResponse.json();
       if (reservationData.length > 0) {
         const existingData = reservationData[0];
+        console.log(`Información existente del cliente: `, JSON.stringify(existingData));
         
         // Si ya hay información del cliente, solo actualizar campos faltantes
         if (existingData.client_name && existingData.client_email && existingData.client_phone) {
@@ -56,18 +55,35 @@ export async function processClientInfo(
   
   if (clientUpdateSuccess) {
     console.log(`Información del cliente actualizada correctamente para ${reservationId}`);
+    
+    // Verificar que la actualización fue exitosa
+    try {
+      const verifyResponse = await fetch(`${supabaseUrl}/rest/v1/reservations?id=eq.${reservationId}&select=client_name,client_email,client_phone`, {
+        headers: createHeaders(supabaseKey)
+      });
+      
+      if (verifyResponse.ok) {
+        const verifiedData = await verifyResponse.json();
+        if (verifiedData.length > 0) {
+          console.log(`Información del cliente verificada después de la actualización: `, JSON.stringify(verifiedData[0]));
+        }
+      }
+    } catch (verifyError) {
+      console.warn(`Error al verificar actualización: ${verifyError}`);
+    }
+    
     return true;
   } else {
     console.warn(`No se pudo actualizar información del cliente para ${reservationId}`);
     
     // Intentar actualizar cliente con método alternativo
     try {
+      console.log(`Intentando método alternativo para actualizar información del cliente`);
+      
       const directClientUpdateResponse = await fetch(`${supabaseUrl}/rest/v1/reservations?id=eq.${reservationId}`, {
         method: 'PATCH',
         headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${supabaseKey}`,
-          'apikey': supabaseKey,
+          ...createHeaders(supabaseKey),
           'Prefer': 'return=minimal'
         },
         body: JSON.stringify({
@@ -82,7 +98,8 @@ export async function processClientInfo(
         console.log(`Información del cliente actualizada correctamente con método alternativo`);
         return true;
       } else {
-        console.error(`Error al actualizar información del cliente con método alternativo: ${await directClientUpdateResponse.text()}`);
+        const errorText = await directClientUpdateResponse.text();
+        console.error(`Error al actualizar información del cliente con método alternativo: ${errorText}`);
       }
     } catch (directClientUpdateError) {
       console.error(`Error en actualización alternativa de cliente: ${directClientUpdateError}`);

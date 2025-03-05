@@ -1,7 +1,8 @@
 
 import { useState } from 'react';
-import { updateReservationData } from './utils/supabaseUtils';
+import { updateReservationData, verifyReservationUpdate } from './utils/supabaseUtils';
 import { SUPABASE_URL, SUPABASE_ANON_KEY } from '@/lib/constants';
+import { supabase } from '@/lib/supabase';
 
 export interface ClientInformation {
   name: string;
@@ -23,6 +24,19 @@ export const useClientInformation = () => {
     try {
       console.log(`Guardando información del cliente para la reserva ${reservationId}:`, clientInfo);
       
+      // Verificar si la reserva existe
+      const { data: existingReservation, error: checkError } = await supabase
+        .from('reservations')
+        .select('id, client_name, client_email, client_phone')
+        .eq('id', reservationId)
+        .single();
+        
+      if (checkError) {
+        console.error('Error al verificar la reserva:', checkError);
+      } else if (existingReservation) {
+        console.log('Reserva encontrada:', existingReservation);
+      }
+      
       // Update client information in reservation
       const success = await updateReservationData(reservationId, {
         client_name: clientInfo.name,
@@ -32,8 +46,34 @@ export const useClientInformation = () => {
       });
       
       if (!success) {
-        throw new Error('Error al guardar información del cliente');
+        // Intentar método alternativo directo si falla el principal
+        console.log('Método principal falló, intentando método alternativo directo');
+        
+        try {
+          const { error: directError } = await supabase
+            .from('reservations')
+            .update({
+              client_name: clientInfo.name,
+              client_email: clientInfo.email,
+              client_phone: clientInfo.phone,
+              updated_at: new Date().toISOString()
+            })
+            .eq('id', reservationId);
+            
+          if (directError) {
+            console.error('Error en método alternativo:', directError);
+            throw new Error('Error al guardar información del cliente');
+          } else {
+            console.log('Información guardada correctamente con método alternativo');
+          }
+        } catch (directErr) {
+          console.error('Error en método alternativo directo:', directErr);
+          throw new Error('Error al guardar información del cliente');
+        }
       }
+
+      // Verificar que la información se guardó correctamente
+      await verifyReservationUpdate(reservationId);
 
       // Register the communication
       try {

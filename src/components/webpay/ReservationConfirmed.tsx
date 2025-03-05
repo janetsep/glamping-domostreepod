@@ -3,6 +3,7 @@ import React from 'react';
 import { Button } from '@/components/ui/button';
 import { TransactionResult } from '@/services/webpay/types';
 import { ReservationDetails } from '@/components/unit-detail/ReservationDetails';
+import { format, differenceInDays } from 'date-fns';
 
 interface ReservationConfirmedProps {
   transactionResult: TransactionResult;
@@ -24,12 +25,30 @@ const ReservationConfirmed: React.FC<ReservationConfirmedProps> = ({
   const getQuoteFromTransaction = () => {
     if (!transactionResult) return null;
     
+    const checkIn = transactionResult.reservation_data?.check_in 
+      ? new Date(transactionResult.reservation_data.check_in) 
+      : undefined;
+      
+    const checkOut = transactionResult.reservation_data?.check_out 
+      ? new Date(transactionResult.reservation_data.check_out) 
+      : undefined;
+      
+    const nights = checkIn && checkOut ? differenceInDays(checkOut, checkIn) : 0;
+    
+    const basePrice = transactionResult.amount || 0;
+    const activitiesTotal = transactionResult.reservation_data?.activities_total || 0;
+    const packagesTotal = transactionResult.reservation_data?.packages_total || 0;
+    const petsPrice = transactionResult.reservation_data?.pets_price || 0;
+    const pets = transactionResult.reservation_data?.pets || 0;
+    
     return {
-      nights: 0,
-      basePrice: transactionResult.amount || 0,
-      activitiesTotal: 0,
-      packagesTotal: 0,
-      totalPrice: transactionResult.amount || 0,
+      nights,
+      basePrice: basePrice - activitiesTotal - packagesTotal - petsPrice,
+      activitiesTotal,
+      packagesTotal,
+      petsPrice,
+      pets,
+      totalPrice: basePrice,
       selectedActivities: transactionResult.reservation_data?.selected_activities || [],
       selectedPackages: transactionResult.reservation_data?.selected_packages || []
     };
