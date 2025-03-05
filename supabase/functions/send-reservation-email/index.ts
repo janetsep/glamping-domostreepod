@@ -1,6 +1,7 @@
 
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
-import { format } from "https://deno.land/std@0.168.0/datetime/format.ts";
+// Remove the incorrect import and use the correct one
+import { format as formatDate } from "https://deno.land/std@0.168.0/datetime/mod.ts";
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',

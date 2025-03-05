@@ -6,8 +6,20 @@ import { formatCurrency } from '@/lib/utils';
 import { format } from 'date-fns';
 import { es } from 'date-fns/locale';
 
+interface ReservationData {
+  unit_name?: string;
+  check_in?: string;
+  check_out?: string;
+  guests?: number;
+}
+
+// Extend TransactionResult to include reservation_data
+interface ExtendedTransactionResult extends TransactionResult {
+  reservation_data?: ReservationData;
+}
+
 interface PaymentSuccessProps {
-  transaction: TransactionResult;
+  transaction: ExtendedTransactionResult;
   onSendEmail?: () => Promise<void>;
   isEmailSending?: boolean;
   emailSent?: boolean;
