@@ -6,11 +6,12 @@ import { ReservationPanel } from "../ReservationPanel";
 import { ReservationConfirmation } from "../ReservationConfirmation";
 import { UnitDetailState } from "../hooks/useUnitDetailState";
 import { Activity, ThemedPackage } from "@/types";
+import { NavigateFunction } from "react-router-dom";
 
 interface UnitDetailLayoutProps {
   state: UnitDetailState;
   displayUnit: GlampingUnit;
-  navigate: (path: string) => void;
+  navigate: NavigateFunction;
   handleActivityToggle: (activity: Activity) => void;
   handlePackageToggle: (pkg: ThemedPackage) => void;
   handleReservation: () => Promise<void>;
