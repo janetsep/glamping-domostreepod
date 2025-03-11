@@ -1,3 +1,4 @@
+
 import { useState } from 'react';
 import { TransactionResult, confirmTransaction, updateReservationIfNeeded } from '@/services/webpay';
 import { useMutateReservationStatus } from '@/hooks/reservations/useReservationUpdate';
@@ -56,12 +57,15 @@ export const useTransactionProcessor = () => {
       console.log('Retrieved client info:', clientInfo);
 
       try {
+        // Get the SUPABASE_ANON_KEY from environment or constants
+        const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY || '';
+        
         // Call edge function to confirm payment
         const response = await fetch('https://gtxjfmvnzrsuaxryffnt.supabase.co/functions/v1/webpay-confirm', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
-            'Authorization': `Bearer ${process.env.SUPABASE_ANON_KEY}`
+            'Authorization': `Bearer ${supabaseAnonKey}`
           },
           body: JSON.stringify({
             token_ws: token,
