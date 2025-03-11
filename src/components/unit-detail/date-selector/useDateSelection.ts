@@ -61,11 +61,9 @@ export const useDateSelection = ({
         // Update the end date calendar month to match the start date month
         setEndDateCalendarMonth(date);
         
-        // Close the start calendar and open the end calendar if no end date is selected
-        // Commented out to let DatePickerPopover handle closing
-        // setStartCalendarOpen(false);
+        // Let DatePickerPopover handle the closing
         if (!endDate) {
-          setTimeout(() => setEndCalendarOpen(true), 300); // Open end calendar after a short delay
+          setTimeout(() => setEndCalendarOpen(true), 300);
         }
       } else {
         // Date not available, show message
@@ -105,7 +103,7 @@ export const useDateSelection = ({
       
       if (allDatesAvailable) {
         onEndDateChange(date);
-        setEndCalendarOpen(false);
+        // Let DatePickerPopover handle closing
       } else {
         toast({
           title: "Rango no disponible",

@@ -1,4 +1,3 @@
-
 import { format, isSameMonth, isSameDay, isToday, isBefore } from "date-fns";
 import { AvailabilityCalendarDay } from "@/types";
 
@@ -40,7 +39,7 @@ export const CalendarGrid = ({
 
   // Function to get the CSS class for each day cell
   const getDayClass = (day: AvailabilityCalendarDay) => {
-    let classes = "rounded-full w-8 h-8 flex items-center justify-center";
+    let classes = "rounded-full w-8 h-8 flex items-center justify-center cursor-pointer";
     
     if (!isSameMonth(day.date, currentMonth)) {
       classes += " text-gray-400";
@@ -66,7 +65,7 @@ export const CalendarGrid = ({
     }
     // Otherwise use availability styling
     else if (day.isAvailable) {
-      classes += " bg-green-100 text-green-800 hover:bg-green-200 cursor-pointer";
+      classes += " bg-green-100 text-green-800 hover:bg-green-200";
     } else {
       classes += " bg-red-100 text-red-800 cursor-not-allowed";
     }
@@ -86,7 +85,8 @@ export const CalendarGrid = ({
 
   const handleDateClick = (day: AvailabilityCalendarDay, e: React.MouseEvent) => {
     console.log("CalendarGrid: clicked on date", day.date);
-    // Prevent default behavior to avoid event bubbling issues
+    
+    // Detener la propagación del evento para evitar problemas con eventos anidados
     e.preventDefault();
     e.stopPropagation();
     
@@ -96,11 +96,11 @@ export const CalendarGrid = ({
   };
 
   return (
-    <div className="grid grid-cols-7 gap-1 pointer-events-auto">
+    <div className="grid grid-cols-7 gap-1">
       {calendarDays.map((day, i) => (
         <div
           key={i}
-          className="p-1 text-center pointer-events-auto"
+          className="p-1 text-center"
         >
           <div 
             className={getDayClass(day)}

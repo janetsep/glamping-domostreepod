@@ -33,9 +33,12 @@ export const DatePickerPopover = ({
   const handleSelectDate = (date: Date) => {
     console.log("DatePickerPopover: selecting date", date);
     onSelectDate(date);
-    // Don't close the popover immediately for end date selection
+    
+    // Solo cerramos el popover automáticamente para la fecha de inicio
+    // No lo cerramos para la selección de fecha final para permitir que el usuario
+    // pueda seleccionar un rango completo
     if (!checkDateRange) {
-      setTimeout(() => onOpenChange(false), 100);
+      setTimeout(() => onOpenChange(false), 200);
     }
   };
 
@@ -44,8 +47,14 @@ export const DatePickerPopover = ({
       <PopoverTrigger asChild>
         {children}
       </PopoverTrigger>
-      <PopoverContent className="w-auto p-0 pointer-events-auto" align="start">
-        <div className="p-3 pointer-events-auto">
+      <PopoverContent 
+        className="w-auto p-0" 
+        align="start"
+        side="bottom"
+        sideOffset={4}
+        avoidCollisions={true}
+      >
+        <div className="p-3">
           <AvailabilityCalendar 
             unitId={unitId}
             onSelectDate={handleSelectDate}
