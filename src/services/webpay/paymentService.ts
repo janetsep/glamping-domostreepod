@@ -2,7 +2,6 @@
 import { getWebPayInitEndpoint, createHeaders, storeReservationInfo, getClientInfoFromStorage } from './utils';
 import { toast } from 'sonner';
 
-// Service for managing WebPay payments
 export function usePayment(setIsLoading: (isLoading: boolean) => void) {
   const redirectToWebpay = async (
     reservationId: string,
@@ -22,20 +21,21 @@ export function usePayment(setIsLoading: (isLoading: boolean) => void) {
       const clientInfo = getClientInfoFromStorage();
       console.log(`Información del cliente almacenada: ${clientInfo.name}, ${clientInfo.email}, ${clientInfo.phone}`);
       
+      // Verify we have a valid amount
+      if (!amount || amount <= 0) {
+        throw new Error('El monto de la transacción no es válido');
+      }
+
       // Call WebPay initialization
       const response = await fetch(getWebPayInitEndpoint(), {
         method: 'POST',
         headers: createHeaders(),
         body: JSON.stringify({
           reservationId: reservationId,
-          amount: amount,
+          amount: Math.round(amount), // Ensure we send an integer
           origin: window.location.origin,
           unit_id: unitId,
-          client_info: {
-            name: clientInfo.name,
-            email: clientInfo.email,
-            phone: clientInfo.phone
-          }
+          client_info: clientInfo
         })
       });
       

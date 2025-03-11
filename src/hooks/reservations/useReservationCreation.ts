@@ -1,3 +1,4 @@
+
 import { useCallback } from 'react';
 import { packageData } from '@/components/packages/packageData';
 import { supabase } from '@/lib/supabase';
@@ -40,12 +41,46 @@ export const useReservationCreation = ({
         return null;
       }
 
+      // Calculate activities total
+      let activitiesTotal = 0;
+      if (selectedActivities.length > 0) {
+        const { data: activities } = await supabase
+          .from('activities')
+          .select('price')
+          .in('id', selectedActivities);
+        
+        if (activities) {
+          activitiesTotal = activities.reduce((sum, act) => sum + act.price, 0);
+        }
+      }
+
+      // Calculate packages total
+      let packagesTotal = 0;
+      if (selectedPackages.length > 0) {
+        const { data: packages } = await supabase
+          .from('themed_packages')
+          .select('price')
+          .in('id', selectedPackages);
+        
+        if (packages) {
+          packagesTotal = packages.reduce((sum, pkg) => sum + pkg.price, 0);
+        }
+      }
+
+      // Calculate final total price including activities and packages
+      const finalTotalPrice = totalPrice + activitiesTotal + packagesTotal;
+      console.log('Price breakdown:', {
+        basePrice: totalPrice,
+        activitiesTotal,
+        packagesTotal,
+        finalTotalPrice
+      });
+
       // Check if this is a packageData unit or a real database unit
       const isPackageUnit = packageData.some(pkg => pkg.id === unitId);
       let reservationData;
       
       if (isPackageUnit) {
-        // Para package units, crear un objeto temporal
         console.log('Creando reserva temporal para unidad de paquete');
         const tempId = `temp-${Date.now()}-${Math.random().toString(36).substring(2, 9)}`;
         reservationData = {
@@ -55,7 +90,7 @@ export const useReservationCreation = ({
           check_in: checkIn.toISOString(),
           check_out: checkOut.toISOString(),
           guests: guests,
-          total_price: totalPrice,
+          total_price: finalTotalPrice,
           status: 'pending',
           payment_method: paymentMethod,
           is_package_unit: true,
@@ -66,21 +101,20 @@ export const useReservationCreation = ({
           }
         };
       } else {
-        // Para unidades reales, crear la reserva en la base de datos
         console.log('Creando reserva en la base de datos');
         console.log('Datos de reserva:', {
           unit_id: unitId,
           check_in: checkIn.toISOString(),
           check_out: checkOut.toISOString(),
           guests,
-          total_price: totalPrice,
+          total_price: finalTotalPrice,
           status: 'pending',
           payment_method: paymentMethod,
           selected_activities: selectedActivities,
           selected_packages: selectedPackages
         });
         
-        // Primero intentamos con la API del cliente Supabase
+        // First attempt with Supabase client
         try {
           const { data, error } = await supabase
             .from('reservations')
@@ -89,7 +123,7 @@ export const useReservationCreation = ({
               check_in: checkIn.toISOString(),
               check_out: checkOut.toISOString(),
               guests,
-              total_price: totalPrice,
+              total_price: finalTotalPrice,
               status: 'pending',
               payment_method: paymentMethod,
               selected_activities: selectedActivities,
@@ -109,7 +143,7 @@ export const useReservationCreation = ({
           reservationData = data;
           console.log('Reserva creada con cliente Supabase:', reservationData);
         } catch (supabaseError) {
-          // Si falla, intentamos con fetch directo a la API REST
+          // Fallback to direct API call
           console.log('Intentando crear reserva con fetch directo');
           const response = await fetch(`${SUPABASE_URL}/rest/v1/reservations`, {
             method: 'POST',
@@ -124,7 +158,7 @@ export const useReservationCreation = ({
               check_in: checkIn.toISOString(),
               check_out: checkOut.toISOString(),
               guests,
-              total_price: totalPrice,
+              total_price: finalTotalPrice,
               status: 'pending',
               payment_method: paymentMethod,
               selected_activities: selectedActivities,
