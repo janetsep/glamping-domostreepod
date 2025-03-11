@@ -7,6 +7,7 @@ import { ReservationHeader } from "@/components/unit-detail/ReservationHeader";
 import { ReservationSuccess } from "@/components/unit-detail/ReservationSuccess";
 import { useMutateReservationStatus, ClientInformation } from "@/hooks/reservations/useReservationUpdate";
 import { supabase } from "@/lib/supabase";
+import { formatReservationId } from "@/lib/utils";
 
 interface ReservationConfirmationProps {
   startDate?: Date;
@@ -122,6 +123,14 @@ export const ReservationConfirmation = forwardRef<HTMLDivElement, ReservationCon
     return (
       <div ref={ref} className="space-y-6">
         <ReservationHeader />
+
+        {reservationId && (
+          <div className="bg-blue-50 p-4 rounded-md mb-4 text-center">
+            <p className="text-blue-700 font-medium mb-1">Tu código de reserva es:</p>
+            <p className="text-2xl font-bold text-blue-800">{formatReservationId(reservationId)}</p>
+            <p className="text-sm text-blue-600 mt-1">Guarda este código para futuras consultas</p>
+          </div>
+        )}
 
         <ReservationDetails
           startDate={startDate}

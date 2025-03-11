@@ -4,6 +4,7 @@ import { Button } from '@/components/ui/button';
 import { TransactionResult } from '@/services/webpay/types';
 import { ReservationDetails } from '@/components/unit-detail/ReservationDetails';
 import { format, differenceInDays } from 'date-fns';
+import { formatReservationId } from '@/lib/utils';
 
 interface ReservationConfirmedProps {
   transactionResult: TransactionResult;
@@ -86,6 +87,11 @@ const ReservationConfirmed: React.FC<ReservationConfirmedProps> = ({
       {transactionResult.reservation_id && (
         <div className="mt-8 border-t pt-6">
           <h3 className="text-xl font-semibold mb-4">Detalles completos de tu reserva</h3>
+          <div className="bg-blue-50 p-4 rounded-md mb-4 text-center">
+            <p className="text-blue-700 font-medium mb-1">Tu código de reserva es:</p>
+            <p className="text-2xl font-bold text-blue-800">{formatReservationId(transactionResult.reservation_id)}</p>
+            <p className="text-sm text-blue-600 mt-1">Guarda este código para futuras consultas</p>
+          </div>
           <ReservationDetails
             startDate={transactionResult.reservation_data?.check_in ? new Date(transactionResult.reservation_data.check_in) : undefined}
             endDate={transactionResult.reservation_data?.check_out ? new Date(transactionResult.reservation_data.check_out) : undefined}
