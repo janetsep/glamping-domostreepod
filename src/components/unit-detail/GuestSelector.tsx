@@ -45,6 +45,9 @@ export const GuestSelector = ({
     else if (adults < requiredDomos) {
       setError(`Se necesitan ${requiredDomos} domos. Debe haber al menos ${requiredDomos} adultos (uno por domo)`);
     } 
+    else if (pets > requiredDomos * 2) {
+      setError(`Solo se admiten hasta 2 mascotas por domo (máximo ${requiredDomos * 2} mascotas para ${requiredDomos} domos)`);
+    }
     else {
       setError(null);
     }
@@ -52,7 +55,7 @@ export const GuestSelector = ({
     onGuestsChange(total);
     if (onAdultsChange) onAdultsChange(adults);
     if (onChildrenChange) onChildrenChange(children);
-  }, [adults, children, onGuestsChange, onAdultsChange, onChildrenChange, maxTotalGuests, maxGuests]);
+  }, [adults, children, pets, onGuestsChange, onAdultsChange, onChildrenChange, maxTotalGuests, maxGuests]);
 
   const calculateRequiredDomos = () => {
     const total = adults + children;
