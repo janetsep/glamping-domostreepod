@@ -26,15 +26,24 @@ export const useReservationProcessing = (state: ReservationState) => {
       clearAllToasts();
       toast.dismiss();
       
+      const requiredDomos = state.requiredDomos || 1;
+      
+      // Validar que haya al menos un adulto por domo requerido
+      if ((state.adults || 0) < requiredDomos) {
+        toast.error(`Se necesitan ${requiredDomos} domos. Debe haber al menos ${requiredDomos} adultos (uno por domo).`);
+        state.setIsProcessingPayment(false);
+        return;
+      }
+      
       // Validar que si hay 16 huéspedes, al menos 4 sean adultos
       if (state.guests === 16 && (state.adults || 0) < 4) {
         toast.error("Para 16 huéspedes, se requieren al menos 4 adultos (uno por domo).");
+        state.setIsProcessingPayment(false);
         return;
       }
       
       const activityIds = state.selectedActivities.map(a => a.id);
       const packageIds = state.selectedPackages.map(p => p.id);
-      const requiredDomos = state.requiredDomos || 1;
       
       const reservations = [];
       for (let i = 0; i < requiredDomos; i++) {

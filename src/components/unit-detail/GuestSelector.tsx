@@ -37,11 +37,17 @@ export const GuestSelector = ({
 
   useEffect(() => {
     const total = adults + children;
+    const requiredDomos = Math.ceil(total / maxGuests);
     
     // Validación: Si hay 16 huéspedes, debe haber al menos 4 adultos
     if (total === maxTotalGuests && adults < 4) {
       setError("Para 16 huéspedes, se requieren al menos 4 adultos (uno por domo)");
-    } else {
+    } 
+    // Validación: Debe haber al menos un adulto por domo requerido
+    else if (adults < requiredDomos) {
+      setError(`Se necesitan ${requiredDomos} domos. Debe haber al menos ${requiredDomos} adultos (uno por domo)`);
+    } 
+    else {
       setError(null);
     }
     
@@ -49,7 +55,7 @@ export const GuestSelector = ({
     onGuestsChange(total);
     if (onAdultsChange) onAdultsChange(adults);
     if (onChildrenChange) onChildrenChange(children);
-  }, [adults, children, onGuestsChange, onAdultsChange, onChildrenChange, maxTotalGuests]);
+  }, [adults, children, onGuestsChange, onAdultsChange, onChildrenChange, maxTotalGuests, maxGuests]);
 
   // Calcular el número de domos necesarios
   const calculateRequiredDomos = () => {
