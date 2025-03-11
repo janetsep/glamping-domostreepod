@@ -1,11 +1,11 @@
+
 import { Button } from "@/components/ui/button";
 import { GlampingUnit } from "@/lib/supabase";
-import { ReservationSummary } from "@/components/unit-detail/ReservationSummary";
 import { Activity, ThemedPackage } from "@/types";
 import { AvailabilityCalendarSheet } from "./AvailabilityCalendarSheet";
-import { ReservationTabs } from "./ReservationTabs";
-import { AlternativeDates } from "@/components/unit-detail/AlternativeDates";
-import { Info } from "lucide-react";
+import { ReservationFormSection } from "./components/ReservationFormSection";
+import { ReservationActions } from "./components/ReservationActions";
+import { ReservationQuoteView } from "./components/ReservationQuoteView";
 
 interface ReservationPanelProps {
   displayUnit: GlampingUnit;
@@ -100,8 +100,8 @@ export const ReservationPanel = ({
       <div className="space-y-4">
         {!showQuote ? (
           <>
-            <ReservationTabs
-              tab={reservationTab}
+            <ReservationFormSection
+              reservationTab={reservationTab}
               onTabChange={setReservationTab}
               startDate={startDate}
               endDate={endDate}
@@ -120,82 +120,38 @@ export const ReservationPanel = ({
               onPackageToggle={onPackageToggle}
               packagesTotal={packagesTotal}
               unitId={displayUnit.id}
+              isPartialAvailability={isPartialAvailability}
+              availableDomos={availableDomos}
+              requiredDomos={requiredDomos}
+              alternativeDates={alternativeDates}
+              onAlternativeDateSelect={handleAlternativeDateSelect}
             />
 
-            <div className="mt-4 text-sm">
-              {isPartialAvailability && isAvailable === false ? (
-                <div className="bg-amber-50 p-3 rounded-md border border-amber-200">
-                  <p className="font-medium text-amber-800 flex items-center gap-1.5">
-                    <Info className="h-4 w-4" />
-                    Disponibilidad limitada
-                  </p>
-                  <p className="text-amber-700 mt-1">
-                    Solo tenemos <strong>{availableDomos}</strong> domos disponibles para las fechas seleccionadas, pero tu reserva requiere <strong>{requiredDomos}</strong> domos.
-                  </p>
-                </div>
-              ) : (
-                <div className="bg-blue-50 p-3 rounded-md border border-blue-100">
-                  <p className="font-medium text-blue-800">Información de domos</p>
-                  <p className="text-blue-700 mt-1">
-                    Se necesitarán <strong>{requiredDomos}</strong> domos para tu reserva.
-                  </p>
-                </div>
-              )}
-            </div>
-            
-            {isAvailable === false && alternativeDates.length > 0 && (
-              <AlternativeDates 
-                alternativeDates={alternativeDates}
-                onSelectDate={handleAlternativeDateSelect}
-                requiredDomos={requiredDomos}
-              />
-            )}
-
-            <div className="mt-4 text-sm text-gray-600 p-3 bg-amber-50 border border-amber-100 rounded">
-              <p className="font-medium text-amber-800 mb-1">Política de reserva</p>
-              <p>Pago total por adelantado para confirmar tu reserva. Check-in desde las 15:00, check-out hasta las 12:00.</p>
-            </div>
-
-            <Button 
-              className="w-full mt-2" 
-              size="lg"
-              onClick={onReservation}
-              disabled={!startDate || !endDate || (isAvailable === false && !isPartialAvailability)}
-            >
-              {isAvailable === true ? 'Cotizar estadía' : 'Verificar disponibilidad'}
-            </Button>
-            
-            {(selectedActivities.length > 0 || selectedPackages.length > 0) && (
-              <div className="text-sm text-center mt-2 text-primary">
-                Has seleccionado {selectedActivities.length} actividades y {selectedPackages.length} paquetes.
-              </div>
-            )}
-          </>
-        ) : quote && (
-          <>
-            <ReservationSummary
-              quote={{
-                ...quote,
-                totalPrice: getUpdatedQuoteTotal(),
-                requiredDomos: requiredDomos
-              }}
-              isAvailable={isAvailable || false}
-              isLoading={isProcessingPayment}
-              onReserve={onNewQuote}
-              onConfirm={onConfirmReservation}
-              buttonText={isAvailable ? "Aceptar cotización" : "Nueva cotización"}
+            <ReservationActions
+              onReservation={onReservation}
+              isAvailable={isAvailable}
+              startDate={startDate}
+              endDate={endDate}
               selectedActivities={selectedActivities}
               selectedPackages={selectedPackages}
-              hasSelectedExtras={selectedActivities.length > 0 || selectedPackages.length > 0}
+              isPartialAvailability={isPartialAvailability}
             />
-            <div className="text-sm text-muted-foreground mt-4">
-              <p>Fechas seleccionadas:</p>
-              <p>Entrada: {startDate?.toLocaleDateString()}</p>
-              <p>Salida: {endDate?.toLocaleDateString()}</p>
-              <p>Huéspedes: {guests}</p>
-              <p>Domos necesarios: {requiredDomos}</p>
-            </div>
           </>
+        ) : quote && (
+          <ReservationQuoteView
+            quote={quote}
+            isAvailable={isAvailable || false}
+            onNewQuote={onNewQuote}
+            onConfirmReservation={onConfirmReservation}
+            isProcessingPayment={isProcessingPayment}
+            selectedActivities={selectedActivities}
+            selectedPackages={selectedPackages}
+            getUpdatedQuoteTotal={getUpdatedQuoteTotal}
+            requiredDomos={requiredDomos}
+            startDate={startDate}
+            endDate={endDate}
+            guests={guests}
+          />
         )}
       </div>
     </>
