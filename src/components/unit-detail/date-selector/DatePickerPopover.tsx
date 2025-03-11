@@ -12,7 +12,7 @@ interface DatePickerPopoverProps {
   onOpenChange: (open: boolean) => void;
   children: ReactNode;
   unitId: string;
-  onSelectDate: (date: Date) => void;
+  onSelectDate: (date: Date | undefined) => void;
   selectedStartDate?: Date | null;
   selectedEndDate?: Date | null;
   checkDateRange?: boolean;
@@ -35,7 +35,7 @@ export const DatePickerPopover = ({
       <PopoverTrigger asChild>
         {children}
       </PopoverTrigger>
-      <PopoverContent className="w-auto p-0" align="start">
+      <PopoverContent className="w-auto p-0 pointer-events-auto" align="start">
         <div className="p-3">
           <AvailabilityCalendar 
             unitId={unitId}

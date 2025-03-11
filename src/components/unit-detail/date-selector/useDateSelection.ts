@@ -35,10 +35,10 @@ export const useDateSelection = ({
       const dayEnd = new Date(date);
       dayEnd.setHours(23, 59, 59, 999);
       
-      const { isAvailable } = await checkGeneralAvailability(date, dayEnd)
+      const result = await checkGeneralAvailability(date, dayEnd)
         .catch(() => ({ isAvailable: false, availableUnits: 0, totalUnits: 4 }));
       
-      return isAvailable;
+      return result.isAvailable;
     } catch (error) {
       console.error("Error checking date availability:", error);
       return false;

@@ -128,13 +128,15 @@ export const AvailabilityCalendar = ({
         <>
           <CalendarWeekDays />
           
-          <CalendarGrid 
-            calendarDays={calendarDays}
-            currentMonth={currentMonth}
-            onDateClick={handleDateClick}
-            selectedStartDate={selectedStartDate}
-            selectedEndDate={selectedEndDate}
-          />
+          <div className="pointer-events-auto">
+            <CalendarGrid 
+              calendarDays={calendarDays}
+              currentMonth={currentMonth}
+              onDateClick={handleDateClick}
+              selectedStartDate={selectedStartDate}
+              selectedEndDate={selectedEndDate}
+            />
+          </div>
           
           <CalendarLegend />
         </>

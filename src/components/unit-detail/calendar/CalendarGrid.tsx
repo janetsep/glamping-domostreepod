@@ -85,12 +85,12 @@ export const CalendarGrid = ({
   };
 
   return (
-    <div className="grid grid-cols-7 gap-1">
+    <div className="grid grid-cols-7 gap-1 pointer-events-auto">
       {calendarDays.map((day, i) => (
         <div
           key={i}
           onClick={() => isDateSelectable(day) && onDateClick(day)}
-          className="p-1 text-center"
+          className="p-1 text-center pointer-events-auto"
         >
           <div className={getDayClass(day)}>
             {format(day.date, "d")}
