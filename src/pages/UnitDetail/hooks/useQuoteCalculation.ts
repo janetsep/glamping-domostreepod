@@ -1,9 +1,9 @@
 
 import { clearAllToasts } from "@/hooks/use-toast";
 import { toast } from "sonner";
-import { QuoteState } from "./useQuoteBase";
+import { UnitDetailState } from "./useUnitDetailState";
 
-export const useQuoteCalculation = (state: QuoteState) => {
+export const useQuoteCalculation = (state: UnitDetailState) => {
   const checkAvailabilityAndQuote = async () => {
     if (!state.startDate || !state.endDate || !state.displayUnit) return;
 

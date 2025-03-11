@@ -6,41 +6,9 @@ import { useExtrasManagement } from "./useExtrasManagement";
 import { useAvailabilityCheck } from "./useAvailabilityCheck";
 import { useQuoteManagement } from "./useQuoteManagement";
 import { useReservationProcessing } from "./useReservationProcessing";
+import { UnitDetailState } from "./useUnitDetailState";
 
-type ReservationState = {
-  startDate?: Date;
-  endDate?: Date;
-  displayUnit: any;
-  guests: number;
-  adults?: number;
-  children?: number;
-  requiredDomos?: number;
-  isAvailable: boolean | null;
-  setIsAvailable: (isAvailable: boolean) => void;
-  checkAvailability: (unitId: string, checkIn: Date, checkOut: Date) => Promise<boolean>;
-  calculateQuote: any;
-  setQuote: (quote: any) => void;
-  setShowQuote: (show: boolean) => void;
-  selectedActivities: Activity[];
-  setSelectedActivities: (
-    value: Activity[] | ((prev: Activity[]) => Activity[])
-  ) => void;
-  selectedPackages: ThemedPackage[];
-  setSelectedPackages: (
-    value: ThemedPackage[] | ((prev: ThemedPackage[]) => ThemedPackage[])
-  ) => void;
-  activitiesTotal: number;
-  packagesTotal: number;
-  checkedAvailability: boolean;
-  setCheckedAvailability: (checked: boolean) => void;
-  setReservationTab: (tab: string) => void;
-  createReservation: any;
-  redirectToWebpay: any;
-  setIsProcessingPayment: (isProcessing: boolean) => void;
-  quote: any;
-};
-
-export const useReservationActions = (state: ReservationState) => {
+export const useReservationActions = (state: UnitDetailState) => {
   // Use all the separate hooks
   const { handleActivityToggle, handlePackageToggle } = useExtrasManagement(state);
   const { checkDatesAvailability } = useAvailabilityCheck(state);

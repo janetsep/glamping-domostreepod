@@ -1,16 +1,8 @@
 
 import { Activity, ThemedPackage } from "@/types";
+import { UnitDetailState } from "./useUnitDetailState";
 
-type ExtrasManagementState = {
-  setSelectedActivities: (
-    value: Activity[] | ((prev: Activity[]) => Activity[])
-  ) => void;
-  setSelectedPackages: (
-    value: ThemedPackage[] | ((prev: ThemedPackage[]) => ThemedPackage[])
-  ) => void;
-};
-
-export const useExtrasManagement = (state: ExtrasManagementState) => {
+export const useExtrasManagement = (state: UnitDetailState) => {
   const handleActivityToggle = (activity: Activity) => {
     state.setSelectedActivities((prev: Activity[]) => {
       const isSelected = prev.some((a) => a.id === activity.id);

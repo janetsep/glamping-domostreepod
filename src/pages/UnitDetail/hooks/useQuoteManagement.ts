@@ -1,10 +1,10 @@
 
-import { Activity, ThemedPackage } from "@/types";
-import { useQuoteBase, QuoteState } from "./useQuoteBase";
+import { UnitDetailState } from "./useUnitDetailState";
+import { useQuoteBase } from "./useQuoteBase";
 import { useQuoteNavigation } from "./useQuoteNavigation";
 import { useQuoteCalculation } from "./useQuoteCalculation";
 
-export const useQuoteManagement = (state: QuoteState) => {
+export const useQuoteManagement = (state: UnitDetailState) => {
   const { getUpdatedQuoteTotal } = useQuoteBase(state);
   const { handleNewQuote } = useQuoteNavigation(state);
   const { checkAvailabilityAndQuote } = useQuoteCalculation(state);

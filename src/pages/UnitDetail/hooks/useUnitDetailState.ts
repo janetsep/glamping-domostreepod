@@ -6,7 +6,68 @@ import { useToast } from "@/components/ui/use-toast";
 import { packageData } from "@/components/packages/packageData";
 import { Activity, ThemedPackage } from "@/types";
 
-export const useUnitDetailState = (unitId: string | undefined) => {
+export interface UnitDetailState {
+  startDate?: Date;
+  setStartDate: (date: Date | undefined) => void;
+  endDate?: Date;
+  setEndDate: (date: Date | undefined) => void;
+  guests: number;
+  setGuests: (guests: number) => void;
+  adults: number;
+  setAdults: (adults: number) => void;
+  children: number;
+  setChildren: (children: number) => void;
+  requiredDomos: number;
+  checkAvailability: any;
+  calculateQuote: any;
+  createReservation: any;
+  redirectToWebpay: any;
+  toast: any;
+  quote: any;
+  setQuote: (quote: any) => void;
+  isAvailable: boolean | null;
+  setIsAvailable: (isAvailable: boolean) => void;
+  showQuote: boolean;
+  setShowQuote: (showQuote: boolean) => void;
+  isReservationConfirmed: boolean;
+  setIsReservationConfirmed: (isConfirmed: boolean) => void;
+  displayUnit: GlampingUnit | null;
+  isProcessingPayment: boolean;
+  setIsProcessingPayment: (isProcessing: boolean) => void;
+  paymentDetails: any;
+  setPaymentDetails: (details: any) => void;
+  checkedAvailability: boolean;
+  setCheckedAvailability: (checked: boolean) => void;
+  selectedActivities: Activity[];
+  setSelectedActivities: React.Dispatch<React.SetStateAction<Activity[]>>;
+  selectedPackages: ThemedPackage[];
+  setSelectedPackages: React.Dispatch<React.SetStateAction<ThemedPackage[]>>;
+  activitiesTotal: number;
+  packagesTotal: number;
+  reservationTab: string;
+  setReservationTab: (tab: string) => void;
+  confirmedReservationId: string | null;
+  setConfirmedReservationId: (id: string | null) => void;
+  clientInformation: {
+    name: string;
+    email: string;
+    phone: string;
+  };
+  setClientInformation: React.Dispatch<React.SetStateAction<{
+    name: string;
+    email: string;
+    phone: string;
+  }>>;
+  confirmationRef: React.RefObject<HTMLDivElement>;
+  isPartialAvailability: boolean;
+  setPartialAvailability: (isPartial: boolean) => void;
+  availableDomos: number;
+  setAvailableDomos: (availableDomos: number) => void;
+  alternativeDates: {startDate: Date, endDate: Date}[];
+  setAlternativeDates: React.Dispatch<React.SetStateAction<{startDate: Date, endDate: Date}[]>>;
+}
+
+export const useUnitDetailState = (unitId: string | undefined): UnitDetailState => {
   const [startDate, setStartDate] = useState<Date>();
   const [endDate, setEndDate] = useState<Date>();
   const [guests, setGuests] = useState<number>(1);
@@ -195,5 +256,3 @@ export const useUnitDetailState = (unitId: string | undefined) => {
     setAlternativeDates
   };
 };
-
-
