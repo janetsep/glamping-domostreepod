@@ -9,6 +9,7 @@ type AvailabilityState = {
   setIsAvailable: (isAvailable: boolean) => void;
   setCheckedAvailability: (checked: boolean) => void;
   requiredDomos?: number;
+  checkedAvailability: boolean;
 };
 
 export const useAvailabilityCheck = (state: AvailabilityState) => {
