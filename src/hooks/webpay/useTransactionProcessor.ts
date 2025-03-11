@@ -78,6 +78,12 @@ export const useTransactionProcessor = () => {
         if (!response.ok) {
           const errorData = await response.json();
           console.error('Error response from edge function:', errorData);
+          
+          // Check if transaction was aborted
+          if (errorData.error?.includes('Transaction has an invalid finished state: aborted')) {
+            throw new Error('La transacción fue cancelada por el usuario o el banco');
+          }
+          
           throw new Error(errorData.error || `Error HTTP: ${response.status}`);
         }
 
@@ -144,13 +150,22 @@ export const useTransactionProcessor = () => {
     } catch (err) {
       console.error('Final error in processTransaction:', err);
       const errorMessage = err instanceof Error ? err.message : 'Error desconocido';
+      
+      // Set a more user-friendly error message
+      let userErrorMessage = 'Error en la transacción';
+      if (errorMessage.includes('cancelada por el usuario')) {
+        userErrorMessage = 'La transacción fue cancelada';
+      } else if (errorMessage.includes('422')) {
+        userErrorMessage = 'La transacción no pudo ser completada';
+      }
+      
       setState(prev => ({ 
         ...prev, 
         isLoading: false, 
         error: errorMessage 
       }));
       
-      toast.error("Error en la transacción", {
+      toast.error(userErrorMessage, {
         description: errorMessage,
       });
       
