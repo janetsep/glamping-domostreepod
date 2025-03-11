@@ -154,6 +154,7 @@ export type Database = {
           payment_details: Json | null
           payment_method: string
           pets: number | null
+          reservation_code: string | null
           selected_activities: string[] | null
           selected_packages: string[] | null
           services: string[] | null
@@ -175,6 +176,7 @@ export type Database = {
           payment_details?: Json | null
           payment_method?: string
           pets?: number | null
+          reservation_code?: string | null
           selected_activities?: string[] | null
           selected_packages?: string[] | null
           services?: string[] | null
@@ -196,6 +198,7 @@ export type Database = {
           payment_details?: Json | null
           payment_method?: string
           pets?: number | null
+          reservation_code?: string | null
           selected_activities?: string[] | null
           selected_packages?: string[] | null
           services?: string[] | null

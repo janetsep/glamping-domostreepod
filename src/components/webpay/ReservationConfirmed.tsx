@@ -89,7 +89,10 @@ const ReservationConfirmed: React.FC<ReservationConfirmedProps> = ({
           <h3 className="text-xl font-semibold mb-4">Detalles completos de tu reserva</h3>
           <div className="bg-blue-50 p-4 rounded-md mb-4 text-center">
             <p className="text-blue-700 font-medium mb-1">Tu código de reserva es:</p>
-            <p className="text-2xl font-bold text-blue-800">{formatReservationId(transactionResult.reservation_id)}</p>
+            <p className="text-2xl font-bold text-blue-800">
+              {transactionResult.reservation_data?.reservation_code || 
+               formatReservationId(transactionResult.reservation_id)}
+            </p>
             <p className="text-sm text-blue-600 mt-1">Guarda este código para futuras consultas</p>
           </div>
           <ReservationDetails

@@ -11,6 +11,7 @@ interface ReservationData {
   check_in?: string;
   check_out?: string;
   guests?: number;
+  reservation_code?: string;
 }
 
 // Extend TransactionResult to include reservation_data
@@ -48,7 +49,10 @@ const PaymentSuccess: React.FC<PaymentSuccessProps> = ({
           <div className="mt-4 pt-4 border-t border-green-200">
             <h3 className="font-semibold text-green-800 text-lg mb-3">Detalles de la reserva</h3>
             <div className="space-y-2 text-green-700">
-              <p><span className="font-semibold">Código de reserva:</span> {formatReservationId(transaction.reservation_id)}</p>
+              <p><span className="font-semibold">Código de reserva:</span> {
+                transaction.reservation_data?.reservation_code || 
+                formatReservationId(transaction.reservation_id)
+              }</p>
               {transaction.reservation_data && (
                 <>
                   <p><span className="font-semibold">Unidad:</span> {transaction.reservation_data.unit_name || 'No disponible'}</p>

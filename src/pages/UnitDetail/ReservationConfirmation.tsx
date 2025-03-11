@@ -24,6 +24,7 @@ export const ReservationConfirmation = forwardRef<HTMLDivElement, ReservationCon
     const { toast } = useToast();
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [clientInfoSubmitted, setClientInfoSubmitted] = useState(false);
+    const [reservationCode, setReservationCode] = useState<string | null>(null);
     const [clientInfo, setClientInfo] = useState<ClientInformation>({
       name: localStorage.getItem('client_name') || '',
       email: localStorage.getItem('client_email') || '',
@@ -38,7 +39,7 @@ export const ReservationConfirmation = forwardRef<HTMLDivElement, ReservationCon
           try {
             const { data } = await supabase
               .from('reservations')
-              .select('client_name, client_email, client_phone')
+              .select('client_name, client_email, client_phone, reservation_code')
               .eq('id', reservationId)
               .single();
               
@@ -51,6 +52,11 @@ export const ReservationConfirmation = forwardRef<HTMLDivElement, ReservationCon
               };
               
               setClientInfo(updatedInfo);
+              
+              // Set reservation code if available
+              if (data.reservation_code) {
+                setReservationCode(data.reservation_code);
+              }
               
               // If we have complete client info, mark as submitted
               if (data.client_name && data.client_email && data.client_phone) {
@@ -100,11 +106,16 @@ export const ReservationConfirmation = forwardRef<HTMLDivElement, ReservationCon
           // Verificar que la información se haya guardado correctamente
           const { data } = await supabase
             .from('reservations')
-            .select('client_name, client_email, client_phone')
+            .select('client_name, client_email, client_phone, reservation_code')
             .eq('id', reservationId)
             .single();
             
           console.log('Información del cliente guardada en base de datos:', data);
+          
+          // Actualizar el código de reservación si está disponible
+          if (data?.reservation_code) {
+            setReservationCode(data.reservation_code);
+          }
         } else {
           throw new Error("Error al guardar información del cliente");
         }
@@ -127,7 +138,7 @@ export const ReservationConfirmation = forwardRef<HTMLDivElement, ReservationCon
         {reservationId && (
           <div className="bg-blue-50 p-4 rounded-md mb-4 text-center">
             <p className="text-blue-700 font-medium mb-1">Tu código de reserva es:</p>
-            <p className="text-2xl font-bold text-blue-800">{formatReservationId(reservationId)}</p>
+            <p className="text-2xl font-bold text-blue-800">{reservationCode || formatReservationId(reservationId)}</p>
             <p className="text-sm text-blue-600 mt-1">Guarda este código para futuras consultas</p>
           </div>
         )}

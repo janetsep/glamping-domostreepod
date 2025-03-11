@@ -78,7 +78,8 @@ export async function processTransaction(
                   selected_activities: fullReservationData.selected_activities,
                   selected_packages: fullReservationData.selected_packages,
                   activities_total: 0, // Calcular si es necesario
-                  packages_total: 0 // Calcular si es necesario
+                  packages_total: 0, // Calcular si es necesario
+                  reservation_code: fullReservationData.reservation_code
                 };
               }
             }
