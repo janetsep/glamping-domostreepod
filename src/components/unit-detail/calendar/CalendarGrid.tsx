@@ -1,3 +1,4 @@
+
 import { format, isSameMonth, isSameDay, isToday, isBefore } from "date-fns";
 import { AvailabilityCalendarDay } from "@/types";
 
@@ -39,7 +40,7 @@ export const CalendarGrid = ({
 
   // Function to get the CSS class for each day cell
   const getDayClass = (day: AvailabilityCalendarDay) => {
-    let classes = "rounded-full w-8 h-8 flex items-center justify-center cursor-pointer";
+    let classes = "rounded-full w-8 h-8 flex items-center justify-center cursor-pointer calendar-day-cell";
     
     if (!isSameMonth(day.date, currentMonth)) {
       classes += " text-gray-400";
@@ -86,7 +87,7 @@ export const CalendarGrid = ({
   const handleDateClick = (day: AvailabilityCalendarDay, e: React.MouseEvent) => {
     console.log("CalendarGrid: clicked on date", day.date);
     
-    // Detener la propagación del evento para evitar problemas con eventos anidados
+    // Stop propagation to prevent issues with nested events
     e.preventDefault();
     e.stopPropagation();
     

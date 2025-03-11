@@ -16,7 +16,7 @@ interface AvailabilityCalendarProps {
   checkDateRange?: boolean;
   selectedStartDate?: Date | null;
   selectedEndDate?: Date | null;
-  initialMonth?: Date; // Add this prop to control the initial month displayed
+  initialMonth?: Date;
 }
 
 export const AvailabilityCalendar = ({ 
@@ -121,7 +121,7 @@ export const AvailabilityCalendar = ({
   };
 
   return (
-    <div className="mt-4 pointer-events-auto">
+    <div className="mt-4 pointer-events-auto" onClick={e => e.stopPropagation()}>
       <CalendarHeader 
         currentMonth={currentMonth}
         onPreviousMonth={handlePreviousMonth}
@@ -135,7 +135,7 @@ export const AvailabilityCalendar = ({
         <>
           <CalendarWeekDays />
           
-          <div className="pointer-events-auto">
+          <div className="pointer-events-auto" onClick={e => e.stopPropagation()}>
             <CalendarGrid 
               calendarDays={calendarDays}
               currentMonth={currentMonth}

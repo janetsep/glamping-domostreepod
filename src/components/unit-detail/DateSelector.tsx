@@ -37,6 +37,7 @@ export const DateSelector = ({
 
   // Debug logging
   console.log("DateSelector rendering with startDate:", startDate, "endDate:", endDate);
+  console.log("Calendar states - startOpen:", startCalendarOpen, "endOpen:", endCalendarOpen);
 
   return (
     <div className="space-y-2 pointer-events-auto">

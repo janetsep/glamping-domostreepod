@@ -29,15 +29,25 @@ export const useDateSelection = ({
     }
   }, [startDate]);
 
+  // Debug open state
+  useEffect(() => {
+    console.log("Calendar open states - startOpen:", startCalendarOpen, "endOpen:", endCalendarOpen);
+  }, [startCalendarOpen, endCalendarOpen]);
+
   // Check availability for a specific date
   const checkDateAvailability = useCallback(async (date: Date): Promise<boolean> => {
     try {
+      console.log("Checking availability for date:", date);
       const dayEnd = new Date(date);
       dayEnd.setHours(23, 59, 59, 999);
       
       const result = await checkGeneralAvailability(date, dayEnd)
-        .catch(() => ({ isAvailable: false, availableUnits: 0, totalUnits: 4 }));
+        .catch((err) => {
+          console.error("Error checking availability:", err);
+          return { isAvailable: false, availableUnits: 0, totalUnits: 4 };
+        });
       
+      console.log("Availability result:", result);
       return result.isAvailable;
     } catch (error) {
       console.error("Error checking date availability:", error);
@@ -61,9 +71,14 @@ export const useDateSelection = ({
         // Update the end date calendar month to match the start date month
         setEndDateCalendarMonth(date);
         
-        // Let DatePickerPopover handle the closing
+        // Automatically open end date calendar if end date is not selected
         if (!endDate) {
-          setTimeout(() => setEndCalendarOpen(true), 300);
+          setTimeout(() => {
+            setStartCalendarOpen(false);
+            setTimeout(() => setEndCalendarOpen(true), 100);
+          }, 300);
+        } else {
+          setTimeout(() => setStartCalendarOpen(false), 300);
         }
       } else {
         // Date not available, show message
@@ -103,7 +118,7 @@ export const useDateSelection = ({
       
       if (allDatesAvailable) {
         onEndDateChange(date);
-        // Let DatePickerPopover handle closing
+        setTimeout(() => setEndCalendarOpen(false), 300);
       } else {
         toast({
           title: "Rango no disponible",
