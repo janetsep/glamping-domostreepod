@@ -1,0 +1,100 @@
+
+import { useState, useEffect } from "react";
+import { 
+  startOfMonth, 
+  endOfMonth, 
+  eachDayOfInterval, 
+  isSameDay,
+  addDays,
+  format
+} from "date-fns";
+import { AvailabilityCalendarDay } from "@/types";
+
+const TOTAL_UNITS = 4; // Total number of domos available
+
+/**
+ * Hook to calculate availability based on reservations
+ */
+export const useAvailabilityCalculator = (
+  currentMonth: Date, 
+  selectedDate: Date | null,
+  reservations: any[]
+) => {
+  const [calendarDays, setCalendarDays] = useState<AvailabilityCalendarDay[]>([]);
+  const [isCalculating, setIsCalculating] = useState(false);
+
+  // Generate calendar data with availability
+  useEffect(() => {
+    const calculateAvailability = async () => {
+      const start = startOfMonth(currentMonth);
+      const end = endOfMonth(currentMonth);
+      setIsCalculating(true);
+      
+      try {
+        const availabilityData = await generateAvailabilityData(start, end);
+        setCalendarDays(availabilityData);
+      } catch (error) {
+        console.error("Error calculating availability:", error);
+      } finally {
+        setIsCalculating(false);
+      }
+    };
+    
+    calculateAvailability();
+  }, [currentMonth, selectedDate, reservations]);
+
+  const generateAvailabilityData = async (start: Date, end: Date) => {
+    try {
+      console.log(`Generating availability data for ${format(start, 'yyyy-MM-dd')} to ${format(end, 'yyyy-MM-dd')}`);
+      
+      // Get all days in month
+      const daysInMonth = eachDayOfInterval({ start, end });
+      
+      // Check availability for each day
+      const availabilityMap = await Promise.all(
+        daysInMonth.map(async (day) => {
+          // Set the day to midnight for consistent comparison
+          const dayStart = new Date(day);
+          dayStart.setHours(0, 0, 0, 0);
+          
+          const dayEnd = new Date(day);
+          dayEnd.setHours(23, 59, 59, 999);
+          
+          // Count reservations that overlap with this day
+          const reservationsOnDay = reservations.filter(reservation => {
+            const checkIn = new Date(reservation.check_in);
+            const checkOut = new Date(reservation.check_out);
+            
+            return (
+              (checkIn <= dayEnd && checkOut >= dayStart)
+            );
+          });
+          
+          // Calculate available units (total units - reserved units)
+          const reservedUnits = reservationsOnDay.length;
+          const availableUnits = Math.max(0, TOTAL_UNITS - reservedUnits);
+          
+          console.log(`Day ${format(day, 'yyyy-MM-dd')}: ${reservedUnits} reserved, ${availableUnits} available`);
+          
+          return {
+            date: day,
+            isAvailable: availableUnits > 0,
+            isSelected: selectedDate ? isSameDay(day, selectedDate) : false,
+            availableUnits,
+            totalUnits: TOTAL_UNITS
+          };
+        })
+      );
+      
+      return availabilityMap;
+    } catch (error) {
+      console.error("Error in generateAvailabilityData:", error);
+      return [];
+    }
+  };
+
+  return { 
+    calendarDays, 
+    isCalculating
+  };
+};
