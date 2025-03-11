@@ -23,6 +23,7 @@ export interface TransactionResult {
     packages_total?: number;
     selected_activities?: any[];
     selected_packages?: any[];
+    reservation_code?: string;
   };
 }
 
