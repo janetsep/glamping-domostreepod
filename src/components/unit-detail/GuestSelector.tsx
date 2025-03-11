@@ -7,7 +7,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { AlertCircle } from "lucide-react";
@@ -31,19 +30,18 @@ export const GuestSelector = ({
 }: GuestSelectorProps) => {
   const [adults, setAdults] = useState<number>(guests > 0 ? 1 : 0);
   const [children, setChildren] = useState<number>(guests > 1 ? guests - 1 : 0);
+  const [pets, setPets] = useState<number>(0);
   const [error, setError] = useState<string | null>(null);
 
-  const maxTotalGuests = maxDomos * maxGuests; // 4 domos x 4 personas = 16 máximo
+  const maxTotalGuests = maxDomos * maxGuests;
 
   useEffect(() => {
     const total = adults + children;
     const requiredDomos = Math.ceil(total / maxGuests);
     
-    // Validación: Si hay 16 huéspedes, debe haber al menos 4 adultos
     if (total === maxTotalGuests && adults < 4) {
       setError("Para 16 huéspedes, se requieren al menos 4 adultos (uno por domo)");
     } 
-    // Validación: Debe haber al menos un adulto por domo requerido
     else if (adults < requiredDomos) {
       setError(`Se necesitan ${requiredDomos} domos. Debe haber al menos ${requiredDomos} adultos (uno por domo)`);
     } 
@@ -51,13 +49,11 @@ export const GuestSelector = ({
       setError(null);
     }
     
-    // Notificar cambios al componente padre
     onGuestsChange(total);
     if (onAdultsChange) onAdultsChange(adults);
     if (onChildrenChange) onChildrenChange(children);
   }, [adults, children, onGuestsChange, onAdultsChange, onChildrenChange, maxTotalGuests, maxGuests]);
 
-  // Calcular el número de domos necesarios
   const calculateRequiredDomos = () => {
     const total = adults + children;
     return Math.ceil(total / maxGuests);
@@ -65,7 +61,7 @@ export const GuestSelector = ({
 
   return (
     <div className="space-y-4">
-      <div className="grid grid-cols-2 gap-4">
+      <div className="grid grid-cols-3 gap-4">
         <div className="space-y-2">
           <Label htmlFor="adults">Adultos</Label>
           <Select
@@ -113,6 +109,25 @@ export const GuestSelector = ({
             </SelectContent>
           </Select>
         </div>
+
+        <div className="space-y-2">
+          <Label htmlFor="pets">Mascotas</Label>
+          <Select
+            value={pets.toString()}
+            onValueChange={(value) => setPets(parseInt(value))}
+          >
+            <SelectTrigger id="pets">
+              <SelectValue placeholder="Número de mascotas" />
+            </SelectTrigger>
+            <SelectContent>
+              {Array.from({ length: 9 }, (_, i) => i).map((num) => (
+                <SelectItem key={`pet-${num}`} value={num.toString()}>
+                  {num} {num === 1 ? "mascota" : "mascotas"}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
       </div>
 
       {error && (
@@ -123,7 +138,11 @@ export const GuestSelector = ({
       )}
 
       <div className="bg-primary/10 p-3 rounded-md">
-        <p className="text-sm font-medium">Domos necesarios: {calculateRequiredDomos()} de {maxDomos}</p>
+        <p className="text-sm font-medium">Domos necesarios: {calculateRequiredDomos()}</p>
+        <p className="text-sm text-muted-foreground mt-1">
+          Huéspedes totales: {adults + children} personas
+          {pets > 0 && ` y ${pets} ${pets === 1 ? 'mascota' : 'mascotas'}`}
+        </p>
         <p className="text-sm text-muted-foreground mt-1">
           Cada domo aloja máximo {maxGuests} personas y hasta 2 mascotas pequeñas.
         </p>
@@ -131,3 +150,4 @@ export const GuestSelector = ({
     </div>
   );
 };
+
