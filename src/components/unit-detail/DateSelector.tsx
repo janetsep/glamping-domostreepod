@@ -37,6 +37,15 @@ export const DateSelector = ({
 }: DateSelectorProps) => {
   const [startCalendarOpen, setStartCalendarOpen] = useState(false);
   const [endCalendarOpen, setEndCalendarOpen] = useState(false);
+  // Add a new state to track the month that should be displayed in the exit date calendar
+  const [endDateCalendarMonth, setEndDateCalendarMonth] = useState<Date>(new Date());
+
+  // Update the end date calendar month whenever the start date changes
+  useEffect(() => {
+    if (startDate) {
+      setEndDateCalendarMonth(startDate);
+    }
+  }, [startDate]);
 
   // Check availability for a specific date
   const checkDateAvailability = useCallback(async (date: Date): Promise<boolean> => {
@@ -65,6 +74,9 @@ export const DateSelector = ({
         if (endDate && endDate <= date) {
           onEndDateChange(undefined);
         }
+        
+        // Update the end date calendar month to match the start date month
+        setEndDateCalendarMonth(date);
         
         // Close the start calendar and open the end calendar if no end date is selected
         setStartCalendarOpen(false);
@@ -193,6 +205,7 @@ export const DateSelector = ({
                 checkDateRange={true}
                 selectedStartDate={startDate}
                 selectedEndDate={endDate}
+                initialMonth={endDateCalendarMonth} // Pass the start date month to the end date calendar
               />
             </div>
           </PopoverContent>

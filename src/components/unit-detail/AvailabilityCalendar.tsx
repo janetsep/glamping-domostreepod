@@ -1,5 +1,5 @@
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { addMonths, subMonths, isToday, isBefore } from "date-fns";
 import { useCalendarAvailability } from "@/hooks/useCalendarAvailability";
 import { AvailabilityCalendarDay } from "@/types";
@@ -16,6 +16,7 @@ interface AvailabilityCalendarProps {
   checkDateRange?: boolean;
   selectedStartDate?: Date | null;
   selectedEndDate?: Date | null;
+  initialMonth?: Date; // Add this prop to control the initial month displayed
 }
 
 export const AvailabilityCalendar = ({ 
@@ -23,11 +24,20 @@ export const AvailabilityCalendar = ({
   onSelectDate, 
   checkDateRange = false,
   selectedStartDate = null,
-  selectedEndDate = null 
+  selectedEndDate = null,
+  initialMonth 
 }: AvailabilityCalendarProps) => {
-  const [currentMonth, setCurrentMonth] = useState(new Date());
+  // Use initialMonth if provided, otherwise use current date
+  const [currentMonth, setCurrentMonth] = useState(initialMonth || new Date());
   const [selectedDate, setSelectedDate] = useState<Date | null>(selectedStartDate);
   
+  // Update current month if initialMonth changes
+  useEffect(() => {
+    if (initialMonth) {
+      setCurrentMonth(initialMonth);
+    }
+  }, [initialMonth]);
+
   const { calendarDays, isLoading, isDateAvailable, isDateRangeAvailable } = useCalendarAvailability(unitId, currentMonth, selectedDate);
 
   const handleDateClick = async (day: AvailabilityCalendarDay) => {

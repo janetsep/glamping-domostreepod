@@ -1,43 +1,54 @@
 
-import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
-import { CalendarRange } from "lucide-react";
+import { Calendar, CalendarDays } from "lucide-react";
+import {
+  Sheet,
+  SheetContent,
+  SheetDescription,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "@/components/ui/sheet";
 import { AvailabilityCalendar } from "@/components/unit-detail/AvailabilityCalendar";
 
 interface AvailabilityCalendarSheetProps {
   unitId: string;
-  onSelectDate: (date: Date) => void;
+  onSelectDate?: (date: Date) => void;
   selectedStartDate?: Date | null;
   selectedEndDate?: Date | null;
 }
 
-export const AvailabilityCalendarSheet = ({ 
-  unitId, 
+export const AvailabilityCalendarSheet = ({
+  unitId,
   onSelectDate,
   selectedStartDate,
   selectedEndDate
 }: AvailabilityCalendarSheetProps) => {
+  const initialMonth = selectedStartDate || new Date(); // Use selectedStartDate as the initial month if available
+  
   return (
     <Sheet>
       <SheetTrigger asChild>
-        <Button variant="outline" className="mb-4 w-full flex items-center justify-center gap-2">
-          <CalendarRange className="h-4 w-4" />
-          Ver fechas disponibles
+        <Button variant="outline" className="w-full mb-6 flex gap-2">
+          <CalendarDays className="h-4 w-4" />
+          <span>Ver calendario de disponibilidad</span>
         </Button>
       </SheetTrigger>
-      <SheetContent side="bottom" className="h-[80vh] sm:max-w-lg mx-auto rounded-t-xl">
-        <SheetHeader>
-          <SheetTitle>Fechas disponibles</SheetTitle>
+      <SheetContent side="bottom" className="h-[80vh] pt-8 overflow-y-auto">
+        <SheetHeader className="mb-4">
+          <SheetTitle>Disponibilidad</SheetTitle>
           <SheetDescription>
-            Visualiza la disponibilidad de nuestros domos para planificar tu estadía
+            Consulta la disponibilidad de nuestros domos. Los días en verde están disponibles para reserva.
           </SheetDescription>
         </SheetHeader>
-        <div className="py-6">
+        
+        <div className="max-w-lg mx-auto">
           <AvailabilityCalendar 
             unitId={unitId} 
             onSelectDate={onSelectDate}
             selectedStartDate={selectedStartDate}
             selectedEndDate={selectedEndDate}
+            initialMonth={initialMonth}
           />
         </div>
       </SheetContent>

@@ -38,7 +38,7 @@ export const CalendarGrid = ({
     return day.isAvailable;
   };
 
-  // Función para obtener la clase CSS para cada celda del día
+  // Function to get the CSS class for each day cell
   const getDayClass = (day: AvailabilityCalendarDay) => {
     let classes = "rounded-full w-8 h-8 flex items-center justify-center";
     
@@ -74,7 +74,7 @@ export const CalendarGrid = ({
     return classes;
   };
 
-  // Función para calcular el porcentaje de disponibilidad
+  // Function to get the availability percentage
   const getAvailabilityPercentage = (day: AvailabilityCalendarDay): string => {
     if (day.availableUnits === undefined || day.totalUnits === undefined) {
       return "";
