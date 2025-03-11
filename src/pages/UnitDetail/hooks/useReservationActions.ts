@@ -8,6 +8,9 @@ type ReservationState = {
   endDate?: Date;
   displayUnit: any;
   guests: number;
+  adults?: number;
+  children?: number;
+  requiredDomos?: number;
   isAvailable: boolean | null;
   setIsAvailable: (isAvailable: boolean) => void;
   checkAvailability: (unitId: string, checkIn: Date, checkOut: Date) => Promise<boolean>;
@@ -62,21 +65,33 @@ export const useReservationActions = (state: ReservationState) => {
   // Verify availability automatically when dates are selected
   const checkDatesAvailability = async () => {
     if (state.startDate && state.endDate && state.displayUnit && !state.checkedAvailability) {
-      const available = await state.checkAvailability(state.displayUnit.id, state.startDate, state.endDate);
-      state.setIsAvailable(available);
+      // Comprobar si hay suficientes domos disponibles para el número de huéspedes
+      const requiredDomos = state.requiredDomos || 1;
+      
+      // Verificar disponibilidad para cada domo necesario
+      let allAvailable = true;
+      for (let i = 0; i < requiredDomos; i++) {
+        const available = await state.checkAvailability(state.displayUnit.id, state.startDate, state.endDate);
+        if (!available) {
+          allAvailable = false;
+          break;
+        }
+      }
+      
+      state.setIsAvailable(allAvailable);
       state.setCheckedAvailability(true);
       
-      if (available) {
+      if (allAvailable) {
         state.toast({
           title: "Fechas disponibles",
-          description: "Las fechas seleccionadas están disponibles para reserva.",
+          description: `Tenemos disponibilidad para los ${requiredDomos} domos necesarios.`,
           variant: "default",
         });
       } else {
         state.toast({
           variant: "destructive",
           title: "No disponible",
-          description: "Las fechas seleccionadas no están disponibles. Por favor, elige otras fechas.",
+          description: `No hay suficientes domos disponibles para las fechas seleccionadas. Se necesitan ${requiredDomos} domos.`,
         });
       }
     }
@@ -85,10 +100,22 @@ export const useReservationActions = (state: ReservationState) => {
   const checkAvailabilityAndQuote = async () => {
     if (!state.startDate || !state.endDate || !state.displayUnit) return;
 
-    const available = await state.checkAvailability(state.displayUnit.id, state.startDate, state.endDate);
-    state.setIsAvailable(available);
+    const requiredDomos = state.requiredDomos || 1;
+    
+    // Verificar disponibilidad para cada domo necesario
+    let allAvailable = true;
+    for (let i = 0; i < requiredDomos; i++) {
+      const available = await state.checkAvailability(state.displayUnit.id, state.startDate, state.endDate);
+      if (!available) {
+        allAvailable = false;
+        break;
+      }
+    }
+    
+    state.setIsAvailable(allAvailable);
 
-    if (available) {
+    if (allAvailable) {
+      // Calcular cotización para todos los domos
       let quoteDetails = state.calculateQuote(
         state.displayUnit.prices,
         state.startDate,
@@ -96,9 +123,14 @@ export const useReservationActions = (state: ReservationState) => {
         state.guests
       );
       
-      // Add activities and packages to the quote
+      // Multiplicar el precio base por el número de domos
+      quoteDetails.basePrice = quoteDetails.basePrice * requiredDomos;
+      quoteDetails.totalPrice = quoteDetails.totalPrice * requiredDomos;
+      quoteDetails.requiredDomos = requiredDomos;
+      
+      // Añadir actividades y paquetes a la cotización
       if (state.selectedActivities.length > 0 || state.selectedPackages.length > 0) {
-        // Add activities and packages to the breakdown
+        // Agregar actividades y paquetes al desglose
         const totalWithExtras = quoteDetails.totalPrice + state.activitiesTotal + state.packagesTotal;
         
         quoteDetails = {
@@ -116,7 +148,7 @@ export const useReservationActions = (state: ReservationState) => {
       state.toast({
         variant: "destructive",
         title: "No disponible",
-        description: "Las fechas seleccionadas no están disponibles.",
+        description: `No hay suficientes domos disponibles para las fechas seleccionadas. Se necesitan ${requiredDomos} domos.`,
       });
     }
   };
@@ -127,6 +159,16 @@ export const useReservationActions = (state: ReservationState) => {
         variant: "destructive",
         title: "Error",
         description: "Por favor selecciona las fechas de entrada y salida",
+      });
+      return;
+    }
+    
+    // Validar que si hay 16 huéspedes, al menos 4 sean adultos
+    if (state.guests === 16 && (state.adults || 0) < 4) {
+      state.toast({
+        variant: "destructive",
+        title: "Error en la selección de huéspedes",
+        description: "Para 16 huéspedes, se requieren al menos 4 adultos (uno por domo).",
       });
       return;
     }
@@ -151,29 +193,39 @@ export const useReservationActions = (state: ReservationState) => {
       clearAllToasts();
       toast.dismiss();
       
-      // Get activity and package IDs for storage
+      // Obtener IDs de actividades y paquetes para almacenamiento
       const activityIds = state.selectedActivities.map(a => a.id);
       const packageIds = state.selectedPackages.map(p => p.id);
       
-      // Calculate the total price including base price, activities, and packages
+      // Calcular el precio total incluyendo precio base, actividades y paquetes
       const totalPrice = getUpdatedQuoteTotal();
+      const requiredDomos = state.requiredDomos || 1;
       
-      const reservation = await state.createReservation(
-        state.displayUnit.id,
-        state.startDate,
-        state.endDate,
-        state.guests,
-        state.quote.totalPrice,  // This should be the base price without extras
-        'webpay',
-        activityIds,
-        packageIds
-      );
-
-      if (reservation) {
-        // The total price has already been calculated and stored in the reservation
-        // The total passed to redirectToWebpay should be the reservation's total_price
-        // which already includes activities and packages
-        state.redirectToWebpay(reservation.id, reservation.total_price);
+      // Crear las reservas para cada domo necesario
+      const reservations = [];
+      for (let i = 0; i < requiredDomos; i++) {
+        const individualQuotePrice = state.quote.totalPrice / requiredDomos;
+        
+        const reservation = await state.createReservation(
+          state.displayUnit.id,
+          state.startDate,
+          state.endDate,
+          Math.ceil(state.guests / requiredDomos), // Distribuir huéspedes entre domos
+          individualQuotePrice,
+          'webpay',
+          i === 0 ? activityIds : [], // Solo incluir actividades en la primera reserva
+          i === 0 ? packageIds : []   // Solo incluir paquetes en la primera reserva
+        );
+        
+        if (reservation) {
+          reservations.push(reservation);
+        }
+      }
+      
+      if (reservations.length > 0) {
+        // Usar la primera reserva para el proceso de pago
+        // El total ya incluye el precio de todos los domos
+        state.redirectToWebpay(reservations[0].id, state.quote.totalPrice);
       }
     } catch (error) {
       console.error("Error al confirmar reserva:", error);

@@ -35,6 +35,7 @@ export const ReservationDetails: React.FC<ReservationDetailsProps> = ({
   };
 
   const nights = quote?.nights || calculateNights();
+  const requiredDomos = quote?.requiredDomos || 1;
 
   return (
     <Card className="p-6 bg-white">
@@ -55,6 +56,13 @@ export const ReservationDetails: React.FC<ReservationDetailsProps> = ({
           </div>
         )}
 
+        {requiredDomos > 1 && (
+          <div className="flex justify-between items-center">
+            <span className="font-medium">Domos reservados:</span>
+            <span>{requiredDomos}</span>
+          </div>
+        )}
+
         {quote?.pets > 0 && (
           <div className="flex justify-between items-center">
             <span className="font-medium">Mascotas:</span>
@@ -69,14 +77,14 @@ export const ReservationDetails: React.FC<ReservationDetailsProps> = ({
         
         {quote?.basePrice !== undefined && (
           <div className="flex justify-between items-center">
-            <span className="font-medium">Precio por noche:</span>
-            <span>{formatCurrency(quote.basePrice / nights)}</span>
+            <span className="font-medium">Precio por noche (por domo):</span>
+            <span>{formatCurrency(quote.basePrice / nights / requiredDomos)}</span>
           </div>
         )}
         
         {quote?.basePrice !== undefined && (
           <div className="flex justify-between items-center">
-            <span className="font-medium">Subtotal alojamiento:</span>
+            <span className="font-medium">Subtotal alojamiento ({requiredDomos} domos):</span>
             <span>{formatCurrency(quote.basePrice)}</span>
           </div>
         )}
@@ -122,7 +130,7 @@ export const ReservationDetails: React.FC<ReservationDetailsProps> = ({
             <li>Check-in: a partir de las 15:00 hrs.</li>
             <li>Check-out: hasta las 12:00 hrs.</li>
             <li>Llevar toallas y artículos de aseo personal.</li>
-            <li>Si traes mascotas, infórmanos con anticipación.</li>
+            <li>Máximo 2 mascotas pequeñas por domo.</li>
             <li>Contacto de emergencia: +56 9 1234 5678</li>
           </ul>
         </div>

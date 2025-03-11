@@ -14,6 +14,9 @@ interface ReservationPanelProps {
   setEndDate: (date: Date | undefined) => void;
   guests: number;
   setGuests: (guests: number) => void;
+  setAdults?: (adults: number) => void;
+  setChildren?: (children: number) => void;
+  requiredDomos?: number;
   isAvailable: boolean | null;
   showQuote: boolean;
   quote: any;
@@ -40,6 +43,9 @@ export const ReservationPanel = ({
   setEndDate,
   guests,
   setGuests,
+  setAdults,
+  setChildren,
+  requiredDomos = 1,
   isAvailable,
   showQuote,
   quote,
@@ -95,6 +101,8 @@ export const ReservationPanel = ({
               maxGuests={displayUnit.max_guests}
               guests={guests}
               onGuestsChange={setGuests}
+              onAdultsChange={setAdults}
+              onChildrenChange={setChildren}
               isAvailable={isAvailable}
               selectedActivities={selectedActivities}
               onActivityToggle={onActivityToggle}
@@ -105,7 +113,16 @@ export const ReservationPanel = ({
               unitId={displayUnit.id}
             />
 
-            <div className="mt-8 text-sm text-gray-600 p-3 bg-amber-50 border border-amber-100 rounded">
+            <div className="mt-4 text-sm">
+              <div className="bg-blue-50 p-3 rounded-md border border-blue-100">
+                <p className="font-medium text-blue-800">Información de domos</p>
+                <p className="text-blue-700 mt-1">
+                  Se necesitarán <strong>{requiredDomos}</strong> de los 4 domos disponibles para tu reserva.
+                </p>
+              </div>
+            </div>
+
+            <div className="mt-4 text-sm text-gray-600 p-3 bg-amber-50 border border-amber-100 rounded">
               <p className="font-medium text-amber-800 mb-1">Política de reserva</p>
               <p>Pago total por adelantado para confirmar tu reserva. Check-in desde las 15:00, check-out hasta las 12:00.</p>
             </div>
@@ -130,7 +147,8 @@ export const ReservationPanel = ({
             <ReservationSummary
               quote={{
                 ...quote,
-                totalPrice: getUpdatedQuoteTotal()
+                totalPrice: getUpdatedQuoteTotal(),
+                requiredDomos: requiredDomos
               }}
               isAvailable={isAvailable || false}
               isLoading={isProcessingPayment}
@@ -146,6 +164,7 @@ export const ReservationPanel = ({
               <p>Entrada: {startDate?.toLocaleDateString()}</p>
               <p>Salida: {endDate?.toLocaleDateString()}</p>
               <p>Huéspedes: {guests}</p>
+              <p>Domos necesarios: {requiredDomos}</p>
             </div>
           </>
         )}

@@ -11,6 +11,9 @@ export const useUnitDetailState = (unitId: string | undefined) => {
   const [startDate, setStartDate] = useState<Date>();
   const [endDate, setEndDate] = useState<Date>();
   const [guests, setGuests] = useState<number>(1);
+  const [adults, setAdults] = useState<number>(1);
+  const [children, setChildren] = useState<number>(0);
+  const [requiredDomos, setRequiredDomos] = useState<number>(1);
   const { checkAvailability, calculateQuote, createReservation, fetchGlampingUnits, redirectToWebpay } = useReservations();
   const { toast } = useToast();
   const [quote, setQuote] = useState<any>(null);
@@ -37,6 +40,13 @@ export const useUnitDetailState = (unitId: string | undefined) => {
     phone: ''
   });
   const confirmationRef = useRef<HTMLDivElement>(null);
+
+  // Calcular domos necesarios cuando cambia el número de huéspedes
+  useEffect(() => {
+    const MAX_GUESTS_PER_DOMO = 4;
+    const domos = Math.ceil(guests / MAX_GUESTS_PER_DOMO);
+    setRequiredDomos(domos);
+  }, [guests]);
 
   // Calculate totals for activities and packages
   useEffect(() => {
@@ -76,7 +86,7 @@ export const useUnitDetailState = (unitId: string | undefined) => {
           id: packageItem.id,
           name: packageItem.title,
           description: packageItem.detailedDescription,
-          max_guests: 2,
+          max_guests: 4,
           prices: {
             base_price: packageItem.price
           },
@@ -145,6 +155,11 @@ export const useUnitDetailState = (unitId: string | undefined) => {
     setEndDate,
     guests,
     setGuests,
+    adults,
+    setAdults,
+    children,
+    setChildren,
+    requiredDomos,
     checkAvailability,
     calculateQuote,
     createReservation,
