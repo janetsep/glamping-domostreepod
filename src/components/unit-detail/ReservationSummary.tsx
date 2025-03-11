@@ -38,6 +38,11 @@ export const ReservationSummary: React.FC<ReservationSummaryProps> = ({
     return `$${amount.toLocaleString('es-CL')}`;
   };
 
+  // Calculate totals for extras
+  const activitiesTotal = selectedActivities.reduce((sum, activity) => sum + activity.price, 0);
+  const packagesTotal = selectedPackages.reduce((sum, pkg) => sum + pkg.price, 0);
+  const extrasTotal = activitiesTotal + packagesTotal;
+
   return (
     <div className="space-y-4">
       <h3 className="text-lg font-semibold mb-2">Resumen de tu estadía</h3>
@@ -62,11 +67,35 @@ export const ReservationSummary: React.FC<ReservationSummaryProps> = ({
         </div>
       ))}
       
+      {/* Show extras breakdown if selected */}
       {hasSelectedExtras && (
-        <ExtrasDetails 
-          selectedActivities={selectedActivities}
-          selectedPackages={selectedPackages}
-        />
+        <>
+          {selectedActivities.length > 0 && (
+            <div className="flex justify-between items-center text-indigo-700">
+              <span>Total actividades ({selectedActivities.length})</span>
+              <span>{formatCurrency(activitiesTotal)}</span>
+            </div>
+          )}
+          
+          {selectedPackages.length > 0 && (
+            <div className="flex justify-between items-center text-indigo-700">
+              <span>Total paquetes ({selectedPackages.length})</span>
+              <span>{formatCurrency(packagesTotal)}</span>
+            </div>
+          )}
+          
+          {extrasTotal > 0 && (
+            <div className="flex justify-between items-center font-medium text-indigo-800 bg-indigo-50 p-2 rounded mt-2">
+              <span>Total extras incluidos</span>
+              <span>{formatCurrency(extrasTotal)}</span>
+            </div>
+          )}
+          
+          <ExtrasDetails 
+            selectedActivities={selectedActivities}
+            selectedPackages={selectedPackages}
+          />
+        </>
       )}
       
       <hr className="my-2" />
