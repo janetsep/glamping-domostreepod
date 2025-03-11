@@ -35,11 +35,14 @@ export const DateSelector = ({
     onEndDateChange
   });
 
+  // Debug logging
+  console.log("DateSelector rendering with startDate:", startDate, "endDate:", endDate);
+
   return (
-    <div className="space-y-2">
+    <div className="space-y-2 pointer-events-auto">
       <DateSelectionHeader />
       
-      <div className="grid grid-cols-2 gap-4">
+      <div className="grid grid-cols-2 gap-4 pointer-events-auto">
         <DatePickerPopover
           open={startCalendarOpen}
           onOpenChange={setStartCalendarOpen}
@@ -51,7 +54,10 @@ export const DateSelector = ({
           <DatePickerButton
             date={startDate}
             placeholder="Fecha de entrada"
-            onClick={() => setStartCalendarOpen(true)}
+            onClick={() => {
+              console.log("DateSelector: opening start calendar");
+              setStartCalendarOpen(true);
+            }}
           />
         </DatePickerPopover>
 
@@ -68,7 +74,10 @@ export const DateSelector = ({
           <DatePickerButton
             date={endDate}
             placeholder="Fecha de salida"
-            onClick={() => setEndCalendarOpen(true)}
+            onClick={() => {
+              console.log("DateSelector: opening end calendar");
+              setEndCalendarOpen(true);
+            }}
             disabled={!startDate}
           />
         </DatePickerPopover>

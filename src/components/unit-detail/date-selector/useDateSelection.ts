@@ -46,7 +46,8 @@ export const useDateSelection = ({
   }, []);
 
   // Handle start date selection
-  const handleStartDateSelect = async (date: Date | undefined) => {
+  const handleStartDateSelect = useCallback(async (date: Date | undefined) => {
+    console.log("Start date selected:", date);
     if (date) {
       const isAvailable = await checkDateAvailability(date);
       if (isAvailable) {
@@ -76,10 +77,11 @@ export const useDateSelection = ({
     } else {
       onStartDateChange(undefined);
     }
-  };
+  }, [checkDateAvailability, endDate, onEndDateChange, onStartDateChange]);
 
   // Handle end date selection
-  const handleEndDateSelect = async (date: Date | undefined) => {
+  const handleEndDateSelect = useCallback(async (date: Date | undefined) => {
+    console.log("End date selected:", date);
     if (date && startDate) {
       // Check if all dates in the range are available
       const dateRange = [];
@@ -113,7 +115,7 @@ export const useDateSelection = ({
     } else {
       onEndDateChange(undefined);
     }
-  };
+  }, [checkDateAvailability, onEndDateChange, startDate]);
 
   return {
     startCalendarOpen,

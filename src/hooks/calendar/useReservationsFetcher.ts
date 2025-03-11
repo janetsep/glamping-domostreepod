@@ -39,15 +39,16 @@ export const useReservationsFetcher = (currentMonth: Date) => {
         
         if (error) {
           console.error("Error fetching reservations:", error);
-          return [];
+          setReservations([]);
+          setIsLoading(false);
+          return;
         }
         
         console.log(`Found ${data?.length || 0} reservations for the selected month`);
         setReservations(data || []);
-        return data;
       } catch (error) {
         console.error("Error in fetchReservations:", error);
-        return [];
+        setReservations([]);
       } finally {
         setIsLoading(false);
       }

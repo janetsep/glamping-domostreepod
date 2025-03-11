@@ -84,12 +84,23 @@ export const CalendarGrid = ({
     return `${percentage}%`;
   };
 
+  const handleDateClick = (day: AvailabilityCalendarDay, e: React.MouseEvent) => {
+    console.log("CalendarGrid: clicked on date", day.date);
+    // Prevent default behavior
+    e.preventDefault();
+    e.stopPropagation();
+    
+    if (isDateSelectable(day)) {
+      onDateClick(day);
+    }
+  };
+
   return (
     <div className="grid grid-cols-7 gap-1 pointer-events-auto">
       {calendarDays.map((day, i) => (
         <div
           key={i}
-          onClick={() => isDateSelectable(day) && onDateClick(day)}
+          onClick={(e) => handleDateClick(day, e)}
           className="p-1 text-center pointer-events-auto"
         >
           <div className={getDayClass(day)}>

@@ -1,10 +1,9 @@
 
 import { useState, useRef } from "react";
-import { GlampingUnit } from "@/lib/supabase";
 
 export const useReservationState = () => {
-  const [startDate, setStartDate] = useState<Date>();
-  const [endDate, setEndDate] = useState<Date>();
+  const [startDate, setStartDate] = useState<Date | undefined>(undefined);
+  const [endDate, setEndDate] = useState<Date | undefined>(undefined);
   const [guests, setGuests] = useState<number>(1);
   const [adults, setAdults] = useState<number>(1);
   const [children, setChildren] = useState<number>(0);

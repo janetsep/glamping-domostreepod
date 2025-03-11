@@ -30,16 +30,21 @@ export const DatePickerPopover = ({
   checkDateRange = false,
   initialMonth
 }: DatePickerPopoverProps) => {
+  const handleSelectDate = (date: Date) => {
+    console.log("DatePickerPopover: selecting date", date);
+    onSelectDate(date);
+  };
+
   return (
     <Popover open={open} onOpenChange={onOpenChange}>
       <PopoverTrigger asChild>
         {children}
       </PopoverTrigger>
       <PopoverContent className="w-auto p-0 pointer-events-auto" align="start">
-        <div className="p-3">
+        <div className="p-3 pointer-events-auto">
           <AvailabilityCalendar 
             unitId={unitId}
-            onSelectDate={onSelectDate}
+            onSelectDate={handleSelectDate}
             checkDateRange={checkDateRange}
             selectedStartDate={selectedStartDate}
             selectedEndDate={selectedEndDate}
