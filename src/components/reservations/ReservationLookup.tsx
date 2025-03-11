@@ -1,26 +1,34 @@
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useReservationLookup } from "@/hooks/reservations/useReservationLookup";
 import { ReservationDetails } from "@/components/unit-detail/ReservationDetails";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { format } from 'date-fns';
 import { es } from 'date-fns/locale';
+import { useSearchParams } from 'react-router-dom';
 
 export function ReservationLookup() {
-  const [code, setCode] = useState("");
-  const [searchCode, setSearchCode] = useState("");
+  const [searchParams, setSearchParams] = useSearchParams();
+  const initialCode = searchParams.get('code') || '';
+  
+  const [code, setCode] = useState(initialCode);
+  const [searchCode, setSearchCode] = useState(initialCode);
   
   const { data: reservation, isLoading, isError, error } = useReservationLookup(searchCode);
+
+  useEffect(() => {
+    // If code is provided via URL, automatically search
+    if (initialCode && !searchCode) {
+      setSearchCode(initialCode);
+    }
+  }, [initialCode, searchCode]);
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
     setSearchCode(code);
+    setSearchParams({ code });
   };
-
-  if (isLoading) {
-    return <div>Buscando reserva...</div>;
-  }
 
   return (
     <div className="container mx-auto px-4 py-8">
@@ -35,8 +43,14 @@ export function ReservationLookup() {
         <Button type="submit">Buscar</Button>
       </form>
 
+      {isLoading && (
+        <div className="flex justify-center my-8">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+        </div>
+      )}
+
       {isError && (
-        <div className="text-red-600 mb-4">
+        <div className="bg-red-50 border border-red-200 text-red-700 p-4 rounded-md mb-4">
           {error instanceof Error ? error.message : 'Error al buscar la reserva'}
         </div>
       )}
