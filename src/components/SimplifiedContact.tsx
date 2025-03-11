@@ -1,17 +1,8 @@
-import { useState, useEffect } from "react";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Calendar, Users, MessageSquare, Phone, Share2 } from "lucide-react";
-import { toast } from "sonner";
-import { useNavigate } from "react-router-dom";
+
+import { MessageSquare, Phone, Mail, Share2 } from "lucide-react";
+import { useEffect } from "react";
 
 const SimplifiedContact = () => {
-  const navigate = useNavigate();
-  const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
-  const [date, setDate] = useState("");
-  const [guests, setGuests] = useState("");
-
   useEffect(() => {
     const script = document.createElement('script');
     script.src = "https://static.elfsight.com/platform/platform.js";
@@ -25,15 +16,6 @@ const SimplifiedContact = () => {
       }
     };
   }, []);
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    toast.success("¡Solicitud recibida!", {
-      description: "Nos pondremos en contacto contigo pronto"
-    });
-    
-    navigate('/unit/48a7a330-ebae-4e79-8f53-31a84ac900d9');
-  };
 
   const faqs = [
     {
@@ -60,106 +42,68 @@ const SimplifiedContact = () => {
       
       <div className="container mx-auto px-4">
         <h2 className="text-3xl md:text-4xl font-display font-bold text-primary mb-4 text-center">
-          Reserva Tu Experiencia
+          Contáctanos
         </h2>
         <p className="text-xl text-center text-gray-600 mb-12 max-w-3xl mx-auto">
-          Completa el formulario y nos pondremos en contacto contigo a la brevedad
+          Estamos aquí para responder tus preguntas y ayudarte a planificar tu experiencia
         </p>
         
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-start">
-          {/* Formulario */}
+          {/* Información de contacto */}
           <div className="bg-white p-8 rounded-lg shadow-lg">
-            <form onSubmit={handleSubmit} className="space-y-6">
-              <div>
-                <label htmlFor="name" className="block text-sm font-medium mb-1">
-                  Nombre completo
-                </label>
-                <Input
-                  id="name"
-                  value={name}
-                  onChange={(e) => setName(e.target.value)}
-                  placeholder="Ingresa tu nombre"
-                  required
-                />
-              </div>
-              
-              <div>
-                <label htmlFor="email" className="block text-sm font-medium mb-1">
-                  Correo electrónico
-                </label>
-                <Input
-                  id="email"
-                  type="email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  placeholder="tu@email.com"
-                  required
-                />
-              </div>
-              
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <h3 className="text-2xl font-semibold mb-6">¿Cómo podemos ayudarte?</h3>
+            <div className="space-y-6">
+              <div className="flex items-start gap-4">
+                <MessageSquare className="h-6 w-6 text-cyan-500 mt-1 flex-shrink-0" />
                 <div>
-                  <label htmlFor="date" className="block text-sm font-medium mb-1">
-                    Fecha aproximada
-                  </label>
-                  <div className="relative">
-                    <Input
-                      id="date"
-                      type="date"
-                      value={date}
-                      onChange={(e) => setDate(e.target.value)}
-                      required
-                    />
-                    <Calendar className="absolute right-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400 pointer-events-none" />
-                  </div>
-                </div>
-                
-                <div>
-                  <label htmlFor="guests" className="block text-sm font-medium mb-1">
-                    Cantidad de personas
-                  </label>
-                  <div className="relative">
-                    <Input
-                      id="guests"
-                      type="number"
-                      min="1"
-                      max="6"
-                      value={guests}
-                      onChange={(e) => setGuests(e.target.value)}
-                      placeholder="2"
-                      required
-                    />
-                    <Users className="absolute right-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400 pointer-events-none" />
-                  </div>
+                  <h4 className="font-semibold mb-1">WhatsApp</h4>
+                  <a 
+                    href="https://wa.me/56912345678" 
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                    className="text-gray-600 hover:text-cyan-500 transition-colors"
+                  >
+                    +56 9 1234 5678
+                  </a>
+                  <p className="text-sm text-gray-500 mt-1">Respuesta rápida de lunes a domingo</p>
                 </div>
               </div>
               
-              <Button type="submit" className="w-full bg-cyan-500 hover:bg-cyan-600 text-white" size="lg">
-                Solicitar Reserva
-              </Button>
-            </form>
+              <div className="flex items-start gap-4">
+                <Phone className="h-6 w-6 text-cyan-500 mt-1 flex-shrink-0" />
+                <div>
+                  <h4 className="font-semibold mb-1">Teléfono</h4>
+                  <a 
+                    href="tel:+56912345678" 
+                    className="text-gray-600 hover:text-cyan-500 transition-colors"
+                  >
+                    +56 9 1234 5678
+                  </a>
+                  <p className="text-sm text-gray-500 mt-1">Atención de 9:00 a 20:00 hrs</p>
+                </div>
+              </div>
+              
+              <div className="flex items-start gap-4">
+                <Mail className="h-6 w-6 text-cyan-500 mt-1 flex-shrink-0" />
+                <div>
+                  <h4 className="font-semibold mb-1">Correo electrónico</h4>
+                  <a 
+                    href="mailto:info@domostreepod.cl" 
+                    className="text-gray-600 hover:text-cyan-500 transition-colors"
+                  >
+                    info@domostreepod.cl
+                  </a>
+                  <p className="text-sm text-gray-500 mt-1">Te respondemos en máximo 24 horas</p>
+                </div>
+              </div>
+            </div>
             
-            {/* Opciones de contacto */}
-            <div className="mt-8 pt-6 border-t border-gray-100">
-              <h3 className="text-lg font-semibold mb-4">¿Prefieres contactarnos directamente?</h3>
-              <div className="flex flex-col space-y-3">
-                <a 
-                  href="https://wa.me/56912345678" 
-                  target="_blank" 
-                  rel="noopener noreferrer"
-                  className="inline-flex items-center text-sm text-gray-600 hover:text-cyan-500"
-                >
-                  <MessageSquare className="h-4 w-4 mr-2" />
-                  WhatsApp: +56 9 1234 5678
-                </a>
-                <a 
-                  href="tel:+56912345678" 
-                  className="inline-flex items-center text-sm text-gray-600 hover:text-cyan-500"
-                >
-                  <Phone className="h-4 w-4 mr-2" />
-                  Teléfono: +56 9 1234 5678
-                </a>
-              </div>
+            <div className="mt-8 bg-cyan-50 p-6 rounded-lg border border-cyan-100">
+              <h4 className="font-semibold text-cyan-800 mb-2">Horario de atención</h4>
+              <p className="text-sm text-cyan-700">
+                Nuestro equipo está disponible para atenderte de lunes a domingo.
+                Para consultas urgentes, te recomendamos contactarnos vía WhatsApp.
+              </p>
             </div>
           </div>
           

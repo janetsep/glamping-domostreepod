@@ -12,6 +12,12 @@ interface ReservationData {
   check_out?: string;
   guests?: number;
   reservation_code?: string;
+  pets?: number;
+  pets_price?: number;
+  activities_total?: number;
+  packages_total?: number;
+  selected_activities?: any[];
+  selected_packages?: any[];
 }
 
 // Extend TransactionResult to include reservation_data
