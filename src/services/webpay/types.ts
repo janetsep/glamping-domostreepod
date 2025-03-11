@@ -10,6 +10,8 @@ export interface TransactionResult {
   };
   status?: string;
   reservation_id?: string;
+  unit_id?: string;
+  is_package_unit?: boolean;
   reservation_data?: {
     unit_name?: string;
     check_in?: string;
