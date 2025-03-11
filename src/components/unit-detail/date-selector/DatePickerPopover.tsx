@@ -33,6 +33,10 @@ export const DatePickerPopover = ({
   const handleSelectDate = (date: Date) => {
     console.log("DatePickerPopover: selecting date", date);
     onSelectDate(date);
+    // Don't close the popover immediately for end date selection
+    if (!checkDateRange) {
+      setTimeout(() => onOpenChange(false), 100);
+    }
   };
 
   return (

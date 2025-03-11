@@ -35,7 +35,7 @@ export const useReservationsFetcher = (currentMonth: Date) => {
           .from('reservations')
           .select('*')
           .eq('status', 'confirmed')
-          .or(`check_in.lte.${extendedEnd.toISOString()},check_out.gte.${extendedStart.toISOString()}`);
+          .or(`check_in.lte.${format(extendedEnd, 'yyyy-MM-dd')},check_out.gte.${format(extendedStart, 'yyyy-MM-dd')}`);
         
         if (error) {
           console.error("Error fetching reservations:", error);

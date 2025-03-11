@@ -62,7 +62,8 @@ export const useDateSelection = ({
         setEndDateCalendarMonth(date);
         
         // Close the start calendar and open the end calendar if no end date is selected
-        setStartCalendarOpen(false);
+        // Commented out to let DatePickerPopover handle closing
+        // setStartCalendarOpen(false);
         if (!endDate) {
           setTimeout(() => setEndCalendarOpen(true), 300); // Open end calendar after a short delay
         }

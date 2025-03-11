@@ -38,6 +38,11 @@ export const AvailabilityCalendar = ({
     }
   }, [initialMonth]);
 
+  // Update selectedDate when selectedStartDate changes from props
+  useEffect(() => {
+    setSelectedDate(selectedStartDate);
+  }, [selectedStartDate]);
+
   const { calendarDays, isLoading, isDateAvailable, isDateRangeAvailable } = useCalendarAvailability(unitId, currentMonth, selectedDate);
 
   const handleDateClick = async (day: AvailabilityCalendarDay) => {

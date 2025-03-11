@@ -86,7 +86,7 @@ export const CalendarGrid = ({
 
   const handleDateClick = (day: AvailabilityCalendarDay, e: React.MouseEvent) => {
     console.log("CalendarGrid: clicked on date", day.date);
-    // Prevent default behavior
+    // Prevent default behavior to avoid event bubbling issues
     e.preventDefault();
     e.stopPropagation();
     
@@ -100,10 +100,12 @@ export const CalendarGrid = ({
       {calendarDays.map((day, i) => (
         <div
           key={i}
-          onClick={(e) => handleDateClick(day, e)}
           className="p-1 text-center pointer-events-auto"
         >
-          <div className={getDayClass(day)}>
+          <div 
+            className={getDayClass(day)}
+            onClick={(e) => handleDateClick(day, e)}
+          >
             {format(day.date, "d")}
           </div>
           {day.availableUnits !== undefined && isSameMonth(day.date, currentMonth) && (
