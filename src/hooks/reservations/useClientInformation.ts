@@ -3,6 +3,7 @@ import { useState } from 'react';
 import { updateReservationData, verifyReservationUpdate } from './utils/supabaseUtils';
 import { SUPABASE_URL, SUPABASE_ANON_KEY } from '@/lib/constants';
 import { supabase } from '@/lib/supabase';
+import { toast } from 'sonner';
 
 export interface ClientInformation {
   name: string;
@@ -22,63 +23,55 @@ export const useClientInformation = () => {
     setError(null);
 
     try {
-      console.log(`Guardando información del cliente para la reserva ${reservationId}:`, clientInfo);
+      console.log(`Starting to save client information for reservation ${reservationId}:`, clientInfo);
       
-      // Verificar si la reserva existe
-      const { data: existingReservation, error: checkError } = await supabase
-        .from('reservations')
-        .select('id, client_name, client_email, client_phone')
-        .eq('id', reservationId)
-        .single();
-        
-      if (checkError) {
-        console.error('Error al verificar la reserva:', checkError);
-      } else if (existingReservation) {
-        console.log('Reserva encontrada:', existingReservation);
-      }
-      
-      // Update client information in reservation
-      const success = await updateReservationData(reservationId, {
-        client_name: clientInfo.name,
-        client_email: clientInfo.email,
-        client_phone: clientInfo.phone,
-        updated_at: new Date().toISOString()
-      });
-      
-      if (!success) {
-        // Intentar método alternativo directo si falla el principal
-        console.log('Método principal falló, intentando método alternativo directo');
-        
-        try {
-          const { error: directError } = await supabase
-            .from('reservations')
-            .update({
-              client_name: clientInfo.name,
-              client_email: clientInfo.email,
-              client_phone: clientInfo.phone,
-              updated_at: new Date().toISOString()
-            })
-            .eq('id', reservationId);
-            
-          if (directError) {
-            console.error('Error en método alternativo:', directError);
-            throw new Error('Error al guardar información del cliente');
-          } else {
-            console.log('Información guardada correctamente con método alternativo');
-          }
-        } catch (directErr) {
-          console.error('Error en método alternativo directo:', directErr);
-          throw new Error('Error al guardar información del cliente');
-        }
-      }
-
-      // Verificar que la información se guardó correctamente
-      await verifyReservationUpdate(reservationId);
-
-      // Register the communication
+      // First attempt: Direct update with client
       try {
-        const logCommunicationResponse = await fetch(`${SUPABASE_URL}/rest/v1/reservation_communications`, {
-          method: 'POST',
+        const { data, error: updateError } = await supabase
+          .from('reservations')
+          .update({
+            client_name: clientInfo.name,
+            client_email: clientInfo.email,
+            client_phone: clientInfo.phone,
+            updated_at: new Date().toISOString()
+          })
+          .eq('id', reservationId)
+          .select();
+        
+        if (updateError) {
+          console.error('Direct update failed:', updateError);
+          throw updateError;
+        }
+
+        console.log('Update successful:', data);
+        
+        // Verify the update
+        const { data: verifyData, error: verifyError } = await supabase
+          .from('reservations')
+          .select('client_name, client_email, client_phone')
+          .eq('id', reservationId)
+          .single();
+        
+        if (verifyError) {
+          console.error('Verification failed:', verifyError);
+          throw verifyError;
+        }
+
+        console.log('Verification successful:', verifyData);
+        
+        // Show success toast
+        toast.success('Información guardada correctamente', {
+          description: 'Los datos del cliente han sido actualizados'
+        });
+
+        return true;
+      } catch (directError) {
+        console.error('Error in direct update:', directError);
+        
+        // Second attempt: Using fetch
+        console.log('Attempting alternative update method');
+        const response = await fetch(`${SUPABASE_URL}/rest/v1/reservations?id=eq.${reservationId}`, {
+          method: 'PATCH',
           headers: {
             'Content-Type': 'application/json',
             'apikey': SUPABASE_ANON_KEY,
@@ -86,54 +79,31 @@ export const useClientInformation = () => {
             'Prefer': 'return=minimal'
           },
           body: JSON.stringify({
-            email: clientInfo.email,
-            phone: clientInfo.phone,
-            type: 'reservation_confirmation',
-            reservation_details: {
-              reservation_id: reservationId,
-              client_name: clientInfo.name,
-              created_at: new Date().toISOString()
-            }
-          })
-        });
-        
-        if (!logCommunicationResponse.ok) {
-          console.warn('No se pudo registrar la comunicación pero continuamos el proceso');
-        }
-      } catch (logError) {
-        console.warn('Error al registrar comunicación:', logError);
-      }
-
-      // Send confirmation email
-      try {
-        const emailResponse = await fetch(`${SUPABASE_URL}/functions/v1/send-reservation-email`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${SUPABASE_ANON_KEY}`
-          },
-          body: JSON.stringify({
-            email: clientInfo.email,
-            name: clientInfo.name,
-            phone: clientInfo.phone,
-            reservationId
+            client_name: clientInfo.name,
+            client_email: clientInfo.email,
+            client_phone: clientInfo.phone,
+            updated_at: new Date().toISOString()
           })
         });
 
-        if (!emailResponse.ok) {
-          console.error('Error al enviar correo:', await emailResponse.text());
-        } else {
-          console.log('Correo de confirmación enviado correctamente');
+        if (!response.ok) {
+          const errorText = await response.text();
+          console.error('Alternative update failed:', errorText);
+          throw new Error(`Error en actualización alternativa: ${errorText}`);
         }
-      } catch (emailErr) {
-        // Do not interrupt the main flow if email sending fails
-        console.error('Error al enviar correo de confirmación:', emailErr);
-      }
 
-      return true;
+        console.log('Alternative update successful');
+        return true;
+      }
     } catch (err: any) {
-      console.error('Error al guardar información del cliente:', err);
+      console.error('Final error in saveClientInformation:', err);
       setError(err.message || 'Error al guardar información del cliente');
+      
+      // Show error toast
+      toast.error('Error al guardar', {
+        description: 'No se pudo guardar la información del cliente. Por favor, intenta nuevamente.'
+      });
+      
       return false;
     } finally {
       setIsUpdating(false);
