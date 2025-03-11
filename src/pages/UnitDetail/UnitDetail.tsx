@@ -163,6 +163,9 @@ const UnitDetail = () => {
                     setEndDate={state.setEndDate}
                     guests={state.guests}
                     setGuests={state.setGuests}
+                    setAdults={state.setAdults}
+                    setChildren={state.setChildren}
+                    requiredDomos={state.requiredDomos}
                     isAvailable={state.isAvailable}
                     showQuote={state.showQuote}
                     quote={state.quote}
@@ -179,6 +182,9 @@ const UnitDetail = () => {
                     getUpdatedQuoteTotal={getUpdatedQuoteTotal}
                     reservationTab={state.reservationTab}
                     setReservationTab={state.setReservationTab}
+                    isPartialAvailability={state.isPartialAvailability}
+                    availableDomos={state.availableDomos}
+                    alternativeDates={state.alternativeDates}
                   />
                 )}
               </div>

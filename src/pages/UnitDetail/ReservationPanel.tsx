@@ -5,6 +5,8 @@ import { ReservationSummary } from "@/components/unit-detail/ReservationSummary"
 import { Activity, ThemedPackage } from "@/types";
 import { AvailabilityCalendarSheet } from "./AvailabilityCalendarSheet";
 import { ReservationTabs } from "./ReservationTabs";
+import { AlternativeDates } from "@/components/unit-detail/AlternativeDates";
+import { InfoCircle } from "lucide-react";
 
 interface ReservationPanelProps {
   displayUnit: GlampingUnit;
@@ -33,6 +35,9 @@ interface ReservationPanelProps {
   getUpdatedQuoteTotal: () => number;
   reservationTab: string;
   setReservationTab: (tab: string) => void;
+  isPartialAvailability?: boolean;
+  availableDomos?: number;
+  alternativeDates?: {startDate: Date, endDate: Date}[];
 }
 
 export const ReservationPanel = ({
@@ -61,7 +66,10 @@ export const ReservationPanel = ({
   packagesTotal,
   getUpdatedQuoteTotal,
   reservationTab,
-  setReservationTab
+  setReservationTab,
+  isPartialAvailability = false,
+  availableDomos = 0,
+  alternativeDates = []
 }: ReservationPanelProps) => {
   
   const handleCalendarDateSelect = (date: Date) => {
@@ -72,6 +80,11 @@ export const ReservationPanel = ({
     if (endDate && endDate <= date) {
       setEndDate(undefined);
     }
+  };
+
+  const handleAlternativeDateSelect = (start: Date, end: Date) => {
+    setStartDate(start);
+    setEndDate(end);
   };
 
   return (
@@ -114,13 +127,34 @@ export const ReservationPanel = ({
             />
 
             <div className="mt-4 text-sm">
-              <div className="bg-blue-50 p-3 rounded-md border border-blue-100">
-                <p className="font-medium text-blue-800">Información de domos</p>
-                <p className="text-blue-700 mt-1">
-                  Se necesitarán <strong>{requiredDomos}</strong> de los 4 domos disponibles para tu reserva.
-                </p>
-              </div>
+              {isPartialAvailability && isAvailable === false ? (
+                <div className="bg-amber-50 p-3 rounded-md border border-amber-200">
+                  <p className="font-medium text-amber-800 flex items-center gap-1.5">
+                    <InfoCircle className="h-4 w-4" />
+                    Disponibilidad limitada
+                  </p>
+                  <p className="text-amber-700 mt-1">
+                    Solo tenemos <strong>{availableDomos}</strong> domos disponibles para las fechas seleccionadas, pero tu reserva requiere <strong>{requiredDomos}</strong> domos.
+                  </p>
+                </div>
+              ) : (
+                <div className="bg-blue-50 p-3 rounded-md border border-blue-100">
+                  <p className="font-medium text-blue-800">Información de domos</p>
+                  <p className="text-blue-700 mt-1">
+                    Se necesitarán <strong>{requiredDomos}</strong> domos para tu reserva.
+                  </p>
+                </div>
+              )}
             </div>
+            
+            {/* Display alternative dates if available */}
+            {isAvailable === false && alternativeDates.length > 0 && (
+              <AlternativeDates 
+                alternativeDates={alternativeDates}
+                onSelectDate={handleAlternativeDateSelect}
+                requiredDomos={requiredDomos}
+              />
+            )}
 
             <div className="mt-4 text-sm text-gray-600 p-3 bg-amber-50 border border-amber-100 rounded">
               <p className="font-medium text-amber-800 mb-1">Política de reserva</p>
@@ -131,7 +165,7 @@ export const ReservationPanel = ({
               className="w-full mt-2" 
               size="lg"
               onClick={onReservation}
-              disabled={!startDate || !endDate || isAvailable === false}
+              disabled={!startDate || !endDate || (isAvailable === false && !isPartialAvailability)}
             >
               {isAvailable === true ? 'Cotizar estadía' : 'Verificar disponibilidad'}
             </Button>

@@ -1,4 +1,3 @@
-
 import { useState, useEffect, useRef } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useReservations } from "@/hooks/reservations";
@@ -40,15 +39,16 @@ export const useUnitDetailState = (unitId: string | undefined) => {
     phone: ''
   });
   const confirmationRef = useRef<HTMLDivElement>(null);
+  const [isPartialAvailability, setPartialAvailability] = useState<boolean>(false);
+  const [availableDomos, setAvailableDomos] = useState<number>(0);
+  const [alternativeDates, setAlternativeDates] = useState<{startDate: Date, endDate: Date}[]>([]);
 
-  // Calcular domos necesarios cuando cambia el número de huéspedes
   useEffect(() => {
     const MAX_GUESTS_PER_DOMO = 4;
     const domos = Math.ceil(guests / MAX_GUESTS_PER_DOMO);
     setRequiredDomos(domos);
   }, [guests]);
 
-  // Calculate totals for activities and packages
   useEffect(() => {
     let actTotal = 0;
     let pkgTotal = 0;
@@ -65,19 +65,16 @@ export const useUnitDetailState = (unitId: string | undefined) => {
     setPackagesTotal(pkgTotal);
   }, [selectedActivities, selectedPackages]);
 
-  // Scroll to top when page loads
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
 
-  // Scroll to confirmation when reservation is confirmed
   useEffect(() => {
     if (isReservationConfirmed && confirmationRef.current) {
       confirmationRef.current.scrollIntoView({ behavior: 'smooth' });
     }
   }, [isReservationConfirmed]);
 
-  // Use packageData as fallback when database fails
   useEffect(() => {
     if (unitId) {
       const packageItem = packageData.find(pkg => pkg.id === unitId);
@@ -97,7 +94,6 @@ export const useUnitDetailState = (unitId: string | undefined) => {
     }
   }, [unitId]);
 
-  // Intentar obtener la unidad por ID
   const { data: unit, isError } = useQuery<GlampingUnit | null>({
     queryKey: ["unit", unitId],
     queryFn: async () => {
@@ -129,7 +125,6 @@ export const useUnitDetailState = (unitId: string | undefined) => {
     enabled: !!unitId,
   });
 
-  // Si no se encuentra por ID, cargar la primera unidad disponible
   useEffect(() => {
     const loadFallbackUnit = async () => {
       if (isError || (!unit && unitId && !fallbackUnit)) {
@@ -145,7 +140,6 @@ export const useUnitDetailState = (unitId: string | undefined) => {
     loadFallbackUnit();
   }, [unitId, unit, isError, fetchGlampingUnits, fallbackUnit]);
 
-  // Usar la unidad directa o la alternativa
   const displayUnit = unit || fallbackUnit;
 
   return {
@@ -192,6 +186,14 @@ export const useUnitDetailState = (unitId: string | undefined) => {
     setConfirmedReservationId,
     clientInformation,
     setClientInformation,
-    confirmationRef
+    confirmationRef,
+    isPartialAvailability,
+    setPartialAvailability,
+    availableDomos,
+    setAvailableDomos,
+    alternativeDates,
+    setAlternativeDates
   };
 };
+
+
