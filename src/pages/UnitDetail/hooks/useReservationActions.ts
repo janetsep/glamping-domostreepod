@@ -155,21 +155,25 @@ export const useReservationActions = (state: ReservationState) => {
       const activityIds = state.selectedActivities.map(a => a.id);
       const packageIds = state.selectedPackages.map(p => p.id);
       
+      // Calculate the total price including base price, activities, and packages
+      const totalPrice = getUpdatedQuoteTotal();
+      
       const reservation = await state.createReservation(
         state.displayUnit.id,
         state.startDate,
         state.endDate,
         state.guests,
-        state.quote.totalPrice,
+        state.quote.totalPrice,  // This should be the base price without extras
         'webpay',
         activityIds,
         packageIds
       );
 
       if (reservation) {
-        // Iniciar el proceso de pago sin esperar respuesta (para evitar errores de timeout)
-        state.redirectToWebpay(reservation.id, state.quote.totalPrice);
-        // No hacemos nada después de la redirección, ya que el usuario será llevado a WebPay
+        // The total price has already been calculated and stored in the reservation
+        // The total passed to redirectToWebpay should be the reservation's total_price
+        // which already includes activities and packages
+        state.redirectToWebpay(reservation.id, reservation.total_price);
       }
     } catch (error) {
       console.error("Error al confirmar reserva:", error);
