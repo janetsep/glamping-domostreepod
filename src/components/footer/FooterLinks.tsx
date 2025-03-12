@@ -17,19 +17,14 @@ const FooterLinks = ({ navigateTo }: FooterLinksProps) => {
             {/* WebPayPlus payment method icons */}
             <div className="flex flex-wrap gap-2">
               <img 
-                src="/lovable-uploads/webpay-logo.png" 
-                alt="WebPay" 
-                className="h-8 object-contain" 
+                src="/lovable-uploads/b17d7f25-f4ae-4468-90bd-4aa15f4843a9.png" 
+                alt="WebPay Plus" 
+                className="h-10 object-contain" 
                 onError={(e) => {
                   // Fallback URL if the image fails to load
                   e.currentTarget.src = "https://www.transbank.cl/wp-content/uploads/2022/10/webpay-1.svg";
                 }}
               />
-              <div className="flex space-x-1">
-                <img src="https://www.transbank.cl/wp-content/uploads/2022/04/visa.svg" alt="Visa" className="h-6 object-contain" />
-                <img src="https://www.transbank.cl/wp-content/uploads/2022/04/mastercard.svg" alt="Mastercard" className="h-6 object-contain" />
-                <img src="https://www.transbank.cl/wp-content/uploads/2022/04/amex.svg" alt="American Express" className="h-6 object-contain" />
-              </div>
             </div>
           </div>
         </div>
