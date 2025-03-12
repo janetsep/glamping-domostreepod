@@ -1,6 +1,5 @@
 
 import { useRef } from "react";
-import ChileanFlag from "./ChileanFlag";
 import AnimatedTabIndicator from "./AnimatedTabIndicator";
 import NavTabs from "./NavTabs";
 import ThemeToggle from "./ThemeToggle";
@@ -49,9 +48,6 @@ const AnimatedDesktopMenu = ({
 
   return (
     <div className="hidden md:flex gap-3 items-center">
-      {/* Chilean flag */}
-      <ChileanFlag />
-      
       {/* Animated Tab Navigation */}
       <div className="relative">
         {/* Animated Indicators */}
