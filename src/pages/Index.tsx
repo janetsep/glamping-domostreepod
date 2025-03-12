@@ -7,7 +7,6 @@ import Location from "@/components/Location";
 import Packages from "@/components/Packages";
 import Blog from "@/components/Blog";
 import SimplifiedContact from "@/components/SimplifiedContact";
-import Footer from "@/components/footer";
 import { useQuery } from "@tanstack/react-query";
 import { useEffect } from "react";
 import { toast } from "sonner";
@@ -57,7 +56,6 @@ const Index = () => {
       <div className="mt-8 md:mt-16 bg-gradient-to-r from-gray-50 to-white py-12">
         <SimplifiedContact />
       </div>
-      <Footer />
     </div>
   );
 };
