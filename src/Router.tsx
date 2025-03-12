@@ -12,19 +12,15 @@ import Index from "./pages/Index";
 import UnitDetail from "./pages/UnitDetail";
 import { useEffect } from "react";
 import WebPayReturn from "./pages/WebPayReturn";
-import Auth from "./pages/Auth";
 
 // Create the router with all our routes
 const router = createBrowserRouter(
   createRoutesFromElements(
     <Route path="/" element={<App />} errorElement={<NotFound />}>
       <Route index element={<Index />} />
-      <Route path="about" element={<AboutUs />} />
       <Route path="sobre-nosotros" element={<AboutUs />} />
       <Route path="unit/:unitId" element={<UnitDetail />} />
       <Route path="webpay/return" element={<WebPayReturn />} />
-      <Route path="auth" element={<Auth />} />
-      <Route path="*" element={<NotFound />} />
     </Route>
   )
 );

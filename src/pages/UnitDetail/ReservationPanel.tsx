@@ -1,4 +1,3 @@
-
 import { Button } from "@/components/ui/button";
 import { GlampingUnit } from "@/lib/supabase";
 import { ReservationSummary } from "@/components/unit-detail/ReservationSummary";
@@ -6,7 +5,7 @@ import { Activity, ThemedPackage } from "@/types";
 import { AvailabilityCalendarSheet } from "./AvailabilityCalendarSheet";
 import { ReservationTabs } from "./ReservationTabs";
 import { AlternativeDates } from "@/components/unit-detail/AlternativeDates";
-import { InfoCircle } from "lucide-react";
+import { Info } from "lucide-react";
 
 interface ReservationPanelProps {
   displayUnit: GlampingUnit;
@@ -73,10 +72,8 @@ export const ReservationPanel = ({
 }: ReservationPanelProps) => {
   
   const handleCalendarDateSelect = (date: Date) => {
-    // Just set the start date without automatically setting the end date
     setStartDate(date);
     
-    // If there's an end date before the new start date, clear it
     if (endDate && endDate <= date) {
       setEndDate(undefined);
     }
@@ -93,7 +90,6 @@ export const ReservationPanel = ({
         Reserva tu experiencia TreePod
       </h2>
       
-      {/* Available dates calendar button */}
       <AvailabilityCalendarSheet 
         unitId={displayUnit.id} 
         onSelectDate={handleCalendarDateSelect}
@@ -130,7 +126,7 @@ export const ReservationPanel = ({
               {isPartialAvailability && isAvailable === false ? (
                 <div className="bg-amber-50 p-3 rounded-md border border-amber-200">
                   <p className="font-medium text-amber-800 flex items-center gap-1.5">
-                    <InfoCircle className="h-4 w-4" />
+                    <Info className="h-4 w-4" />
                     Disponibilidad limitada
                   </p>
                   <p className="text-amber-700 mt-1">
@@ -147,7 +143,6 @@ export const ReservationPanel = ({
               )}
             </div>
             
-            {/* Display alternative dates if available */}
             {isAvailable === false && alternativeDates.length > 0 && (
               <AlternativeDates 
                 alternativeDates={alternativeDates}
