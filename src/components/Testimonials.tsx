@@ -1,5 +1,4 @@
 
-import { Star } from "lucide-react";
 import { useEffect } from "react";
 
 const Testimonials = () => {
@@ -23,17 +22,6 @@ const Testimonials = () => {
     };
   }, []);
 
-  const renderStars = (rating: number) => {
-    return Array(5)
-      .fill(0)
-      .map((_, i) => (
-        <Star
-          key={i}
-          className={`h-4 w-4 ${i < rating ? "text-yellow-500 fill-yellow-500" : "text-gray-300"}`}
-        />
-      ));
-  };
-
   return (
     <section id="testimonials" className="py-20 bg-secondary/10">
       {/* Franja de título sin texto */}
@@ -53,34 +41,6 @@ const Testimonials = () => {
         
         {/* Elfsight All-in-One Reviews Widget */}
         <div className="elfsight-app-58776635-7259-470b-9077-f838d052ebab" data-elfsight-app-lazy></div>
-        
-        {/* Social Proof - Mantener esta sección como referencia rápida */}
-        <div className="mt-16 bg-white p-6 rounded-lg shadow-md">
-          <h3 className="text-xl font-semibold text-center mb-6">Nuestras reseñas en plataformas</h3>
-          <div className="flex flex-wrap justify-center gap-4">
-            <div className="flex flex-col items-center p-4 rounded-lg bg-gray-50">
-              <div className="text-4xl font-bold text-primary">4.9</div>
-              <div className="flex mb-2">
-                {renderStars(5)}
-              </div>
-              <div className="text-sm">Google (126 reseñas)</div>
-            </div>
-            <div className="flex flex-col items-center p-4 rounded-lg bg-gray-50">
-              <div className="text-4xl font-bold text-primary">4.8</div>
-              <div className="flex mb-2">
-                {renderStars(5)}
-              </div>
-              <div className="text-sm">Booking (87 reseñas)</div>
-            </div>
-            <div className="flex flex-col items-center p-4 rounded-lg bg-gray-50">
-              <div className="text-4xl font-bold text-primary">4.9</div>
-              <div className="flex mb-2">
-                {renderStars(5)}
-              </div>
-              <div className="text-sm">Airbnb (95 reseñas)</div>
-            </div>
-          </div>
-        </div>
       </div>
     </section>
   );
