@@ -9,6 +9,7 @@ interface CalendarGridProps {
   selectedStartDate?: Date | null;
   selectedEndDate?: Date | null;
   disableNightMode?: boolean;
+  isCompact?: boolean;
 }
 
 export const CalendarGrid = ({ 
@@ -17,7 +18,8 @@ export const CalendarGrid = ({
   onDateClick,
   selectedStartDate,
   selectedEndDate,
-  disableNightMode = false
+  disableNightMode = false,
+  isCompact = false
 }: CalendarGridProps) => {
   // Function to check if a date is selectable
   const isDateSelectable = (day: AvailabilityCalendarDay): boolean => {
@@ -42,7 +44,7 @@ export const CalendarGrid = ({
 
   // Function to get the CSS class for each day cell
   const getDayClass = (day: AvailabilityCalendarDay) => {
-    let classes = "rounded-full w-10 h-10 flex items-center justify-center text-base";
+    let classes = `rounded-full ${isCompact ? 'w-7 h-7 text-xs' : 'w-10 h-10 text-base'} flex items-center justify-center`;
     
     if (!isSameMonth(day.date, currentMonth)) {
       classes += " text-gray-400";
@@ -92,12 +94,12 @@ export const CalendarGrid = ({
         <div
           key={i}
           onClick={() => isDateSelectable(day) && onDateClick(day)}
-          className="p-1 text-center"
+          className={`p-0.5 text-center`}
         >
           <div className={getDayClass(day)}>
             {format(day.date, "d")}
           </div>
-          {day.availableUnits !== undefined && isSameMonth(day.date, currentMonth) && (
+          {day.availableUnits !== undefined && isSameMonth(day.date, currentMonth) && !isCompact && (
             <div className="text-xs text-gray-600 mt-1 font-medium">
               {getAvailabilityPercentage(day)}
             </div>
