@@ -1,5 +1,5 @@
 
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Menu, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { NavigationLinks } from "./NavigationLinks";
@@ -18,6 +18,7 @@ const MobileMenu = ({
   navigateToPage 
 }: MobileMenuProps) => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const menuRef = useRef<HTMLDivElement>(null);
   
   const onScrollToSection = (id: string) => {
     scrollToSection(id);
@@ -33,6 +34,31 @@ const MobileMenu = ({
     handleReserveClick();
     setMobileMenuOpen(false);
   };
+
+  // Handle clicks outside menu to close it
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (menuRef.current && !menuRef.current.contains(event.target as Node) && mobileMenuOpen) {
+        setMobileMenuOpen(false);
+      }
+    };
+    
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, [mobileMenuOpen]);
+
+  // Prevent body scrolling when menu is open
+  useEffect(() => {
+    if (mobileMenuOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+    
+    return () => {
+      document.body.style.overflow = '';
+    };
+  }, [mobileMenuOpen]);
 
   return (
     <div className="md:hidden">
@@ -50,7 +76,7 @@ const MobileMenu = ({
           mobileMenuOpen ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'
         }`}
       >
-        <div className="container px-4 flex flex-col pt-20">
+        <div ref={menuRef} className="container px-4 flex flex-col pt-20">
           <div className="overflow-hidden">
             <div className={`transition-all duration-500 transform ${mobileMenuOpen ? 'translate-y-0 opacity-100' : '-translate-y-10 opacity-0'}`}>
               <NavigationLinks 

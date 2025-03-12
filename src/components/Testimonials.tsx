@@ -35,7 +35,7 @@ const Testimonials = () => {
         <h2 className="text-3xl md:text-4xl font-display font-bold text-primary mb-4 text-center">
           Lo que dicen nuestros huéspedes
         </h2>
-        <p className="text-xl text-center text-gray-600 mb-6 max-w-3xl mx-auto">
+        <p className="text-xl text-center text-gray-600 mb-12 max-w-3xl mx-auto">
           Recomendado por más de 500 viajeros satisfechos
         </p>
         
