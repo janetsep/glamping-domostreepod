@@ -1,3 +1,4 @@
+
 interface AnimatedTabIndicatorProps {
   isScrolled: boolean;
   activeStyle?: string;
@@ -11,7 +12,6 @@ const AnimatedTabIndicator = ({
   hoverStyle, 
   hoveredIndex 
 }: AnimatedTabIndicatorProps) => {
-  // This component will be implemented later
   return null;
 };
 
