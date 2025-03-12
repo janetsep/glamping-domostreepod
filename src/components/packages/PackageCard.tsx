@@ -1,4 +1,4 @@
-import { Coffee, Droplets, Wifi, Flame, BedDouble, Mountain, Users, Bell } from "lucide-react";
+import { Coffee, Droplets, Wifi, Flame, BedDouble, Mountain, Users, ConciergeБell } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import React from "react";
 
@@ -98,7 +98,7 @@ const PackageCard = ({
                 }}
                 className="bg-accent hover:bg-accent/90 flex items-center gap-2"
               >
-                <Bell className="h-4 w-4" />
+                <ConciergeБell className="h-4 w-4" />
                 Reservar ahora
               </Button>
             </div>
