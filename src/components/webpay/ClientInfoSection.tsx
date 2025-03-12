@@ -26,10 +26,9 @@ const ClientInfoSection: React.FC<ClientInfoSectionProps> = ({
 }) => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { saveClientInformation } = useMutateReservationStatus();
-  const [clientInfo, setClientInfo] = useState(initialClientInfo);
 
   // Handle client information submission
-  const handleClientInfoSubmit = async () => {
+  const handleClientInfoSubmit = async (clientInfo: { name: string; email: string; phone: string }) => {
     if (!transactionResult || !transactionResult.reservation_id) {
       toast.error("Error", {
         description: "No se encontró el ID de la reserva",
@@ -59,7 +58,7 @@ const ClientInfoSection: React.FC<ClientInfoSectionProps> = ({
     } catch (error) {
       console.error('Error guardando información del cliente:', error);
       toast.error("Error", {
-        description: "No se pudo guardar la información del cliente. Por favor, intenta de nuevo.",
+        description: "No se pudo guardar la información del cliente. Por favor, inténtalo de nuevo.",
       });
     } finally {
       setIsSubmitting(false);
@@ -77,8 +76,7 @@ const ClientInfoSection: React.FC<ClientInfoSectionProps> = ({
       <ClientInformationForm 
         onSubmit={handleClientInfoSubmit}
         isSubmitting={isSubmitting}
-        initialValues={clientInfo}
-        setClientInformation={setClientInfo}
+        initialValues={initialClientInfo}
       />
     </>
   );

@@ -1,43 +1,17 @@
 
-import { useQuoteState } from "./quote/useQuoteState";
-import { useQuoteTotal } from "./quote/useQuoteTotal";
-import { useQuoteAvailability } from "./quote/useQuoteAvailability";
+import { Activity, ThemedPackage } from "@/types";
+import { useQuoteBase, QuoteState } from "./useQuoteBase";
+import { useQuoteNavigation } from "./useQuoteNavigation";
+import { useQuoteCalculation } from "./useQuoteCalculation";
 
-type ReservationState = {
-  startDate?: Date;
-  endDate?: Date;
-  displayUnit: any;
-  quote: any;
-  setQuote: (quote: any) => void;
-  setShowQuote: (show: boolean) => void;
-  activitiesTotal: number;
-  packagesTotal: number;
-};
-
-export const useQuoteManagement = (state: ReservationState) => {
-  const { handleNewQuote } = useQuoteState({
-    quote: state.quote,
-    setQuote: state.setQuote,
-    setShowQuote: state.setShowQuote
-  });
-
-  const { getUpdatedQuoteTotal } = useQuoteTotal({
-    quote: state.quote,
-    activitiesTotal: state.activitiesTotal,
-    packagesTotal: state.packagesTotal
-  });
-
-  const { checkAvailabilityAndQuote } = useQuoteAvailability({
-    startDate: state.startDate,
-    endDate: state.endDate,
-    displayUnit: state.displayUnit,
-    setQuote: state.setQuote,
-    setShowQuote: state.setShowQuote
-  });
+export const useQuoteManagement = (state: QuoteState) => {
+  const { getUpdatedQuoteTotal } = useQuoteBase(state);
+  const { handleNewQuote } = useQuoteNavigation(state);
+  const { checkAvailabilityAndQuote } = useQuoteCalculation(state);
 
   return {
     handleNewQuote,
     getUpdatedQuoteTotal,
-    checkAvailabilityAndQuote,
+    checkAvailabilityAndQuote
   };
 };

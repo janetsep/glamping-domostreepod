@@ -1,95 +1,133 @@
 
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 
 interface ClientInformationFormProps {
-  clientInformation?: {
-    name: string;
-    email: string;
-    phone: string;
-  };
-  setClientInformation?: (value: {
-    name: string;
-    email: string;
-    phone: string;
-  }) => void;
-  onSubmit: () => void;
-  isSubmitting?: boolean;
-  initialValues?: {
-    name: string;
-    email: string;
-    phone: string;
-  };
+  onSubmit: (clientInfo: { name: string; email: string; phone: string }) => void;
+  isSubmitting: boolean;
+  initialValues?: { name: string; email: string; phone: string };
 }
 
-export const ClientInformationForm = ({
-  clientInformation,
-  setClientInformation,
-  onSubmit,
-  isSubmitting = false,
-  initialValues
+export const ClientInformationForm = ({ 
+  onSubmit, 
+  isSubmitting, 
+  initialValues 
 }: ClientInformationFormProps) => {
-  const [formValues, setFormValues] = React.useState(initialValues || clientInformation || {
-    name: '',
-    email: '',
-    phone: ''
-  });
+  const [name, setName] = useState(initialValues?.name || "");
+  const [email, setEmail] = useState(initialValues?.email || "");
+  const [phone, setPhone] = useState(initialValues?.phone || "");
+  const [errors, setErrors] = useState<{
+    name?: string;
+    email?: string;
+    phone?: string;
+  }>({});
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    const newValues = { ...formValues, [name]: value };
-    setFormValues(newValues);
+  // Update form when initialValues change
+  useEffect(() => {
+    if (initialValues) {
+      if (initialValues.name) setName(initialValues.name);
+      if (initialValues.email) setEmail(initialValues.email);
+      if (initialValues.phone) setPhone(initialValues.phone);
+    }
+  }, [initialValues]);
+
+  const validateForm = () => {
+    const newErrors: {
+      name?: string;
+      email?: string;
+      phone?: string;
+    } = {};
     
-    // If parent component provides setClientInformation, call it
-    if (setClientInformation) {
-      setClientInformation(newValues);
+    if (!name.trim()) {
+      newErrors.name = "El nombre es obligatorio";
+    }
+    
+    if (!email.trim()) {
+      newErrors.email = "El correo electrónico es obligatorio";
+    } else if (!/\S+@\S+\.\S+/.test(email)) {
+      newErrors.email = "El correo electrónico no es válido";
+    }
+    
+    if (!phone.trim()) {
+      newErrors.phone = "El teléfono es obligatorio";
+    } else if (!/^[+0-9]{8,15}$/.test(phone.replace(/\s/g, ""))) {
+      newErrors.phone = "El teléfono no es válido (mínimo 8 dígitos)";
+    }
+    
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    if (validateForm()) {
+      onSubmit({ name, email, phone });
     }
   };
 
-  const handleSubmit = () => {
-    onSubmit();
-  };
-
   return (
-    <div className="border rounded-md p-4 mt-4">
-      <h3 className="text-lg font-semibold mb-4">Información de contacto</h3>
-      <div className="grid gap-4">
-        <div>
+    <Card className="p-6 bg-white">
+      <h3 className="text-xl font-semibold mb-4">Información de contacto</h3>
+      <p className="text-sm text-gray-600 mb-4">
+        Para completar tu reserva, por favor ingresa tus datos de contacto:
+      </p>
+      
+      <form onSubmit={handleSubmit} className="space-y-4">
+        <div className="space-y-2">
           <Label htmlFor="name">Nombre completo</Label>
           <Input
-            type="text"
             id="name"
-            name="name"
-            value={formValues.name}
-            onChange={handleChange}
+            placeholder="Ej: Juan Pérez"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            className={errors.name ? "border-red-500" : ""}
           />
+          {errors.name && (
+            <p className="text-sm text-red-500">{errors.name}</p>
+          )}
         </div>
-        <div>
+        
+        <div className="space-y-2">
           <Label htmlFor="email">Correo electrónico</Label>
           <Input
-            type="email"
             id="email"
-            name="email"
-            value={formValues.email}
-            onChange={handleChange}
+            type="email"
+            placeholder="Ej: correo@ejemplo.com"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            className={errors.email ? "border-red-500" : ""}
           />
+          {errors.email && (
+            <p className="text-sm text-red-500">{errors.email}</p>
+          )}
         </div>
-        <div>
-          <Label htmlFor="phone">Número de teléfono</Label>
+        
+        <div className="space-y-2">
+          <Label htmlFor="phone">Teléfono</Label>
           <Input
-            type="tel"
             id="phone"
-            name="phone"
-            value={formValues.phone}
-            onChange={handleChange}
+            placeholder="Ej: +56 9 1234 5678"
+            value={phone}
+            onChange={(e) => setPhone(e.target.value)}
+            className={errors.phone ? "border-red-500" : ""}
           />
+          {errors.phone && (
+            <p className="text-sm text-red-500">{errors.phone}</p>
+          )}
         </div>
-        <Button onClick={handleSubmit} disabled={isSubmitting}>
-          {isSubmitting ? "Procesando..." : "Confirmar y pagar"}
+        
+        <Button 
+          type="submit" 
+          className="w-full" 
+          disabled={isSubmitting}
+        >
+          {isSubmitting ? "Guardando..." : "Guardar información"}
         </Button>
-      </div>
-    </div>
+      </form>
+    </Card>
   );
 };

@@ -50,18 +50,21 @@ export const useDateSelection = ({
       if (isAvailable) {
         onStartDateChange(date);
         
-        // If the end date is before or equal to the new start date, reset it
+        // If the end date is before the new start date, reset it
         if (endDate && endDate <= date) {
           onEndDateChange(undefined);
         }
         
+        // Update the end date calendar month to match the start date month
         setEndDateCalendarMonth(date);
-        setStartCalendarOpen(false);
         
+        // Close the start calendar and open the end calendar if no end date is selected
+        setStartCalendarOpen(false);
         if (!endDate) {
-          setTimeout(() => setEndCalendarOpen(true), 300);
+          setTimeout(() => setEndCalendarOpen(true), 300); // Open end calendar after a short delay
         }
       } else {
+        // Date not available, show message
         toast({
           title: "Fecha no disponible",
           description: "No hay domos disponibles para esta fecha.",
@@ -76,26 +79,32 @@ export const useDateSelection = ({
   // Handle end date selection
   const handleEndDateSelect = async (date: Date | undefined) => {
     if (date && startDate) {
-      // Now allowing same day selection for one-night stays
-      if (date < startDate) {
-        toast({
-          title: "Fecha inválida",
-          description: "La fecha de salida debe ser igual o posterior a la fecha de entrada.",
-          variant: "destructive"
-        });
-        return;
-      }
-
-      // Check availability
-      const isAvailable = await checkDateAvailability(startDate);
+      // Check if all dates in the range are available
+      const dateRange = [];
+      let currentDate = new Date(startDate);
       
-      if (isAvailable) {
+      while (currentDate <= date) {
+        dateRange.push(new Date(currentDate));
+        currentDate.setDate(currentDate.getDate() + 1);
+      }
+      
+      // Check each date in the range
+      let allDatesAvailable = true;
+      for (const rangeDate of dateRange) {
+        const available = await checkDateAvailability(rangeDate);
+        if (!available) {
+          allDatesAvailable = false;
+          break;
+        }
+      }
+      
+      if (allDatesAvailable) {
         onEndDateChange(date);
         setEndCalendarOpen(false);
       } else {
         toast({
-          title: "Fecha no disponible",
-          description: "La fecha seleccionada no está disponible.",
+          title: "Rango no disponible",
+          description: "Algunas fechas en el rango seleccionado no están disponibles.",
           variant: "destructive"
         });
       }
