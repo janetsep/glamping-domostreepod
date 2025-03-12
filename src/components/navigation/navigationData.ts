@@ -7,7 +7,8 @@ import {
   Mail,
   Sparkles,
   Mountain,
-  Dumbbell
+  Dumbbell,
+  CalendarDays
 } from "lucide-react";
 
 export interface NavLink {
