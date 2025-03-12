@@ -56,7 +56,7 @@ export const DatePickerButton = ({
         </Button>
       </PopoverTrigger>
       <PopoverContent className="w-auto p-0" align="start">
-        <div className="p-2 w-[300px]">
+        <div className="p-3 w-[350px]">
           <AvailabilityCalendar 
             unitId={unitId}
             onSelectDate={onSelectDate}
@@ -65,7 +65,6 @@ export const DatePickerButton = ({
             selectedEndDate={selectedEndDate}
             initialMonth={initialMonth}
             disableNightMode={true}
-            isCompact={true}
           />
         </div>
       </PopoverContent>

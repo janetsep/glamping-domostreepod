@@ -18,7 +18,6 @@ interface AvailabilityCalendarProps {
   selectedEndDate?: Date | null;
   initialMonth?: Date; // Add this prop to control the initial month displayed
   disableNightMode?: boolean; // Add this prop to disable night mode
-  isCompact?: boolean; // Add this prop for smaller calendars
 }
 
 export const AvailabilityCalendar = ({ 
@@ -28,8 +27,7 @@ export const AvailabilityCalendar = ({
   selectedStartDate = null,
   selectedEndDate = null,
   initialMonth,
-  disableNightMode = false,
-  isCompact = false
+  disableNightMode = false
 }: AvailabilityCalendarProps) => {
   // Use initialMonth if provided, otherwise use current date
   const [currentMonth, setCurrentMonth] = useState(initialMonth || new Date());
@@ -118,20 +116,19 @@ export const AvailabilityCalendar = ({
   };
 
   return (
-    <div className={isCompact ? "mt-2" : "mt-4"}>
+    <div className="mt-4">
       <CalendarHeader 
         currentMonth={currentMonth}
         onPreviousMonth={handlePreviousMonth}
         onNextMonth={handleNextMonth}
         isLoading={isLoading}
-        isCompact={isCompact}
       />
       
       {isLoading ? (
         <CalendarLoading />
       ) : (
         <>
-          <CalendarWeekDays isCompact={isCompact} />
+          <CalendarWeekDays />
           
           <CalendarGrid 
             calendarDays={calendarDays}
@@ -140,10 +137,9 @@ export const AvailabilityCalendar = ({
             selectedStartDate={selectedStartDate}
             selectedEndDate={selectedEndDate}
             disableNightMode={disableNightMode}
-            isCompact={isCompact}
           />
           
-          <CalendarLegend isCompact={isCompact} />
+          <CalendarLegend />
         </>
       )}
     </div>
