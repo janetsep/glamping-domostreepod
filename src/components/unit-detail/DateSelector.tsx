@@ -58,6 +58,7 @@ export const DateSelector = ({
             onClick={() => {
               console.log("DateSelector: opening start calendar");
               setStartCalendarOpen(true);
+              setEndCalendarOpen(false); // Close the other calendar
             }}
           />
         </DatePickerPopover>
@@ -78,6 +79,7 @@ export const DateSelector = ({
             onClick={() => {
               console.log("DateSelector: opening end calendar");
               setEndCalendarOpen(true);
+              setStartCalendarOpen(false); // Close the other calendar
             }}
             disabled={!startDate}
           />

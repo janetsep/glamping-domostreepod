@@ -47,6 +47,7 @@ export const AvailabilityCalendar = ({
 
   const handleDateClick = async (day: AvailabilityCalendarDay) => {
     console.log("AvailabilityCalendar: clicked on date", day.date);
+    
     // Check if date is in the past or if it's today after 14:00
     const now = new Date();
     if (isBefore(day.date, now) && !isToday(day.date)) {
@@ -121,7 +122,13 @@ export const AvailabilityCalendar = ({
   };
 
   return (
-    <div className="mt-4 pointer-events-auto" onClick={e => e.stopPropagation()}>
+    <div 
+      className="mt-4 calendar-day-cell" 
+      onClick={e => {
+        console.log("Calendar container clicked");
+        e.stopPropagation();
+      }}
+    >
       <CalendarHeader 
         currentMonth={currentMonth}
         onPreviousMonth={handlePreviousMonth}
@@ -135,7 +142,13 @@ export const AvailabilityCalendar = ({
         <>
           <CalendarWeekDays />
           
-          <div className="pointer-events-auto" onClick={e => e.stopPropagation()}>
+          <div 
+            className="calendar-day-cell" 
+            onClick={e => {
+              console.log("Calendar grid container clicked");
+              e.stopPropagation();
+            }}
+          >
             <CalendarGrid 
               calendarDays={calendarDays}
               currentMonth={currentMonth}

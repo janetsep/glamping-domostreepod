@@ -22,8 +22,13 @@ const PopoverContent = React.forwardRef<
         className
       )}
       onInteractOutside={e => {
-        // This prevents the popover from closing when clicking inside a calendar date
-        if (e.target && (e.target as HTMLElement).closest('.calendar-day-cell')) {
+        // Prevent the popover from closing when clicking inside the calendar
+        if (e.target && (
+          (e.target as HTMLElement).closest('.calendar-day-cell') ||
+          (e.target as HTMLElement).closest('.calendar-container') ||
+          (e.target as HTMLElement).closest('.calendar-popover')
+        )) {
+          console.log("Preventing popover close on calendar interaction");
           e.preventDefault();
         }
       }}

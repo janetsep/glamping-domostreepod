@@ -48,13 +48,23 @@ export const DatePickerPopover = ({
         {children}
       </PopoverTrigger>
       <PopoverContent 
-        className="w-auto p-0" 
+        className="w-auto p-0 calendar-popover" 
         align="start"
         side="bottom"
         sideOffset={4}
         avoidCollisions={true}
+        onClick={(e) => {
+          // Prevent the popover from closing when clicking inside it
+          e.stopPropagation();
+        }}
       >
-        <div className="p-3" onClick={e => e.stopPropagation()}>
+        <div 
+          className="p-3 calendar-container" 
+          onClick={(e) => {
+            console.log("Calendar container clicked");
+            e.stopPropagation();
+          }}
+        >
           <AvailabilityCalendar 
             unitId={unitId}
             onSelectDate={handleSelectDate}

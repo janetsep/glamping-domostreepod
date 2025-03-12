@@ -1,13 +1,16 @@
+
 import { Button } from "@/components/ui/button";
-import { Calendar, CalendarDays } from "lucide-react";
+import { CalendarDays } from "lucide-react";
 import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import { AvailabilityCalendar } from "@/components/unit-detail/AvailabilityCalendar";
+
 interface AvailabilityCalendarSheetProps {
   unitId: string;
   onSelectDate?: (date: Date) => void;
   selectedStartDate?: Date | null;
   selectedEndDate?: Date | null;
 }
+
 export const AvailabilityCalendarSheet = ({
   unitId,
   onSelectDate,
@@ -32,7 +35,13 @@ export const AvailabilityCalendarSheet = ({
         </SheetHeader>
         
         <div className="max-w-lg mx-auto">
-          <AvailabilityCalendar unitId={unitId} onSelectDate={onSelectDate} selectedStartDate={selectedStartDate} selectedEndDate={selectedEndDate} initialMonth={initialMonth} />
+          <AvailabilityCalendar 
+            unitId={unitId} 
+            onSelectDate={onSelectDate} 
+            selectedStartDate={selectedStartDate} 
+            selectedEndDate={selectedEndDate} 
+            initialMonth={initialMonth} 
+          />
         </div>
       </SheetContent>
     </Sheet>;
