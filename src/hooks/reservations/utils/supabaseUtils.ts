@@ -3,78 +3,119 @@ import { supabase } from '@/lib/supabase';
 import { SUPABASE_URL, SUPABASE_ANON_KEY } from '@/lib/constants';
 
 /**
- * Attempt to update reservation data using Supabase client first,
- * fallback to direct fetch if client fails
+ * Creates a new reservation in the database
  */
-export const updateReservationData = async (
-  reservationId: string,
-  updateData: any
-): Promise<boolean> => {
+export const createReservationEntry = async (
+  unitId: string,
+  checkIn: Date,
+  checkOut: Date,
+  guests: number,
+  totalPrice: number,
+  paymentMethod: string = 'webpay',
+  selectedActivities: string[] = [],
+  selectedPackages: string[] = []
+) => {
   try {
-    // First attempt: Use Supabase client
+    // First attempt with Supabase client
     try {
-      const { error: supabaseError } = await supabase
+      const { data, error } = await supabase
         .from('reservations')
-        .update(updateData)
-        .eq('id', reservationId);
-        
-      if (supabaseError) {
-        console.error('Error con cliente supabase:', supabaseError);
-        throw supabaseError;
+        .insert({
+          unit_id: unitId,
+          check_in: checkIn.toISOString(),
+          check_out: checkOut.toISOString(),
+          guests,
+          total_price: totalPrice,
+          status: 'pending',
+          payment_method: paymentMethod,
+          selected_activities: selectedActivities,
+          selected_packages: selectedPackages,
+          payment_details: {
+            created_at: new Date().toISOString()
+          }
+        })
+        .select()
+        .single();
+      
+      if (error) {
+        console.error('Error con cliente Supabase:', error);
+        throw error;
       }
       
-      console.log(`Operación completada correctamente usando cliente supabase`);
-      return true;
-    } catch (clientError) {
-      console.warn('Fallo con cliente supabase, intentando con fetch directo:', clientError);
-      
-      // Second attempt: Use direct fetch
-      const response = await fetch(`${SUPABASE_URL}/rest/v1/reservations?id=eq.${reservationId}`, {
-        method: 'PATCH',
+      console.log('Reserva creada con cliente Supabase:', data);
+      return data;
+    } catch (supabaseError) {
+      // Fallback to direct API call
+      console.log('Intentando crear reserva con fetch directo');
+      const response = await fetch(`${SUPABASE_URL}/rest/v1/reservations`, {
+        method: 'POST',
         headers: {
           'Content-Type': 'application/json',
           'apikey': SUPABASE_ANON_KEY,
           'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
-          'Prefer': 'return=minimal'
+          'Prefer': 'return=representation'
         },
-        body: JSON.stringify(updateData)
+        body: JSON.stringify({
+          unit_id: unitId,
+          check_in: checkIn.toISOString(),
+          check_out: checkOut.toISOString(),
+          guests,
+          total_price: totalPrice,
+          status: 'pending',
+          payment_method: paymentMethod,
+          selected_activities: selectedActivities,
+          selected_packages: selectedPackages,
+          payment_details: {
+            created_at: new Date().toISOString()
+          }
+        })
       });
 
       if (!response.ok) {
         const errorText = await response.text();
-        console.error(`Error al actualizar datos (HTTP ${response.status}):`, errorText);
-        throw new Error(`Error al actualizar datos: ${response.status} ${errorText}`);
+        console.error('Error al crear reserva con fetch:', errorText);
+        throw new Error(`Error al crear reserva: ${response.status} ${errorText}`);
       }
 
-      console.log(`Operación completada correctamente usando fetch directo`);
-      return true;
+      const data = await response.json();
+      console.log('Reserva creada con fetch directo:', data);
+      return data[0];
     }
-  } catch (err) {
-    console.error('Error al actualizar datos:', err);
-    return false;
+  } catch (error) {
+    console.error('Error creating reservation:', error);
+    throw error;
   }
 };
 
 /**
- * Verify that the reservation status updated correctly
+ * Creates a temporary reservation for package units
  */
-export const verifyReservationUpdate = async (reservationId: string): Promise<void> => {
-  try {
-    const verifyResponse = await fetch(`${SUPABASE_URL}/rest/v1/reservations?id=eq.${reservationId}&select=status`, {
-      headers: {
-        'Content-Type': 'application/json',
-        'apikey': SUPABASE_ANON_KEY,
-        'Authorization': `Bearer ${SUPABASE_ANON_KEY}`
-      }
-    });
-    
-    if (verifyResponse.ok) {
-      const verifyData = await verifyResponse.json();
-      if (verifyData.length > 0) {
-        console.log(`Estado actual de la reserva ${reservationId}: ${verifyData[0].status}`);
-      }
+export const createTemporaryReservation = (
+  unitId: string,
+  checkIn: Date,
+  checkOut: Date,
+  guests: number,
+  totalPrice: number,
+  paymentMethod: string = 'webpay',
+  selectedActivities: string[] = [],
+  selectedPackages: string[] = []
+) => {
+  const tempId = `temp-${Date.now()}-${Math.random().toString(36).substring(2, 9)}`;
+  return {
+    id: tempId,
+    created_at: new Date().toISOString(),
+    unit_id: unitId,
+    check_in: checkIn.toISOString(),
+    check_out: checkOut.toISOString(),
+    guests: guests,
+    total_price: totalPrice,
+    status: 'pending',
+    payment_method: paymentMethod,
+    is_package_unit: true,
+    selected_activities: selectedActivities,
+    selected_packages: selectedPackages,
+    payment_details: {
+      created_at: new Date().toISOString()
     }
-  } catch (verifyError) {
-    console.error('Error al verificar estado final:', verifyError);
-  }
+  };
 };

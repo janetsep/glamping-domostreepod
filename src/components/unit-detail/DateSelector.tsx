@@ -67,7 +67,6 @@ export const DateSelector = ({
           unitId={unitId}
           selectedStartDate={startDate}
           selectedEndDate={endDate}
-          disableNightMode={true}
         />
 
         <DatePickerButton
@@ -82,7 +81,6 @@ export const DateSelector = ({
           disabled={!startDate}
           initialMonth={endDateCalendarMonth}
           checkDateRange={true}
-          disableNightMode={true}
         />
       </div>
       

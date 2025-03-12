@@ -2,11 +2,12 @@
 import { useCallback } from 'react';
 import { packageData } from '@/components/packages/packageData';
 import { supabase } from '@/lib/supabase';
+import { isPackageUnit } from './utils/packageUnitChecker';
+import { calculateActivitiesTotal, calculatePackagesTotal, calculateFinalTotal } from './utils/priceCalculator';
+import { createReservationEntry, createTemporaryReservation } from './utils/supabaseUtils';
 
 const SUPABASE_URL = 'https://gtxjfmvnzrsuaxryffnt.supabase.co';
 const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imd0eGpmbXZuenJzdWF4cnlmZm50Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDA1MTg5ODIsImV4cCI6MjA1NjA5NDk4Mn0.WwPCyeZX42Jp4A4lW0jl7arXt0lzwRwm18-Ay_D4Ci8';
-
-import { checkUnitAvailability } from './utils/availabilityChecker';
 
 interface UseReservationCreationProps {
   setIsLoading: (isLoading: boolean) => void;
@@ -31,6 +32,7 @@ export const useReservationCreation = ({
   ) => {
     setIsLoading(true);
     try {
+      // Check availability first
       const isAvailable = await checkAvailability(unitId, checkIn, checkOut);
       if (!isAvailable) {
         toast({
@@ -41,65 +43,25 @@ export const useReservationCreation = ({
         return null;
       }
 
-      // Calculate activities total
-      let activitiesTotal = 0;
-      if (selectedActivities.length > 0) {
-        const { data: activities } = await supabase
-          .from('activities')
-          .select('price')
-          .in('id', selectedActivities);
-        
-        if (activities) {
-          activitiesTotal = activities.reduce((sum, act) => sum + act.price, 0);
-        }
-      }
+      // Calculate pricing for activities and packages
+      const activitiesTotal = await calculateActivitiesTotal(selectedActivities);
+      const packagesTotal = await calculatePackagesTotal(selectedPackages);
+      const finalTotalPrice = calculateFinalTotal(totalPrice, activitiesTotal, packagesTotal);
 
-      // Calculate packages total
-      let packagesTotal = 0;
-      if (selectedPackages.length > 0) {
-        const { data: packages } = await supabase
-          .from('themed_packages')
-          .select('price')
-          .in('id', selectedPackages);
-        
-        if (packages) {
-          packagesTotal = packages.reduce((sum, pkg) => sum + pkg.price, 0);
-        }
-      }
-
-      // Calculate final total price including activities and packages
-      const finalTotalPrice = totalPrice + activitiesTotal + packagesTotal;
-      console.log('Price breakdown:', {
-        basePrice: totalPrice,
-        activitiesTotal,
-        packagesTotal,
-        finalTotalPrice
-      });
-
-      // Check if this is a packageData unit or a real database unit
-      const isPackageUnit = packageData.some(pkg => pkg.id === unitId);
+      // Create reservation based on unit type
       let reservationData;
-      
-      if (isPackageUnit) {
+      if (isPackageUnit(unitId)) {
         console.log('Creando reserva temporal para unidad de paquete');
-        const tempId = `temp-${Date.now()}-${Math.random().toString(36).substring(2, 9)}`;
-        reservationData = {
-          id: tempId,
-          created_at: new Date().toISOString(),
-          unit_id: unitId,
-          check_in: checkIn.toISOString(),
-          check_out: checkOut.toISOString(),
-          guests: guests,
-          total_price: finalTotalPrice,
-          status: 'pending',
-          payment_method: paymentMethod,
-          is_package_unit: true,
-          selected_activities: selectedActivities,
-          selected_packages: selectedPackages,
-          payment_details: {
-            created_at: new Date().toISOString()
-          }
-        };
+        reservationData = createTemporaryReservation(
+          unitId,
+          checkIn,
+          checkOut,
+          guests,
+          finalTotalPrice,
+          paymentMethod,
+          selectedActivities,
+          selectedPackages
+        );
       } else {
         console.log('Creando reserva en la base de datos');
         console.log('Datos de reserva:', {
@@ -114,71 +76,16 @@ export const useReservationCreation = ({
           selected_packages: selectedPackages
         });
         
-        // First attempt with Supabase client
-        try {
-          const { data, error } = await supabase
-            .from('reservations')
-            .insert({
-              unit_id: unitId,
-              check_in: checkIn.toISOString(),
-              check_out: checkOut.toISOString(),
-              guests,
-              total_price: finalTotalPrice,
-              status: 'pending',
-              payment_method: paymentMethod,
-              selected_activities: selectedActivities,
-              selected_packages: selectedPackages,
-              payment_details: {
-                created_at: new Date().toISOString()
-              }
-            })
-            .select()
-            .single();
-          
-          if (error) {
-            console.error('Error con cliente Supabase:', error);
-            throw error;
-          }
-          
-          reservationData = data;
-          console.log('Reserva creada con cliente Supabase:', reservationData);
-        } catch (supabaseError) {
-          // Fallback to direct API call
-          console.log('Intentando crear reserva con fetch directo');
-          const response = await fetch(`${SUPABASE_URL}/rest/v1/reservations`, {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-              'apikey': SUPABASE_ANON_KEY,
-              'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
-              'Prefer': 'return=representation'
-            },
-            body: JSON.stringify({
-              unit_id: unitId,
-              check_in: checkIn.toISOString(),
-              check_out: checkOut.toISOString(),
-              guests,
-              total_price: finalTotalPrice,
-              status: 'pending',
-              payment_method: paymentMethod,
-              selected_activities: selectedActivities,
-              selected_packages: selectedPackages,
-              payment_details: {
-                created_at: new Date().toISOString()
-              }
-            })
-          });
-
-          if (!response.ok) {
-            const errorText = await response.text();
-            console.error('Error al crear reserva con fetch:', errorText);
-            throw new Error(`Error al crear reserva: ${response.status} ${errorText}`);
-          }
-
-          const data = await response.json();
-          reservationData = data[0];
-          console.log('Reserva creada con fetch directo:', reservationData);
-        }
+        reservationData = await createReservationEntry(
+          unitId,
+          checkIn,
+          checkOut,
+          guests,
+          finalTotalPrice,
+          paymentMethod,
+          selectedActivities,
+          selectedPackages
+        );
       }
       
       toast({
