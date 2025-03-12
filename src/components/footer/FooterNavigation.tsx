@@ -1,5 +1,4 @@
-
-import { Home, Tent, MapPin, Mail, Sparkles, Mountains, ChefHat, Dumbbell } from "lucide-react";
+import { Home, Tent, MapPin, Mail, Sparkles, Mountain, ChefHat, Dumbbell } from "lucide-react";
 
 interface FooterNavigationProps {
   navigateTo: (path: string) => void;
@@ -13,7 +12,7 @@ const FooterNavigation = ({ navigateTo }: FooterNavigationProps) => {
     { name: "Experiencias", href: "/#benefits", icon: Sparkles, 
       submenu: [
         { name: "Wellness y relajación", href: "/#benefits", icon: Dumbbell },
-        { name: "Aventura y trekking", href: "/#benefits", icon: Mountains },
+        { name: "Aventura y trekking", href: "/#benefits", icon: Mountain },
         { name: "Gastronomía local", href: "/#benefits", icon: ChefHat }
       ]
     },

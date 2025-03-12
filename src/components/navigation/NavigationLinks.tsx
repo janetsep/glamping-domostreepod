@@ -1,4 +1,3 @@
-
 import { Button } from "@/components/ui/button";
 import { useLocation } from "react-router-dom";
 import { 
@@ -8,7 +7,7 @@ import {
   ChefHat,
   Mail,
   Sparkles,
-  Mountains,
+  Mountain,
   Dumbbell
 } from "lucide-react";
 import { packageData } from "../packages/packageData";
@@ -50,7 +49,7 @@ export const navigationLinks: NavLink[] = [
     description: "Descubre lo que ofrecemos",
     submenu: [
       { name: "Wellness y relajación", id: "benefits", path: null, icon: Dumbbell },
-      { name: "Aventura y trekking", id: "benefits", path: null, icon: Mountains },
+      { name: "Aventura y trekking", id: "benefits", path: null, icon: Mountain },
       { name: "Gastronomía local", id: "benefits", path: null, icon: ChefHat }
     ]
   },
