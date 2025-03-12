@@ -1,6 +1,6 @@
 
 import { Button } from "@/components/ui/button";
-import { CalendarClock } from "lucide-react";
+import { Bell } from "lucide-react";
 
 interface ReserveButtonProps {
   isScrolled: boolean;
@@ -16,7 +16,7 @@ const ReserveButton = ({
       onClick={handleReserveClick} 
       className="bg-cyan-500 hover:bg-cyan-600 text-white ml-4 px-5 py-2 rounded-md flex items-center gap-2"
     >
-      <CalendarClock className="h-4 w-4" />
+      <Bell className="h-4 w-4" />
       <span>Reservar</span>
     </Button>
   );

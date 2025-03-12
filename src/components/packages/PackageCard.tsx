@@ -1,5 +1,4 @@
-
-import { Coffee, Droplets, Wifi, Flame, BedDouble, Mountain, Users } from "lucide-react";
+import { Coffee, Droplets, Wifi, Flame, BedDouble, Mountain, Users, Bell } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import React from "react";
 
@@ -97,8 +96,9 @@ const PackageCard = ({
                   e.stopPropagation();
                   handleUnitClick(pkg.id);
                 }}
-                className="bg-accent hover:bg-accent/90"
+                className="bg-accent hover:bg-accent/90 flex items-center gap-2"
               >
+                <Bell className="h-4 w-4" />
                 Reservar ahora
               </Button>
             </div>
@@ -133,7 +133,6 @@ const PackageCard = ({
               className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
             />
             
-            {/* Overlay con información en hover */}
             <div 
               className={`absolute inset-0 bg-black/60 flex flex-col justify-end p-6 transition-opacity duration-300 ${
                 hoveredUnit === pkg.id ? 'opacity-100' : 'opacity-0'
@@ -169,7 +168,6 @@ const PackageCard = ({
             </div>
           </div>
           
-          {/* Title visible when not hovering */}
           <div className={`p-4 bg-white ${hoveredUnit === pkg.id ? 'opacity-0' : 'opacity-100'} transition-opacity absolute bottom-0 left-0 right-0`}>
             <h3 className="text-xl font-display font-bold">{pkg.title}</h3>
           </div>

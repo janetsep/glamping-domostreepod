@@ -1,11 +1,14 @@
-import { MapPin, Trees, Droplets, Bird, Car, Bus, Plane } from "lucide-react";
+
+import { MapPin, Trees, Droplets, Bird, Car, Bus, Plane, Bell } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
+
 const Location = () => {
   const navigate = useNavigate();
   const handleExploreClick = () => {
     navigate("/unit/48a7a330-ebae-4e79-8f53-31a84ac900d9"); // ID del Domo Araucaria
   };
+  
   return <section id="location" className="py-20 bg-white">
       <div className="w-full bg-primary/5 border-b border-primary/10 py-3 mb-16">
         <div className="container mx-auto px-4">
@@ -119,11 +122,13 @@ const Location = () => {
           <p className="text-lg text-gray-700 mb-6 max-w-2xl mx-auto">
             La aventura comienza desde el trayecto. Reserva tu experiencia en TreePod Glamping y vive la Cordillera de los Andes como nunca antes.
           </p>
-          <Button size="lg" className="bg-cyan-500 hover:bg-cyan-600 text-white font-medium" onClick={handleExploreClick}>
+          <Button size="lg" className="bg-cyan-500 hover:bg-cyan-600 text-white font-medium flex items-center gap-2" onClick={handleExploreClick}>
+            <Bell className="h-5 w-5" />
             Reserva tu escapada ahora
           </Button>
         </div>
       </div>
     </section>;
 };
+
 export default Location;
