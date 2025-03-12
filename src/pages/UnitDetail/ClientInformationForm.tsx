@@ -1,33 +1,55 @@
+
 import React from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 
 interface ClientInformationFormProps {
-  clientInformation: {
+  clientInformation?: {
     name: string;
     email: string;
     phone: string;
   };
-  setClientInformation: (value: {
+  setClientInformation?: (value: {
     name: string;
     email: string;
     phone: string;
   }) => void;
   onSubmit: () => void;
+  isSubmitting?: boolean;
+  initialValues?: {
+    name: string;
+    email: string;
+    phone: string;
+  };
 }
 
 export const ClientInformationForm = ({
   clientInformation,
   setClientInformation,
-  onSubmit
+  onSubmit,
+  isSubmitting = false,
+  initialValues
 }: ClientInformationFormProps) => {
+  const [formValues, setFormValues] = React.useState(initialValues || clientInformation || {
+    name: '',
+    email: '',
+    phone: ''
+  });
+
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-    setClientInformation(prevInfo => ({
-      ...prevInfo,
-      [name]: value
-    }));
+    const newValues = { ...formValues, [name]: value };
+    setFormValues(newValues);
+    
+    // If parent component provides setClientInformation, call it
+    if (setClientInformation) {
+      setClientInformation(newValues);
+    }
+  };
+
+  const handleSubmit = () => {
+    onSubmit();
   };
 
   return (
@@ -40,7 +62,7 @@ export const ClientInformationForm = ({
             type="text"
             id="name"
             name="name"
-            value={clientInformation.name}
+            value={formValues.name}
             onChange={handleChange}
           />
         </div>
@@ -50,7 +72,7 @@ export const ClientInformationForm = ({
             type="email"
             id="email"
             name="email"
-            value={clientInformation.email}
+            value={formValues.email}
             onChange={handleChange}
           />
         </div>
@@ -60,11 +82,13 @@ export const ClientInformationForm = ({
             type="tel"
             id="phone"
             name="phone"
-            value={clientInformation.phone}
+            value={formValues.phone}
             onChange={handleChange}
           />
         </div>
-        <Button onClick={onSubmit}>Confirmar y pagar</Button>
+        <Button onClick={handleSubmit} disabled={isSubmitting}>
+          {isSubmitting ? "Procesando..." : "Confirmar y pagar"}
+        </Button>
       </div>
     </div>
   );

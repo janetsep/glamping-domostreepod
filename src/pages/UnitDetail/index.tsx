@@ -1,5 +1,5 @@
 
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import { useUnitDetailState } from "./hooks/useUnitDetailState";
 import { useReservationActions } from "./hooks/useReservationActions";
 import { UnitHeader } from "./UnitHeader";
@@ -10,6 +10,7 @@ import { ReservationConfirmation } from "./ReservationConfirmation";
 
 export default function UnitDetail() {
   const { unitId } = useParams<{ unitId: string }>();
+  const navigate = useNavigate();
   const state = useUnitDetailState(unitId);
   const {
     handleReservation,
@@ -26,7 +27,7 @@ export default function UnitDetail() {
 
   return (
     <div className="container mx-auto px-4 py-8">
-      <UnitHeader unit={state.displayUnit} />
+      <UnitHeader navigate={navigate} />
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mt-8">
         <UnitContent unit={state.displayUnit} />
         
