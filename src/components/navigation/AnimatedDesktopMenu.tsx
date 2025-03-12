@@ -28,7 +28,10 @@ const AnimatedDesktopMenu = ({
         isScrolled={isScrolled}
         handleReserveClick={handleReserveClick}
       />
-      <AnimatedTabIndicator isScrolled={isScrolled} />
+      <AnimatedTabIndicator 
+        isScrolled={isScrolled} 
+        hoveredIndex={null}
+      />
     </div>
   );
 };
