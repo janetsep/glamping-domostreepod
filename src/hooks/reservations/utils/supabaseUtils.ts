@@ -1,4 +1,3 @@
-
 import { supabase } from '@/lib/supabase';
 import { SUPABASE_URL, SUPABASE_ANON_KEY } from '@/lib/constants';
 
@@ -118,4 +117,80 @@ export const createTemporaryReservation = (
       created_at: new Date().toISOString()
     }
   };
+};
+
+/**
+ * Updates reservation data in the database
+ */
+export const updateReservationData = async (reservationId: string, updateData: any) => {
+  try {
+    // First attempt with Supabase client
+    try {
+      const { error } = await supabase
+        .from('reservations')
+        .update(updateData)
+        .eq('id', reservationId);
+      
+      if (error) {
+        console.error('Error using Supabase client to update reservation:', error);
+        throw error;
+      }
+      
+      console.log('Reserva actualizada con cliente Supabase:', reservationId);
+      return true;
+    } catch (supabaseError) {
+      // Fallback to direct API call
+      console.log('Intentando actualizar reserva con fetch directo:', reservationId);
+      const response = await fetch(`${SUPABASE_URL}/rest/v1/reservations?id=eq.${reservationId}`, {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+          'apikey': SUPABASE_ANON_KEY,
+          'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
+          'Prefer': 'return=minimal'
+        },
+        body: JSON.stringify(updateData)
+      });
+
+      if (!response.ok) {
+        const errorText = await response.text();
+        console.error('Error al actualizar reserva con fetch:', errorText);
+        throw new Error(`Error al actualizar reserva: ${response.status} ${errorText}`);
+      }
+
+      console.log('Reserva actualizada con fetch directo:', reservationId);
+      return true;
+    }
+  } catch (error) {
+    console.error('Error updating reservation:', error);
+    return false;
+  }
+};
+
+/**
+ * Verifies that a reservation update was successful
+ */
+export const verifyReservationUpdate = async (reservationId: string) => {
+  try {
+    const { data, error } = await supabase
+      .from('reservations')
+      .select('*')
+      .eq('id', reservationId)
+      .single();
+    
+    if (error) {
+      console.error('Error verificando la actualización de la reserva:', error);
+      throw error;
+    }
+    
+    if (!data) {
+      throw new Error('No se encontró la reserva después de la actualización');
+    }
+    
+    console.log('Verificación de actualización exitosa:', data);
+    return true;
+  } catch (error) {
+    console.error('Error verifying reservation update:', error);
+    throw error;
+  }
 };
