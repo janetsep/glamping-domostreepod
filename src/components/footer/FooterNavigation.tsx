@@ -1,4 +1,5 @@
-import { Home, Tent, MapPin, Mail, Sparkles, Mountain, ChefHat, Dumbbell } from "lucide-react";
+
+import { Home, House, MapPin, Mail, Sparkles, Mountain, ChefHat, Dumbbell } from "lucide-react";
 
 interface FooterNavigationProps {
   navigateTo: (path: string) => void;
@@ -8,7 +9,7 @@ const FooterNavigation = ({ navigateTo }: FooterNavigationProps) => {
   // Create a consistent menu that matches the header navigation
   const menuItems = [
     { name: "Inicio", href: "/", icon: Home },
-    { name: "Domos", href: "/#packages", icon: Tent },
+    { name: "Domos", href: "/#packages", icon: House },
     { name: "Experiencias", href: "/#benefits", icon: Sparkles, 
       submenu: [
         { name: "Wellness y relajación", href: "/#benefits", icon: Dumbbell },

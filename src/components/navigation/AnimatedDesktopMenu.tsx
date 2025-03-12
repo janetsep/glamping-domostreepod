@@ -1,7 +1,7 @@
 
 import { NavigationLinks } from "./NavigationLinks";
-import { ReserveButton } from "./ReserveButton";
-import { AnimatedTabIndicator } from "./AnimatedTabIndicator";
+import ReserveButton from "./ReserveButton";
+import AnimatedTabIndicator from "./AnimatedTabIndicator";
 
 interface AnimatedDesktopMenuProps {
   isScrolled: boolean;

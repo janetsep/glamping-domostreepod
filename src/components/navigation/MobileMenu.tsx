@@ -4,7 +4,7 @@ import { Menu, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { NavigationLinks } from "./NavigationLinks";
-import { ReserveButton } from "./ReserveButton";
+import ReserveButton from "./ReserveButton";
 
 interface MobileMenuProps {
   isScrolled: boolean;

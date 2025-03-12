@@ -1,8 +1,9 @@
+
 import { Button } from "@/components/ui/button";
 import { useLocation } from "react-router-dom";
 import { 
   Home, 
-  Tent,
+  House,
   MapPin, 
   ChefHat,
   Mail,
@@ -40,7 +41,7 @@ interface SubMenuItem {
 // Navigation links with icons
 export const navigationLinks: NavLink[] = [
   { name: "Inicio", path: "/", icon: Home, id: null },
-  { name: "Domos", id: "packages", icon: Tent, path: null, description: "Nuestras opciones de alojamiento" },
+  { name: "Domos", id: "packages", icon: House, path: null, description: "Nuestras opciones de alojamiento" },
   { 
     name: "Experiencias", 
     id: "benefits", 
