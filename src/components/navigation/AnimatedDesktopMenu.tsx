@@ -1,10 +1,7 @@
-import { useRef } from "react";
-import AnimatedTabIndicator from "./AnimatedTabIndicator";
-import NavTabs from "./NavTabs";
-import ThemeToggle from "./ThemeToggle";
-import ReserveButton from "./ReserveButton";
-import { useMenuAnimation } from "./useMenuAnimation";
-import { navigationLinks } from "./NavigationLinks";
+
+import { NavigationLinks } from "./NavigationLinks";
+import { ReserveButton } from "./ReserveButton";
+import { AnimatedTabIndicator } from "./AnimatedTabIndicator";
 
 interface AnimatedDesktopMenuProps {
   isScrolled: boolean;
@@ -17,61 +14,21 @@ const AnimatedDesktopMenu = ({
   isScrolled,
   handleReserveClick,
   scrollToSection,
-  navigateToPage
+  navigateToPage,
 }: AnimatedDesktopMenuProps) => {
-  const {
-    isHomePage,
-    activeIndex,
-    setActiveIndex,
-    hoveredIndex,
-    setHoveredIndex,
-    hoverStyle,
-    activeStyle
-  } = useMenuAnimation();
-
-  // Handle navigation
-  const handleNavClick = (index: number) => {
-    setActiveIndex(index);
-    const link = navigationLinks[index];
-    
-    if (link.path) {
-      navigateToPage(link.path);
-    } else if (link.id) {
-      if (isHomePage) {
-        scrollToSection(link.id);
-      } else {
-        navigateToPage(`/#${link.id}`);
-      }
-    }
-  };
-
   return (
-    <div className="hidden md:flex gap-3 items-center">
-      {/* Animated Tab Navigation */}
-      <div className="relative">
-        {/* Animated Indicators */}
-        <AnimatedTabIndicator
-          isScrolled={isScrolled}
-          activeStyle={activeStyle}
-          hoverStyle={hoverStyle}
-          hoveredIndex={hoveredIndex}
-        />
-
-        {/* Tabs */}
-        <NavTabs
-          navigationLinks={navigationLinks}
-          isScrolled={isScrolled}
-          activeIndex={activeIndex}
-          setHoveredIndex={setHoveredIndex}
-          handleNavClick={handleNavClick}
-        />
-      </div>
-      
-      {/* Theme Toggle - now just decorative */}
-      <ThemeToggle isScrolled={isScrolled} />
-      
-      {/* Reserve Button */}
-      <ReserveButton isScrolled={isScrolled} handleReserveClick={handleReserveClick} />
+    <div className="flex items-center">
+      <NavigationLinks
+        isMobile={false}
+        isScrolled={isScrolled}
+        scrollToSection={scrollToSection}
+        navigateToPage={navigateToPage}
+      />
+      <ReserveButton
+        isScrolled={isScrolled}
+        handleReserveClick={handleReserveClick}
+      />
+      <AnimatedTabIndicator />
     </div>
   );
 };
