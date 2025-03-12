@@ -1,10 +1,10 @@
 
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { DateSelector } from "@/components/unit-detail/DateSelector";
-import { GuestSelector } from "@/components/unit-detail/GuestSelector";
-import { ActivitiesSelector } from "@/components/unit-detail/ActivitiesSelector";
-import { ThemedPackagesSelector } from "@/components/unit-detail/ThemedPackagesSelector";
+import { Tabs, TabsContent } from "@/components/ui/tabs";
 import { Activity, ThemedPackage } from "@/types";
+import { DateGuestsTab } from "./components/tabs/DateGuestsTab";
+import { ActivitiesTab } from "./components/tabs/ActivitiesTab";
+import { PackagesTab } from "./components/tabs/PackagesTab";
+import { TabHeader } from "./components/tabs/TabHeader";
 
 interface ReservationTabsProps {
   tab: string;
@@ -56,39 +56,26 @@ export const ReservationTabs = ({
       onValueChange={onTabChange}
       className="w-full"
     >
-      <TabsList className="grid grid-cols-3 mb-4">
-        <TabsTrigger value="dates">Fechas y huéspedes</TabsTrigger>
-        <TabsTrigger value="activities">Actividades</TabsTrigger>
-        <TabsTrigger value="packages">Paquetes temáticos</TabsTrigger>
-      </TabsList>
+      <TabHeader />
       
       <TabsContent value="dates" className="space-y-4">
-        <DateSelector
+        <DateGuestsTab 
           startDate={startDate}
           endDate={endDate}
           onStartDateChange={onStartDateChange}
           onEndDateChange={onEndDateChange}
-          unitId={unitId}
-        />
-        
-        <GuestSelector
           maxGuests={maxGuests}
           guests={guests}
           onGuestsChange={onGuestsChange}
           onAdultsChange={onAdultsChange}
           onChildrenChange={onChildrenChange}
-          maxDomos={4}
+          isAvailable={isAvailable}
+          unitId={unitId}
         />
-        
-        {isAvailable === false && (
-          <div className="p-3 bg-red-50 border border-red-100 rounded text-red-800 text-sm mt-4">
-            No hay disponibilidad para las fechas seleccionadas. Por favor, selecciona otras fechas.
-          </div>
-        )}
       </TabsContent>
       
       <TabsContent value="activities">
-        <ActivitiesSelector
+        <ActivitiesTab 
           selectedActivities={selectedActivities}
           onActivityToggle={onActivityToggle}
           total={activitiesTotal}
@@ -96,7 +83,7 @@ export const ReservationTabs = ({
       </TabsContent>
       
       <TabsContent value="packages">
-        <ThemedPackagesSelector
+        <PackagesTab 
           selectedPackages={selectedPackages}
           onPackageToggle={onPackageToggle}
           total={packagesTotal}

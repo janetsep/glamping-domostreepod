@@ -13,6 +13,7 @@ interface ReservationFormProps {
   startDate?: Date;
   endDate?: Date;
   onDateSelect: (date: Date) => void;
+  setEndDate: (date: Date | undefined) => void; // Add this prop
   guests: number;
   setGuests: (guests: number) => void;
   setAdults?: (adults: number) => void;
@@ -39,6 +40,7 @@ export const ReservationForm = ({
   startDate,
   endDate,
   onDateSelect,
+  setEndDate,
   guests,
   setGuests,
   setAdults,

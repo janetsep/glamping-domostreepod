@@ -34,8 +34,7 @@ export default function UnitDetail() {
           {state.isReservationConfirmed ? (
             <div ref={state.confirmationRef}>
               <ReservationConfirmation
-                reservationId={state.confirmedReservationId}
-                clientInformation={state.clientInformation}
+                reservationId={state.confirmedReservationId || ""}
               />
             </div>
           ) : state.showQuote && state.quote ? (
@@ -73,9 +72,9 @@ export default function UnitDetail() {
               />
               
               <ClientInformationForm
-                onConfirm={handleConfirmReservation}
                 clientInformation={state.clientInformation}
                 setClientInformation={state.setClientInformation}
+                onSubmit={handleConfirmReservation}
               />
             </>
           ) : (

@@ -3,7 +3,6 @@ import { GlampingUnit } from "@/lib/supabase";
 import { Activity, ThemedPackage } from "@/types";
 import { ReservationInfo } from "./ReservationInfo";
 import { ReservationForm } from "./ReservationForm";
-import { ReservationSummary } from "@/components/unit-detail/ReservationSummary";
 
 interface ReservationPanelProps {
   displayUnit: GlampingUnit;
@@ -94,6 +93,7 @@ export const ReservationPanel = ({
           startDate={startDate}
           endDate={endDate}
           onDateSelect={handleCalendarDateSelect}
+          setEndDate={setEndDate}
           guests={guests}
           setGuests={setGuests}
           setAdults={setAdults}
