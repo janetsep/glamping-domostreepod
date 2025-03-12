@@ -1,9 +1,23 @@
 
 import { clearAllToasts } from "@/hooks/use-toast";
 import { toast } from "sonner";
-import { UnitDetailState } from "./useUnitDetailState";
 
-export const useReservationProcessing = (state: UnitDetailState) => {
+type ReservationState = {
+  displayUnit: any;
+  startDate?: Date;
+  endDate?: Date;
+  guests: number;
+  adults?: number;
+  requiredDomos?: number;
+  quote: any;
+  selectedActivities: any[];
+  selectedPackages: any[];
+  createReservation: any;
+  redirectToWebpay: any;
+  setIsProcessingPayment: (isProcessing: boolean) => void;
+};
+
+export const useReservationProcessing = (state: ReservationState) => {
   const handleConfirmReservation = async () => {
     if (!state.displayUnit || !state.startDate || !state.endDate || !state.quote) return;
 

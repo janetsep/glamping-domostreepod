@@ -40,7 +40,7 @@ export const CalendarGrid = ({
 
   // Function to get the CSS class for each day cell
   const getDayClass = (day: AvailabilityCalendarDay) => {
-    let classes = "rounded-full w-8 h-8 flex items-center justify-center cursor-pointer calendar-day-cell";
+    let classes = "rounded-full w-8 h-8 flex items-center justify-center";
     
     if (!isSameMonth(day.date, currentMonth)) {
       classes += " text-gray-400";
@@ -66,7 +66,7 @@ export const CalendarGrid = ({
     }
     // Otherwise use availability styling
     else if (day.isAvailable) {
-      classes += " bg-green-100 text-green-800 hover:bg-green-200";
+      classes += " bg-green-100 text-green-800 hover:bg-green-200 cursor-pointer";
     } else {
       classes += " bg-red-100 text-red-800 cursor-not-allowed";
     }
@@ -84,29 +84,15 @@ export const CalendarGrid = ({
     return `${percentage}%`;
   };
 
-  const handleDateClick = (day: AvailabilityCalendarDay, e: React.MouseEvent) => {
-    console.log("CalendarGrid: clicked on date", day.date);
-    
-    // Stop propagation to prevent issues with nested events
-    e.preventDefault();
-    e.stopPropagation();
-    
-    if (isDateSelectable(day)) {
-      onDateClick(day);
-    }
-  };
-
   return (
     <div className="grid grid-cols-7 gap-1">
       {calendarDays.map((day, i) => (
         <div
           key={i}
+          onClick={() => isDateSelectable(day) && onDateClick(day)}
           className="p-1 text-center"
         >
-          <div 
-            className={getDayClass(day)}
-            onClick={(e) => handleDateClick(day, e)}
-          >
+          <div className={getDayClass(day)}>
             {format(day.date, "d")}
           </div>
           {day.availableUnits !== undefined && isSameMonth(day.date, currentMonth) && (

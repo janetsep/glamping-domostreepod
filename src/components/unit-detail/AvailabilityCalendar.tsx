@@ -16,7 +16,7 @@ interface AvailabilityCalendarProps {
   checkDateRange?: boolean;
   selectedStartDate?: Date | null;
   selectedEndDate?: Date | null;
-  initialMonth?: Date;
+  initialMonth?: Date; // Add this prop to control the initial month displayed
 }
 
 export const AvailabilityCalendar = ({ 
@@ -38,16 +38,9 @@ export const AvailabilityCalendar = ({
     }
   }, [initialMonth]);
 
-  // Update selectedDate when selectedStartDate changes from props
-  useEffect(() => {
-    setSelectedDate(selectedStartDate);
-  }, [selectedStartDate]);
-
   const { calendarDays, isLoading, isDateAvailable, isDateRangeAvailable } = useCalendarAvailability(unitId, currentMonth, selectedDate);
 
   const handleDateClick = async (day: AvailabilityCalendarDay) => {
-    console.log("AvailabilityCalendar: clicked on date", day.date);
-    
     // Check if date is in the past or if it's today after 14:00
     const now = new Date();
     if (isBefore(day.date, now) && !isToday(day.date)) {
@@ -108,7 +101,6 @@ export const AvailabilityCalendar = ({
     
     setSelectedDate(day.date);
     if (onSelectDate) {
-      console.log("AvailabilityCalendar: calling onSelectDate with", day.date);
       onSelectDate(day.date);
     }
   };
@@ -122,13 +114,7 @@ export const AvailabilityCalendar = ({
   };
 
   return (
-    <div 
-      className="mt-4 calendar-day-cell" 
-      onClick={e => {
-        console.log("Calendar container clicked");
-        e.stopPropagation();
-      }}
-    >
+    <div className="mt-4">
       <CalendarHeader 
         currentMonth={currentMonth}
         onPreviousMonth={handlePreviousMonth}
@@ -142,21 +128,13 @@ export const AvailabilityCalendar = ({
         <>
           <CalendarWeekDays />
           
-          <div 
-            className="calendar-day-cell" 
-            onClick={e => {
-              console.log("Calendar grid container clicked");
-              e.stopPropagation();
-            }}
-          >
-            <CalendarGrid 
-              calendarDays={calendarDays}
-              currentMonth={currentMonth}
-              onDateClick={handleDateClick}
-              selectedStartDate={selectedStartDate}
-              selectedEndDate={selectedEndDate}
-            />
-          </div>
+          <CalendarGrid 
+            calendarDays={calendarDays}
+            currentMonth={currentMonth}
+            onDateClick={handleDateClick}
+            selectedStartDate={selectedStartDate}
+            selectedEndDate={selectedEndDate}
+          />
           
           <CalendarLegend />
         </>

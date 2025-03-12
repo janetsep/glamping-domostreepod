@@ -1,48 +1,109 @@
 
-import { useEffect } from "react";
-import { UnitDetailState } from "./useUnitDetailState";
-import { useReservations } from "@/hooks/reservations";
+import { toast } from "sonner";
 import { findAlternativeDates } from "@/hooks/reservations/utils/availabilityChecker";
 
-export const useAvailabilityCheck = (state: UnitDetailState) => {
-  const { checkGeneralAvailability } = useReservations();
+type AvailabilityState = {
+  startDate?: Date;
+  endDate?: Date;
+  displayUnit: any;
+  checkAvailability: (unitId: string, checkIn: Date, checkOut: Date) => Promise<boolean>;
+  setIsAvailable: (isAvailable: boolean) => void;
+  setCheckedAvailability: (checked: boolean) => void;
+  requiredDomos?: number;
+  checkedAvailability: boolean;
+  setPartialAvailability?: (isPartial: boolean) => void;
+  setAvailableDomos?: (count: number) => void;
+  setAlternativeDates?: (dates: {startDate: Date, endDate: Date}[]) => void;
+};
 
+export const useAvailabilityCheck = (state: AvailabilityState) => {
   const checkDatesAvailability = async () => {
-    if (!state.startDate || !state.endDate || !state.displayUnit) return;
-    
-    try {
+    if (state.startDate && state.endDate && state.displayUnit && !state.checkedAvailability) {
       const requiredDomos = state.requiredDomos || 1;
       
-      // Verificar disponibilidad general para las fechas seleccionadas
-      const availabilityResult = await checkGeneralAvailability(state.startDate, state.endDate);
+      let allAvailable = true;
+      let availableCount = 0;
       
-      // Actualizar el estado según la disponibilidad
-      const isFullyAvailable = availabilityResult.availableUnits >= requiredDomos;
-      const isPartiallyAvailable = availabilityResult.availableUnits > 0 && availabilityResult.availableUnits < requiredDomos;
-      
-      state.setIsAvailable(isFullyAvailable);
-      state.setPartialAvailability(isPartiallyAvailable);
-      state.setAvailableDomos(availabilityResult.availableUnits);
-      state.setCheckedAvailability(true);
-      
-      // Si no hay disponibilidad completa, buscar fechas alternativas
-      if (!isFullyAvailable) {
-        const alternatives = await findAlternativeDates(state.startDate, state.endDate, requiredDomos);
-        state.setAlternativeDates(alternatives);
-      } else {
-        state.setAlternativeDates([]);
+      // Verificar disponibilidad para cada domo requerido
+      for (let i = 0; i < requiredDomos; i++) {
+        const available = await state.checkAvailability(
+          state.displayUnit.id,
+          state.startDate,
+          state.endDate
+        );
+        if (available) {
+          availableCount++;
+        }
       }
       
-      return isFullyAvailable;
-    } catch (error) {
-      console.error("Error al verificar disponibilidad:", error);
-      state.setIsAvailable(false);
+      // Si hay algún domo disponible pero no todos los necesarios
+      if (availableCount > 0 && availableCount < requiredDomos) {
+        allAvailable = false;
+        
+        // Marcar como disponibilidad parcial
+        if (state.setPartialAvailability) {
+          state.setPartialAvailability(true);
+        }
+        
+        // Guardar el número de domos disponibles
+        if (state.setAvailableDomos) {
+          state.setAvailableDomos(availableCount);
+        }
+        
+        // Buscar fechas alternativas donde haya suficientes domos
+        if (state.setAlternativeDates) {
+          const alternatives = await findAlternativeDates(
+            state.startDate, 
+            state.endDate, 
+            requiredDomos
+          );
+          state.setAlternativeDates(alternatives);
+        }
+        
+        toast.warning(`Solo tenemos disponibilidad para ${availableCount} domos en las fechas seleccionadas.`, {
+          duration: 6000
+        });
+      } else {
+        // O todos disponibles o ninguno disponible
+        allAvailable = availableCount === requiredDomos;
+        
+        if (state.setPartialAvailability) {
+          state.setPartialAvailability(false);
+        }
+        
+        if (state.setAvailableDomos) {
+          state.setAvailableDomos(availableCount);
+        }
+        
+        if (allAvailable) {
+          toast.success(`Tenemos disponibilidad para los ${requiredDomos} domos necesarios.`);
+        } else {
+          // Buscar fechas alternativas donde haya suficientes domos
+          if (state.setAlternativeDates) {
+            const alternatives = await findAlternativeDates(
+              state.startDate, 
+              state.endDate, 
+              requiredDomos
+            );
+            state.setAlternativeDates(alternatives);
+            
+            if (alternatives.length > 0) {
+              toast.error(`No hay domos disponibles para las fechas seleccionadas. Encontramos ${alternatives.length} fechas alternativas.`, {
+                duration: 6000
+              });
+            } else {
+              toast.error(`No hay domos disponibles para las fechas seleccionadas.`);
+            }
+          }
+        }
+      }
+      
+      state.setIsAvailable(allAvailable);
       state.setCheckedAvailability(true);
-      return false;
     }
   };
 
   return {
-    checkDatesAvailability
+    checkDatesAvailability,
   };
 };
