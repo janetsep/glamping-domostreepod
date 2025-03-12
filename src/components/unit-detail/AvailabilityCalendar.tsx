@@ -17,6 +17,7 @@ interface AvailabilityCalendarProps {
   selectedStartDate?: Date | null;
   selectedEndDate?: Date | null;
   initialMonth?: Date; // Add this prop to control the initial month displayed
+  disableNightMode?: boolean; // Add this prop to disable night mode
 }
 
 export const AvailabilityCalendar = ({ 
@@ -25,7 +26,8 @@ export const AvailabilityCalendar = ({
   checkDateRange = false,
   selectedStartDate = null,
   selectedEndDate = null,
-  initialMonth 
+  initialMonth,
+  disableNightMode = false
 }: AvailabilityCalendarProps) => {
   // Use initialMonth if provided, otherwise use current date
   const [currentMonth, setCurrentMonth] = useState(initialMonth || new Date());
@@ -52,8 +54,8 @@ export const AvailabilityCalendar = ({
       return;
     }
     
-    // Check if it's today but after 14:00
-    if (isToday(day.date)) {
+    // Check if it's today but after 14:00 - only if night mode is enabled
+    if (!disableNightMode && isToday(day.date)) {
       const currentHour = now.getHours();
       if (currentHour >= 14) {
         toast({
@@ -134,6 +136,7 @@ export const AvailabilityCalendar = ({
             onDateClick={handleDateClick}
             selectedStartDate={selectedStartDate}
             selectedEndDate={selectedEndDate}
+            disableNightMode={disableNightMode}
           />
           
           <CalendarLegend />

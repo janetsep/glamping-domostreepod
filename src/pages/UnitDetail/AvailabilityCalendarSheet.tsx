@@ -1,6 +1,6 @@
 
 import { Button } from "@/components/ui/button";
-import { Calendar, CalendarDays } from "lucide-react";
+import { Calendar } from "lucide-react";
 import {
   Sheet,
   SheetContent,
@@ -30,7 +30,7 @@ export const AvailabilityCalendarSheet = ({
     <Sheet>
       <SheetTrigger asChild>
         <Button variant="outline" className="w-full mb-6 flex gap-2">
-          <CalendarDays className="h-4 w-4" />
+          <Calendar className="h-4 w-4" />
           <span>Ver calendario de disponibilidad</span>
         </Button>
       </SheetTrigger>
@@ -49,6 +49,7 @@ export const AvailabilityCalendarSheet = ({
             selectedStartDate={selectedStartDate}
             selectedEndDate={selectedEndDate}
             initialMonth={initialMonth}
+            disableNightMode={true}
           />
         </div>
       </SheetContent>

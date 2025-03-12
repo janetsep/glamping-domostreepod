@@ -8,6 +8,7 @@ interface CalendarGridProps {
   onDateClick: (day: AvailabilityCalendarDay) => void;
   selectedStartDate?: Date | null;
   selectedEndDate?: Date | null;
+  disableNightMode?: boolean;
 }
 
 export const CalendarGrid = ({ 
@@ -15,7 +16,8 @@ export const CalendarGrid = ({
   currentMonth, 
   onDateClick,
   selectedStartDate,
-  selectedEndDate
+  selectedEndDate,
+  disableNightMode = false
 }: CalendarGridProps) => {
   // Function to check if a date is selectable
   const isDateSelectable = (day: AvailabilityCalendarDay): boolean => {
@@ -26,8 +28,8 @@ export const CalendarGrid = ({
       return false;
     }
     
-    // If it's today but after 14:00, it's not selectable
-    if (isToday(day.date)) {
+    // If it's today but after 14:00, it's not selectable - only if night mode is not disabled
+    if (!disableNightMode && isToday(day.date)) {
       const currentHour = now.getHours();
       if (currentHour >= 14) {
         return false;

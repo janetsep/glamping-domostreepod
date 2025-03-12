@@ -175,6 +175,7 @@ export const DateSelector = ({
                 onSelectDate={handleStartDateSelect}
                 selectedStartDate={startDate}
                 selectedEndDate={endDate}
+                disableNightMode={true}
               />
             </div>
           </PopoverContent>
@@ -206,6 +207,7 @@ export const DateSelector = ({
                 selectedStartDate={startDate}
                 selectedEndDate={endDate}
                 initialMonth={endDateCalendarMonth} // Pass the start date month to the end date calendar
+                disableNightMode={true}
               />
             </div>
           </PopoverContent>
