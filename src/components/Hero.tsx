@@ -3,7 +3,7 @@ import { useState, useEffect, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { useNavigation } from "./navigation/useNavigation";
 import ScrollArrow from "./ScrollArrow";
-import { ConciergeБell } from "lucide-react";
+import { ConciergeBell } from "lucide-react";
 
 const Hero = () => {
   const {
@@ -45,7 +45,7 @@ const Hero = () => {
           <p className="text-base md:text-lg font-body text-white/90 mb-8 text-shadow max-w-xl mx-auto leading-relaxed">Descubre un destino único donde la naturaleza, la comodidad y la historia se entrelazan</p>
           <Button size="lg" className="bg-gradient-to-r from-cyan-500 to-cyan-400 hover:from-cyan-600 hover:to-cyan-500 text-white text-base md:text-lg font-medium px-8 py-6 rounded-full shadow-lg transition-all duration-300 hover:scale-105 relative overflow-hidden group" onClick={handleReserveClick}>
             <span className="absolute inset-0 w-full h-full bg-gradient-to-r from-cyan-400 to-cyan-300 transform translate-y-full group-hover:translate-y-0 transition-transform duration-500"></span>
-            <ConciergeБell className="h-5 w-5 mr-2 relative z-10" />
+            <ConciergeBell className="h-5 w-5 mr-2 relative z-10" />
             <span className="relative z-10">Reserva una Experiencia</span>
           </Button>
           

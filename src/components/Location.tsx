@@ -1,4 +1,4 @@
-import { MapPin, Trees, Droplets, Bird, Car, Bus, Plane, ConciergeБell } from "lucide-react";
+import { MapPin, Trees, Droplets, Bird, Car, Bus, Plane, ConciergeBell } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
 
@@ -122,7 +122,7 @@ const Location = () => {
             La aventura comienza desde el trayecto. Reserva tu experiencia en TreePod Glamping y vive la Cordillera de los Andes como nunca antes.
           </p>
           <Button size="lg" className="bg-cyan-500 hover:bg-cyan-600 text-white font-medium flex items-center gap-2" onClick={handleExploreClick}>
-            <ConciergeБell className="h-5 w-5" />
+            <ConciergeBell className="h-5 w-5" />
             Reserva tu escapada ahora
           </Button>
         </div>
