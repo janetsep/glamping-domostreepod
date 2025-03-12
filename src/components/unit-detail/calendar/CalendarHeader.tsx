@@ -18,25 +18,27 @@ export const CalendarHeader = ({
   isLoading 
 }: CalendarHeaderProps) => {
   return (
-    <div className="flex items-center justify-between mb-4">
+    <div className="flex items-center justify-between mb-6">
       <Button
         variant="outline"
-        size="sm"
+        size="icon"
         onClick={onPreviousMonth}
         disabled={isLoading}
+        className="h-10 w-10"
       >
-        <ChevronLeft className="h-4 w-4" />
+        <ChevronLeft className="h-5 w-5" />
       </Button>
-      <h2 className="font-medium capitalize">
+      <h2 className="text-xl font-medium capitalize">
         {format(currentMonth, "MMMM yyyy", { locale: es })}
       </h2>
       <Button
         variant="outline"
-        size="sm"
+        size="icon"
         onClick={onNextMonth}
         disabled={isLoading}
+        className="h-10 w-10"
       >
-        <ChevronRight className="h-4 w-4" />
+        <ChevronRight className="h-5 w-5" />
       </Button>
     </div>
   );

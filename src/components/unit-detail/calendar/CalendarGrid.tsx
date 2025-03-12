@@ -42,7 +42,7 @@ export const CalendarGrid = ({
 
   // Function to get the CSS class for each day cell
   const getDayClass = (day: AvailabilityCalendarDay) => {
-    let classes = "rounded-full w-8 h-8 flex items-center justify-center";
+    let classes = "rounded-full w-10 h-10 flex items-center justify-center text-base";
     
     if (!isSameMonth(day.date, currentMonth)) {
       classes += " text-gray-400";
@@ -87,7 +87,7 @@ export const CalendarGrid = ({
   };
 
   return (
-    <div className="grid grid-cols-7 gap-1">
+    <div className="grid grid-cols-7 gap-2">
       {calendarDays.map((day, i) => (
         <div
           key={i}
@@ -98,7 +98,7 @@ export const CalendarGrid = ({
             {format(day.date, "d")}
           </div>
           {day.availableUnits !== undefined && isSameMonth(day.date, currentMonth) && (
-            <div className="text-[10px] text-gray-600 mt-1">
+            <div className="text-xs text-gray-600 mt-1 font-medium">
               {getAvailabilityPercentage(day)}
             </div>
           )}

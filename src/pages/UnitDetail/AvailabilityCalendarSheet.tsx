@@ -34,15 +34,15 @@ export const AvailabilityCalendarSheet = ({
           <span>Ver calendario de disponibilidad</span>
         </Button>
       </SheetTrigger>
-      <SheetContent side="bottom" className="h-[80vh] pt-8 overflow-y-auto">
-        <SheetHeader className="mb-4">
-          <SheetTitle>Disponibilidad</SheetTitle>
-          <SheetDescription>
+      <SheetContent side="bottom" className="h-[85vh] pt-8 overflow-y-auto">
+        <SheetHeader className="mb-6">
+          <SheetTitle className="text-2xl">Disponibilidad</SheetTitle>
+          <SheetDescription className="text-base">
             Consulta la disponibilidad de nuestros domos. Los días en verde están disponibles para reserva.
           </SheetDescription>
         </SheetHeader>
         
-        <div className="max-w-lg mx-auto">
+        <div className="max-w-xl mx-auto">
           <AvailabilityCalendar 
             unitId={unitId} 
             onSelectDate={onSelectDate}
