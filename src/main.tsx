@@ -1,17 +1,18 @@
 
-import { createRoot } from 'react-dom/client'
-import { RouterProvider } from 'react-router-dom'
-import Router, { router } from './Router'
+import React from 'react'
+import ReactDOM from 'react-dom/client'
 import './index.css'
-import { QueryClientProvider } from '@tanstack/react-query'
-import { queryClient } from '@/lib/react-query'
-import { Toaster } from '@/components/ui/toaster'
-import { Toaster as SonnerToaster } from '@/components/ui/sonner'
+import Router from './Router'
+import { Toaster } from 'sonner'
+import { QueryClientProvider, QueryClient } from '@tanstack/react-query'
+import { queryClient } from './lib/react-query'
 
-createRoot(document.getElementById("root")!).render(
-  <QueryClientProvider client={queryClient}>
-    <RouterProvider router={router} />
-    <Toaster />
-    <SonnerToaster />
-  </QueryClientProvider>
-);
+// Create a root at the 'root' element in the HTML
+ReactDOM.createRoot(document.getElementById('root')!).render(
+  <React.StrictMode>
+    <QueryClientProvider client={queryClient}>
+      <Router />
+      <Toaster position="top-right" richColors closeButton />
+    </QueryClientProvider>
+  </React.StrictMode>,
+)
