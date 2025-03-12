@@ -1,4 +1,3 @@
-
 import { useRef } from "react";
 import AnimatedTabIndicator from "./AnimatedTabIndicator";
 import NavTabs from "./NavTabs";
@@ -68,7 +67,7 @@ const AnimatedDesktopMenu = ({
         />
       </div>
       
-      {/* Theme Toggle */}
+      {/* Theme Toggle - now just decorative */}
       <ThemeToggle isScrolled={isScrolled} />
       
       {/* Reserve Button */}
