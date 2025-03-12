@@ -57,7 +57,7 @@ const DesktopNavLinks = ({
   };
 
   return (
-    <div className="flex gap-1 items-center">
+    <div className="flex gap-4 items-center">
       {navigationLinks.map((link, index) => {
         const Icon = link.icon;
         const hasSubmenu = link.submenu && link.submenu.length > 0;
@@ -70,13 +70,13 @@ const DesktopNavLinks = ({
         return (
           <div key={link.name} className="relative">
             <Button
-              variant={isScrolled ? "ghost" : "link"}
+              variant="ghost"
               onClick={() => handleClick(link, index)}
-              className={`relative overflow-hidden text-base font-medium px-3 py-2 gap-2 group ${
+              className={`relative overflow-hidden text-base font-medium gap-1 group ${
                 isScrolled 
-                  ? 'text-gray-700 hover:text-cyan-500 hover:bg-cyan-50/50' 
-                  : 'text-white text-shadow hover:text-white'
-              } ${isActive ? (isScrolled ? 'bg-cyan-50 text-cyan-500' : 'bg-white/20') : ''}`}
+                  ? 'text-gray-700 hover:text-cyan-500' 
+                  : 'text-gray-700 hover:text-cyan-500'
+              } ${isActive ? (isScrolled ? 'text-cyan-500' : 'text-cyan-500') : ''}`}
             >
               <span className={`absolute bottom-0 left-0 w-full h-0.5 transform origin-left transition-transform duration-300 ease-out ${
                 isActive 
@@ -85,9 +85,7 @@ const DesktopNavLinks = ({
               }`} />
               
               <Icon className={`h-4 w-4 transition-all duration-300 ${
-                isScrolled 
-                  ? isActive ? 'text-cyan-500' : 'text-cyan-400 group-hover:text-cyan-500' 
-                  : 'text-white group-hover:text-white'
+                isActive ? 'text-cyan-500' : 'text-cyan-400'
               }`} />
               
               <span className="relative">

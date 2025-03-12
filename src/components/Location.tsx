@@ -1,83 +1,11 @@
-
-import { MapPin, Trees, Droplets, Bird, Car, Bus, Plane, Navigation } from "lucide-react";
+import { MapPin, Trees, Droplets, Bird, Car, Bus, Plane } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
-import { useRef, useEffect } from "react";
-
 const Location = () => {
   const navigate = useNavigate();
-  const mapRef = useRef<HTMLDivElement>(null);
-  
   const handleExploreClick = () => {
     navigate("/unit/48a7a330-ebae-4e79-8f53-31a84ac900d9"); // ID del Domo Araucaria
   };
-
-  useEffect(() => {
-    // When the component mounts, load the Google Maps script if it hasn't been loaded yet
-    if (!window.google && !document.querySelector('script[src*="maps.googleapis.com"]')) {
-      const script = document.createElement('script');
-      script.src = `https://maps.googleapis.com/maps/api/js?key=&callback=initMap`;
-      script.async = true;
-      script.defer = true;
-      
-      // Define the callback function that Google Maps will call
-      window.initMap = () => {
-        if (mapRef.current) {
-          // Define the map center coordinates (Glamping Domos TreePod)
-          const treepodLocation = { lat: -36.907, lng: -71.487 };
-          
-          // Create the map
-          const map = new google.maps.Map(mapRef.current, {
-            center: treepodLocation,
-            zoom: 14,
-            mapTypeId: 'terrain',
-            scrollwheel: false,
-            zoomControl: true,
-            mapTypeControl: true,
-            scaleControl: true,
-            streetViewControl: false,
-            rotateControl: false,
-            fullscreenControl: true
-          });
-          
-          // Add a marker for TreePod Glamping
-          const marker = new google.maps.Marker({
-            position: treepodLocation,
-            map: map,
-            title: 'Glamping Domos TreePod',
-            animation: google.maps.Animation.DROP,
-            icon: {
-              path: google.maps.SymbolPath.CIRCLE,
-              fillColor: '#10b981',
-              fillOpacity: 1,
-              strokeWeight: 0,
-              scale: 10
-            }
-          });
-
-          // Add an info window
-          const infoWindow = new google.maps.InfoWindow({
-            content: '<div class="p-2"><strong>Glamping Domos TreePod</strong><br>Valle Las Trancas, Chile</div>'
-          });
-
-          marker.addListener('click', () => {
-            infoWindow.open(map, marker);
-          });
-        }
-      };
-      
-      document.head.appendChild(script);
-    } else if (window.google && mapRef.current) {
-      // If Google Maps is already loaded, just initialize the map
-      window.initMap();
-    }
-
-    return () => {
-      // Clean up the global initMap function when component unmounts
-      window.initMap = undefined;
-    };
-  }, []);
-
   return <section id="location" className="py-20 bg-white">
       <div className="w-full bg-primary/5 border-b border-primary/10 py-3 mb-16">
         <div className="container mx-auto px-4">
@@ -92,25 +20,10 @@ const Location = () => {
         <p className="text-xl text-center text-gray-600 mb-12 max-w-3xl mx-auto">Ubicados en Valle Las Trancas, a 10 minutos de las Termas de Chillán, rodeados de bosques nativos.</p>
         
         <div className="w-full mb-12">
-          <div className="rounded-lg overflow-hidden shadow-lg h-[500px] relative">
-            {/* Map container */}
-            <div ref={mapRef} className="w-full h-full"></div>
-            
-            {/* Map overlay with TreePod branding */}
-            <div className="absolute top-4 left-4 bg-white/90 backdrop-blur-sm px-3 py-2 rounded-md shadow-md flex items-center">
-              <Navigation className="h-5 w-5 text-cyan-500 mr-2" />
-              <span className="font-semibold text-sm">Glamping Domos TreePod</span>
-            </div>
-            
-            {/* Map controls */}
-            <div className="absolute bottom-4 right-4 flex flex-col gap-2">
-              <Button variant="outline" size="sm" className="bg-white">
-                <a href="https://goo.gl/maps/X5xGrJn6dQK9hgvP8" target="_blank" rel="noopener noreferrer" className="flex items-center gap-1">
-                  <MapPin className="h-4 w-4" />
-                  <span>Ver en Google Maps</span>
-                </a>
-              </Button>
-            </div>
+          <div className="rounded-lg overflow-hidden shadow-lg h-[400px]">
+            <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3192!2d-71.487!3d-36.907!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMzrCsDU0JzI1LjIiUyA3McKwMjknMTMuMiJX!5e0!3m2!1ses!2scl!4v1715374232348!5m2!1ses!2scl&q=3FQV%2B7FW+Las+Trancas,+Pinto,+Chile&markers=color:red%7Clabel:T%7C3FQV+7FW+Las+Trancas,+Pinto,+Chile&zoom=15" width="100%" height="100%" style={{
+            border: 0
+          }} allowFullScreen loading="lazy" referrerPolicy="no-referrer-when-downgrade"></iframe>
           </div>
         </div>
         
@@ -196,14 +109,6 @@ const Location = () => {
                 </div>
               </div>
             </div>
-
-            <div className="mt-8 p-4 bg-cyan-50 rounded-lg border border-cyan-100">
-              <h4 className="font-semibold text-cyan-800 mb-2">Recomendación para viajeros</h4>
-              <p className="text-sm text-cyan-700">
-                Recomendamos llegar con luz natural para disfrutar del hermoso paisaje durante el trayecto. 
-                La ruta está completamente pavimentada y es de fácil acceso todo el año.
-              </p>
-            </div>
           </div>
         </div>
         
@@ -221,12 +126,4 @@ const Location = () => {
       </div>
     </section>;
 };
-
-// Declare the global initMap function
-declare global {
-  interface Window {
-    initMap: (() => void) | undefined;
-  }
-}
-
 export default Location;

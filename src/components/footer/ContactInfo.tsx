@@ -1,5 +1,4 @@
-
-import { MapPin, Phone, Mail, MessageSquare, Facebook, Instagram, Youtube, Navigation } from "lucide-react";
+import { MapPin, Phone, Mail, MessageSquare, Facebook, Instagram, Youtube } from "lucide-react";
 const ContactInfo = () => {
   return <div>
       <h4 className="font-display font-bold text-lg mb-4">Contacto</h4>
@@ -25,12 +24,6 @@ const ContactInfo = () => {
         <li className="flex items-center gap-2">
           <MessageSquare className="h-5 w-5 flex-shrink-0 text-primary" />
           <a href="https://wa.me/56912345678" target="_blank" rel="noopener noreferrer" className="hover:text-primary transition-colors">+56 9 8464 3307</a>
-        </li>
-        <li className="flex items-center gap-2">
-          <Navigation className="h-5 w-5 flex-shrink-0 text-primary" />
-          <a href="https://goo.gl/maps/X5xGrJn6dQK9hgvP8" target="_blank" rel="noopener noreferrer" className="hover:text-primary transition-colors">
-            Google Maps
-          </a>
         </li>
       </ul>
       <div className="flex gap-3 mt-4">

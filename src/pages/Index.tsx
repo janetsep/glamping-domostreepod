@@ -32,21 +32,6 @@ const Index = () => {
       duration: 3000
     });
     
-    // Handle hash links for direct navigation
-    const handleHashLinks = () => {
-      const hash = window.location.hash;
-      if (hash) {
-        const id = hash.replace('#', '');
-        const element = document.getElementById(id);
-        if (element) {
-          setTimeout(() => {
-            element.scrollIntoView({ behavior: 'smooth' });
-          }, 500);
-        }
-      }
-    };
-    
-    handleHashLinks();
     console.log("Index page loaded successfully");
   }, []);
 
