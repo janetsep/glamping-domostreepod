@@ -7,8 +7,7 @@ import {
   Mail,
   Sparkles,
   Mountain,
-  Dumbbell,
-  Navigation
+  Dumbbell
 } from "lucide-react";
 
 export interface NavLink {
@@ -43,6 +42,6 @@ export const navigationLinks: NavLink[] = [
       { name: "Gastronomía local", id: "benefits", path: null, icon: ChefHat }
     ]
   },
-  { name: "Cómo llegar", id: "location", icon: Navigation, path: null, description: "Sur de Chile" },
+  { name: "Cómo llegar", id: "location", icon: MapPin, path: null, description: "Sur de Chile" },
   { name: "Contacto", id: "contact", icon: Mail, path: null }
 ];
