@@ -17,9 +17,9 @@ const FooterLinks = ({ navigateTo }: FooterLinksProps) => {
             {/* WebPayPlus payment method icons */}
             <div className="flex flex-wrap gap-2">
               <img 
-                src="/lovable-uploads/b17d7f25-f4ae-4468-90bd-4aa15f4843a9.png" 
+                src="/lovable-uploads/8d77f343-0ff2-4d41-a7dd-54af7e387725.png" 
                 alt="WebPay Plus" 
-                className="h-10 object-contain" 
+                className="h-12 object-contain" 
                 onError={(e) => {
                   // Fallback URL if the image fails to load
                   e.currentTarget.src = "https://www.transbank.cl/wp-content/uploads/2022/10/webpay-1.svg";
