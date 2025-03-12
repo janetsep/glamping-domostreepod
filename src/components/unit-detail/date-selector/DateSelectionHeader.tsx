@@ -1,16 +1,8 @@
-
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { Info } from "lucide-react";
-
 export const DateSelectionHeader = () => {
-  return (
-    <div className="flex justify-between items-center">
-      <h3 className="text-sm font-medium">Fechas de estadía</h3>
+  return <div className="flex justify-between items-center">
+      <h3 className="text-sm font-medium">Seleccionar Estadía</h3>
       <TooltipProvider>
         <Tooltip>
           <TooltipTrigger asChild>
@@ -24,6 +16,5 @@ export const DateSelectionHeader = () => {
           </TooltipContent>
         </Tooltip>
       </TooltipProvider>
-    </div>
-  );
+    </div>;
 };
