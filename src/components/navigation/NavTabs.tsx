@@ -1,6 +1,6 @@
 
 import { useRef } from "react";
-import { NavLink } from "./NavigationLinks";
+import { NavLink } from "./navigationData";
 
 interface NavTabsProps {
   navigationLinks: NavLink[];

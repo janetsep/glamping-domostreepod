@@ -1,7 +1,7 @@
 
 import { useState, useRef, useEffect } from "react";
 import { useLocation } from "react-router-dom";
-import { navigationLinks, NavLink } from "./NavigationLinks";
+import { navigationLinks, NavLink } from "./navigationData";
 
 export const useMenuAnimation = (navLinks = navigationLinks) => {
   const location = useLocation();
