@@ -1,6 +1,6 @@
 const AboutSection = () => {
   return <div>
-      <img src="/lovable-uploads/0d4b95ab-56f3-4e89-9fb7-86f3f232bbdc.png" alt="Domos Treepod Logo" className="h-24 mb-4" />
+      <img alt="Domos Treepod Logo" className="h-24 mb-4" src="/lovable-uploads/dafd81f1-18a1-4796-9a46-b39914b747a9.jpg" />
       
       
     </div>;
