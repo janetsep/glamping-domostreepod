@@ -30,7 +30,6 @@ export const GuestSelector = ({
 }: GuestSelectorProps) => {
   const [adults, setAdults] = useState<number>(guests > 0 ? 1 : 0);
   const [children, setChildren] = useState<number>(guests > 1 ? guests - 1 : 0);
-  const [pets, setPets] = useState<number>(0);
   const [error, setError] = useState<string | null>(null);
 
   const maxTotalGuests = maxDomos * maxGuests;
@@ -45,9 +44,6 @@ export const GuestSelector = ({
     else if (adults < requiredDomos) {
       setError(`Se necesitan ${requiredDomos} domos. Debe haber al menos ${requiredDomos} adultos (uno por domo)`);
     } 
-    else if (pets > requiredDomos * 2) {
-      setError(`Solo se admiten hasta 2 mascotas por domo (máximo ${requiredDomos * 2} mascotas para ${requiredDomos} domos)`);
-    }
     else {
       setError(null);
     }
@@ -55,7 +51,7 @@ export const GuestSelector = ({
     onGuestsChange(total);
     if (onAdultsChange) onAdultsChange(adults);
     if (onChildrenChange) onChildrenChange(children);
-  }, [adults, children, pets, onGuestsChange, onAdultsChange, onChildrenChange, maxTotalGuests, maxGuests]);
+  }, [adults, children, onGuestsChange, onAdultsChange, onChildrenChange, maxTotalGuests, maxGuests]);
 
   const calculateRequiredDomos = () => {
     const total = adults + children;
@@ -64,7 +60,7 @@ export const GuestSelector = ({
 
   return (
     <div className="space-y-4">
-      <div className="grid grid-cols-3 gap-4">
+      <div className="grid grid-cols-2 gap-4">
         <div className="space-y-2">
           <Label htmlFor="adults">Adultos</Label>
           <Select
@@ -112,25 +108,6 @@ export const GuestSelector = ({
             </SelectContent>
           </Select>
         </div>
-
-        <div className="space-y-2">
-          <Label htmlFor="pets">Mascotas</Label>
-          <Select
-            value={pets.toString()}
-            onValueChange={(value) => setPets(parseInt(value))}
-          >
-            <SelectTrigger id="pets">
-              <SelectValue placeholder="Número de mascotas" />
-            </SelectTrigger>
-            <SelectContent>
-              {Array.from({ length: 9 }, (_, i) => i).map((num) => (
-                <SelectItem key={`pet-${num}`} value={num.toString()}>
-                  {num} {num === 1 ? "mascota" : "mascotas"}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-        </div>
       </div>
 
       {error && (
@@ -144,13 +121,11 @@ export const GuestSelector = ({
         <p className="text-sm font-medium">Domos necesarios: {calculateRequiredDomos()}</p>
         <p className="text-sm text-muted-foreground mt-1">
           Huéspedes totales: {adults + children} personas
-          {pets > 0 && ` y ${pets} ${pets === 1 ? 'mascota' : 'mascotas'}`}
         </p>
         <p className="text-sm text-muted-foreground mt-1">
-          Cada domo aloja máximo {maxGuests} personas y hasta 2 mascotas pequeñas.
+          Cada domo aloja máximo {maxGuests} personas.
         </p>
       </div>
     </div>
   );
 };
-
