@@ -13,7 +13,7 @@ interface BenefitsTabsProps {
 export const BenefitsTabs = ({ experiencesData, activeTab, setActiveTab }: BenefitsTabsProps) => {
   return (
     <Tabs defaultValue="banos" value={activeTab} onValueChange={setActiveTab} className="w-full">
-      <TabsList className="grid grid-cols-4 mb-6 bg-gray-100 p-1 rounded-md">
+      <TabsList className="grid grid-cols-2 md:grid-cols-4 mb-6 bg-gray-100 p-1 rounded-md">
         <TabsTrigger value="banos">Baños de Agua Mineralizada</TabsTrigger>
         <TabsTrigger value="recorridos">Recorridos y Paisajes</TabsTrigger>
         <TabsTrigger value="historias">Historias y Cultura Local</TabsTrigger>
