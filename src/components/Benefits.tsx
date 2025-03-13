@@ -1,4 +1,5 @@
-import { Droplets, Mountain, Book, Wifi, Bath, Heart, Star, Bike, Map, Coffee, Utensils } from "lucide-react";
+
+import { Droplets, Mountain, Book, Wifi, Bath, Heart, Star, Bike, Map, Coffee, Utensils, Car, Flame as LucideFlame, SquareLibrary } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
@@ -88,19 +89,19 @@ const Benefits = () => {
         details: "Aunque promovemos la desconexión digital, entendemos que a veces es necesario mantenerse comunicado. Nuestro servicio Starlink ofrece velocidades de hasta 150 Mbps, permitiéndote trabajar remotamente o contactar con tus seres queridos sin problemas.",
         image: "/lovable-uploads/abaa63a0-8f4a-4939-96f9-808ed3d09802.png"
       }, {
-        icon: <ParkingMeter className="w-12 h-12 text-accent" />,
+        icon: <Car className="w-12 h-12 text-accent" />,
         title: "Estacionamiento Privado y Seguro",
         description: "Cada domo cuenta con su propio espacio de estacionamiento, techado y con iluminación nocturna.",
         details: "El acceso al estacionamiento está controlado y vigilado las 24 horas para tu tranquilidad. Además, ofrecemos servicio de limpieza de vehículos y asistencia en caso de problemas mecánicos a través de nuestros colaboradores locales.",
         image: "/lovable-uploads/7f7e32a2-1e84-49ce-9d9c-fd06aece4b05.png"
       }, {
-        icon: <Flame className="w-12 h-12 text-accent" />,
+        icon: <LucideFlame className="w-12 h-12 text-accent" />,
         title: "Parrilla Privada y Leña",
         description: "Disfruta de un asado al estilo patagónico con nuestra parrilla exclusiva y leña seleccionada para un sabor óptimo.",
         details: "Proveemos kit de asador, leña seca y carbón para que disfrutes de la experiencia completa. Si lo prefieres, podemos coordinar un asador profesional que prepare el fuego y te aconseje sobre los mejores cortes y técnicas de cocción.",
         image: "/lovable-uploads/f0a226af-4b5a-47f8-9a16-71ebc00d5039.png"
       }, {
-        icon: <Gamepad className="w-12 h-12 text-accent" />,
+        icon: <SquareLibrary className="w-12 h-12 text-accent" />,
         title: "Biblioteca y Juegos de Mesa",
         description: "Una selección cuidada de libros sobre la región, naturaleza y bienestar, junto con juegos de mesa para compartir momentos especiales.",
         details: "Nuestra biblioteca incluye guías de identificación de aves y plantas nativas, novelas ambientadas en la Patagonia y libros de fotografía local. Los juegos de mesa van desde clásicos familiares hasta opciones estratégicas para largas tardes junto al fuego.",
