@@ -38,17 +38,16 @@ const MobileNavLinks = ({
     }
   };
 
-  const handleSubmenuClick = (submenuItem: SubMenuItem) => {
+  const handleSubmenuClick = (submenuItem: SubMenuItem, e: React.MouseEvent) => {
+    e.stopPropagation(); // Prevent the parent menu from closing
+    
     if (submenuItem.path) {
       navigateToPage(submenuItem.path);
-      setOpenSubmenu(null);
     } else if (submenuItem.id) {
       if (isHomePage) {
         scrollToSection(submenuItem.id);
-        setOpenSubmenu(null);
       } else {
         navigateToPage(`/#${submenuItem.id}`);
-        setOpenSubmenu(null);
       }
     }
   };
@@ -93,7 +92,7 @@ const MobileNavLinks = ({
                   return (
                     <button
                       key={submenuItem.name}
-                      onClick={() => handleSubmenuClick(submenuItem)}
+                      onClick={(e) => handleSubmenuClick(submenuItem, e)}
                       className="group flex items-center gap-3 w-full py-3 px-4 text-left text-base hover:translate-x-1 transition-all duration-300"
                     >
                       <SubIcon className="h-4 w-4 text-cyan-400" />

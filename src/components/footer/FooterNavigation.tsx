@@ -22,6 +22,12 @@ const FooterNavigation = ({ navigateTo }: FooterNavigationProps) => {
     { name: "Contacto", href: "/#contact", icon: Mail }
   ];
 
+  // Handle submenu click separately to prevent event bubbling
+  const handleSubmenuClick = (href: string, event: React.MouseEvent) => {
+    event.stopPropagation();
+    navigateTo(href);
+  };
+
   return (
     <div>
       <h4 className="font-display font-bold text-lg mb-4">Menú</h4>
@@ -43,7 +49,7 @@ const FooterNavigation = ({ navigateTo }: FooterNavigationProps) => {
                   {item.submenu.map((subItem) => (
                     <li key={subItem.name}>
                       <button
-                        onClick={() => navigateTo(subItem.href)}
+                        onClick={(e) => handleSubmenuClick(subItem.href, e)}
                         className="text-gray-500 hover:text-primary flex items-center transition-colors cursor-pointer group text-sm"
                       >
                         <subItem.icon className="h-3 w-3 mr-2 group-hover:text-cyan-500" />

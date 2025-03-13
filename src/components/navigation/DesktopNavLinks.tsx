@@ -41,17 +41,16 @@ const DesktopNavLinks = ({
     }
   };
 
-  const handleSubmenuClick = (submenuItem: SubMenuItem) => {
+  const handleSubmenuClick = (submenuItem: SubMenuItem, e: React.MouseEvent) => {
+    e.stopPropagation(); // Prevent the parent menu from closing
+    
     if (submenuItem.path) {
       navigateToPage(submenuItem.path);
-      setOpenSubmenu(null);
     } else if (submenuItem.id) {
       if (isHomePage) {
         scrollToSection(submenuItem.id);
-        setOpenSubmenu(null);
       } else {
         navigateToPage(`/#${submenuItem.id}`);
-        setOpenSubmenu(null);
       }
     }
   };
@@ -106,7 +105,7 @@ const DesktopNavLinks = ({
                     return (
                       <button
                         key={submenuItem.name}
-                        onClick={() => handleSubmenuClick(submenuItem)}
+                        onClick={(e) => handleSubmenuClick(submenuItem, e)}
                         className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-cyan-50 hover:text-cyan-500 flex items-center gap-2"
                       >
                         <SubIcon className="h-4 w-4" />
