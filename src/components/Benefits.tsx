@@ -1,31 +1,35 @@
-import { Flame, Tent, Utensils, Star, Map, Bath, Heart, Bike, Mountain, Coffee, Carrot, Leaf, Wifi, Gamepad, ParkingMeter, Plug } from "lucide-react";
+
+import { Flame, Tent, Utensils, Star, Map, Bath, Heart, Bike, Mountain, Coffee, Carrot, Leaf, Wifi, Gamepad, ParkingMeter, Plug, Droplets, Book } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
+
 const Benefits = () => {
   const navigate = useNavigate();
-  const [activeTab, setActiveTab] = useState("wellness");
+  const [activeTab, setActiveTab] = useState("banos");
+  
   const categories = [{
-    id: "wellness",
-    label: "Wellness",
-    icon: <Bath size={20} className="mr-2" />
+    id: "banos",
+    label: "Baños de Agua Mineralizada",
+    icon: <Droplets size={20} className="mr-2" />
   }, {
-    id: "aventura",
-    label: "Aventura",
+    id: "recorridos",
+    label: "Recorridos y Paisajes",
     icon: <Mountain size={20} className="mr-2" />
   }, {
-    id: "gastronomia",
-    label: "Gastronomía",
-    icon: <Utensils size={20} className="mr-2" />
+    id: "historias",
+    label: "Historias y Cultura Local",
+    icon: <Book size={20} className="mr-2" />
   }, {
     id: "comodidades",
     label: "Comodidades Extra",
     icon: <Wifi size={20} className="mr-2" />
   }];
+  
   const experiencesData = {
-    wellness: {
-      title: "Wellness",
-      description: "Renueva cuerpo y mente con nuestras experiencias de bienestar",
+    banos: {
+      title: "Baños de Agua Mineralizada",
+      description: "Renueva cuerpo y mente con nuestras experiencias de bienestar y aguas termales",
       items: [{
         icon: <Bath className="w-12 h-12 text-accent" />,
         title: "Tinajas de Ciprés con Agua Mineralizada",
@@ -46,9 +50,9 @@ const Benefits = () => {
         image: "/lovable-uploads/9e606128-1db3-42ce-b1ca-0474a875279f.png"
       }]
     },
-    aventura: {
-      title: "Aventura",
-      description: "Explora la naturaleza patagónica con nuestras experiencias de aventura",
+    recorridos: {
+      title: "Recorridos y Paisajes",
+      description: "Explora la naturaleza patagónica con nuestras experiencias de aventura y senderismo",
       items: [{
         icon: <Mountain className="w-12 h-12 text-accent" />,
         title: "Trekking en Senderos Exclusivos",
@@ -69,26 +73,26 @@ const Benefits = () => {
         image: "/lovable-uploads/abaa63a0-8f4a-4939-96f9-808ed3d09802.png"
       }]
     },
-    gastronomia: {
-      title: "Gastronomía",
-      description: "Disfruta de sabores auténticos con nuestras experiencias gastronómicas",
+    historias: {
+      title: "Historias y Cultura Local",
+      description: "Descubre las tradiciones y sabores de la cultura patagónica",
       items: [{
         icon: <Coffee className="w-12 h-12 text-accent" />,
-        title: "Desayuno Gourmet con Productos Locales",
+        title: "Gastronomía Típica Chilena",
         description: "Cada mañana recibirás una canasta con pan recién horneado, mermeladas caseras, frutas de temporada y productos lácteos de granjas cercanas.",
         details: "Nuestro desayuno es preparado al amanecer con ingredientes cuidadosamente seleccionados. Incluye opciones para todas las preferencias alimentarias, incluyendo alternativas veganas y sin gluten. El café orgánico proviene de una cooperativa regional que practica comercio justo.",
         image: "/lovable-uploads/04ce7b83-26de-4148-a84b-6b62dd46101f.png"
       }, {
         icon: <Utensils className="w-12 h-12 text-accent" />,
-        title: "Servicio de Chef Privado y Picnic Gourmet",
+        title: "Cocina Local y Tradiciones",
         description: "Para ocasiones especiales, contrata a nuestro chef que preparará una cena romántica en tu domo o un picnic para llevar en tus excursiones.",
         details: "Nuestro chef crea menús personalizados utilizando hierbas frescas de nuestro invernadero orgánico y productos de temporada. Los picnics incluyen embutidos artesanales, quesos locales, conservas caseras y vinos de pequeñas bodegas de la región.",
         image: "/lovable-uploads/f0a226af-4b5a-47f8-9a16-71ebc00d5039.png"
       }, {
-        icon: <Leaf className="w-12 h-12 text-accent" />,
-        title: "Invernadero Orgánico y Huerta",
-        description: "Visita nuestro invernadero donde cultivamos hierbas aromáticas, vegetales y flores comestibles que luego utilizamos en nuestras preparaciones.",
-        details: "Los huéspedes pueden participar en talleres de cosecha y aprender sobre prácticas de agricultura sostenible. Trabajamos bajo principios de permacultura y cultivamos sin pesticidas. También colaboramos con productores locales que mantienen prácticas respetuosas con el medio ambiente.",
+        icon: <Book className="w-12 h-12 text-accent" />,
+        title: "Historias del Valle Las Trancas",
+        description: "Conoce la historia y cultura del valle a través de relatos de sus habitantes y visitas a lugares emblemáticos.",
+        details: "Organizamos charlas con lugareños que llevan generaciones viviendo en el valle, quienes comparten sus conocimientos sobre la flora medicinal nativa, leyendas locales y la evolución del turismo en la zona. También puedes visitar pequeños museos y centros culturales cercanos.",
         image: "/lovable-uploads/9e606128-1db3-42ce-b1ca-0474a875279f.png"
       }]
     },
@@ -122,7 +126,9 @@ const Benefits = () => {
       }]
     }
   };
+  
   const activeExperience = experiencesData[activeTab];
+  
   return <section id="benefits" className="py-20 bg-white">
       {/* Franja de título sin texto */}
       <div className="w-full bg-primary/5 border-b border-primary/10 py-3 mb-16">
@@ -186,4 +192,5 @@ const Benefits = () => {
       </div>
     </section>;
 };
+
 export default Benefits;

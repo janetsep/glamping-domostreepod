@@ -8,7 +8,9 @@ import {
   Sparkles,
   Mountain,
   Dumbbell,
-  Navigation
+  Navigation,
+  Droplets,
+  Book
 } from "lucide-react";
 
 export interface NavLink {
@@ -38,9 +40,9 @@ export const navigationLinks: NavLink[] = [
     path: null, 
     description: "Descubre lo que ofrecemos",
     submenu: [
-      { name: "Wellness y relajación", id: "benefits", path: null, icon: Dumbbell },
-      { name: "Aventura y trekking", id: "benefits", path: null, icon: Mountain },
-      { name: "Gastronomía local", id: "benefits", path: null, icon: ChefHat }
+      { name: "Baños de Agua Mineralizada", id: "benefits", path: null, icon: Droplets },
+      { name: "Recorridos y Paisajes", id: "benefits", path: null, icon: Mountain },
+      { name: "Historias y Cultura Local", id: "benefits", path: null, icon: Book }
     ]
   },
   { name: "Cómo llegar", id: "location", icon: Navigation, path: null, description: "Sur de Chile" },
