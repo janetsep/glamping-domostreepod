@@ -3,7 +3,6 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import type { GlampingUnit } from "@/lib/supabase";
 import PackageCard from "./packages/PackageCard";
-import CountdownTimer from "./packages/CountdownTimer";
 import PackageCTAs from "./packages/PackageCTAs";
 import { packageData } from "./packages/packageData";
 
@@ -61,12 +60,6 @@ const Packages = ({
         </div>
         
         <PackageCTAs onMainCTAClick={handleReservationClick} onViewAvailabilityClick={() => handleUnitClick("48a7a330-ebae-4e79-8f53-31a84ac900d9")} />
-        
-        <CountdownTimer initialTimeLeft={{
-          days: 3,
-          hours: 8,
-          minutes: 45
-        }} />
       </div>
     </section>;
 };
