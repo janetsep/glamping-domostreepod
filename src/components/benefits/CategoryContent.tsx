@@ -18,13 +18,13 @@ export const CategoryContent = ({ category }: CategoryContentProps) => {
         </p>
       </div>
       
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-6 mb-8">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-6 mb-8 justify-items-center">
         {category.items.map((item, index) => (
           <div 
             key={index} 
-            className="relative rounded-lg overflow-hidden shadow-lg group transition-all duration-300"
+            className="relative rounded-lg overflow-hidden shadow-lg group transition-all duration-300 w-full max-w-xs"
           >
-            <div className="h-72 relative overflow-hidden cursor-pointer">
+            <div className="h-72 relative overflow-hidden cursor-pointer flex items-center justify-center">
               <img 
                 src={item.image} 
                 alt={item.title} 
