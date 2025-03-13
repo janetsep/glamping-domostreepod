@@ -1,27 +1,13 @@
-import { Flame, Tent, Utensils, Star, Map, Bath, Heart, Bike, Mountain, Coffee, Carrot, Leaf, Wifi, Gamepad, ParkingMeter, Plug, Droplets, Book } from "lucide-react";
+import { Droplets, Mountain, Book, Wifi, Bath, Heart, Star, Bike, Map, Coffee, Utensils } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
+import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
+
 const Benefits = () => {
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState("banos");
-  const categories = [{
-    id: "banos",
-    label: "Baños de Agua Mineralizada",
-    icon: <Droplets size={20} className="mr-2" />
-  }, {
-    id: "recorridos",
-    label: "Recorridos y Paisajes",
-    icon: <Mountain size={20} className="mr-2" />
-  }, {
-    id: "historias",
-    label: "Historias y Cultura Local",
-    icon: <Book size={20} className="mr-2" />
-  }, {
-    id: "comodidades",
-    label: "Comodidades Extra",
-    icon: <Wifi size={20} className="mr-2" />
-  }];
+  
   const experiencesData = {
     banos: {
       title: "Baños de Agua Mineralizada",
@@ -122,8 +108,9 @@ const Benefits = () => {
       }]
     }
   };
-  const activeExperience = experiencesData[activeTab];
-  return <section id="benefits" className="py-20 bg-white">
+  
+  return (
+    <section id="benefits" className="py-20 bg-white">
       {/* Franja de título sin texto */}
       <div className="w-full bg-primary/5 border-b border-primary/10 py-3 mb-16">
         <div className="container mx-auto px-4">
@@ -135,47 +122,52 @@ const Benefits = () => {
         <h2 className="text-3xl md:text-4xl font-display font-bold text-primary mb-4 text-center">Experiencias</h2>
         <p className="text-xl text-center text-gray-600 mb-10 max-w-3xl mx-auto">Explora, relájate y saborea lo mejor de Valle Las Trancas con nuestras actividades pensadas para disfrutar el entorno.</p>
         
-        {/* Tabs para categorías */}
-        <div className="flex flex-wrap justify-center gap-2 mb-12">
-          {categories.map(category => <button key={category.id} onClick={() => setActiveTab(category.id)} className="">
-              {category.icon}
-              {category.label}
-            </button>)}
+        {/* New TabsUI component matching the image style */}
+        <div className="mb-8">
+          <Tabs defaultValue="banos" value={activeTab} onValueChange={setActiveTab} className="w-full">
+            <TabsList className="grid grid-cols-4 mb-6 bg-gray-100 p-1 rounded-md">
+              <TabsTrigger value="banos">Baños de Agua Mineralizada</TabsTrigger>
+              <TabsTrigger value="recorridos">Recorridos y Paisajes</TabsTrigger>
+              <TabsTrigger value="historias">Historias y Cultura Local</TabsTrigger>
+              <TabsTrigger value="comodidades">Comodidades Extra</TabsTrigger>
+            </TabsList>
+            
+            <TabsContent value="banos" className="space-y-4">
+              <CategoryContent category={experiencesData.banos} />
+            </TabsContent>
+            
+            <TabsContent value="recorridos" className="space-y-4">
+              <CategoryContent category={experiencesData.recorridos} />
+            </TabsContent>
+            
+            <TabsContent value="historias" className="space-y-4">
+              <CategoryContent category={experiencesData.historias} />
+            </TabsContent>
+            
+            <TabsContent value="comodidades" className="space-y-4">
+              <CategoryContent category={experiencesData.comodidades} />
+            </TabsContent>
+          </Tabs>
         </div>
         
-        {/* Título y descripción de la categoría activa */}
-        <div className="text-center mb-10">
-          <h3 className="text-2xl font-display font-semibold text-primary mb-2">
-            {activeExperience.title}
-          </h3>
-          <p className="text-gray-600 max-w-2xl mx-auto">
-            {activeExperience.description}
-          </p>
-        </div>
-        
-        {/* Lista de servicios */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-12">
-          {activeExperience.items.map((item, index) => <div key={index} className="bg-white rounded-lg shadow-md overflow-hidden border border-gray-100 hover:shadow-lg transition-shadow">
-              <div className="flex flex-col md:flex-row">
-                <div className="md:w-1/3 h-64 md:h-auto overflow-hidden">
-                  <img src={item.image} alt={item.title} className="w-full h-full object-cover" />
-                </div>
-                <div className="md:w-2/3 p-6">
-                  <div className="flex items-start mb-4">
-                    <div className="mr-4 text-accent">
-                      {item.icon}
-                    </div>
-                    <div>
-                      <h4 className="text-xl font-display font-semibold mb-2">{item.title}</h4>
-                      <p className="text-gray-600 mb-4">{item.description}</p>
-                      <div className="bg-gray-50 p-3 rounded-lg">
-                        <p className="text-sm text-gray-700">{item.details}</p>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>)}
+        {/* Category Icons below tabs matching second image */}
+        <div className="flex justify-center items-center space-x-8 mb-10 text-center">
+          <div className="flex flex-col items-center cursor-pointer" onClick={() => setActiveTab("banos")}>
+            <Droplets className={`w-8 h-8 mb-1 ${activeTab === "banos" ? "text-primary" : "text-gray-500"}`} />
+            <span className={`text-xs ${activeTab === "banos" ? "font-medium" : "text-gray-500"}`}>Baños de Agua Mineralizada</span>
+          </div>
+          <div className="flex flex-col items-center cursor-pointer" onClick={() => setActiveTab("recorridos")}>
+            <Mountain className={`w-8 h-8 mb-1 ${activeTab === "recorridos" ? "text-primary" : "text-gray-500"}`} />
+            <span className={`text-xs ${activeTab === "recorridos" ? "font-medium" : "text-gray-500"}`}>Recorridos y Paisajes</span>
+          </div>
+          <div className="flex flex-col items-center cursor-pointer" onClick={() => setActiveTab("historias")}>
+            <Book className={`w-8 h-8 mb-1 ${activeTab === "historias" ? "text-primary" : "text-gray-500"}`} />
+            <span className={`text-xs ${activeTab === "historias" ? "font-medium" : "text-gray-500"}`}>Historias y Cultura Local</span>
+          </div>
+          <div className="flex flex-col items-center cursor-pointer" onClick={() => setActiveTab("comodidades")}>
+            <Wifi className={`w-8 h-8 mb-1 ${activeTab === "comodidades" ? "text-primary" : "text-gray-500"}`} />
+            <span className={`text-xs ${activeTab === "comodidades" ? "font-medium" : "text-gray-500"}`}>Comodidades Extra</span>
+          </div>
         </div>
         
         <div className="mt-12 text-center">
@@ -184,6 +176,50 @@ const Benefits = () => {
           </Button>
         </div>
       </div>
-    </section>;
+    </section>
+  );
 };
+
+// Extracted component for displaying the content of each category
+const CategoryContent = ({ category }) => {
+  return (
+    <>
+      <div className="text-center mb-8">
+        <h3 className="text-2xl font-display font-semibold text-primary mb-2">
+          {category.title}
+        </h3>
+        <p className="text-gray-600 max-w-2xl mx-auto">
+          {category.description}
+        </p>
+      </div>
+      
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+        {category.items.map((item, index) => (
+          <div key={index} className="bg-white rounded-lg shadow-md overflow-hidden border border-gray-100 hover:shadow-lg transition-shadow">
+            <div className="flex flex-col md:flex-row">
+              <div className="md:w-1/3 h-64 md:h-auto overflow-hidden">
+                <img src={item.image} alt={item.title} className="w-full h-full object-cover" />
+              </div>
+              <div className="md:w-2/3 p-6">
+                <div className="flex items-start mb-4">
+                  <div className="mr-4 text-accent">
+                    {item.icon}
+                  </div>
+                  <div>
+                    <h4 className="text-xl font-display font-semibold mb-2">{item.title}</h4>
+                    <p className="text-gray-600 mb-4">{item.description}</p>
+                    <div className="bg-gray-50 p-3 rounded-lg">
+                      <p className="text-sm text-gray-700">{item.details}</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+    </>
+  );
+};
+
 export default Benefits;
