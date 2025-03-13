@@ -1,4 +1,5 @@
-import { Coffee, Droplets, Wifi, Flame, BedDouble, Mountain, Users, ConciergeBell } from "lucide-react";
+
+import { ConciergeBell } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import React from "react";
 
@@ -64,7 +65,6 @@ const PackageCard = ({
             <p className="text-gray-700">{pkg.detailedDescription}</p>
             
             <div className="flex items-center text-gray-700 font-medium">
-              <Users size={18} className="mr-2" />
               <span>Capacidad: {pkg.maxGuests} personas</span>
               <span className="mx-3">•</span>
               <span>{pkg.size}</span>
@@ -138,12 +138,7 @@ const PackageCard = ({
                 hoveredUnit === pkg.id ? 'opacity-100' : 'opacity-0'
               }`}
             >
-              <h3 className="text-2xl font-display font-bold text-white mb-2">{pkg.title}</h3>
               <p className="text-white/90 text-sm mb-3">{pkg.description}</p>
-              <div className="flex items-center text-white/80 text-sm mb-2">
-                <Users size={16} className="mr-1" />
-                <span>Hasta {pkg.maxGuests} personas</span>
-              </div>
               <div className="flex justify-between items-end">
                 <div>
                   <span className="text-white/70 line-through text-sm">
@@ -168,7 +163,7 @@ const PackageCard = ({
             </div>
           </div>
           
-          <div className={`p-4 bg-white ${hoveredUnit === pkg.id ? 'opacity-0' : 'opacity-100'} transition-opacity absolute bottom-0 left-0 right-0`}>
+          <div className="p-4 bg-white">
             <h3 className="text-xl font-display font-bold">{pkg.title}</h3>
           </div>
         </>
