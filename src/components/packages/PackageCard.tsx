@@ -139,27 +139,6 @@ const PackageCard = ({
               }`}
             >
               <p className="text-white/90 text-sm mb-3">{pkg.description}</p>
-              <div className="flex justify-between items-end">
-                <div>
-                  <span className="text-white/70 line-through text-sm">
-                    ${pkg.originalPrice.toLocaleString()}
-                  </span>
-                  <div className="text-xl font-bold text-white">
-                    ${pkg.price.toLocaleString()}
-                  </div>
-                </div>
-                <div className="flex space-x-2">
-                  <button 
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      toggleExpandUnit(pkg.id, e);
-                    }}
-                    className="text-white text-sm bg-white/20 hover:bg-white/30 px-2 py-1 rounded"
-                  >
-                    Ver detalles
-                  </button>
-                </div>
-              </div>
             </div>
           </div>
           
