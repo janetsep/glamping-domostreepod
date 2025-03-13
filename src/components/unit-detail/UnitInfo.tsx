@@ -1,9 +1,11 @@
-import { Users, Coffee, Droplets, Wifi, Flame, BedDouble, Mountain, Utensils } from "lucide-react";
+import { Users, Coffee, Droplets, Wifi, Flame, BedDouble, Mountain, Utensils, Check, Clock, Smile } from "lucide-react";
 import type { GlampingUnit } from "@/lib/supabase";
 import { useState } from "react";
+
 interface UnitInfoProps {
   unit: GlampingUnit;
 }
+
 export const UnitInfo = ({
   unit
 }: UnitInfoProps) => {
@@ -26,60 +28,72 @@ export const UnitInfo = ({
 
   // Obtener las características específicas basadas en el nombre del domo
   const getFeatures = (unitName: string) => {
-    const baseFeatures = [{
-      icon: <Coffee size={16} />,
-      text: "Mini cocina equipada"
-    }, {
-      icon: <Droplets size={16} />,
-      text: "Ducha con agua caliente"
-    }, {
-      icon: <Wifi size={16} />,
-      text: "Wifi disponible"
-    }, {
-      icon: <BedDouble size={16} />,
-      text: "Cama premium"
-    }];
+    const baseFeatures = [
+      {
+        icon: <Check size={16} className="text-green-500" />,
+        text: "Cocina equipada con lo necesario para preparar tus comidas."
+      },
+      {
+        icon: <Check size={16} className="text-green-500" />,
+        text: "Baño privado con ducha de agua caliente."
+      },
+      {
+        icon: <Check size={16} className="text-green-500" />,
+        text: "Estufa a pellet para mantener un ambiente cálido."
+      },
+      {
+        icon: <Check size={16} className="text-green-500" />,
+        text: "Terraza privada, ideal para disfrutar del entorno."
+      },
+      {
+        icon: <Check size={16} className="text-green-500" />,
+        text: "Parrilla para asado, disponible sin costo adicional."
+      },
+      {
+        icon: <Check size={16} className="text-green-500" />,
+        text: "Acceso libre a la piscina exterior de agua fría."
+      },
+      {
+        icon: <Droplets size={16} className="text-blue-500" />,
+        text: "Opción adicional: Disfruta de nuestras tinajas de agua caliente mineralizada, ubicadas entre los árboles, por un valor extra."
+      }
+    ];
 
-    // Agregar características específicas según el domo
+    // Información específica según tipo de domo
     if (unitName.includes("Araucaria")) {
-      return [...baseFeatures, {
-        icon: <Flame size={16} />,
-        text: "Zona de fogón"
-      }, {
-        icon: <Mountain size={16} />,
-        text: "Vistas al bosque nativo"
-      }];
+      return [...baseFeatures];
     }
     if (unitName.includes("Canelo")) {
-      return [...baseFeatures, {
-        icon: <Droplets size={16} />,
-        text: "Jacuzzi al aire libre"
-      }, {
-        icon: <Utensils size={16} />,
-        text: "Desayuno gourmet incluido"
-      }];
+      return [...baseFeatures];
     }
     if (unitName.includes("Coihue")) {
-      return [...baseFeatures, {
-        icon: <Droplets size={16} />,
-        text: "Ducha panorámica"
-      }, {
-        icon: <Mountain size={16} />,
-        text: "Terraza suspendida"
-      }];
+      return [...baseFeatures];
     }
     if (unitName.includes("Mirador")) {
-      return [...baseFeatures, {
-        icon: <Droplets size={16} />,
-        text: "Hot tub privado"
-      }, {
-        icon: <Mountain size={16} />,
-        text: "Vistas 360° al valle"
-      }];
+      return [...baseFeatures];
     }
     return baseFeatures;
   };
   const features = getFeatures(unit.name);
+
+  // Obtener los horarios y políticas
+  const getPolicies = () => {
+    return [
+      {
+        icon: <Clock size={16} className="text-primary" />,
+        text: "Ingreso: Desde las 16:00 hrs."
+      },
+      {
+        icon: <Clock size={16} className="text-primary" />,
+        text: "Salida: Hasta las 12:00 hrs."
+      },
+      {
+        icon: <Smile size={16} className="text-primary" />,
+        text: "Mascotas: Permitidas (máximo 2 pequeñas, con aviso previo)."
+      }
+    ];
+  };
+  const policies = getPolicies();
 
   // Obtener detalle específico según el domo
   const getUnitDetail = (unitName: string) => {
@@ -155,10 +169,18 @@ export const UnitInfo = ({
         <p className="text-gray-700 mb-6 text-lg">{unitDetail.description}</p>
         
         <h2 className="text-xl font-semibold mb-3">Comodidades</h2>
-        <div className="grid grid-cols-2 gap-y-3 mb-8">
-          {features.map((feature, index) => <div key={index} className="flex items-center gap-2 text-gray-700">
-              <span className="text-primary">{feature.icon}</span>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-y-3 mb-8">
+          {features.map((feature, index) => <div key={index} className="flex items-start gap-2 text-gray-700">
+              <span className="mt-1">{feature.icon}</span>
               <span>{feature.text}</span>
+            </div>)}
+        </div>
+        
+        <h2 className="text-xl font-semibold mb-3">Información Importante</h2>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-y-3 mb-8">
+          {policies.map((policy, index) => <div key={index} className="flex items-center gap-2 text-gray-700">
+              <span className="text-primary">{policy.icon}</span>
+              <span>{policy.text}</span>
             </div>)}
         </div>
         
