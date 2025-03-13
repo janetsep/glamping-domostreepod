@@ -1,4 +1,5 @@
-import { Coffee, Droplets, Wifi, Flame, BedDouble, Mountain, Users, ConciergeBell } from "lucide-react";
+
+import { Users } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import React from "react";
 
@@ -98,7 +99,6 @@ const PackageCard = ({
                 }}
                 className="bg-accent hover:bg-accent/90 flex items-center gap-2"
               >
-                <ConciergeBell className="h-4 w-4" />
                 Reservar ahora
               </Button>
             </div>
@@ -122,56 +122,41 @@ const PackageCard = ({
           </div>
         </div>
       ) : (
-        <>
-          <div 
-            className="h-72 relative overflow-hidden cursor-pointer"
-            onClick={() => handleUnitClick(pkg.id)}
-          >
+        <div 
+          className="cursor-pointer relative"
+          onClick={() => handleUnitClick(pkg.id)}
+        >
+          <div className="h-72 relative">
             <img 
               src={pkg.image} 
               alt={pkg.title} 
-              className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+              className="w-full h-full object-cover"
             />
             
-            <div 
-              className={`absolute inset-0 bg-black/60 flex flex-col justify-end p-6 transition-opacity duration-300 ${
-                hoveredUnit === pkg.id ? 'opacity-100' : 'opacity-0'
-              }`}
-            >
-              <h3 className="text-2xl font-display font-bold text-white mb-2">{pkg.title}</h3>
-              <p className="text-white/90 text-sm mb-3">{pkg.description}</p>
-              <div className="flex items-center text-white/80 text-sm mb-2">
-                <Users size={16} className="mr-1" />
-                <span>Hasta {pkg.maxGuests} personas</span>
+            <div className="absolute inset-0 bg-black/40 p-6 flex flex-col justify-between">
+              <div>
+                <h3 className="text-2xl font-display font-bold text-white mb-2">{pkg.title}</h3>
+                <p className="text-white/90 text-sm">{pkg.description}</p>
               </div>
-              <div className="flex justify-between items-end">
+              
+              <div className="space-y-2">
+                <div className="flex items-center text-white/80 text-sm">
+                  <Users size={16} className="mr-1" />
+                  <span>Hasta {pkg.maxGuests} personas</span>
+                </div>
+                
                 <div>
-                  <span className="text-white/70 line-through text-sm">
+                  <span className="text-white/70 line-through text-sm block">
                     ${pkg.originalPrice.toLocaleString()}
                   </span>
                   <div className="text-xl font-bold text-white">
                     ${pkg.price.toLocaleString()}
                   </div>
                 </div>
-                <div className="flex space-x-2">
-                  <button 
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      toggleExpandUnit(pkg.id, e);
-                    }}
-                    className="text-white text-sm bg-white/20 hover:bg-white/30 px-2 py-1 rounded"
-                  >
-                    Ver detalles
-                  </button>
-                </div>
               </div>
             </div>
           </div>
-          
-          <div className={`p-4 bg-white ${hoveredUnit === pkg.id ? 'opacity-0' : 'opacity-100'} transition-opacity absolute bottom-0 left-0 right-0`}>
-            <h3 className="text-xl font-display font-bold">{pkg.title}</h3>
-          </div>
-        </>
+        </div>
       )}
     </div>
   );
