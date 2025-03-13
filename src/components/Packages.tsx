@@ -36,7 +36,7 @@ const Packages = ({
       
       <div className="container mx-auto px-4">
         <h2 className="text-3xl md:text-4xl font-display font-bold text-primary mb-4 text-center">Descubre Nuestros Domos</h2>
-        <p className="text-xl text-center text-gray-600 mb-10 max-w-3xl mx-auto">Disfruta de una experiencia única en Valle Las Trancas en Domos TreePod: son cómodos refugios rodeados de bosque nativo, tinajas con aguas mineralizadas y una piscina de montaña alimentada por la cascada llamada Velo de la Novia, todo en un entorno natural sustentable.</p>
+        <p className="text-xl text-center text-gray-600 mb-10 max-w-3xl mx-auto">Disfruta de una experiencia exclusiva en Domos TreePod: son cómodos refugios rodeados de bosque nativo, tinajas con aguas mineralizadas y una piscina de montaña alimentada por la cascada llamada Velo de la Novia, todo en un entorno natural sustentable.</p>
         
         {/* Domos con efecto hover y expansión */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mt-8 mb-16">
