@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { ThemedPackage } from "@/types";
 import { supabase } from "@/lib/supabase";
@@ -15,7 +14,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 interface ThemedPackagesSelectorProps {
   selectedPackages: ThemedPackage[];
   onPackageToggle: (pkg: ThemedPackage) => void;
-  total?: number; // Added total prop
+  total?: number;
 }
 
 export const ThemedPackagesSelector = ({
@@ -100,7 +99,7 @@ export const ThemedPackagesSelector = ({
             <div className="flex-1">
               <div className="flex items-center justify-between">
                 <div className="font-medium text-black">{pkg.title}</div>
-                <div className="text-sm font-semibold text-primary">
+                <div className="text-sm font-semibold text-cyan-500">
                   ${pkg.price.toLocaleString()}
                 </div>
               </div>

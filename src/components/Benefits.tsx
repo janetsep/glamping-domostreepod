@@ -1,4 +1,3 @@
-
 import { Droplets, Mountain, Book, Wifi, Bath, Heart, Star, Bike, Map, Coffee, Utensils, Car, Flame as LucideFlame, SquareLibrary } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
@@ -120,7 +119,7 @@ const Benefits = () => {
       </div>
       
       <div className="container mx-auto px-4">
-        <h2 className="text-3xl md:text-4xl font-display font-bold text-primary mb-4 text-center">Experiencias</h2>
+        <h2 className="text-3xl md:text-4xl font-display font-bold text-cyan-500 mb-4 text-center">Experiencias</h2>
         <p className="text-xl text-center text-gray-600 mb-10 max-w-3xl mx-auto">Explora, relájate y saborea lo mejor de Valle Las Trancas con nuestras actividades pensadas para disfrutar el entorno.</p>
         
         {/* New TabsUI component matching the image style */}
@@ -154,25 +153,25 @@ const Benefits = () => {
         {/* Category Icons below tabs matching second image */}
         <div className="flex justify-center items-center space-x-8 mb-10 text-center">
           <div className="flex flex-col items-center cursor-pointer" onClick={() => setActiveTab("banos")}>
-            <Droplets className={`w-8 h-8 mb-1 ${activeTab === "banos" ? "text-primary" : "text-gray-500"}`} />
+            <Droplets className={`w-8 h-8 mb-1 ${activeTab === "banos" ? "text-cyan-500" : "text-gray-500"}`} />
             <span className={`text-xs ${activeTab === "banos" ? "font-medium" : "text-gray-500"}`}>Baños de Agua Mineralizada</span>
           </div>
           <div className="flex flex-col items-center cursor-pointer" onClick={() => setActiveTab("recorridos")}>
-            <Mountain className={`w-8 h-8 mb-1 ${activeTab === "recorridos" ? "text-primary" : "text-gray-500"}`} />
+            <Mountain className={`w-8 h-8 mb-1 ${activeTab === "recorridos" ? "text-cyan-500" : "text-gray-500"}`} />
             <span className={`text-xs ${activeTab === "recorridos" ? "font-medium" : "text-gray-500"}`}>Recorridos y Paisajes</span>
           </div>
           <div className="flex flex-col items-center cursor-pointer" onClick={() => setActiveTab("historias")}>
-            <Book className={`w-8 h-8 mb-1 ${activeTab === "historias" ? "text-primary" : "text-gray-500"}`} />
+            <Book className={`w-8 h-8 mb-1 ${activeTab === "historias" ? "text-cyan-500" : "text-gray-500"}`} />
             <span className={`text-xs ${activeTab === "historias" ? "font-medium" : "text-gray-500"}`}>Historias y Cultura Local</span>
           </div>
           <div className="flex flex-col items-center cursor-pointer" onClick={() => setActiveTab("comodidades")}>
-            <Wifi className={`w-8 h-8 mb-1 ${activeTab === "comodidades" ? "text-primary" : "text-gray-500"}`} />
+            <Wifi className={`w-8 h-8 mb-1 ${activeTab === "comodidades" ? "text-cyan-500" : "text-gray-500"}`} />
             <span className={`text-xs ${activeTab === "comodidades" ? "font-medium" : "text-gray-500"}`}>Comodidades Extra</span>
           </div>
         </div>
         
         <div className="mt-12 text-center">
-          <Button onClick={() => navigate('/unit/48a7a330-ebae-4e79-8f53-31a84ac900d9')} className="bg-primary hover:bg-primary/90" size="lg">
+          <Button onClick={() => navigate('/unit/48a7a330-ebae-4e79-8f53-31a84ac900d9')} className="bg-cyan-500 hover:bg-cyan-600" size="lg">
             Descubre todos nuestros servicios
           </Button>
         </div>
@@ -186,7 +185,7 @@ const CategoryContent = ({ category }) => {
   return (
     <>
       <div className="text-center mb-8">
-        <h3 className="text-2xl font-display font-semibold text-primary mb-2">
+        <h3 className="text-2xl font-display font-semibold text-cyan-500 mb-2">
           {category.title}
         </h3>
         <p className="text-gray-600 max-w-2xl mx-auto">
@@ -203,7 +202,7 @@ const CategoryContent = ({ category }) => {
               </div>
               <div className="md:w-2/3 p-6">
                 <div className="flex items-start mb-4">
-                  <div className="mr-4 text-accent">
+                  <div className="mr-4 text-cyan-500">
                     {item.icon}
                   </div>
                   <div>
@@ -211,6 +210,11 @@ const CategoryContent = ({ category }) => {
                     <p className="text-gray-600 mb-4">{item.description}</p>
                     <div className="bg-gray-50 p-3 rounded-lg">
                       <p className="text-sm text-gray-700">{item.details}</p>
+                    </div>
+                    <div className="mt-3 text-right">
+                      <span className="text-sm font-semibold text-cyan-500">
+                        Incluido en tu estadía
+                      </span>
                     </div>
                   </div>
                 </div>

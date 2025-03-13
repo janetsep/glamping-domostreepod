@@ -15,7 +15,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 interface ActivitiesSelectorProps {
   selectedActivities: Activity[];
   onActivityToggle: (activity: Activity) => void;
-  total?: number; // Added total prop
+  total?: number;
 }
 
 export const ActivitiesSelector = ({
@@ -100,7 +100,7 @@ export const ActivitiesSelector = ({
             <div className="flex-1">
               <div className="flex items-center justify-between">
                 <div className="font-medium text-black">{activity.name}</div>
-                <div className="text-sm font-semibold text-primary">
+                <div className="text-sm font-semibold text-cyan-500">
                   ${activity.price.toLocaleString()}
                 </div>
               </div>
