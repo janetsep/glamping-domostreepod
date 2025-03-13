@@ -2,28 +2,10 @@
 import { ReactNode } from "react";
 import { 
   Droplets, Mountain, Book, Wifi, Bath, Heart, 
-  Star, Bike, Map, Coffee, Utensils, Car,
-  SquareLibrary, 
+  Star, Bike, Map, Coffee, Utensils, Car, SquareLibrary
 } from "lucide-react";
 import { LucideFlame } from "lucide-react";
-
-export interface BenefitItem {
-  icon: ReactNode;
-  title: string;
-  description: string;
-  details: string;
-  image: string;
-}
-
-export interface CategoryData {
-  title: string;
-  description: string;
-  items: BenefitItem[];
-}
-
-export interface ExperiencesData {
-  [key: string]: CategoryData;
-}
+import { ExperiencesData } from "./types";
 
 export const experiencesData: ExperiencesData = {
   banos: {
