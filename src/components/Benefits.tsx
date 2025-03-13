@@ -7,9 +7,9 @@ const Benefits = () => {
   const [activeTab, setActiveTab] = useState("banos");
   
   return (
-    <section id="benefits" className="py-20 bg-white">
+    <section id="benefits" className="py-10 bg-white">
       {/* Franja de título sin texto */}
-      <div className="w-full bg-primary/5 border-b border-primary/10 py-3 mb-16">
+      <div className="w-full bg-primary/5 border-b border-primary/10 py-3 mb-8">
         <div className="container mx-auto px-4">
           {/* Título removido de la franja */}
         </div>
@@ -17,7 +17,7 @@ const Benefits = () => {
       
       <div className="container mx-auto px-4">
         <h2 className="text-3xl md:text-4xl font-display font-bold text-cyan-500 mb-4 text-center">Experiencias</h2>
-        <p className="text-xl text-center text-gray-600 mb-10 max-w-3xl mx-auto">Explora, relájate y saborea lo mejor de Valle Las Trancas con nuestras actividades pensadas para disfrutar el entorno.</p>
+        <p className="text-xl text-center text-gray-600 mb-8 max-w-3xl mx-auto">Explora, relájate y saborea lo mejor de Valle Las Trancas con nuestras actividades pensadas para disfrutar el entorno.</p>
         
         {/* Tabs UI component */}
         <div className="mb-8">

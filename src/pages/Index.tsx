@@ -38,22 +38,22 @@ const Index = () => {
   return (
     <div className="min-h-screen bg-white">
       <Hero />
-      <div id="benefits" className="my-8 md:my-16">
+      <div id="benefits" className="my-4 md:my-8">
         <Benefits />
       </div>
-      <div className="my-8 md:my-16 bg-gray-50 py-12">
+      <div className="my-4 md:my-8 bg-gray-50 py-8">
         <Testimonials />
       </div>
-      <div className="my-8 md:my-16">
+      <div className="my-4 md:my-8">
         <Location />
       </div>
-      <div id="packages" className="my-8 md:my-16">
+      <div id="packages" className="my-4 md:my-8">
         <Packages units={units} isLoading={isLoading} />
       </div>
-      <div className="my-8 md:my-16">
+      <div className="my-4 md:my-8">
         <Blog />
       </div>
-      <div className="mt-8 md:mt-16 bg-gradient-to-r from-gray-50 to-white py-12">
+      <div className="mt-4 md:mt-8 bg-gradient-to-r from-gray-50 to-white py-8">
         <SimplifiedContact />
       </div>
     </div>
