@@ -132,7 +132,7 @@ const Benefits = () => {
       </div>
       
       <div className="container mx-auto px-4">
-        <h2 className="text-3xl md:text-4xl font-display font-bold text-primary mb-4 text-center">Servicios</h2>
+        <h2 className="text-3xl md:text-4xl font-display font-bold text-primary mb-4 text-center">Experiencias</h2>
         <p className="text-xl text-center text-gray-600 mb-10 max-w-3xl mx-auto">Todo lo que necesitas para tu experiencia en la naturaleza</p>
         
         {/* Tabs para categorías */}
