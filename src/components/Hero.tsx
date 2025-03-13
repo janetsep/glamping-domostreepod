@@ -42,7 +42,7 @@ const Hero = () => {
           <Button size="lg" className="bg-gradient-to-r from-cyan-500 to-cyan-400 hover:from-cyan-600 hover:to-cyan-500 text-white text-base md:text-lg font-medium px-8 py-6 rounded-full shadow-lg transition-all duration-300 hover:scale-105 relative overflow-hidden group" onClick={handleReserveClick}>
             <span className="absolute inset-0 w-full h-full bg-gradient-to-r from-cyan-400 to-cyan-300 transform translate-y-full group-hover:translate-y-0 transition-transform duration-500"></span>
             <ConciergeBell className="h-5 w-5 mr-2 relative z-10" />
-            <span className="relative z-10">Reserva tu Domo Ahora</span>
+            <span className="relative z-10">Reserva tu Estadía</span>
           </Button>
           
           {/* ScrollArrow positioned below the button */}
