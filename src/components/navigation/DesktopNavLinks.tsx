@@ -53,6 +53,9 @@ const DesktopNavLinks = ({
         navigateToPage(`/#${submenuItem.id}`);
       }
     }
+    
+    // Close the submenu after clicking
+    setOpenSubmenu(null);
   };
 
   return (
