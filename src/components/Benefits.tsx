@@ -1,13 +1,9 @@
 
 import { useState } from "react";
-import { Button } from "@/components/ui/button";
-import { useNavigate } from "react-router-dom";
-import { CategoryIcons } from "./benefits/CategoryIcons";
 import { BenefitsTabs } from "./benefits/BenefitsTabs";
 import { experiencesData } from "./benefits/data";
 
 const Benefits = () => {
-  const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState("banos");
   
   return (
@@ -30,15 +26,6 @@ const Benefits = () => {
             activeTab={activeTab} 
             setActiveTab={setActiveTab} 
           />
-        </div>
-        
-        {/* Category Icons below tabs */}
-        <CategoryIcons activeTab={activeTab} setActiveTab={setActiveTab} />
-        
-        <div className="mt-12 text-center">
-          <Button onClick={() => navigate('/unit/48a7a330-ebae-4e79-8f53-31a84ac900d9')} className="bg-cyan-500 hover:bg-cyan-600" size="lg">
-            Descubre todos nuestros servicios
-          </Button>
         </div>
       </div>
     </section>
