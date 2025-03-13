@@ -11,8 +11,8 @@ const createIcon = (Icon: React.ElementType) => {
 export const packageData: PackageItem[] = [
   {
     id: "48a7a330-ebae-4e79-8f53-31a84ac900d9",
-    title: "Domo Araucaria",
-    description: "Duerme bajo un manto de estrellas visibles desde la bóveda de cristal de nuestro domo exclusivo. Despertar con los primeros rayos del sol abrazando el bosque nativo nunca había sido tan mágico.",
+    title: "Para el viajero en solitario 🌿",
+    description: "El refugio perfecto para desconectarte del ruido y reencontrarte con la naturaleza. En la terraza, un buen libro y el sonido del bosque crean el ambiente ideal para un descanso profundo. Afuera, los senderos esperan ser explorados a tu propio ritmo.",
     detailedDescription: "Un espacio único entre araucarias centenarias donde la arquitectura se funde con la naturaleza. Nuestros domos completamente equipados cuentan con terminaciones de lujo y vistas panorámicas al bosque y cielo estrellado.",
     price: 120000,
     originalPrice: 150000,
@@ -33,8 +33,8 @@ export const packageData: PackageItem[] = [
   },
   {
     id: "58a7a330-ebae-4e79-8f53-31a84ac900d8",
-    title: "Domo Canelo",
-    description: "Sumérgete en el lujo de la simplicidad con nuestro jacuzzi exterior privado mientras contemplas el atardecer sobre los árboles. Una experiencia que despertará todos tus sentidos.",
+    title: "Para la pareja en busca de tranquilidad 💙",
+    description: "Bajo un cielo estrellado, las luces del domo crean un ambiente acogedor. Compartir una copa de vino en la terraza, con el bosque como único testigo, es el cierre perfecto para un día de caminatas y descanso en la tinaja de agua mineral.",
     detailedDescription: "El Domo Canelo, llamado así por el árbol sagrado mapuche, ofrece una experiencia de conexión profunda con la naturaleza sin renunciar al confort. Su jacuzzi al aire libre te permite contemplar las estrellas mientras te relajas en agua temperada.",
     price: 135000,
     originalPrice: 180000,
@@ -55,8 +55,8 @@ export const packageData: PackageItem[] = [
   },
   {
     id: "68a7a330-ebae-4e79-8f53-31a84ac900d7",
-    title: "Domo Coihue",
-    description: "Experimenta la sensación de dormir entre las copas de los árboles. Nuestro domo elevado te ofrece una perspectiva única del bosque nativo desde cada ángulo y un despertar envuelto en naturaleza.",
+    title: "Para los aventureros 🥾",
+    description: "Después de una jornada recorriendo la montaña, el domo se convierte en tu refugio de descanso. Dejas las botas en la entrada, enciendes la estufa a pellet y disfrutas de la vista mientras recuperas energías para la próxima aventura.",
     detailedDescription: "El Domo Coihue se eleva entre los árboles nativos para brindarte una experiencia única. Su diseño suspendido y su ducha panorámica te permiten sentirte parte del bosque, mientras disfrutas de todas las comodidades de un alojamiento de lujo.",
     price: 125000,
     originalPrice: 160000,
@@ -77,8 +77,8 @@ export const packageData: PackageItem[] = [
   },
   {
     id: "78a7a330-ebae-4e79-8f53-31a84ac900d6",
-    title: "Domo Lenga",
-    description: "Disfruta de un espacio único suspendido en medio del dosel del bosque, con una vista panorámica de 360° que te permite contemplar el amanecer desde tu cama y admirar las estrellas por la noche.",
+    title: "Para la familia con niños 🏡",
+    description: "Los más pequeños exploran el bosque mientras los adultos preparan un asado en la parrilla. La piscina de agua fría se convierte en el lugar favorito de la tarde, y al caer la noche, las historias junto a la estufa crean recuerdos que quedan para siempre.",
     detailedDescription: "El Domo Lenga, nombrado por una de las especies más emblemáticas del bosque patagónico, ofrece una experiencia inmersiva en la naturaleza con todas las comodidades modernas. Su ubicación privilegiada permite disfrutar del bosque desde una perspectiva única.",
     price: 130000,
     originalPrice: 170000,
