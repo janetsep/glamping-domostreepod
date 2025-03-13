@@ -16,7 +16,7 @@ const Benefits = () => {
       </div>
       
       <div className="container mx-auto px-4">
-        <h2 className="text-3xl md:text-4xl font-display font-bold text-cyan-500 mb-4 text-center">Experiencias</h2>
+        <h2 className="text-3xl md:text-4xl font-display font-bold text-primary mb-4 text-center">Experiencias</h2>
         <p className="text-xl text-center text-gray-600 mb-8 max-w-3xl mx-auto">Explora, relájate y saborea lo mejor de Valle Las Trancas con nuestras actividades pensadas para disfrutar el entorno.</p>
         
         {/* Tabs UI component */}
