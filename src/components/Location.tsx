@@ -1,13 +1,11 @@
 import { MapPin, Trees, Droplets, Bird, Car, Bus, Plane, ConciergeBell } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
-
 const Location = () => {
   const navigate = useNavigate();
   const handleExploreClick = () => {
     navigate("/unit/48a7a330-ebae-4e79-8f53-31a84ac900d9"); // ID del Domo Araucaria
   };
-  
   return <section id="location" className="py-20 bg-white">
       <div className="w-full bg-primary/5 border-b border-primary/10 py-3 mb-16">
         <div className="container mx-auto px-4">
@@ -16,10 +14,8 @@ const Location = () => {
       </div>
       
       <div className="container mx-auto px-4">
-        <h2 className="text-3xl md:text-4xl font-display font-bold text-primary mb-4 text-center">
-          Ubicación y Entorno
-        </h2>
-        <p className="text-xl text-center text-gray-600 mb-12 max-w-3xl mx-auto">Ubicados en Valle Las Trancas, a 10 minutos de las Termas de Chillán, rodeados de bosques nativos.</p>
+        <h2 className="text-3xl md:text-4xl font-display font-bold text-primary mb-4 text-center">¿Dónde Estamos?</h2>
+        <p className="text-xl text-center text-gray-600 mb-12 max-w-3xl mx-auto">En Valle Las Trancas, a pocos minutos de las Termas de Chillán, rodeados de bosques antiguos y montañas que cambian con las estaciones.</p>
         
         <div className="w-full mb-12">
           <div className="rounded-lg overflow-hidden shadow-lg h-[400px]">
@@ -129,5 +125,4 @@ const Location = () => {
       </div>
     </section>;
 };
-
 export default Location;
