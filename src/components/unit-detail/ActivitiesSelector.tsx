@@ -99,7 +99,7 @@ export const ActivitiesSelector = ({
           >
             <div className="flex-1">
               <div className="flex items-center justify-between">
-                <div className="font-medium">{activity.name}</div>
+                <div className="font-medium text-black">{activity.name}</div>
                 <div className="text-sm font-semibold text-primary">
                   ${activity.price.toLocaleString()}
                 </div>
