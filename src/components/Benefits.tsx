@@ -1,13 +1,10 @@
-
 import { Flame, Tent, Utensils, Star, Map, Bath, Heart, Bike, Mountain, Coffee, Carrot, Leaf, Wifi, Gamepad, ParkingMeter, Plug, Droplets, Book } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
-
 const Benefits = () => {
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState("banos");
-  
   const categories = [{
     id: "banos",
     label: "Baños de Agua Mineralizada",
@@ -25,7 +22,6 @@ const Benefits = () => {
     label: "Comodidades Extra",
     icon: <Wifi size={20} className="mr-2" />
   }];
-  
   const experiencesData = {
     banos: {
       title: "Baños de Agua Mineralizada",
@@ -126,9 +122,7 @@ const Benefits = () => {
       }]
     }
   };
-  
   const activeExperience = experiencesData[activeTab];
-  
   return <section id="benefits" className="py-20 bg-white">
       {/* Franja de título sin texto */}
       <div className="w-full bg-primary/5 border-b border-primary/10 py-3 mb-16">
@@ -139,7 +133,7 @@ const Benefits = () => {
       
       <div className="container mx-auto px-4">
         <h2 className="text-3xl md:text-4xl font-display font-bold text-primary mb-4 text-center">Experiencias</h2>
-        <p className="text-xl text-center text-gray-600 mb-10 max-w-3xl mx-auto">Explora, relájate y saborea lo mejor de Valle Las Trancas con nuestras actividades pensadas para vivir con el entorno.</p>
+        <p className="text-xl text-center text-gray-600 mb-10 max-w-3xl mx-auto">Explora, relájate y saborea lo mejor de Valle Las Trancas con nuestras actividades pensadas para disfrutar el entorno.</p>
         
         {/* Tabs para categorías */}
         <div className="flex flex-wrap justify-center gap-2 mb-12">
@@ -192,5 +186,4 @@ const Benefits = () => {
       </div>
     </section>;
 };
-
 export default Benefits;
