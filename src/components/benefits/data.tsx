@@ -60,7 +60,7 @@ export const experiencesData: ExperiencesData = {
       title: "Cicloturismo y Mountain Bike",
       description: "Recorridos en bicicleta por los alrededores, con rutas especialmente diseñadas para disfrutar del paisaje a tu ritmo.",
       details: "Disponemos de bicicletas de montaña de alta gama para alquilar y mapas detallados de las mejores rutas. Nuestros socios locales ofrecen tours guiados que incluyen paradas en miradores increíbles y productores artesanales de la zona.",
-      image: "/lovable-uploads/9e606128-1db3-42ce-b1ca-0474a875279f.png"
+      image: "/lovable-uploads/5e659144-32c4-419c-aa12-1d8d51ee81b5.png"
     }, {
       icon: <MapIcon />,
       title: "Excursiones a Parques Nacionales",
