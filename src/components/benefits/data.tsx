@@ -1,3 +1,4 @@
+
 import { ReactNode } from "react";
 import { 
   Droplets, Mountain, Book, Wifi, Bath, Heart, 
@@ -30,7 +31,7 @@ export const experiencesData: ExperiencesData = {
       title: "Tinajas de Ciprés con Agua Mineralizada",
       description: "Nuestras tinajas artesanales están fabricadas con madera de ciprés patagónico y se llenan con agua mineralizada tratada que se calienta a una temperatura ideal de 38-40°C. Esta experiencia única proporciona beneficios como relajación muscular, mejor circulación sanguínea y reducción del estrés.",
       details: "Las tinajas son preparadas exclusivamente para tu reserva y cuentan con vistas privilegiadas al bosque nativo. El agua mineralizada está enriquecida con sales naturales que favorecen la desintoxicación y el bienestar general.",
-      image: "/lovable-uploads/ec4a0c77-c6b5-4ec7-a6ab-f2ef933494c3.png"
+      image: "/lovable-uploads/0b9c17ba-d458-4eb9-be71-bf6d6efd9f37.png"
     }, {
       icon: <HeartIcon />,
       title: "Masajes y Terapias Alternativas",
