@@ -42,7 +42,7 @@ export const experiencesData: ExperiencesData = {
       title: "Baño de Bosque Guiado",
       description: "Practica 'shinrin-yoku', la terapia japonesa de inmersión en el bosque, con caminatas conscientes en nuestro entorno natural.",
       details: "Un guía especializado te llevará por senderos exclusivos dentro de nuestro terreno, donde realizarás ejercicios de respiración y meditación para conectar profundamente con la naturaleza. Estudios científicos demuestran que esta práctica reduce el cortisol y fortalece el sistema inmunológico.",
-      image: "/lovable-uploads/f3566ed7-fad7-43b9-9ee9-8f1cfcfc55cd.png"
+      image: "/lovable-uploads/cd46dec0-e3e5-400a-aa1e-03c20428cfb1.png"
     }]
   },
   recorridos: {
