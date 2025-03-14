@@ -30,19 +30,19 @@ export const experiencesData: ExperiencesData = {
       title: "Tinajas de Ciprés con Agua Mineralizada",
       description: "Nuestras tinajas artesanales están fabricadas con madera de ciprés patagónico y se llenan con agua mineralizada tratada que se calienta a una temperatura ideal de 38-40°C. Esta experiencia única proporciona beneficios como relajación muscular, mejor circulación sanguínea y reducción del estrés.",
       details: "Las tinajas son preparadas exclusivamente para tu reserva y cuentan con vistas privilegiadas al bosque nativo. El agua mineralizada está enriquecida con sales naturales que favorecen la desintoxicación y el bienestar general.",
-      image: "/lovable-uploads/c2fc17b3-3147-41eb-9f9d-e60c18530d4f.png"
+      image: "/lovable-uploads/ec4a0c77-c6b5-4ec7-a6ab-f2ef933494c3.png"
     }, {
       icon: <HeartIcon />,
       title: "Masajes y Terapias Alternativas",
       description: "Ofrecemos sesiones de masajes terapéuticos y técnicas de relajación con terapeutas certificados que utilizan productos naturales de la zona.",
       details: "Puedes reservar con anticipación una sesión en la privacidad de tu domo o en nuestro espacio dedicado con vistas al valle. Trabajamos con aceites esenciales de plantas nativas que potencian los beneficios curativos.",
-      image: "/lovable-uploads/e715f6dd-66bc-4b63-a3ac-d2c0ee63875d.png"
+      image: "/lovable-uploads/29224f80-2202-44a2-ab2c-51f6ae9baaae.png"
     }, {
       icon: <StarIcon />,
       title: "Baño de Bosque Guiado",
       description: "Practica 'shinrin-yoku', la terapia japonesa de inmersión en el bosque, con caminatas conscientes en nuestro entorno natural.",
       details: "Un guía especializado te llevará por senderos exclusivos dentro de nuestro terreno, donde realizarás ejercicios de respiración y meditación para conectar profundamente con la naturaleza. Estudios científicos demuestran que esta práctica reduce el cortisol y fortalece el sistema inmunológico.",
-      image: "/lovable-uploads/354b88a5-0502-4141-8ddc-0b31d9dc8175.png"
+      image: "/lovable-uploads/f3566ed7-fad7-43b9-9ee9-8f1cfcfc55cd.png"
     }]
   },
   recorridos: {
