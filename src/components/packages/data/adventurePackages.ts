@@ -55,7 +55,7 @@ export const adventurePackages: PackageItem[] = [
     detailedDescription: "Cada amanecer trae un espectáculo de luces y sombras en la montaña. Desde la terraza del domo, la cámara capta el vuelo de un cóndor y el reflejo del sol en los árboles. La niebla matutina le da un toque mágico al paisaje.",
     price: 130000,
     originalPrice: 165000,
-    image: "/lovable-uploads/4bb0b8cf-adee-40c4-ac00-a3676ff6cdcc.png",
+    image: "/lovable-uploads/8c7ac924-839e-490f-925a-eb74a04c1e40.png",
     interiorImage: "/lovable-uploads/82c8828f-f40f-4d4a-a240-bef61c16fc9f.png",
     size: "34m²",
     maxGuests: 2,
