@@ -1,5 +1,5 @@
 
-import { packageData } from '@/components/packages/packageData';
+import { packageData } from '@/components/packages/data';
 
 /**
  * Checks if a unit is a package unit
