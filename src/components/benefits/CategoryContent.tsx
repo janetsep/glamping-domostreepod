@@ -18,26 +18,31 @@ export const CategoryContent = ({ category }: CategoryContentProps) => {
         </p>
       </div>
       
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-6 mb-8 justify-items-center">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-12">
         {category.items.map((item, index) => (
           <div 
             key={index} 
-            className="relative rounded-lg overflow-hidden shadow-lg group transition-all duration-300 w-full max-w-xs"
+            className="bg-white rounded-xl overflow-hidden shadow-lg hover:shadow-xl transition-shadow duration-300"
           >
-            <div className="h-72 relative overflow-hidden cursor-pointer flex items-center justify-center">
+            <div className="h-64 relative overflow-hidden">
               <img 
                 src={item.image} 
                 alt={item.title} 
-                className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                className="w-full h-full object-cover transition-transform duration-500 hover:scale-105"
               />
-              
-              <div className="absolute inset-0 bg-black/60 flex flex-col justify-end p-6 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                <p className="text-white/90 text-sm mb-3">{item.description}</p>
-              </div>
             </div>
             
-            <div className="p-4 bg-white">
-              <h4 className="text-xl font-display font-bold">{item.title}</h4>
+            <div className="p-5">
+              <div className="flex items-center mb-3">
+                <div className="mr-3">{item.icon}</div>
+                <h4 className="text-xl font-display font-bold text-gray-800">{item.title}</h4>
+              </div>
+              
+              <p className="text-gray-600 mb-4">{item.description}</p>
+              
+              <div className="text-sm text-gray-500 bg-gray-50 p-3 rounded-lg">
+                {item.details}
+              </div>
             </div>
           </div>
         ))}
