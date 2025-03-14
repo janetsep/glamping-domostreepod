@@ -54,7 +54,7 @@ export const experiencesData: ExperiencesData = {
       title: "Trekking en Senderos Exclusivos",
       description: "Rutas de senderismo para todos los niveles en colaboración con guías locales certificados que conocen cada rincón del territorio.",
       details: "Contamos con alianzas con los mejores guías de montaña de la región que te llevarán a descubrir lagos ocultos, miradores panorámicos y bosques centenarios. Cada ruta está clasificada por dificultad y duración para que elijas la que mejor se adapte a tus preferencias.",
-      image: "/lovable-uploads/9750700a-7f4e-4744-9703-049733204f14.png"
+      image: "/lovable-uploads/46cd7d70-4f1c-46b5-8309-ade38a6c32a0.png"
     }, {
       icon: <BikeIcon />,
       title: "Cicloturismo y Mountain Bike",
