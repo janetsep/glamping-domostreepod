@@ -66,7 +66,7 @@ export const experiencesData: ExperiencesData = {
       title: "Excursiones a Parques Nacionales",
       description: "Tours organizados a los parques nacionales cercanos, con transporte incluido y guías especializados en flora y fauna nativa.",
       details: "Trabajamos con operadores turísticos locales que ofrecen excursiones a los parques nacionales más emblemáticos de la región. Incluyen transporte desde nuestra propiedad, almuerzo gourmet y guías bilingües apasionados por la conservación.",
-      image: "/lovable-uploads/f0a226af-4b5a-47f8-9a16-71ebc00d5039.png"
+      image: "/lovable-uploads/4221fa8d-c975-4277-bedf-a8ff6218c48d.png"
     }]
   },
   historias: {
