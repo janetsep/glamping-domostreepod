@@ -14,7 +14,7 @@ const ReserveButton = ({
   return (
     <Button 
       onClick={handleReserveClick} 
-      className="bg-cyan-500 hover:bg-cyan-600 text-white ml-4 px-5 py-2 rounded-md flex items-center gap-2"
+      className="bg-cyan-500 hover:bg-cyan-600 text-white ml-4 px-5 py-2 rounded-md flex items-center gap-2 transition-all duration-300"
     >
       <ConciergeBell className="h-4 w-4" />
       <span>Reservar</span>
