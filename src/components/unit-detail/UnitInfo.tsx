@@ -1,3 +1,4 @@
+
 import { Users, Coffee, Droplets, Wifi, Flame, BedDouble, Mountain, Utensils, Check, Clock, Smile } from "lucide-react";
 import type { GlampingUnit } from "@/lib/supabase";
 import { useState } from "react";
@@ -117,6 +118,16 @@ export const UnitInfo = ({
   };
   const policies = getPolicies();
 
+  // Imágenes nuevas para la experiencia TreePod
+  const experienceImages = [
+    "/lovable-uploads/efff0e9e-0976-497a-9afe-25104c9fefef.png",
+    "/lovable-uploads/1e29d754-6882-4de5-b2ca-3d9680160dda.png",
+    "/lovable-uploads/ba985569-8f29-4da1-af9c-2aba9a5a886b.png",
+    "/lovable-uploads/41ccd2d9-61e0-45f7-a155-0db08bc3800e.png",
+    "/lovable-uploads/71928294-5635-46f7-a3ec-5fb33ef836ea.png",
+    "/lovable-uploads/72e3600d-5b7a-4218-82ac-b305c49e4aeb.png"
+  ];
+
   // Obtener detalle específico según el domo
   const getUnitDetail = (unitName: string) => {
     if (unitName.includes("Araucaria")) {
@@ -208,11 +219,24 @@ export const UnitInfo = ({
         
         <div className="bg-green-50 p-5 rounded-lg border border-green-100">
           <h3 className="font-semibold text-green-800 mb-2">Tu experiencia TreePod</h3>
-          <p className="text-green-700">
+          <p className="text-green-700 mb-4">
             {unitDetail.experience}
           </p>
           
-          <div className="mt-4 pt-4 border-t border-green-200">
+          {/* Galería de imágenes de experiencia */}
+          <div className="grid grid-cols-2 md:grid-cols-3 gap-2 mb-4">
+            {experienceImages.map((img, index) => (
+              <div key={index} className="h-32 md:h-40 rounded-md overflow-hidden">
+                <img 
+                  src={img} 
+                  alt={`Experiencia TreePod ${index + 1}`} 
+                  className="w-full h-full object-cover transition-transform duration-500 hover:scale-105"
+                />
+              </div>
+            ))}
+          </div>
+          
+          <div className="pt-4 border-t border-green-200">
             <p className="text-sm text-green-700">
               <strong>¿Qué incluye tu estadía?</strong> Acceso a senderos exclusivos, desayuno con productos locales, tinajas de agua mineralizada (previa reserva) y la tranquilidad absoluta del bosque nativo.
             </p>
