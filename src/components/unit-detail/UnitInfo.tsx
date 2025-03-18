@@ -16,7 +16,7 @@ export const UnitInfo = ({
   const getDomoImages = (unitName: string) => {
     if (unitName.includes("Araucaria")) {
       return [
-        "/lovable-uploads/89f29ca2-9b6a-4ce2-9334-664fd22c19ce.png", 
+        "/lovable-uploads/81cdaf67-2cb9-460d-a5ca-e57298d3d700.png", 
         "/lovable-uploads/3c440bec-e9af-462b-95d8-45e8eec15b88.png", 
         "/lovable-uploads/ce94fa50-b554-4f58-894b-93a89468b8c7.png",
         "/lovable-uploads/31454024-c7c7-4a8b-8f5c-c4fd1af369e1.png"
@@ -24,20 +24,20 @@ export const UnitInfo = ({
     } else if (unitName.includes("Canelo")) {
       return [
         "/lovable-uploads/ce94fa50-b554-4f58-894b-93a89468b8c7.png", 
-        "/lovable-uploads/89f29ca2-9b6a-4ce2-9334-664fd22c19ce.png", 
+        "/lovable-uploads/81cdaf67-2cb9-460d-a5ca-e57298d3d700.png", 
         "/lovable-uploads/31454024-c7c7-4a8b-8f5c-c4fd1af369e1.png"
       ];
     } else if (unitName.includes("Coihue") || unitName.includes("Mirador")) {
       return [
         "/lovable-uploads/3c440bec-e9af-462b-95d8-45e8eec15b88.png", 
-        "/lovable-uploads/89f29ca2-9b6a-4ce2-9334-664fd22c19ce.png", 
+        "/lovable-uploads/81cdaf67-2cb9-460d-a5ca-e57298d3d700.png", 
         "/lovable-uploads/ce94fa50-b554-4f58-894b-93a89468b8c7.png"
       ];
     }
 
     // Imágenes por defecto si no coincide con ningún nombre conocido
     return [
-      "/lovable-uploads/89f29ca2-9b6a-4ce2-9334-664fd22c19ce.png", 
+      "/lovable-uploads/81cdaf67-2cb9-460d-a5ca-e57298d3d700.png", 
       "/lovable-uploads/3c440bec-e9af-462b-95d8-45e8eec15b88.png", 
       "/lovable-uploads/ce94fa50-b554-4f58-894b-93a89468b8c7.png",
       "/lovable-uploads/31454024-c7c7-4a8b-8f5c-c4fd1af369e1.png"
