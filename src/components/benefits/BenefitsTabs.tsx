@@ -15,8 +15,7 @@ export const BenefitsTabs = ({
   return <Tabs defaultValue="banos" value={activeTab} onValueChange={setActiveTab} className="w-full">
       <TabsList className="grid grid-cols-2 md:grid-cols-4 mb-6 bg-gray-100 p-1 rounded-md">
         <TabsTrigger value="banos">Agua Mineralizada</TabsTrigger>
-        <TabsTrigger value="recorridos">Recorridos y A
-ctividades</TabsTrigger>
+        <TabsTrigger value="recorridos">Recorridos y Actividades</TabsTrigger>
         <TabsTrigger value="historias">Historias y Cultura Local</TabsTrigger>
         <TabsTrigger value="comodidades">Extras Incluídos</TabsTrigger>
       </TabsList>
