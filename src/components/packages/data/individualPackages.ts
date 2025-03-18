@@ -11,7 +11,7 @@ export const individualPackages: PackageItem[] = [
     detailedDescription: "El refugio perfecto para desconectarte del ruido y reencontrarte con la naturaleza. En la terraza, un buen libro y el sonido del bosque crean el ambiente ideal para un descanso profundo. Afuera, los senderos esperan ser explorados a tu propio ritmo.",
     price: 120000,
     originalPrice: 150000,
-    image: "/lovable-uploads/9fab582c-5bb9-4f0f-bee1-4b6b66acc8d7.png",
+    image: "/lovable-uploads/61fca257-0896-42e5-9a20-0e1baf5e6031.png",
     interiorImage: "/lovable-uploads/82c8828f-f40f-4d4a-a240-bef61c16fc9f.png",
     size: "32m²",
     maxGuests: 4,
