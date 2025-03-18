@@ -1,4 +1,3 @@
-
 import { Users, Coffee, Droplets, Wifi, Flame, BedDouble, Mountain, Utensils, Check, Clock, Smile } from "lucide-react";
 import type { GlampingUnit } from "@/lib/supabase";
 import { useState } from "react";
@@ -19,19 +18,22 @@ export const UnitInfo = ({
         "/lovable-uploads/81cdaf67-2cb9-460d-a5ca-e57298d3d700.png", 
         "/lovable-uploads/3c440bec-e9af-462b-95d8-45e8eec15b88.png", 
         "/lovable-uploads/ce94fa50-b554-4f58-894b-93a89468b8c7.png",
-        "/lovable-uploads/31454024-c7c7-4a8b-8f5c-c4fd1af369e1.png"
+        "/lovable-uploads/31454024-c7c7-4a8b-8f5c-c4fd1af369e1.png",
+        "/lovable-uploads/9f5ec7ea-f65b-46be-94ba-8df609f0a24f.png"
       ];
     } else if (unitName.includes("Canelo")) {
       return [
         "/lovable-uploads/ce94fa50-b554-4f58-894b-93a89468b8c7.png", 
         "/lovable-uploads/81cdaf67-2cb9-460d-a5ca-e57298d3d700.png", 
-        "/lovable-uploads/31454024-c7c7-4a8b-8f5c-c4fd1af369e1.png"
+        "/lovable-uploads/31454024-c7c7-4a8b-8f5c-c4fd1af369e1.png",
+        "/lovable-uploads/9f5ec7ea-f65b-46be-94ba-8df609f0a24f.png"
       ];
     } else if (unitName.includes("Coihue") || unitName.includes("Mirador")) {
       return [
         "/lovable-uploads/3c440bec-e9af-462b-95d8-45e8eec15b88.png", 
         "/lovable-uploads/81cdaf67-2cb9-460d-a5ca-e57298d3d700.png", 
-        "/lovable-uploads/ce94fa50-b554-4f58-894b-93a89468b8c7.png"
+        "/lovable-uploads/ce94fa50-b554-4f58-894b-93a89468b8c7.png",
+        "/lovable-uploads/9f5ec7ea-f65b-46be-94ba-8df609f0a24f.png"
       ];
     }
 
@@ -40,7 +42,8 @@ export const UnitInfo = ({
       "/lovable-uploads/81cdaf67-2cb9-460d-a5ca-e57298d3d700.png", 
       "/lovable-uploads/3c440bec-e9af-462b-95d8-45e8eec15b88.png", 
       "/lovable-uploads/ce94fa50-b554-4f58-894b-93a89468b8c7.png",
-      "/lovable-uploads/31454024-c7c7-4a8b-8f5c-c4fd1af369e1.png"
+      "/lovable-uploads/31454024-c7c7-4a8b-8f5c-c4fd1af369e1.png",
+      "/lovable-uploads/9f5ec7ea-f65b-46be-94ba-8df609f0a24f.png"
     ];
   };
   const images = getDomoImages(unit.name);
@@ -163,7 +166,7 @@ export const UnitInfo = ({
       </div>
       
       {/* Miniaturas de imágenes */}
-      <div className="grid grid-cols-4 gap-2 mt-2">
+      <div className="grid grid-cols-5 gap-2 mt-2">
         {images.map((img, index) => <div key={index} className={`h-24 rounded-md overflow-hidden cursor-pointer ${activeImageIndex === index ? 'ring-2 ring-primary' : ''}`} onClick={() => setActiveImageIndex(index)}>
             <img src={img} alt={`${unit.name} - Miniatura ${index + 1}`} className="w-full h-full object-cover" />
           </div>)}
