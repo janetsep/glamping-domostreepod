@@ -1,3 +1,4 @@
+
 import { Users, Coffee, Droplets, Wifi, Flame, BedDouble, Mountain, Utensils, Check, Clock, Smile } from "lucide-react";
 import type { GlampingUnit } from "@/lib/supabase";
 import { useState } from "react";
@@ -14,15 +15,33 @@ export const UnitInfo = ({
   // Seleccionar imágenes según el tipo de domo
   const getDomoImages = (unitName: string) => {
     if (unitName.includes("Araucaria")) {
-      return ["/lovable-uploads/f0a226af-4b5a-47f8-9a16-71ebc00d5039.png", "/lovable-uploads/9e606128-1db3-42ce-b1ca-0474a875279f.png", "/lovable-uploads/abaa63a0-8f4a-4939-96f9-808ed3d09802.png"];
+      return [
+        "/lovable-uploads/89f29ca2-9b6a-4ce2-9334-664fd22c19ce.png", 
+        "/lovable-uploads/3c440bec-e9af-462b-95d8-45e8eec15b88.png", 
+        "/lovable-uploads/ce94fa50-b554-4f58-894b-93a89468b8c7.png",
+        "/lovable-uploads/31454024-c7c7-4a8b-8f5c-c4fd1af369e1.png"
+      ];
     } else if (unitName.includes("Canelo")) {
-      return ["/lovable-uploads/04ce7b83-26de-4148-a84b-6b62dd46101f.png", "/lovable-uploads/f0a226af-4b5a-47f8-9a16-71ebc00d5039.png", "/lovable-uploads/7f7e32a2-1e84-49ce-9d9c-fd06aece4b05.png"];
+      return [
+        "/lovable-uploads/ce94fa50-b554-4f58-894b-93a89468b8c7.png", 
+        "/lovable-uploads/89f29ca2-9b6a-4ce2-9334-664fd22c19ce.png", 
+        "/lovable-uploads/31454024-c7c7-4a8b-8f5c-c4fd1af369e1.png"
+      ];
     } else if (unitName.includes("Coihue") || unitName.includes("Mirador")) {
-      return ["/lovable-uploads/9e606128-1db3-42ce-b1ca-0474a875279f.png", "/lovable-uploads/04ce7b83-26de-4148-a84b-6b62dd46101f.png", "/lovable-uploads/abaa63a0-8f4a-4939-96f9-808ed3d09802.png"];
+      return [
+        "/lovable-uploads/3c440bec-e9af-462b-95d8-45e8eec15b88.png", 
+        "/lovable-uploads/89f29ca2-9b6a-4ce2-9334-664fd22c19ce.png", 
+        "/lovable-uploads/ce94fa50-b554-4f58-894b-93a89468b8c7.png"
+      ];
     }
 
     // Imágenes por defecto si no coincide con ningún nombre conocido
-    return [unit.image_url || "/placeholder.svg", "/lovable-uploads/f0a226af-4b5a-47f8-9a16-71ebc00d5039.png", "/lovable-uploads/04lovable-uploads/04ce7b83-26de-4148-a84b-6b62dd46101f.png"];
+    return [
+      "/lovable-uploads/89f29ca2-9b6a-4ce2-9334-664fd22c19ce.png", 
+      "/lovable-uploads/3c440bec-e9af-462b-95d8-45e8eec15b88.png", 
+      "/lovable-uploads/ce94fa50-b554-4f58-894b-93a89468b8c7.png",
+      "/lovable-uploads/31454024-c7c7-4a8b-8f5c-c4fd1af369e1.png"
+    ];
   };
   const images = getDomoImages(unit.name);
 
@@ -144,7 +163,7 @@ export const UnitInfo = ({
       </div>
       
       {/* Miniaturas de imágenes */}
-      <div className="grid grid-cols-3 gap-2 mt-2">
+      <div className="grid grid-cols-4 gap-2 mt-2">
         {images.map((img, index) => <div key={index} className={`h-24 rounded-md overflow-hidden cursor-pointer ${activeImageIndex === index ? 'ring-2 ring-primary' : ''}`} onClick={() => setActiveImageIndex(index)}>
             <img src={img} alt={`${unit.name} - Miniatura ${index + 1}`} className="w-full h-full object-cover" />
           </div>)}
