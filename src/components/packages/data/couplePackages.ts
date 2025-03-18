@@ -11,7 +11,7 @@ export const couplePackages: PackageItem[] = [
     detailedDescription: "Bajo un cielo estrellado, las luces del domo crean un ambiente acogedor. Compartir una copa de vino en la terraza, con el bosque como único testigo, es el cierre perfecto para un día de caminatas y descanso en la tinaja de agua mineral.",
     price: 135000,
     originalPrice: 180000,
-    image: "/lovable-uploads/717e7999-5c62-4fc9-a165-917b692351f9.png",
+    image: "/lovable-uploads/b3f7fcc3-d3a3-4ddf-b3b1-bf673a471dd2.png",
     interiorImage: "/lovable-uploads/0fe12fb9-c758-424f-9a5b-67b8b2ae67d1.png",
     size: "38m²",
     maxGuests: 2,
