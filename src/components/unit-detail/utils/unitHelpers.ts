@@ -1,6 +1,7 @@
 
 import { Clock, Droplets, Check, Users, Smile } from "lucide-react";
 import type { Feature, Policy } from "@/types";
+import React from "react";
 
 // Images for each domo type
 export const getDomoImages = (unitName: string) => {
@@ -47,27 +48,27 @@ export const getFeatures = (unitName: string): Feature[] => {
   // Common features for all domos
   const features = [
     {
-      icon: <Check className="text-primary" size={18} />,
+      icon: React.createElement(Check, { className: "text-primary", size: 18 }),
       text: "Wi-Fi de alta velocidad"
     },
     {
-      icon: <Check className="text-primary" size={18} />,
+      icon: React.createElement(Check, { className: "text-primary", size: 18 }),
       text: "Calefacción central"
     },
     {
-      icon: <Check className="text-primary" size={18} />,
+      icon: React.createElement(Check, { className: "text-primary", size: 18 }),
       text: "Smart TV con Netflix"
     },
     {
-      icon: <Check className="text-primary" size={18} />,
+      icon: React.createElement(Check, { className: "text-primary", size: 18 }),
       text: "Cocina equipada"
     },
     {
-      icon: <Check className="text-primary" size={18} />,
+      icon: React.createElement(Check, { className: "text-primary", size: 18 }),
       text: "Baño privado con ducha de lluvia"
     },
     {
-      icon: <Check className="text-primary" size={18} />,
+      icon: React.createElement(Check, { className: "text-primary", size: 18 }),
       text: "Terraza privada con vistas al bosque"
     }
   ];
@@ -79,19 +80,19 @@ export const getFeatures = (unitName: string): Feature[] => {
 export const getPolicies = (): Policy[] => {
   return [
     {
-      icon: <Clock className="text-primary" size={18} />,
+      icon: React.createElement(Clock, { className: "text-primary", size: 18 }),
       text: "Check-in: 15:00 - Check-out: 12:00"
     },
     {
-      icon: <Smile className="text-primary" size={18} />,
+      icon: React.createElement(Smile, { className: "text-primary", size: 18 }),
       text: "Desayuno incluido"
     },
     {
-      icon: <Droplets className="text-primary" size={18} />,
+      icon: React.createElement(Droplets, { className: "text-primary", size: 18 }),
       text: "Acceso a tinaja de agua caliente (previa reserva)"
     },
     {
-      icon: <Users className="text-primary" size={18} />,
+      icon: React.createElement(Users, { className: "text-primary", size: 18 }),
       text: "No se permiten mascotas"
     }
   ];
