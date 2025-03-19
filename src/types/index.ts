@@ -1,3 +1,4 @@
+
 export interface Activity {
   id: string;
   name: string;
@@ -22,4 +23,14 @@ export interface AvailabilityCalendarDay {
   isSelected: boolean;
   availableUnits?: number;
   totalUnits?: number;
+}
+
+export interface Feature {
+  icon: React.ReactNode;
+  text: string;
+}
+
+export interface Policy {
+  icon: React.ReactNode;
+  text: string;
 }
