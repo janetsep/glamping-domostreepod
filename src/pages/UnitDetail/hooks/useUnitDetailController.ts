@@ -1,0 +1,44 @@
+
+import { useEffect } from "react";
+import { URLSearchParams } from "url";
+import { useUnitDetailState } from "./useUnitDetailState";
+import { useReservationActions } from "./useReservationActions";
+import { usePaymentStatusHandler } from "./usePaymentStatusHandler";
+
+export const useUnitDetailController = (
+  unitId: string | undefined,
+  searchParams: URLSearchParams
+) => {
+  // Use our custom hooks
+  const state = useUnitDetailState(unitId);
+  const actions = useReservationActions(state);
+  
+  // Handle payment success and reservation confirmation from URL
+  const { processPaymentStatus } = usePaymentStatusHandler(state, searchParams);
+
+  // Process payment status when component loads
+  useEffect(() => {
+    processPaymentStatus();
+  }, [processPaymentStatus]);
+
+  // Check availability automatically when dates are selected
+  useEffect(() => {
+    if (state.startDate && state.endDate) {
+      actions.checkDatesAvailability();
+    }
+  }, [state.startDate, state.endDate, state.displayUnit, actions]);
+
+  // Reset verification state when dates change
+  useEffect(() => {
+    if (state.startDate || state.endDate) {
+      state.setCheckedAvailability(false);
+      state.setShowQuote(false);
+      state.setQuote(null);
+    }
+  }, [state.startDate, state.endDate, state.setCheckedAvailability, state.setShowQuote, state.setQuote]);
+
+  return {
+    state,
+    actions
+  };
+};
