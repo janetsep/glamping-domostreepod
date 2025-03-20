@@ -6,7 +6,7 @@ import { createIcon } from "./utils";
 export const individualPackages: PackageItem[] = [
   {
     id: "1",
-    title: "Para el viajero en solitario 🌿",
+    title: "Para el viajero en solitario",
     description: "El refugio perfecto para desconectarte del ruido y reencontrarte con la naturaleza. En la terraza, un buen libro y el sonido del bosque crean el ambiente ideal para un descanso profundo. Afuera, los senderos esperan ser explorados a tu propio ritmo.",
     detailedDescription: "El refugio perfecto para desconectarte del ruido y reencontrarte con la naturaleza. En la terraza, un buen libro y el sonido del bosque crean el ambiente ideal para un descanso profundo. Afuera, los senderos esperan ser explorados a tu propio ritmo.",
     price: 120000,
@@ -28,7 +28,7 @@ export const individualPackages: PackageItem[] = [
   },
   {
     id: "9",
-    title: "Para quienes buscan simplicidad y descanso ☕",
+    title: "Para quienes buscan simplicidad y descanso",
     description: "Despertar sin prisa, con el aroma del bosque entrando por la ventana. Preparar un café y salir a la terraza a sentir la brisa fresca. Aquí, cada día comienza sin apuro, siguiendo el ritmo de la naturaleza.",
     detailedDescription: "Despertar sin prisa, con el aroma del bosque entrando por la ventana. Preparar un café y salir a la terraza a sentir la brisa fresca. Aquí, cada día comienza sin apuro, siguiendo el ritmo de la naturaleza.",
     price: 115000,

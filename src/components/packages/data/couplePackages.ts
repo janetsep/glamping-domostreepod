@@ -6,7 +6,7 @@ import { createIcon } from "./utils";
 export const couplePackages: PackageItem[] = [
   {
     id: "2",
-    title: "Para la pareja en busca de tranquilidad 💙",
+    title: "Para la pareja en busca de tranquilidad",
     description: "Bajo un cielo estrellado, las luces del domo crean un ambiente acogedor. Compartir una copa de vino en la terraza, con el bosque como único testigo, es el cierre perfecto para un día de caminatas y descanso en la tinaja de agua mineral.",
     detailedDescription: "Bajo un cielo estrellado, las luces del domo crean un ambiente acogedor. Compartir una copa de vino en la terraza, con el bosque como único testigo, es el cierre perfecto para un día de caminatas y descanso en la tinaja de agua mineral.",
     price: 135000,
@@ -28,7 +28,7 @@ export const couplePackages: PackageItem[] = [
   },
   {
     id: "8",
-    title: "Para quienes buscan una escapada especial 🎉",
+    title: "Para quienes buscan una escapada especial",
     description: "Celebrar en medio de la montaña tiene otro significado. Una cena especial bajo las estrellas, la calidez del domo y la sensación de estar lejos del mundo convierten cualquier ocasión en un recuerdo inolvidable.",
     detailedDescription: "Celebrar en medio de la montaña tiene otro significado. Una cena especial bajo las estrellas, la calidez del domo y la sensación de estar lejos del mundo convierten cualquier ocasión en un recuerdo inolvidable.",
     price: 150000,

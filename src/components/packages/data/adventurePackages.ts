@@ -6,7 +6,7 @@ import { createIcon } from "./utils";
 export const adventurePackages: PackageItem[] = [
   {
     id: "3",
-    title: "Para los aventureros de montaña 🥾",
+    title: "Para los aventureros de montaña",
     description: "Después de una jornada recorriendo la montaña, el domo se convierte en tu refugio de descanso. Dejas las botas en la entrada, enciendes la estufa a pellet y disfrutas de la vista mientras recuperas energías para la próxima aventura.",
     detailedDescription: "Después de una jornada recorriendo la montaña, el domo se convierte en tu refugio de descanso. Dejas las botas en la entrada, enciendes la estufa a pellet y disfrutas de la vista mientras recuperas energías para la próxima aventura.",
     price: 125000,
@@ -28,7 +28,7 @@ export const adventurePackages: PackageItem[] = [
   },
   {
     id: "7",
-    title: "Para los amantes del trekking ⛰️",
+    title: "Para los amantes del trekking",
     description: "El sendero comienza a pocos metros del domo, llevando a cascadas escondidas y miradores naturales. El regreso es recompensado con una comida caliente en la cocina del domo y una noche de descanso profundo rodeado de bosque.",
     detailedDescription: "El sendero comienza a pocos metros del domo, llevando a cascadas escondidas y miradores naturales. El regreso es recompensado con una comida caliente en la cocina del domo y una noche de descanso profundo rodeado de bosque.",
     price: 125000,
@@ -50,7 +50,7 @@ export const adventurePackages: PackageItem[] = [
   },
   {
     id: "6",
-    title: "Para el fotógrafo de naturaleza 📷",
+    title: "Para el fotógrafo de naturaleza",
     description: "Cada amanecer trae un espectáculo de luces y sombras en la montaña. Desde la terraza del domo, la cámara capta el vuelo de un cóndor y el reflejo del sol en los árboles. La niebla matutina le da un toque mágico al paisaje.",
     detailedDescription: "Cada amanecer trae un espectáculo de luces y sombras en la montaña. Desde la terraza del domo, la cámara capta el vuelo de un cóndor y el reflejo del sol en los árboles. La niebla matutina le da un toque mágico al paisaje.",
     price: 130000,
