@@ -27,28 +27,6 @@ export const specialtyPackages: PackageItem[] = [
     ]
   },
   {
-    id: "5",
-    title: "Para el amante del bienestar 🍃",
-    description: "Una mañana de silencio y conexión con el entorno. El desayuno con productos locales y la caminata por los senderos despejan la mente. Al final del día, la tinaja de agua mineral es el espacio perfecto para relajar el cuerpo y la mente.",
-    detailedDescription: "Una mañana de silencio y conexión con el entorno. El desayuno con productos locales y la caminata por los senderos despejan la mente. Al final del día, la tinaja de agua mineral es el espacio perfecto para relajar el cuerpo y la mente.",
-    price: 140000,
-    originalPrice: 175000,
-    image: "/lovable-uploads/c951eccc-c6f1-4744-8bc8-fca101105107.png",
-    interiorImage: "/lovable-uploads/9d029773-a360-431b-a1b6-681971e6fb24.png",
-    size: "38m²",
-    maxGuests: 2,
-    features: ["3 noches de alojamiento", "Desayuno orgánico incluido", "Tinaja de agua mineral", "Capacidad: 2 personas", "Yoga mat"],
-    amenities: [
-      { icon: createIcon(Coffee), text: "Selección de tés e infusiones orgánicas" },
-      { icon: createIcon(Droplets), text: "Tinaja de agua mineral privada" },
-      { icon: createIcon(Wifi), text: "Wifi (desconectable para digital detox)" },
-      { icon: createIcon(Flame), text: "Calefacción ecológica" },
-      { icon: createIcon(BedDouble), text: "Cama con colchón ortopédico" },
-      { icon: createIcon(Mountain), text: "Terraza para práctica de yoga" },
-      { icon: createIcon(Users), text: "Experiencias de bienestar incluidas" }
-    ]
-  },
-  {
     id: "10",
     title: "Para el viajero que busca nuevas experiencias 🌎",
     description: "Cada detalle del domo está pensado para disfrutar el entorno sin interrupciones. Desde la comodidad de la cama, la vista del bosque es un recordatorio de que estás en un lugar especial, listo para descubrir lo que el valle tiene para ofrecer.",
