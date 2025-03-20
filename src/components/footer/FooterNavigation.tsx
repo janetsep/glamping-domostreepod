@@ -1,5 +1,5 @@
 
-import { Home, House, MapPin, Mail, Sparkles, Mountain, Book, Droplets } from "lucide-react";
+import { Home, House, MapPin, Mail, Sparkles, Mountain, Book, Droplets, ImageIcon } from "lucide-react";
 
 interface FooterNavigationProps {
   navigateTo: (path: string) => void;
@@ -17,6 +17,7 @@ const FooterNavigation = ({ navigateTo }: FooterNavigationProps) => {
         { name: "Historias y Cultura Local", href: "/#benefits", icon: Book }
       ]
     },
+    { name: "Galería", href: "/#gallery", icon: ImageIcon },
     { name: "Cómo llegar", href: "/#location", icon: MapPin },
     { name: "Sobre Nosotros", href: "/sobre-nosotros", icon: Sparkles },
     { name: "Contacto", href: "/#contact", icon: Mail }

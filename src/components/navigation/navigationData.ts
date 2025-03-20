@@ -10,7 +10,8 @@ import {
   Dumbbell,
   Navigation,
   Droplets,
-  Book
+  Book,
+  ImageIcon
 } from "lucide-react";
 
 export interface NavLink {
@@ -45,6 +46,7 @@ export const navigationLinks: NavLink[] = [
       { name: "Historias y Cultura Local", id: "benefits", path: null, icon: Book }
     ]
   },
+  { name: "Galería", id: "gallery", icon: ImageIcon, path: null },
   { name: "Cómo llegar", id: "location", icon: Navigation, path: null, description: "Sur de Chile" },
   { name: "Contacto", id: "contact", icon: Mail, path: null }
 ];
