@@ -1,5 +1,5 @@
 
-import { Home, House, MapPin, Mail, Sparkles, Mountain, Book, Droplets, ImageIcon } from "lucide-react";
+import { Home, House, MapPin, Mail, Sparkles, Mountain, Book, Droplets, ImageIcon, TreePine, Gamepad } from "lucide-react";
 
 interface FooterNavigationProps {
   navigateTo: (path: string) => void;
@@ -12,9 +12,11 @@ const FooterNavigation = ({ navigateTo }: FooterNavigationProps) => {
     { name: "Domos", href: "/#packages", icon: House },
     { name: "Experiencias", href: "/#benefits", icon: Sparkles, 
       submenu: [
-        { name: "Baños de Agua Mineralizada", href: "/#benefits", icon: Droplets },
+        { name: "Tinajas de Ciprés", href: "/#benefits", icon: Droplets },
         { name: "Recorridos y Paisajes", href: "/#benefits", icon: Mountain },
-        { name: "Historias y Cultura Local", href: "/#benefits", icon: Book }
+        { name: "Historias y Cultura Local", href: "/#benefits", icon: Book },
+        { name: "Baño de Bosque", href: "/#benefits", icon: TreePine },
+        { name: "Juegos de Mesa", href: "/#benefits", icon: Gamepad }
       ]
     },
     { name: "Galería", href: "/#gallery", icon: ImageIcon },

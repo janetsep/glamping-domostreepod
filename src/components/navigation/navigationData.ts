@@ -11,7 +11,9 @@ import {
   Navigation,
   Droplets,
   Book,
-  ImageIcon
+  ImageIcon,
+  TreePine,
+  Gamepad
 } from "lucide-react";
 
 export interface NavLink {
@@ -41,9 +43,11 @@ export const navigationLinks: NavLink[] = [
     path: null, 
     description: "Descubre lo que ofrecemos",
     submenu: [
-      { name: "Baños de Agua Mineralizada", id: "benefits", path: null, icon: Droplets },
+      { name: "Tinajas de Ciprés", id: "benefits", path: null, icon: Droplets },
       { name: "Recorridos y Paisajes", id: "benefits", path: null, icon: Mountain },
-      { name: "Historias y Cultura Local", id: "benefits", path: null, icon: Book }
+      { name: "Historias y Cultura Local", id: "benefits", path: null, icon: Book },
+      { name: "Baño de Bosque", id: "benefits", path: null, icon: TreePine },
+      { name: "Juegos de Mesa", id: "benefits", path: null, icon: Gamepad }
     ]
   },
   { name: "Galería", id: "gallery", icon: ImageIcon, path: null },

@@ -1,9 +1,13 @@
+
 import { useState } from "react";
 import { BenefitsTabs } from "./benefits/BenefitsTabs";
 import { experiencesData } from "./benefits/data";
+
 const Benefits = () => {
-  const [activeTab, setActiveTab] = useState("banos");
-  return <section id="benefits" className="py-10 bg-white">
+  const [activeTab, setActiveTab] = useState("tinajas");
+
+  return (
+    <section id="benefits" className="py-10 bg-white">
       {/* Franja de título sin texto */}
       <div className="w-full bg-primary/5 border-b border-primary/10 py-3 mb-8">
         <div className="container mx-auto px-4">
@@ -20,6 +24,8 @@ const Benefits = () => {
           <BenefitsTabs experiencesData={experiencesData} activeTab={activeTab} setActiveTab={setActiveTab} />
         </div>
       </div>
-    </section>;
+    </section>
+  );
 };
+
 export default Benefits;
