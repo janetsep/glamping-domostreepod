@@ -11,8 +11,8 @@ export const individualPackages: PackageItem[] = [
     detailedDescription: "El refugio perfecto para desconectarte del ruido y reencontrarte con la naturaleza. En la terraza, un buen libro y el sonido del bosque crean el ambiente ideal para un descanso profundo. Afuera, los senderos esperan ser explorados a tu propio ritmo.",
     price: 120000,
     originalPrice: 150000,
-    image: "/lovable-uploads/c951eccc-c6f1-4744-8bc8-fca101105107.png",
-    interiorImage: "/lovable-uploads/0e4d1495-87f2-4608-8685-caddc7925222.png",
+    image: "/lovable-uploads/113a2ea1-c91a-409e-afed-9484312a2563.png", // Updated image to match the persona
+    interiorImage: "/lovable-uploads/9d029773-a360-431b-a1b6-681971e6fb24.png",
     size: "32m²",
     maxGuests: 4,
     features: ["2 noches de alojamiento", "Desayuno incluido", "Capacidad: 4 personas", "Vistas al bosque", "Acceso a senderos"],
@@ -33,8 +33,8 @@ export const individualPackages: PackageItem[] = [
     detailedDescription: "Despertar sin prisa, con el aroma del bosque entrando por la ventana. Preparar un café y salir a la terraza a sentir la brisa fresca. Aquí, cada día comienza sin apuro, siguiendo el ritmo de la naturaleza.",
     price: 115000,
     originalPrice: 145000,
-    image: "/lovable-uploads/113a2ea1-c91a-409e-afed-9484312a2563.png",
-    interiorImage: "/lovable-uploads/9d029773-a360-431b-a1b6-681971e6fb24.png",
+    image: "/lovable-uploads/c951eccc-c6f1-4744-8bc8-fca101105107.png", // Updated image to match the persona
+    interiorImage: "/lovable-uploads/0e4d1495-87f2-4608-8685-caddc7925222.png",
     size: "30m²",
     maxGuests: 2,
     features: ["2 noches de alojamiento", "Desayuno incluido", "Capacidad: 2 personas", "Hamaca en terraza", "Biblioteca minimalista"],

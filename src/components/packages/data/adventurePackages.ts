@@ -6,12 +6,12 @@ import { createIcon } from "./utils";
 export const adventurePackages: PackageItem[] = [
   {
     id: "3",
-    title: "Para los aventureros 🥾",
+    title: "Para los aventureros de montaña 🥾",
     description: "Después de una jornada recorriendo la montaña, el domo se convierte en tu refugio de descanso. Dejas las botas en la entrada, enciendes la estufa a pellet y disfrutas de la vista mientras recuperas energías para la próxima aventura.",
     detailedDescription: "Después de una jornada recorriendo la montaña, el domo se convierte en tu refugio de descanso. Dejas las botas en la entrada, enciendes la estufa a pellet y disfrutas de la vista mientras recuperas energías para la próxima aventura.",
     price: 125000,
     originalPrice: 160000,
-    image: "/lovable-uploads/e097d405-d6e7-4410-af4a-b2cb8d55c03b.png",
+    image: "/lovable-uploads/5bf3bb3b-da31-4f12-a031-1d7274b2b1cc.png", // Updated image to match the persona
     interiorImage: "/lovable-uploads/c574bdd7-54e1-4251-a57f-c23a453896fe.png",
     size: "36m²",
     maxGuests: 3,
@@ -33,7 +33,7 @@ export const adventurePackages: PackageItem[] = [
     detailedDescription: "El sendero comienza a pocos metros del domo, llevando a cascadas escondidas y miradores naturales. El regreso es recompensado con una comida caliente en la cocina del domo y una noche de descanso profundo rodeado de bosque.",
     price: 125000,
     originalPrice: 155000,
-    image: "/lovable-uploads/5bf3bb3b-da31-4f12-a031-1d7274b2b1cc.png",
+    image: "/lovable-uploads/e097d405-d6e7-4410-af4a-b2cb8d55c03b.png", // Updated image to match the persona
     interiorImage: "/lovable-uploads/2bc5ed0e-959e-414e-9a53-d3f5efb98d4e.png",
     size: "34m²",
     maxGuests: 4,
@@ -55,7 +55,7 @@ export const adventurePackages: PackageItem[] = [
     detailedDescription: "Cada amanecer trae un espectáculo de luces y sombras en la montaña. Desde la terraza del domo, la cámara capta el vuelo de un cóndor y el reflejo del sol en los árboles. La niebla matutina le da un toque mágico al paisaje.",
     price: 130000,
     originalPrice: 165000,
-    image: "/lovable-uploads/365c130e-5ba5-49fa-84ed-dfb1c95cd08d.png",
+    image: "/lovable-uploads/365c130e-5ba5-49fa-84ed-dfb1c95cd08d.png", // Updated image to match the persona
     interiorImage: "/lovable-uploads/c28d0c48-43b6-4205-a663-d15e8833cda3.png",
     size: "34m²",
     maxGuests: 2,
