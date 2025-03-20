@@ -6,12 +6,12 @@ import React from "react";
 // Images for each domo type
 export const getDomoImages = (unitName: string) => {
   const baseImages = [
-    "/lovable-uploads/203fb2cd-e719-4535-ace0-2907f720b675.png", // Main exterior domo view
-    "/lovable-uploads/9359ff84-0833-4ae9-8e97-833f2a12e4d6.png", // Interior bedroom
-    "/lovable-uploads/852513f7-08f6-41be-aab5-2d435195b174.png", // Interior with window view
-    "/lovable-uploads/34c4f9ff-baac-4d48-a8bd-f3c149302031.png", // Another bedroom view
-    "/lovable-uploads/d19c9ef6-5402-4d13-8a3f-04ff376f1e56.png", // Snow covered domo at night
-    "/lovable-uploads/aa3eb184-ad64-408d-8656-db40ac0e43a4.png", // Bedroom with wood stove
+    "/lovable-uploads/c951eccc-c6f1-4744-8bc8-fca101105107.png", // Domo exterior de día
+    "/lovable-uploads/ad46dae8-5b0a-4e4a-bf84-e0752b40f588.png", // Domo iluminado de noche
+    "/lovable-uploads/e097d405-d6e7-4410-af4a-b2cb8d55c03b.png", // Dos domos en la noche
+    "/lovable-uploads/41791139-e499-40bf-89c0-cb5a2947b4eb.png", // Entrada del recinto con auto
+    "/lovable-uploads/5bf3bb3b-da31-4f12-a031-1d7274b2b1cc.png", // Vista del cielo nocturno
+    "/lovable-uploads/365c130e-5ba5-49fa-84ed-dfb1c95cd08d.png", // Vista del camino con domos iluminados
   ];
   
   // In the future, we can add specific images for different domo types
@@ -21,12 +21,12 @@ export const getDomoImages = (unitName: string) => {
 // Experience images for all domos
 export const getExperienceImages = () => {
   return [
-    "/lovable-uploads/258111ea-9c35-4f22-811b-3beaeba46f33.png", // Interior with stove
-    "/lovable-uploads/881f84e7-856a-4057-bdc0-d55b67859a18.png", // Kitchen area
-    "/lovable-uploads/8eb2430e-258c-41e1-aa76-74a1cb91f82f.png", // Interior with chairs
-    "/lovable-uploads/1ac889d3-0c46-4f2b-951b-83c65548a48e.png", // Snow view from window
-    "/lovable-uploads/8365f2da-fa25-4ee2-b11c-f4651affb6ab.png", // Window frost detail
-    "/lovable-uploads/bbab3037-e76e-49f8-8a7c-7ee59e063980.png", // Interior with yellow chairs
+    "/lovable-uploads/113a2ea1-c91a-409e-afed-9484312a2563.png", // Bosque nativo
+    "/lovable-uploads/0e4d1495-87f2-4608-8685-caddc7925222.png", // Desayuno en el bosque
+    "/lovable-uploads/46270626-ab65-40db-895a-8668daa5032b.png", // Detalle de amenidades
+    "/lovable-uploads/9d029773-a360-431b-a1b6-681971e6fb24.png", // Bosque con troncos caídos
+    "/lovable-uploads/c574bdd7-54e1-4251-a57f-c23a453896fe.png", // Vista de los domos entre árboles
+    "/lovable-uploads/2bc5ed0e-959e-414e-9a53-d3f5efb98d4e.png", // Cerco de madera al atardecer
   ];
 };
 
