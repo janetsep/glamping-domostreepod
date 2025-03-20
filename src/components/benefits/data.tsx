@@ -29,29 +29,6 @@ const TreeDeciduousIcon = () => <TreeDeciduous className="w-12 h-12 text-accent"
 const DropletsIcon = () => <Droplets className="w-12 h-12 text-accent" />;
 
 export const experiencesData: ExperiencesData = {
-  tinajas: {
-    title: "Tinajas de Ciprés",
-    description: "Renueva cuerpo y mente con nuestras tinajas de agua mineralizada en un entorno natural único",
-    items: [{
-      icon: <BathIcon />,
-      title: "Tinajas de Ciprés con Agua Mineralizada",
-      description: "Nuestras tinajas artesanales están fabricadas con madera de ciprés patagónico y se llenan con agua mineralizada tratada que se calienta a una temperatura ideal de 38-40°C. Esta experiencia única proporciona beneficios como relajación muscular, mejor circulación sanguínea y reducción del estrés.",
-      details: "Las tinajas son preparadas exclusivamente para tu reserva y cuentan con vistas privilegiadas al bosque nativo. El agua mineralizada está enriquecida con sales naturales que favorecen la desintoxicación y el bienestar general.",
-      image: "/lovable-uploads/0b9c17ba-d458-4eb9-be71-bf6d6efd9f37.png"
-    }, {
-      icon: <HeartIcon />,
-      title: "Masajes y Terapias Alternativas",
-      description: "Ofrecemos sesiones de masajes terapéuticos y técnicas de relajación con terapeutas certificados que utilizan productos naturales de la zona.",
-      details: "Puedes reservar con anticipación una sesión en la privacidad de tu domo o en nuestro espacio dedicado con vistas al valle. Trabajamos con aceites esenciales de plantas nativas que potencian los beneficios curativos.",
-      image: "/lovable-uploads/29224f80-2202-44a2-ab2c-51f6ae9baaae.png"
-    }, {
-      icon: <FlameIcon />,
-      title: "Parrilla Privada y Leña",
-      description: "Disfruta de un asado al estilo patagónico con nuestra parrilla exclusiva y leña seleccionada para un sabor óptimo.",
-      details: "Proveemos kit de asador, leña seca y carbón para que disfrutes de la experiencia completa. Si lo prefieres, podemos coordinar un asador profesional que prepare el fuego y te aconseje sobre los mejores cortes y técnicas de cocción.",
-      image: "/lovable-uploads/717e7999-5c62-4fc9-a165-917b692351f9.png"
-    }]
-  },
   recorridos: {
     title: "Recorridos y Paisajes",
     description: "Explora la naturaleza patagónica con nuestras experiencias de aventura y senderismo",

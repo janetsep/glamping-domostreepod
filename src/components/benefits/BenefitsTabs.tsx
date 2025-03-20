@@ -15,18 +15,13 @@ export const BenefitsTabs = ({
   activeTab,
   setActiveTab
 }: BenefitsTabsProps) => {
-  return <Tabs defaultValue="tinajas" value={activeTab} onValueChange={setActiveTab} className="w-full">
+  return <Tabs defaultValue="recorridos" value={activeTab} onValueChange={setActiveTab} className="w-full">
       <TabsList className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 mb-6 bg-gray-100 p-1 rounded-md">
-        <TabsTrigger value="tinajas">Tinajas de Ciprés</TabsTrigger>
         <TabsTrigger value="recorridos">Recorridos y Paisajes</TabsTrigger>
         <TabsTrigger value="historias">Historias y Cultura Local</TabsTrigger>
         <TabsTrigger value="bosque">Baño de Bosque</TabsTrigger>
         <TabsTrigger value="juegos">Juegos de Mesa</TabsTrigger>
       </TabsList>
-      
-      <TabsContent value="tinajas" className="space-y-4">
-        <CategoryContent category={experiencesData.tinajas} />
-      </TabsContent>
       
       <TabsContent value="recorridos" className="space-y-4">
         <CategoryContent category={experiencesData.recorridos} />

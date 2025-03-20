@@ -4,7 +4,7 @@ import { BenefitsTabs } from "./benefits/BenefitsTabs";
 import { experiencesData } from "./benefits/data";
 
 const Benefits = () => {
-  const [activeTab, setActiveTab] = useState("tinajas");
+  const [activeTab, setActiveTab] = useState("recorridos");
 
   return (
     <section id="benefits" className="py-10 bg-white">
