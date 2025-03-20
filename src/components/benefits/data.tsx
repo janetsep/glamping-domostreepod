@@ -1,3 +1,4 @@
+
 import { ReactNode } from "react";
 import { 
   Droplets, Mountain, Book, Wifi, Bath, Heart, 
@@ -25,6 +26,7 @@ const TreeIcon = () => <TreePine className="w-12 h-12 text-accent" />;
 const GamepadIcon = () => <Gamepad className="w-12 h-12 text-accent" />;
 const DiceIcon = () => <Dice1 className="w-12 h-12 text-accent" />;
 const TreeDeciduousIcon = () => <TreeDeciduous className="w-12 h-12 text-accent" />;
+const DropletsIcon = () => <Droplets className="w-12 h-12 text-accent" />;
 
 export const experiencesData: ExperiencesData = {
   tinajas: {
@@ -105,6 +107,12 @@ export const experiencesData: ExperiencesData = {
       description: "Practica 'shinrin-yoku', la terapia japonesa de inmersión en el bosque, con caminatas conscientes en nuestro entorno natural.",
       details: "Un guía especializado te llevará por senderos exclusivos dentro de nuestro terreno, donde realizarás ejercicios de respiración y meditación para conectar profundamente con la naturaleza. Estudios científicos demuestran que esta práctica reduce el cortisol y fortalece el sistema inmunológico.",
       image: "/lovable-uploads/cd46dec0-e3e5-400a-aa1e-03c20428cfb1.png"
+    }, {
+      icon: <DropletsIcon />,
+      title: "Tinaja de Ciprés",
+      description: "Disfruta de un relajante baño en nuestras tinajas de ciprés rodeado por el bosque nativo, una experiencia única de bienestar.",
+      details: "Nuestras tinajas de ciprés están ubicadas estratégicamente para que disfrutes de la privacidad y las vistas al bosque mientras te sumerges en aguas mineralizadas a temperatura ideal. La combinación del aroma natural del ciprés, el calor del agua y el entorno boscoso crea una experiencia sensorial completa.",
+      image: "/lovable-uploads/0b9c17ba-d458-4eb9-be71-bf6d6efd9f37.png"
     }, {
       icon: <TreeDeciduousIcon />,
       title: "Meditación entre Árboles Nativos",
