@@ -6,12 +6,12 @@ import React from "react";
 // Images for each domo type
 export const getDomoImages = (unitName: string) => {
   const baseImages = [
-    "/lovable-uploads/dbcd97fc-9467-44b8-af76-01592c156f3f.png",
-    "/lovable-uploads/9750700a-7f4e-4744-9703-049733204f14.png",
-    "/lovable-uploads/9e606128-1db3-42ce-b1ca-0474a875279f.png",
-    "/lovable-uploads/71928294-5635-46f7-a3ec-5fb33ef836ea.png",
-    "/lovable-uploads/82c8828f-f40f-4d4a-a240-bef61c16fc9f.png",
-    "/lovable-uploads/ba985569-8f29-4da1-af9c-2aba9a5a886b.png",
+    "/lovable-uploads/203fb2cd-e719-4535-ace0-2907f720b675.png", // Main exterior domo view
+    "/lovable-uploads/9359ff84-0833-4ae9-8e97-833f2a12e4d6.png", // Interior bedroom
+    "/lovable-uploads/852513f7-08f6-41be-aab5-2d435195b174.png", // Interior with window view
+    "/lovable-uploads/34c4f9ff-baac-4d48-a8bd-f3c149302031.png", // Another bedroom view
+    "/lovable-uploads/d19c9ef6-5402-4d13-8a3f-04ff376f1e56.png", // Snow covered domo at night
+    "/lovable-uploads/aa3eb184-ad64-408d-8656-db40ac0e43a4.png", // Bedroom with wood stove
   ];
   
   // In the future, we can add specific images for different domo types
@@ -21,12 +21,12 @@ export const getDomoImages = (unitName: string) => {
 // Experience images for all domos
 export const getExperienceImages = () => {
   return [
-    "/lovable-uploads/3c154ff6-0916-450e-8515-dc48d7f232fd.png",
-    "/lovable-uploads/e07b0d00-f09b-4a23-b937-964931a152a6.png",
-    "/lovable-uploads/5bcb79d0-1a05-40e3-9088-2836fa262778.png",
-    "/lovable-uploads/e1e25810-22c3-4985-a125-505889912a69.png",
-    "/lovable-uploads/3f3be815-8b79-44fa-89b0-d3d4f795e9a7.png",
-    "/lovable-uploads/abaa63a0-8f4a-4939-96f9-808ed3d09802.png",
+    "/lovable-uploads/258111ea-9c35-4f22-811b-3beaeba46f33.png", // Interior with stove
+    "/lovable-uploads/881f84e7-856a-4057-bdc0-d55b67859a18.png", // Kitchen area
+    "/lovable-uploads/8eb2430e-258c-41e1-aa76-74a1cb91f82f.png", // Interior with chairs
+    "/lovable-uploads/1ac889d3-0c46-4f2b-951b-83c65548a48e.png", // Snow view from window
+    "/lovable-uploads/8365f2da-fa25-4ee2-b11c-f4651affb6ab.png", // Window frost detail
+    "/lovable-uploads/bbab3037-e76e-49f8-8a7c-7ee59e063980.png", // Interior with yellow chairs
   ];
 };
 
