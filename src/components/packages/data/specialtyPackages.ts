@@ -25,27 +25,5 @@ export const specialtyPackages: PackageItem[] = [
       { icon: createIcon(Mountain), text: "Terraza con área de juegos" },
       { icon: createIcon(Users), text: "Ideal para familias con niños" }
     ]
-  },
-  {
-    id: "10",
-    title: "Para el viajero que busca nuevas experiencias 🌎",
-    description: "Cada detalle del domo está pensado para disfrutar el entorno sin interrupciones. Desde la comodidad de la cama, la vista del bosque es un recordatorio de que estás en un lugar especial, listo para descubrir lo que el valle tiene para ofrecer.",
-    detailedDescription: "Cada detalle del domo está pensado para disfrutar el entorno sin interrupciones. Desde la comodidad de la cama, la vista del bosque es un recordatorio de que estás en un lugar especial, listo para descubrir lo que el valle tiene para ofrecer.",
-    price: 135000,
-    originalPrice: 170000,
-    image: "/lovable-uploads/ad46dae8-5b0a-4e4a-bf84-e0752b40f588.png",
-    interiorImage: "/lovable-uploads/c574bdd7-54e1-4251-a57f-c23a453896fe.png",
-    size: "36m²",
-    maxGuests: 3,
-    features: ["3 noches de alojamiento", "Desayuno incluido", "Capacidad: 3 personas", "Guía de experiencias locales", "Bicicletas disponibles"],
-    amenities: [
-      { icon: createIcon(Coffee), text: "Cocina equipada con productos locales" },
-      { icon: createIcon(Droplets), text: "Ducha de lluvia" },
-      { icon: createIcon(Wifi), text: "WiFi de alta velocidad" },
-      { icon: createIcon(Flame), text: "Sistema de calefacción eficiente" },
-      { icon: createIcon(BedDouble), text: "Cama queen size" },
-      { icon: createIcon(Mountain), text: "Terraza con vistas panorámicas" },
-      { icon: createIcon(Users), text: "Guía de experiencias locales incluido" }
-    ]
   }
 ];
