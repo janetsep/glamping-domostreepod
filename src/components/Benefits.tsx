@@ -1,10 +1,25 @@
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { BenefitsTabs } from "./benefits/BenefitsTabs";
 import { experiencesData } from "./benefits/data";
+import { useLocation } from "react-router-dom";
 
 const Benefits = () => {
   const [activeTab, setActiveTab] = useState("recorridos");
+  const location = useLocation();
+
+  // Check if there's a hash parameter in the URL for selecting a specific tab
+  useEffect(() => {
+    const hash = location.hash;
+    
+    // If hash has a specific tab format like #benefits-recorridos
+    if (hash.startsWith("#benefits-")) {
+      const tabId = hash.replace("#benefits-", "");
+      if (["recorridos", "historias", "bosque", "juegos"].includes(tabId)) {
+        setActiveTab(tabId);
+      }
+    }
+  }, [location.hash]);
 
   return (
     <section id="benefits" className="py-10 bg-white">

@@ -30,6 +30,7 @@ export interface SubMenuItem {
   id: string | null;
   path: string | null;
   icon: any;
+  tabId?: string; // Added tabId property for targeting specific tab
 }
 
 // Navigation links with icons
@@ -43,11 +44,10 @@ export const navigationLinks: NavLink[] = [
     path: null, 
     description: "Descubre lo que ofrecemos",
     submenu: [
-      { name: "Tinajas de Ciprés", id: "benefits", path: null, icon: Droplets },
-      { name: "Recorridos y Paisajes", id: "benefits", path: null, icon: Mountain },
-      { name: "Historias y Cultura Local", id: "benefits", path: null, icon: Book },
-      { name: "Baño de Bosque", id: "benefits", path: null, icon: TreePine },
-      { name: "Juegos de Mesa", id: "benefits", path: null, icon: Gamepad }
+      { name: "Recorridos y Paisajes", id: "benefits", path: null, icon: Mountain, tabId: "recorridos" },
+      { name: "Historias y Cultura Local", id: "benefits", path: null, icon: Book, tabId: "historias" },
+      { name: "Baño de Bosque", id: "benefits", path: null, icon: TreePine, tabId: "bosque" },
+      { name: "Juegos de Mesa", id: "benefits", path: null, icon: Gamepad, tabId: "juegos" }
     ]
   },
   { name: "Galería", id: "gallery", icon: ImageIcon, path: null },

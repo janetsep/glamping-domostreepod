@@ -45,11 +45,26 @@ const MobileNavLinks = ({
       navigateToPage(submenuItem.path);
     } else if (submenuItem.id) {
       if (isHomePage) {
-        scrollToSection(submenuItem.id);
+        // If the submenu has a specific tab to navigate to
+        if (submenuItem.tabId) {
+          // Navigate to the section with tab hash
+          scrollToSection(`${submenuItem.id}`);
+          // Set the hash in the URL for the specific tab
+          window.location.hash = `${submenuItem.id}-${submenuItem.tabId}`;
+        } else {
+          scrollToSection(submenuItem.id);
+        }
       } else {
-        navigateToPage(`/#${submenuItem.id}`);
+        // If not on homepage, navigate with appropriate hash
+        if (submenuItem.tabId) {
+          navigateToPage(`/#${submenuItem.id}-${submenuItem.tabId}`);
+        } else {
+          navigateToPage(`/#${submenuItem.id}`);
+        }
       }
     }
+    
+    setOpenSubmenu(null); // Close the submenu after clicking
   };
 
   return (
