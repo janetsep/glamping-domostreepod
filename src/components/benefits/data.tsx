@@ -1,9 +1,8 @@
-
 import { ReactNode } from "react";
 import { 
   Droplets, Mountain, Book, Wifi, Bath, Heart, 
   Star, Bike, Map, Coffee, Utensils, Car, SquareLibrary,
-  TreePine, Gamepad, Dice, TreeDeciduous, DicesIcon
+  TreePine, Gamepad, Dice1, TreeDeciduous
 } from "lucide-react";
 import { LucideFlame } from "lucide-react";
 import { ExperiencesData } from "./types";
@@ -24,7 +23,7 @@ const FlameIcon = () => <LucideFlame className="w-12 h-12 text-accent" />;
 const LibraryIcon = () => <SquareLibrary className="w-12 h-12 text-accent" />;
 const TreeIcon = () => <TreePine className="w-12 h-12 text-accent" />;
 const GamepadIcon = () => <Gamepad className="w-12 h-12 text-accent" />;
-const DiceIcon = () => <Dice className="w-12 h-12 text-accent" />;
+const DiceIcon = () => <Dice1 className="w-12 h-12 text-accent" />;
 const TreeDeciduousIcon = () => <TreeDeciduous className="w-12 h-12 text-accent" />;
 
 export const experiencesData: ExperiencesData = {
