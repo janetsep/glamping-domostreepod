@@ -1,4 +1,3 @@
-
 import { ReactNode } from "react";
 import { 
   Droplets, Mountain, Book, Wifi, Bath, Heart, 
@@ -115,9 +114,9 @@ export const experiencesData: ExperiencesData = {
       image: "/lovable-uploads/932878e8-583c-4ca7-91d9-4c8183c525e3.png"
     }, {
       icon: <DiceIcon />,
-      title: "Noches de Juegos Temáticas",
-      description: "Organizamos sesiones especiales de juegos con snacks y bebidas para crear una experiencia memorable en tu estadía.",
-      details: "Nuestro anfitrión puede guiarte con los mejores juegos según la ocasión, ya sea una noche romántica en pareja, una reunión familiar o una competencia amistosa entre amigos. Incluimos aperitivos locales y bebidas para hacer la experiencia aún más especial.",
+      title: "Noche de Cine",
+      description: "Organizamos sesiones especiales de cine con snacks y bebidas para crear una experiencia memorable en tu estadía.",
+      details: "Contamos con una selección de películas para todos los gustos, desde clásicos del cine hasta películas chilenas y documentales sobre la naturaleza patagónica. Incluimos aperitivos locales y bebidas para hacer la experiencia aún más especial.",
       image: "/lovable-uploads/932878e8-583c-4ca7-91d9-4c8183c525e3.png"
     }, {
       icon: <LibraryIcon />,
