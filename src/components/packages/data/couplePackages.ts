@@ -11,7 +11,7 @@ export const couplePackages: PackageItem[] = [
     detailedDescription: "Bajo un cielo estrellado, las luces del domo crean un ambiente acogedor. Compartir una copa de vino en la terraza, con el bosque como único testigo, es el cierre perfecto para un día de caminatas y descanso en la tinaja de agua mineral.",
     price: 135000,
     originalPrice: 180000,
-    image: "/lovable-uploads/41791139-e499-40bf-89c0-cb5a2947b4eb.png", // Updated image to match the persona
+    image: "/lovable-uploads/41791139-e499-40bf-89c0-cb5a2947b4eb.png", 
     interiorImage: "/lovable-uploads/46270626-ab65-40db-895a-8668daa5032b.png",
     size: "38m²",
     maxGuests: 2,
@@ -22,18 +22,18 @@ export const couplePackages: PackageItem[] = [
       { icon: createIcon(Wifi), text: "WiFi de alta velocidad" },
       { icon: createIcon(Flame), text: "Sistema de calefacción central" },
       { icon: createIcon(BedDouble), text: "Cama king size con ropa de cama premium" },
-      { icon: createIcon(Mountain), text: "Terraza con vistas al valle" },
+      { icon: createIcon(Mountain), text: "Terraza con vistas panorámicas" },
       { icon: createIcon(Users), text: "Ideal para parejas" }
     ]
   },
   {
     id: "8",
-    title: "Para quienes buscan una escapada especial",
-    description: "Celebrar en medio de la montaña tiene otro significado. Una cena especial bajo las estrellas, la calidez del domo y la sensación de estar lejos del mundo convierten cualquier ocasión en un recuerdo inolvidable.",
-    detailedDescription: "Celebrar en medio de la montaña tiene otro significado. Una cena especial bajo las estrellas, la calidez del domo y la sensación de estar lejos del mundo convierten cualquier ocasión en un recuerdo inolvidable.",
+    title: "Para quienes celebran ocasiones especiales",
+    description: "Celebrar en medio de la montaña tiene otro significado. Una cena especial bajo las estrellas, la calidez del domo iluminado y la sensación de estar lejos del mundo convierten cualquier ocasión en un recuerdo inolvidable.",
+    detailedDescription: "Celebrar en medio de la montaña tiene otro significado. Una cena especial bajo las estrellas, la calidez del domo iluminado y la sensación de estar lejos del mundo convierten cualquier ocasión en un recuerdo inolvidable.",
     price: 150000,
     originalPrice: 190000,
-    image: "/lovable-uploads/ad46dae8-5b0a-4e4a-bf84-e0752b40f588.png", // Updated image to match the persona
+    image: "/lovable-uploads/ad46dae8-5b0a-4e4a-bf84-e0752b40f588.png",
     interiorImage: "/lovable-uploads/5e0363de-646e-4577-acad-afd2dda92291.png",
     size: "40m²",
     maxGuests: 2,
