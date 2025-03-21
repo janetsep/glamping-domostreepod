@@ -2,7 +2,6 @@
 import { clearAllToasts } from "@/hooks/use-toast";
 import { toast } from "sonner";
 import { QuoteState } from "./useQuoteBase";
-import { isExclusivityPackage, calculateExclusivityPackagePrice } from "@/hooks/reservations/utils/priceCalculator";
 
 export const useQuoteCalculation = (state: QuoteState) => {
   const checkAvailabilityAndQuote = async () => {
@@ -28,35 +27,10 @@ export const useQuoteCalculation = (state: QuoteState) => {
       state.endDate,
       state.guests
     );
-
-    // Si es el paquete de exclusividad total, manejar el cálculo de forma diferente
-    if (isExclusivityPackage(state.displayUnit.id)) {
-      const packageBasePrice = 450000; // Precio base del paquete de exclusividad
-      const nights = Math.ceil((state.endDate.getTime() - state.startDate.getTime()) / (1000 * 60 * 60 * 24));
-      
-      const totalPrice = calculateExclusivityPackagePrice(packageBasePrice, nights);
-      
-      quoteDetails = {
-        ...quoteDetails,
-        basePrice: totalPrice,
-        totalPrice: totalPrice,
-        nights: nights,
-        pricePerNight: totalPrice / nights,
-        breakdown: [
-          {
-            description: `${nights} ${nights === 1 ? 'noche' : 'noches'} de exclusividad total`,
-            amount: totalPrice
-          }
-        ],
-        rateDescription: nights <= 2 ? "Paquete de exclusividad (2 noches)" : "Paquete de exclusividad con noches adicionales",
-        isExclusivityPackage: true
-      };
-    } else {
-      // Cálculo normal para otros paquetes
-      quoteDetails.basePrice = quoteDetails.basePrice * requiredDomos;
-      quoteDetails.totalPrice = quoteDetails.totalPrice * requiredDomos;
-      quoteDetails.requiredDomos = requiredDomos;
-    }
+    
+    quoteDetails.basePrice = quoteDetails.basePrice * requiredDomos;
+    quoteDetails.totalPrice = quoteDetails.totalPrice * requiredDomos;
+    quoteDetails.requiredDomos = requiredDomos;
     
     if (state.selectedActivities.length > 0 || state.selectedPackages.length > 0) {
       const totalWithExtras = quoteDetails.totalPrice + state.activitiesTotal + state.packagesTotal;

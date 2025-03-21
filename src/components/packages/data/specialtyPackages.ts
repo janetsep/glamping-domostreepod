@@ -23,14 +23,7 @@ export const specialtyPackages: PackageItem[] = [
       { icon: createIcon(Flame), text: "Zonas de fogata para reuniones" },
       { icon: createIcon(BedDouble), text: "Domos completamente equipados" },
       { icon: createIcon(Mountain), text: "Acceso privado a senderos naturales" },
-      { icon: createIcon(Home), text: "Privacidad total para tu familia" },
-      { icon: createIcon(Users), text: "Ideal para celebraciones y reuniones" }
-    ],
-    experienceDescription: "Disfruta de la privacidad absoluta en nuestro complejo TreePod con tu familia o grupo. Tendrás acceso exclusivo a todos nuestros domos geodésicos, las tinajas de agua mineralizada, la piscina de montaña y los senderos privados. Un ambiente perfecto para celebraciones especiales, reuniones familiares o simplemente para disfrutar de tiempo de calidad juntos en un entorno natural único. Nuestras aguas mineralizadas provienen directamente de las termas de Chillán, ofreciendo propiedades relajantes y terapéuticas que harán de tu estadía una experiencia rejuvenecedora.",
-    experienceImages: [
-      "/lovable-uploads/c574bdd7-54e1-4251-a57f-c23a453896fe.png",
-      "/lovable-uploads/e097d405-d6e7-4410-af4a-b2cb8d55c03b.png",
-      "/lovable-uploads/0d4b95ab-56f3-4e89-9fb7-86f3f232bbdc.png"
+      { icon: createIcon(Home), text: "Privacidad total para tu familia" }
     ]
   }
 ];

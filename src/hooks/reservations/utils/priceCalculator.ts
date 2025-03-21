@@ -60,26 +60,3 @@ export const calculateFinalTotal = (basePrice: number, activitiesTotal: number, 
   
   return finalTotal;
 };
-
-/**
- * Verifica si es una reserva del paquete de exclusividad total
- */
-export const isExclusivityPackage = (unitId: string) => {
-  return unitId === "4"; // ID del paquete de exclusividad total
-};
-
-/**
- * Calcula el precio para el paquete de exclusividad total
- */
-export const calculateExclusivityPackagePrice = (basePrice: number, nights: number) => {
-  // Precio fijo por 2 noches
-  if (nights <= 2) {
-    return basePrice;
-  }
-  
-  // Para noches adicionales, añadir un 25% del precio base por noche
-  const extraNights = nights - 2;
-  const extraNightsPrice = basePrice * 0.25 * extraNights;
-  
-  return basePrice + extraNightsPrice;
-};
