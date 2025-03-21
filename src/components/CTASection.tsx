@@ -1,6 +1,7 @@
 
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
+import { ConciergeBell } from "lucide-react";
 
 const CTASection = () => {
   const navigate = useNavigate();
@@ -21,10 +22,11 @@ const CTASection = () => {
         </p>
         <Button
           size="lg"
-          className="bg-white text-primary hover:bg-white/90"
+          className="bg-white text-primary hover:bg-white/90 flex items-center gap-2"
           onClick={handleReserveClick}
         >
-          Hacer una reserva
+          <ConciergeBell className="h-5 w-5" />
+          <span>Reservar</span>
         </Button>
       </div>
     </section>
