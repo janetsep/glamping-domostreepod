@@ -27,7 +27,7 @@ export const UnitExperience = ({ experience, experienceImages }: UnitExperienceP
       
       <div className="pt-4 border-t border-green-200">
         <p className="text-sm text-green-700">
-          <strong>¿Qué incluye tu estadía?</strong> Acceso a senderos exclusivos, desayuno con productos locales, tinajas de agua mineralizada (previa reserva) y la tranquilidad absoluta del bosque nativo.
+          <strong>¿Qué incluye tu estadía?</strong> Acceso a senderos exclusivos, desayuno con productos locales, tinajas de agua mineralizada proveniente de las termas de Chillán (previa reserva y pago extra) y la tranquilidad absoluta del bosque nativo en el Valle Las Trancas.
         </p>
       </div>
     </div>

@@ -35,8 +35,8 @@ export const getUnitDetail = (unitName: string) => {
   // Default values
   const defaultDetail = {
     size: "45m²",
-    description: "Disfruta de una experiencia única en medio del bosque, con todas las comodidades de un hotel boutique y la tranquilidad de la naturaleza.",
-    experience: "Sumérgete en la belleza natural del bosque nativo. Despierta con el canto de las aves, disfruta de senderos exclusivos, relájate en nuestras tinajas de agua caliente bajo las estrellas y experimenta la desconexión total en un entorno de lujo sostenible."
+    description: "Disfruta de una experiencia única en medio del bosque nativo de Valle Las Trancas, con todas las comodidades de un alojamiento sostenible y la tranquilidad de la naturaleza en la cordillera de los Andes.",
+    experience: "Sumérgete en la belleza natural del bosque nativo. Despierta con el canto de las aves, disfruta de senderos exclusivos, relájate en nuestras tinajas de agua mineralizada proveniente de las termas de Chillán bajo las estrellas y experimenta la desconexión total en un entorno de lujo sostenible."
   };
   
   // In the future we can add specific details for different domo types
@@ -49,15 +49,15 @@ export const getFeatures = (unitName: string): Feature[] => {
   const features = [
     {
       icon: React.createElement(Check, { className: "text-primary", size: 18 }),
-      text: "Wi-Fi de alta velocidad"
+      text: "Wi-Fi Starlink de alta velocidad"
     },
     {
       icon: React.createElement(Check, { className: "text-primary", size: 18 }),
-      text: "Calefacción central"
+      text: "Calefacción ecológica"
     },
     {
       icon: React.createElement(Check, { className: "text-primary", size: 18 }),
-      text: "Smart TV con Netflix"
+      text: "Smart TV con streaming"
     },
     {
       icon: React.createElement(Check, { className: "text-primary", size: 18 }),
@@ -69,7 +69,7 @@ export const getFeatures = (unitName: string): Feature[] => {
     },
     {
       icon: React.createElement(Check, { className: "text-primary", size: 18 }),
-      text: "Terraza privada con vistas al bosque"
+      text: "Terraza privada con vistas al bosque nativo"
     }
   ];
   
@@ -85,11 +85,11 @@ export const getPolicies = (): Policy[] => {
     },
     {
       icon: React.createElement(Smile, { className: "text-primary", size: 18 }),
-      text: "Desayuno incluido"
+      text: "Desayuno con productos locales incluido"
     },
     {
       icon: React.createElement(Droplets, { className: "text-primary", size: 18 }),
-      text: "Acceso a tinaja de agua caliente (previa reserva)"
+      text: "Acceso a tinaja de agua mineralizada (previa reserva y pago extra)"
     },
     {
       icon: React.createElement(Users, { className: "text-primary", size: 18 }),
