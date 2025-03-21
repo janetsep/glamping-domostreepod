@@ -12,6 +12,7 @@ interface ReservationSummaryProps {
     totalPrice: number;
     breakdown: Array<{ description: string; amount: number }>;
     rateDescription?: string;
+    isExclusivityPackage?: boolean;
   };
   isAvailable: boolean;
   isLoading: boolean;
@@ -46,6 +47,16 @@ export const ReservationSummary: React.FC<ReservationSummaryProps> = ({
   return (
     <div className="space-y-4">
       <h3 className="text-lg font-semibold mb-2">Resumen de tu estadía</h3>
+      
+      {quote.isExclusivityPackage ? (
+        <div className="bg-cyan-50 p-4 rounded-md border border-cyan-100 mb-4">
+          <h4 className="font-semibold text-cyan-800 mb-2">Exclusividad Total</h4>
+          <p className="text-sm text-cyan-700">
+            Has seleccionado nuestro paquete de exclusividad total. Disfrutarás de todo el complejo TreePod en privado,
+            con acceso a todos los domos y servicios exclusivamente para ti y tus acompañantes.
+          </p>
+        </div>
+      ) : null}
       
       <div className="flex justify-between items-center">
         <span className="text-gray-700">{quote.nights} {quote.nights === 1 ? 'noche' : 'noches'}</span>

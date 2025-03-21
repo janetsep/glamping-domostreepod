@@ -30,6 +30,20 @@ export const UnitExperience = ({ experience, experienceImages }: UnitExperienceP
           <strong>¿Qué incluye tu estadía?</strong> Acceso a senderos exclusivos, desayuno con productos locales, tinajas de agua mineralizada proveniente de las termas de Chillán (previa reserva y pago extra) y la tranquilidad absoluta del bosque nativo en el Valle Las Trancas.
         </p>
       </div>
+      
+      <div className="pt-4 border-t border-green-200 mt-4">
+        <h4 className="font-semibold text-green-800 mb-2">Actividades disponibles</h4>
+        <ul className="list-disc pl-5 text-sm text-green-700 space-y-1">
+          <li>Senderismo por los caminos exclusivos del bosque nativo</li>
+          <li>Baños termales en tinajas de ciprés con aguas mineralizadas</li>
+          <li>Avistamiento de estrellas desde las terrazas de los domos</li>
+          <li>Fogatas nocturnas para reuniones familiares</li>
+          <li>Excursiones a las Termas de Chillán (transporte no incluido)</li>
+          <li>Visitas al centro de esquí en temporada de nieve</li>
+          <li>Exploración de cascadas locales como el Velo de la Novia</li>
+          <li>Actividades gastronómicas con productos locales (costo adicional)</li>
+        </ul>
+      </div>
     </div>
   );
 };
