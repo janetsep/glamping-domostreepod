@@ -34,7 +34,7 @@ export const AvailabilityCalendarSheet = ({
           <span>Ver calendario de disponibilidad</span>
         </Button>
       </SheetTrigger>
-      <SheetContent side="bottom" className="h-[90vh] pt-8 overflow-y-auto">
+      <SheetContent side="bottom" className="h-[85vh] pt-8 overflow-y-auto">
         <SheetHeader className="mb-6">
           <SheetTitle className="text-2xl">Disponibilidad</SheetTitle>
           <SheetDescription className="text-base">
@@ -42,7 +42,7 @@ export const AvailabilityCalendarSheet = ({
           </SheetDescription>
         </SheetHeader>
         
-        <div className="w-full mx-auto">
+        <div className="max-w-xl mx-auto">
           <AvailabilityCalendar 
             unitId={unitId} 
             onSelectDate={onSelectDate}
