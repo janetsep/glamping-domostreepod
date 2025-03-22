@@ -1,4 +1,3 @@
-
 import { Button as ShadcnButton } from "@/components/ui/button";
 import { ReactNode } from "react";
 import { Link } from "react-router-dom";
