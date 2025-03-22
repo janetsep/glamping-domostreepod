@@ -1,8 +1,10 @@
+
 import { ReactNode } from "react";
 import { 
   Droplets, Mountain, Book, Wifi, Bath, Heart, 
   Star, Bike, Map, Coffee, Utensils, Car, SquareLibrary,
-  TreePine, Gamepad, Dice1, TreeDeciduous
+  TreePine, Gamepad, Dice1, TreeDeciduous, Thermometer,
+  Sparkles, GlassWater, FlameKindling, Mountain2, BookOpen
 } from "lucide-react";
 import { LucideFlame } from "lucide-react";
 import { ExperiencesData } from "./types";
@@ -26,6 +28,12 @@ const GamepadIcon = () => <Gamepad className="w-12 h-12 text-accent" />;
 const DiceIcon = () => <Dice1 className="w-12 h-12 text-accent" />;
 const TreeDeciduousIcon = () => <TreeDeciduous className="w-12 h-12 text-accent" />;
 const DropletsIcon = () => <Droplets className="w-12 h-12 text-accent" />;
+const ThermometerIcon = () => <Thermometer className="w-12 h-12 text-accent" />;
+const SparklesIcon = () => <Sparkles className="w-12 h-12 text-accent" />;
+const GlassWaterIcon = () => <GlassWater className="w-12 h-12 text-accent" />;
+const FlameKindlingIcon = () => <FlameKindling className="w-12 h-12 text-accent" />;
+const Mountain2Icon = () => <Mountain2 className="w-12 h-12 text-accent" />;
+const BookOpenIcon = () => <BookOpen className="w-12 h-12 text-accent" />;
 
 export const experiencesData: ExperiencesData = {
   recorridos: {
@@ -49,6 +57,12 @@ export const experiencesData: ExperiencesData = {
       description: "Tours organizados a los parques nacionales cercanos, con transporte incluido y guías especializados en flora y fauna nativa.",
       details: "Trabajamos con operadores turísticos locales que ofrecen excursiones a los parques nacionales más emblemáticos de la región. Incluyen transporte desde nuestra propiedad, almuerzo gourmet y guías bilingües apasionados por la conservación.",
       image: "/lovable-uploads/4221fa8d-c975-4277-bedf-a8ff6218c48d.png"
+    }, {
+      icon: <Mountain2Icon />,
+      title: "Aventuras Guiadas en la Naturaleza",
+      description: "Explora la belleza virgen del Valle Las Trancas de la mano de expertos operadores locales.",
+      details: "Una aventura segura y fascinante para conectar profundamente con la biodiversidad única del sur de Chile. Trekking, senderismo interpretativo, avistamiento de fauna y más: descubre bosques encantados, paisajes volcánicos y senderos inolvidables que ofrecen la verdadera esencia cordillerana.",
+      image: ""
     }]
   },
   historias: {
@@ -72,6 +86,18 @@ export const experiencesData: ExperiencesData = {
       description: "Conoce la historia y cultura del valle a través de relatos de sus habitantes y visitas a lugares emblemáticos.",
       details: "Organizamos charlas con lugareños que llevan generaciones viviendo en el valle, quienes comparten sus conocimientos sobre la flora medicinal nativa, leyendas locales y la evolución del turismo en la zona. También puedes visitar pequeños museos y centros culturales cercanos.",
       image: "/lovable-uploads/1f579fd8-1af0-4397-9254-2cd8cbb54410.png"
+    }, {
+      icon: <BookOpenIcon />,
+      title: "Leyendas del Volcán (Experiencia Cultural)",
+      description: "Conoce las historias ancestrales del Nevado de Chillán en una charla mágica alrededor del fuego.",
+      details: "Una experiencia cultural enriquecedora que fortalece el respeto por nuestro patrimonio natural. Aprende sobre el poder curativo y la importancia cultural de las aguas volcánicas, tal como lo han descrito estudios históricos y científicos, mientras observas la silueta imponente del volcán en el horizonte.",
+      image: ""
+    }, {
+      icon: <SparklesIcon />,
+      title: "Sabores del Invernadero Andino",
+      description: "Disfruta de una experiencia gastronómica auténticamente local, con ingredientes frescos cultivados en nuestro propio invernadero.",
+      details: "Reserva tu menú especial y saborea la frescura auténtica en Valle Las Trancas en cada bocado. Cada plato rescata lo mejor de la tierra cordillerana, creando una experiencia culinaria saludable, sostenible y conectada profundamente con la naturaleza.",
+      image: ""
     }]
   },
   bosque: {
@@ -101,6 +127,18 @@ export const experiencesData: ExperiencesData = {
       description: "Combina el baño de bosque con otras terapias naturales como aromaterapia, cromoterapia y escucha consciente de los sonidos del bosque.",
       details: "Este enfoque integral busca equilibrar tus sentidos a través de experiencias multisensoriales. Utilizamos aceites esenciales de árboles locales, visualizaciones guiadas con los colores naturales del entorno y técnicas de escucha profunda de los sonidos del bosque.",
       image: "/lovable-uploads/cd46dec0-e3e5-400a-aa1e-03c20428cfb1.png"
+    }, {
+      icon: <ThermometerIcon />,
+      title: "Baños Termales Volcánicos",
+      description: "Sumérgete en las mágicas aguas termales provenientes directamente del volcán Nevados de Chillán.",
+      details: "Estas aguas poseen propiedades reconocidas científicamente por aliviar dolores musculares, mejorar la piel y reducir el estrés. Reconocidas por siglos debido a sus propiedades terapéuticas, estas aguas volcánicas ricas en azufre, hierro y minerales esenciales revitalizarán tu cuerpo y espíritu. Déjate envolver por el vapor curativo en nuestras tinajas de ciprés, en medio de un entorno natural incomparable.",
+      image: ""
+    }, {
+      icon: <GlassWaterIcon />,
+      title: "Piscina Natural de Montaña",
+      description: "Vive la experiencia única de bañarte en nuestra piscina natural alimentada con agua fresca de la montaña.",
+      details: "Las aguas cristalinas y frías fortalecen tu sistema inmunitario y revitalizan tu mente. Equilibra tu cuerpo sumergiéndote en estas aguas puras y revitalizantes que nacen directamente de los deshielos cordilleranos. Ideal para recuperar energía después de un día lleno de aventuras al aire libre.",
+      image: ""
     }]
   },
   juegos: {
@@ -124,6 +162,12 @@ export const experiencesData: ExperiencesData = {
       description: "Un espacio acogedor con libros sobre la región, literatura chilena y revistas especializadas en naturaleza y viajes.",
       details: "El rincón de lectura cuenta con una vista privilegiada al bosque y sillones cómodos donde podrás sumergirte en historias locales, aprender sobre la flora y fauna nativa o simplemente disfrutar de un buen libro acompañado del sonido de las aves y el viento entre los árboles.",
       image: "/lovable-uploads/932878e8-583c-4ca7-91d9-4c8183c525e3.png"
+    }, {
+      icon: <FlameKindlingIcon />,
+      title: "Parrilla bajo las Estrellas",
+      description: "Comparte momentos inolvidables junto al fuego en nuestra zona de parrillas al aire libre.",
+      details: "Una experiencia ideal para fortalecer lazos y crear recuerdos en medio de la naturaleza. Rodeado de bosques milenarios y bajo el cielo estrellado del Valle Las Trancas, prepara un asado memorable en familia o con amigos, conectando a través de los sabores y aromas de la gastronomía tradicional chilena.",
+      image: ""
     }]
   }
 };

@@ -1,3 +1,4 @@
+
 /**
  * Este archivo centraliza todo el contenido textual del sitio
  * para permitir su edición fácil a través de las herramientas visuales
