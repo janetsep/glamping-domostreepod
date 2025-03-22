@@ -1,29 +1,28 @@
+
 import { MapPin, Phone, Mail, MessageSquare, Facebook, Instagram, Youtube } from "lucide-react";
+import { footerContent } from "@/data/siteContent";
+
 const ContactInfo = () => {
   return <div>
-      <h4 className="font-display font-bold text-lg mb-4">Contacto</h4>
+      <h4 className="font-display font-bold text-lg mb-4">{footerContent.contactTitle}</h4>
       <ul className="space-y-3 text-gray-600">
         <li className="flex items-start gap-2">
           <MapPin className="h-5 w-5 mt-0.5 flex-shrink-0 text-primary" />
-          <span>
-            Camino a la Montaña km 5,<br />
-            Valle Las Trancas, Chile<br />
-            Código Postal: 5480000
-          </span>
+          <span>{footerContent.address}</span>
         </li>
         <li className="flex items-center gap-2">
           <Phone className="h-5 w-5 flex-shrink-0 text-primary" />
-          <a href="tel:+56912345678" className="hover:text-primary transition-colors">+56 9 8464 3307</a>
+          <a href={`tel:${footerContent.phone}`} className="hover:text-primary transition-colors">{footerContent.phone}</a>
         </li>
         <li className="flex items-center gap-2">
           <Mail className="h-5 w-5 flex-shrink-0 text-primary" />
-          <a href="mailto:info@domostreepod.cl" className="hover:text-primary transition-colors">
-            info@domostreepod.cl
+          <a href={`mailto:${footerContent.email}`} className="hover:text-primary transition-colors">
+            {footerContent.email}
           </a>
         </li>
         <li className="flex items-center gap-2">
           <MessageSquare className="h-5 w-5 flex-shrink-0 text-primary" />
-          <a href="https://wa.me/56912345678" target="_blank" rel="noopener noreferrer" className="hover:text-primary transition-colors">+56 9 8464 3307</a>
+          <a href={`https://wa.me/${footerContent.phone.replace(/\s+/g, '')}`} target="_blank" rel="noopener noreferrer" className="hover:text-primary transition-colors">{footerContent.phone}</a>
         </li>
       </ul>
       <div className="flex gap-3 mt-4">
@@ -39,4 +38,5 @@ const ContactInfo = () => {
       </div>
     </div>;
 };
+
 export default ContactInfo;

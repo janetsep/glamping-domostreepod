@@ -1,4 +1,6 @@
 
+import { unitExperienceContent } from "@/data/siteContent";
+
 interface UnitExperienceProps {
   experience: string;
   experienceImages: string[];
@@ -7,7 +9,7 @@ interface UnitExperienceProps {
 export const UnitExperience = ({ experience, experienceImages }: UnitExperienceProps) => {
   return (
     <div className="bg-green-50 p-5 rounded-lg border border-green-100">
-      <h3 className="font-semibold text-green-800 mb-2">Tu experiencia TreePod</h3>
+      <h3 className="font-semibold text-green-800 mb-2">{unitExperienceContent.title}</h3>
       <p className="text-green-700 mb-4">
         {experience}
       </p>
@@ -27,7 +29,7 @@ export const UnitExperience = ({ experience, experienceImages }: UnitExperienceP
       
       <div className="pt-4 border-t border-green-200">
         <p className="text-sm text-green-700">
-          <strong>¿Qué incluye tu estadía?</strong> Acceso a senderos exclusivos, desayuno con productos locales, tinajas de agua mineralizada proveniente de las termas de Chillán (previa reserva y pago extra) y la tranquilidad absoluta del bosque nativo en el Valle Las Trancas.
+          <strong>{unitExperienceContent.stayIncludes}</strong> {unitExperienceContent.stayIncludesText}
         </p>
       </div>
     </div>

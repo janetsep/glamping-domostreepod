@@ -1,5 +1,6 @@
 
 import { MapPin } from "lucide-react";
+import { footerContent } from "@/data/siteContent";
 
 const AboutSection = () => {
   return (
@@ -10,12 +11,11 @@ const AboutSection = () => {
         src="/lovable-uploads/ab978d5a-f892-4040-8138-26bc24a5e298.png" 
       />
       <p className="text-gray-600 mb-4 text-sm">
-        Experimenta la magia de dormir entre los árboles en nuestros exclusivos domos 
-        suspendidos en pleno corazón de Valle Las Trancas, Chile.
+        {footerContent.aboutText}
       </p>
       <div className="flex items-center gap-2 text-sm text-gray-600">
         <MapPin className="h-4 w-4 text-cyan-500" />
-        <span>Valle Las Trancas, Chile</span>
+        <span>{footerContent.address}</span>
       </div>
     </div>
   );
