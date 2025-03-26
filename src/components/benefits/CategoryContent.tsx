@@ -24,7 +24,7 @@ export const CategoryContent = ({ category }: CategoryContentProps) => {
             key={index} 
             className="bg-white rounded-xl overflow-hidden shadow-lg hover:shadow-xl transition-shadow duration-300"
           >
-            {item.image ? (
+            {item.image && (
               <div className="h-64 relative overflow-hidden">
                 <img 
                   src={item.image} 
@@ -32,7 +32,7 @@ export const CategoryContent = ({ category }: CategoryContentProps) => {
                   className="w-full h-full object-cover transition-transform duration-500 hover:scale-105"
                 />
               </div>
-            ) : null}
+            )}
             
             <div className="p-5">
               <div className="flex items-center mb-3">
