@@ -43,20 +43,17 @@ export const experiencesData: ExperiencesData = {
       icon: <BikeIcon />,
       title: "Tours en Bicicleta",
       description: "Recorre los senderos del valle con nuestras bicicletas de montaña premium.",
-      details: "Ofrecemos rutas guiadas y autoguiadas para todos los niveles de habilidad. Nuestras bicicletas cuentan con asistencia eléctrica opcional, perfectas para explorar los cerros circundantes. Incluye mapa, casco, botella de agua y kit de reparación.",
-      image: "/lovable-uploads/aac5fd64-e9cc-4455-b0d2-b81c4741b389.png"
+      details: "Ofrecemos rutas guiadas y autoguiadas para todos los niveles de habilidad. Nuestras bicicletas cuentan con asistencia eléctrica opcional, perfectas para explorar los cerros circundantes. Incluye mapa, casco, botella de agua y kit de reparación."
     }, {
       icon: <MapIcon />,
       title: "Senderismo por Bosque Nativo",
       description: "Explora senderos exclusivos que atraviesan nuestro bosque de Ñirres, Coihues y Araucarias.",
-      details: "Nuestros senderos ofrecen vistas panorámicas al Valle Las Trancas y los Nevados de Chillán. Cada ruta está cuidadosamente marcada y mantenida, con puntos de interés y áreas de descanso estratégicamente ubicadas para disfrutar de la flora y fauna local.",
-      image: "/lovable-uploads/29224f80-2202-44a2-ab2c-51f6ae9baaae.png"
+      details: "Nuestros senderos ofrecen vistas panorámicas al Valle Las Trancas y los Nevados de Chillán. Cada ruta está cuidadosamente marcada y mantenida, con puntos de interés y áreas de descanso estratégicamente ubicadas para disfrutar de la flora y fauna local."
     }, {
       icon: <CarIcon />,
       title: "Excursiones a Parques Nacionales",
       description: "Visita los majestuosos Parques Nacionales cercanos con nuestras excursiones guiadas.",
-      details: "Trabajamos con operadores turísticos locales que ofrecen excursiones a los parques nacionales más emblemáticos de la región. Incluyen transporte desde nuestra propiedad, almuerzo gourmet y guías bilingües apasionados por la conservación.",
-      image: "/lovable-uploads/4221fa8d-c975-4277-bedf-a8ff6218c48d.png"
+      details: "Trabajamos con operadores turísticos locales que ofrecen excursiones a los parques nacionales más emblemáticos de la región. Incluyen transporte desde nuestra propiedad, almuerzo gourmet y guías bilingües apasionados por la conservación."
     }, {
       icon: <MountainIcon />,
       title: "Aventuras Guiadas en la Naturaleza",
@@ -73,8 +70,7 @@ export const experiencesData: ExperiencesData = {
       icon: <BookIcon />,
       title: "Ruta de los Pincheira",
       description: "Descubre la fascinante historia de los hermanos Pincheira, legendarios bandidos del siglo XIX.",
-      details: "Esta experiencia combina senderismo suave con inmersión histórica. Visitarás los refugios naturales y puntos estratégicos utilizados por esta banda durante sus años de actividad. Un guía historiador te sumergirá en las leyendas y realidades de estos personajes que desafiaron al ejército chileno.",
-      image: "/lovable-uploads/5e0363de-646e-4577-acad-afd2dda92291.png"
+      details: "Esta experiencia combina senderismo suave con inmersión histórica. Visitarás los refugios naturales y puntos estratégicos utilizados por esta banda durante sus años de actividad. Un guía historiador te sumergirá en las leyendas y realidades de estos personajes que desafiaron al ejército chileno."
     }, {
       icon: <BookOpenIcon />,
       title: "Leyendas del Volcán",
@@ -84,8 +80,7 @@ export const experiencesData: ExperiencesData = {
       icon: <SquareLibraryIcon />,
       title: "Artesanía Local",
       description: "Aprende sobre las técnicas ancestrales de artesanía en lana, madera y cerámica de la zona.",
-      details: "Visitas a talleres de artesanos locales que mantienen vivas las tradiciones de la zona. Podrás participar en talleres prácticos donde aprenderás técnicas básicas y te llevarás una pieza hecha por ti. Incluye materiales, instrucción y una degustación de productos locales.",
-      image: "/lovable-uploads/b3f7fcc3-d3a3-4ddf-b3b1-bf673a471dd2.png"
+      details: "Visitas a talleres de artesanos locales que mantienen vivas las tradiciones de la zona. Podrás participar en talleres prácticos donde aprenderás técnicas básicas y te llevarás una pieza hecha por ti. Incluye materiales, instrucción y una degustación de productos locales."
     }
     ],
   },
@@ -97,14 +92,12 @@ export const experiencesData: ExperiencesData = {
       icon: <TreePineIcon />,
       title: "Meditación Guiada en el Bosque",
       description: "Sesiones de meditación entre antiguos árboles nativos guiadas por expertos en mindfulness.",
-      details: "La práctica de meditación en nuestro bosque ofrece beneficios demostrados para reducir el estrés y mejorar el bienestar. Las sesiones duran aproximadamente 1 hora y están diseñadas tanto para principiantes como para practicantes experimentados. Se incluyen esterillas, mantas y té de hierbas locales.",
-      image: "/lovable-uploads/2d15bec1-4bf8-4339-8aba-a44cf71e1888.png"
+      details: "La práctica de meditación en nuestro bosque ofrece beneficios demostrados para reducir el estrés y mejorar el bienestar. Las sesiones duran aproximadamente 1 hora y están diseñadas tanto para principiantes como para practicantes experimentados. Se incluyen esterillas, mantas y té de hierbas locales."
     }, {
       icon: <TreeDeciduousIcon />,
       title: "Terapia Forestal",
       description: "Experimenta el poder curativo de los bosques con nuestro programa de terapia forestal.",
-      details: "Basado en la práctica japonesa del 'Shinrin-yoku' (baño de bosque), esta experiencia guiada te conecta profundamente con la naturaleza a través de tus sentidos. Estudios científicos han demostrado sus beneficios para el sistema inmunológico, la reducción de hormonas del estrés y la mejora del estado de ánimo.",
-      image: "/lovable-uploads/34c4f9ff-baac-4d48-a8bd-f3c149302031.png"
+      details: "Basado en la práctica japonesa del 'Shinrin-yoku' (baño de bosque), esta experiencia guiada te conecta profundamente con la naturaleza a través de tus sentidos. Estudios científicos han demostrado sus beneficios para el sistema inmunológico, la reducción de hormonas del estrés y la mejora del estado de ánimo."
     }, {
       icon: <ThermometerIcon />,
       title: "Baños Termales Volcánicos",
@@ -114,8 +107,7 @@ export const experiencesData: ExperiencesData = {
       icon: <FlameIcon />,
       title: "Ritual de Sauna y Tinaja",
       description: "Purifica cuerpo y mente con nuestro ritual de sauna seguido de inmersión en tinaja de agua termal.",
-      details: "Este ritual de contraste térmico es conocido por sus beneficios circulatorios y desintoxicantes. Comienza con 15 minutos en nuestra sauna seca construida con maderas aromáticas nativas, seguido de una breve inmersión en agua fría y finaliza con un relajante baño en nuestras tinajas de agua termal mineralizada.",
-      image: "/lovable-uploads/9fab582c-5bb9-4f0f-bee1-4b6b66acc8d7.png"
+      details: "Este ritual de contraste térmico es conocido por sus beneficios circulatorios y desintoxicantes. Comienza con 15 minutos en nuestra sauna seca construida con maderas aromáticas nativas, seguido de una breve inmersión en agua fría y finaliza con un relajante baño en nuestras tinajas de agua termal mineralizada."
     }, {
       icon: <GlassWaterIcon />,
       title: "Piscina Natural de Montaña",
@@ -132,20 +124,17 @@ export const experiencesData: ExperiencesData = {
       icon: <GamepadIcon />,
       title: "Juegos de Mesa Junto al Fuego",
       description: "Disfruta de nuestra selección de juegos de mesa premium en nuestra acogedora sala común.",
-      details: "Nuestra colección incluye clásicos y nuevos juegos de estrategia, perfectos para noches frías. La sala cuenta con una chimenea a leña, cómodas butacas y un servicio de té, chocolate caliente y snacks disponible para complementar la experiencia.",
-      image: "/lovable-uploads/0d4b95ab-56f3-4e89-9fb7-86f3f232bbdc.png"
+      details: "Nuestra colección incluye clásicos y nuevos juegos de estrategia, perfectos para noches frías. La sala cuenta con una chimenea a leña, cómodas butacas y un servicio de té, chocolate caliente y snacks disponible para complementar la experiencia."
     }, {
       icon: <DiceIcon />,
       title: "Torneo de Juegos Tradicionales Chilenos",
       description: "Participa en torneos de rayuela, trompo, emboque y otros juegos tradicionales chilenos.",
-      details: "Aprende sobre el rico patrimonio cultural chileno a través de sus juegos tradicionales. Realizamos torneos semanales donde podrás competir amistosamente con otros huéspedes. Incluye instrucción básica para quienes no conocen los juegos y pequeños premios artesanales para los ganadores.",
-      image: "/lovable-uploads/46cd7d70-4f1c-46b5-8309-ade38a6c32a0.png"
+      details: "Aprende sobre el rico patrimonio cultural chileno a través de sus juegos tradicionales. Realizamos torneos semanales donde podrás competir amistosamente con otros huéspedes. Incluye instrucción básica para quienes no conocen los juegos y pequeños premios artesanales para los ganadores."
     }, {
       icon: <SparklesIcon />,
       title: "Observación de Estrellas",
       description: "Aprovecha nuestros cielos limpios para una sesión guiada de observación astronómica.",
-      details: "Lejos de la contaminación lumínica, nuestro lugar ofrece condiciones ideales para la astronomía. Las sesiones incluyen telescopios profesionales, guía astronómico que te ayudará a identificar constelaciones, planetas y otros cuerpos celestes, y una selección de bebidas calientes para disfrutar bajo las estrellas.",
-      image: "/lovable-uploads/5e659144-32c4-419c-aa12-1d8d51ee81b5.png"
+      details: "Lejos de la contaminación lumínica, nuestro lugar ofrece condiciones ideales para la astronomía. Las sesiones incluyen telescopios profesionales, guía astronómico que te ayudará a identificar constelaciones, planetas y otros cuerpos celestes, y una selección de bebidas calientes para disfrutar bajo las estrellas."
     }, {
       icon: <FlameKindlingIcon />,
       title: "Parrilla bajo las Estrellas",

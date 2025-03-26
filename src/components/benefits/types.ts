@@ -6,7 +6,7 @@ export interface BenefitItem {
   title: string;
   description: string;
   details: string;
-  image?: string; // Make image optional with the ? modifier
+  image?: string; // Mantener como opcional
 }
 
 export interface CategoryData {
