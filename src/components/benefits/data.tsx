@@ -4,7 +4,7 @@ import {
   Droplets, Mountain, Book, Wifi, Bath, Heart, 
   Star, Bike, Map, Coffee, Utensils, Car, SquareLibrary,
   TreePine, Gamepad, Dice1, TreeDeciduous, Thermometer,
-  Sparkles, GlassWater, FlameKindling, Mountain2, BookOpen
+  Sparkles, GlassWater, FlameKindling, BookOpen
 } from "lucide-react";
 import { LucideFlame } from "lucide-react";
 import { ExperiencesData } from "./types";
@@ -32,7 +32,6 @@ const ThermometerIcon = () => <Thermometer className="w-12 h-12 text-accent" />;
 const SparklesIcon = () => <Sparkles className="w-12 h-12 text-accent" />;
 const GlassWaterIcon = () => <GlassWater className="w-12 h-12 text-accent" />;
 const FlameKindlingIcon = () => <FlameKindling className="w-12 h-12 text-accent" />;
-const Mountain2Icon = () => <Mountain2 className="w-12 h-12 text-accent" />;
 const BookOpenIcon = () => <BookOpen className="w-12 h-12 text-accent" />;
 
 export const experiencesData: ExperiencesData = {
@@ -58,7 +57,7 @@ export const experiencesData: ExperiencesData = {
       details: "Trabajamos con operadores turísticos locales que ofrecen excursiones a los parques nacionales más emblemáticos de la región. Incluyen transporte desde nuestra propiedad, almuerzo gourmet y guías bilingües apasionados por la conservación.",
       image: "/lovable-uploads/4221fa8d-c975-4277-bedf-a8ff6218c48d.png"
     }, {
-      icon: <Mountain2Icon />,
+      icon: <MountainIcon />,
       title: "Aventuras Guiadas en la Naturaleza",
       description: "Explora la belleza virgen del Valle Las Trancas de la mano de expertos operadores locales.",
       details: "Una aventura segura y fascinante para conectar profundamente con la biodiversidad única del sur de Chile. Trekking, senderismo interpretativo, avistamiento de fauna y más: descubre bosques encantados, paisajes volcánicos y senderos inolvidables que ofrecen la verdadera esencia cordillerana.",
