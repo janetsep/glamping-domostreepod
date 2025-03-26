@@ -19,8 +19,8 @@ export const BenefitsTabs = ({
       <TabsList className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 mb-6 bg-gray-100 p-1 rounded-md">
         <TabsTrigger value="recorridos">Recorridos y Paisajes</TabsTrigger>
         <TabsTrigger value="historias">Historias y Cultura Local</TabsTrigger>
-        <TabsTrigger value="bosque">Baño de Bosque</TabsTrigger>
-        <TabsTrigger value="juegos">Juegos de Mesa</TabsTrigger>
+        <TabsTrigger value="bosque">Baño de Bosque y Bienestar</TabsTrigger>
+        <TabsTrigger value="juegos">Juegos y Entretenimiento</TabsTrigger>
       </TabsList>
       
       <TabsContent value="recorridos" className="space-y-4">

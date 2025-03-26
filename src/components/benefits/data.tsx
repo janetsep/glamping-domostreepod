@@ -37,6 +37,7 @@ const BookOpenIcon = () => <BookOpen className="w-12 h-12 text-accent" />;
 export const experiencesData: ExperiencesData = {
   recorridos: {
     title: "Recorridos y Paisajes",
+    description: "Explora los impresionantes paisajes del Valle Las Trancas con nuestras actividades al aire libre guiadas y autoguiadas.",
     items: [
     {
       icon: <BikeIcon />,
@@ -66,6 +67,7 @@ export const experiencesData: ExperiencesData = {
   },
   historias: {
     title: "Historias y Cultura Local",
+    description: "Descubre las fascinantes historias y tradiciones culturales que han dado forma al Valle Las Trancas y sus alrededores.",
     items: [
     {
       icon: <BookIcon />,
@@ -89,6 +91,7 @@ export const experiencesData: ExperiencesData = {
   },
   bosque: {
     title: "Baño de Bosque y Bienestar",
+    description: "Sumérgete en la tranquilidad del bosque nativo y disfruta de experiencias que nutren cuerpo, mente y espíritu.",
     items: [
     {
       icon: <TreePineIcon />,
@@ -123,6 +126,7 @@ export const experiencesData: ExperiencesData = {
   },
   juegos: {
     title: "Juegos y Entretenimiento",
+    description: "Disfruta de momentos de diversión y entretenimiento en un entorno único, perfecto para compartir con familia y amigos.",
     items: [
     {
       icon: <GamepadIcon />,
