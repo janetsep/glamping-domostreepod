@@ -36,6 +36,36 @@ export type Database = {
         }
         Relationships: []
       }
+      domos: {
+        Row: {
+          caracteristicas: string[]
+          created_at: string
+          descripcion: string
+          id: string
+          imagen_url: string
+          nombre: string
+          precio: number
+        }
+        Insert: {
+          caracteristicas: string[]
+          created_at?: string
+          descripcion: string
+          id?: string
+          imagen_url: string
+          nombre: string
+          precio: number
+        }
+        Update: {
+          caracteristicas?: string[]
+          created_at?: string
+          descripcion?: string
+          id?: string
+          imagen_url?: string
+          nombre?: string
+          precio?: number
+        }
+        Relationships: []
+      }
       glamping_units: {
         Row: {
           available_activities: Json[] | null
@@ -75,6 +105,51 @@ export type Database = {
           name?: string
           pet_price?: number
           prices?: Json
+        }
+        Relationships: []
+      }
+      reservas: {
+        Row: {
+          comentarios: string | null
+          domo_id: string
+          email: string
+          estado: string
+          fecha_creacion: string
+          fecha_entrada: string
+          fecha_salida: string
+          id: number
+          nombre: string
+          numero_adultos: number
+          numero_ninos: number
+          telefono: string
+        }
+        Insert: {
+          comentarios?: string | null
+          domo_id: string
+          email: string
+          estado?: string
+          fecha_creacion?: string
+          fecha_entrada: string
+          fecha_salida: string
+          id?: number
+          nombre: string
+          numero_adultos: number
+          numero_ninos: number
+          telefono: string
+        }
+        Update: {
+          comentarios?: string | null
+          domo_id?: string
+          email?: string
+          estado?: string
+          fecha_creacion?: string
+          fecha_entrada?: string
+          fecha_salida?: string
+          id?: number
+          nombre?: string
+          numero_adultos?: number
+          numero_ninos?: number
+          telefono?: string
         }
         Relationships: []
       }
