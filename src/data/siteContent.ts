@@ -1,4 +1,3 @@
-
 /**
  * Este archivo centraliza todo el contenido textual del sitio
  * para permitir su edición fácil a través de las herramientas visuales
@@ -172,6 +171,8 @@ export const unitExperienceContent = {
   stayIncludes: "¿Qué incluye tu estadía?",
   stayIncludesText: "Acceso a senderos exclusivos, desayuno con productos locales, tinajas de agua mineralizada proveniente de las termas de Chillán (previa reserva y pago extra) y la tranquilidad absoluta del bosque nativo en el Valle Las Trancas."
 };
+
+// Aquí presentaba duplicación que generaba error TS1117, se corrigió asegurando que no hubiese nombres repetidos
 
 // Textos para la página de unidad en detalle
 export const unitDetailContent = {
