@@ -1,3 +1,4 @@
+
 import { useState, useEffect, useRef } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useReservations } from "@/hooks/reservations";
@@ -10,8 +11,6 @@ export const useUnitDetailState = (unitId: string | undefined) => {
   const [startDate, setStartDate] = useState<Date>();
   const [endDate, setEndDate] = useState<Date>();
   const [guests, setGuests] = useState<number>(1);
-  const [adults, setAdults] = useState<number>(1);
-  const [children, setChildren] = useState<number>(0);
   const [requiredDomos, setRequiredDomos] = useState<number>(1);
   const { checkAvailability, calculateQuote, createReservation, fetchGlampingUnits, redirectToWebpay } = useReservations();
   const { toast } = useToast();
@@ -149,10 +148,6 @@ export const useUnitDetailState = (unitId: string | undefined) => {
     setEndDate,
     guests,
     setGuests,
-    adults,
-    setAdults,
-    children,
-    setChildren,
     requiredDomos,
     checkAvailability,
     calculateQuote,
@@ -195,5 +190,3 @@ export const useUnitDetailState = (unitId: string | undefined) => {
     setAlternativeDates
   };
 };
-
-

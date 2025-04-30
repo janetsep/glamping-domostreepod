@@ -8,18 +8,6 @@ export const useQuoteCalculation = (state: QuoteState) => {
     if (!state.startDate || !state.endDate || !state.displayUnit) return;
 
     const requiredDomos = state.requiredDomos || 1;
-    
-    // Validar que haya al menos un adulto por domo requerido
-    if (state.adults < requiredDomos) {
-      toast.error(`Se necesitan ${requiredDomos} domos. Debe haber al menos ${requiredDomos} adultos (uno por domo).`);
-      return;
-    }
-    
-    // Validar que si hay 16 huéspedes, al menos 4 sean adultos
-    if (state.guests === 16 && (state.adults || 0) < 4) {
-      toast.error("Para 16 huéspedes, se requieren al menos 4 adultos (uno por domo).");
-      return;
-    }
 
     let quoteDetails = state.calculateQuote(
       state.displayUnit.prices,

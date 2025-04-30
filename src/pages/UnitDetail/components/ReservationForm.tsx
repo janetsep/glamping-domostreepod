@@ -14,8 +14,6 @@ interface ReservationFormProps {
   setEndDate: (date: Date | undefined) => void;
   guests: number;
   setGuests: (guests: number) => void;
-  setAdults?: (adults: number) => void;
-  setChildren?: (children: number) => void;
   requiredDomos?: number;
   isAvailable: boolean | null;
   onReservation: () => void;
@@ -42,8 +40,6 @@ export const ReservationForm = ({
   setEndDate,
   guests,
   setGuests,
-  setAdults,
-  setChildren,
   requiredDomos = 1,
   isAvailable,
   onReservation,
@@ -81,8 +77,6 @@ export const ReservationForm = ({
           maxGuests={4} // Default value for TreePod domes
           guests={guests}
           onGuestsChange={setGuests}
-          onAdultsChange={setAdults}
-          onChildrenChange={setChildren}
           isAvailable={isAvailable}
           selectedActivities={selectedActivities}
           onActivityToggle={onActivityToggle}

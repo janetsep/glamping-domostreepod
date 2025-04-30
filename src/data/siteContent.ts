@@ -1,3 +1,4 @@
+
 /**
  * Este archivo centraliza todo el contenido textual del sitio
  * para permitir su edición fácil a través de las herramientas visuales
@@ -114,14 +115,13 @@ export const reservationContent = {
   title: "Reserva tu experiencia",
   selectDatesLabel: "Selecciona las fechas",
   guestsLabel: "Huéspedes",
-  adultsLabel: "Adultos",
-  childrenLabel: "Niños",
   activitiesLabel: "Actividades disponibles",
   packagesLabel: "Paquetes temáticos",
   checkAvailabilityButton: "Verificar disponibilidad",
   quoteButton: "Cotizar estadía",
   confirmButton: "Confirmar reserva",
   newQuoteButton: "Nueva cotización",
+  modifyQuoteButton: "Modificar reserva",
   summaryTitle: "Resumen de tu estadía",
   totalLabel: "Total",
   policyLabel: "Política de reserva",

@@ -14,8 +14,6 @@ interface QuoteSummaryProps {
   startDate?: Date;
   endDate?: Date;
   guests: number;
-  adults?: number;
-  children?: number;
   requiredDomos: number;
 }
 
@@ -31,8 +29,6 @@ export const QuoteSummary = ({
   startDate,
   endDate,
   guests,
-  adults = 0,
-  children = 0,
   requiredDomos
 }: QuoteSummaryProps) => {
   // Distribuir huéspedes entre domos
@@ -85,8 +81,6 @@ export const QuoteSummary = ({
         <p>Fechas seleccionadas:</p>
         <p>Entrada: {startDate?.toLocaleDateString()}</p>
         <p>Salida: {endDate?.toLocaleDateString()}</p>
-        <p>Adultos: {adults}</p>
-        <p>Niños: {children}</p>
         <p>Huéspedes totales: {guests}</p>
         <p>Domos necesarios: {requiredDomos}</p>
       </div>

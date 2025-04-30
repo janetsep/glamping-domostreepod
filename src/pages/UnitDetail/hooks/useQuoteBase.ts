@@ -1,5 +1,4 @@
 
-import { toast } from "sonner";
 import { Activity, ThemedPackage } from "@/types";
 
 export type QuoteState = {
@@ -7,7 +6,6 @@ export type QuoteState = {
   endDate?: Date;
   displayUnit: any;
   guests: number;
-  adults?: number;
   isAvailable: boolean | null;
   requiredDomos?: number;
   calculateQuote: any;

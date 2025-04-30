@@ -12,10 +12,6 @@ interface ReservationPanelProps {
   setEndDate: (date: Date | undefined) => void;
   guests: number;
   setGuests: (guests: number) => void;
-  setAdults?: (adults: number) => void;
-  setChildren?: (children: number) => void;
-  adults?: number;
-  children?: number;
   requiredDomos?: number;
   isAvailable: boolean | null;
   showQuote: boolean;
@@ -46,10 +42,6 @@ export const ReservationPanel = ({
   setEndDate,
   guests,
   setGuests,
-  setAdults,
-  setChildren,
-  adults = 0,
-  children = 0,
   requiredDomos = 1,
   isAvailable,
   showQuote,
@@ -101,8 +93,6 @@ export const ReservationPanel = ({
             setEndDate={setEndDate}
             guests={guests}
             setGuests={setGuests}
-            setAdults={setAdults}
-            setChildren={setChildren}
             requiredDomos={requiredDomos}
             isAvailable={isAvailable}
             onReservation={onReservation}
@@ -133,8 +123,6 @@ export const ReservationPanel = ({
             startDate={startDate}
             endDate={endDate}
             guests={guests}
-            adults={adults}
-            children={children}
             requiredDomos={requiredDomos}
           />
         )}
