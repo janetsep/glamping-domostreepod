@@ -1,3 +1,4 @@
+
 /**
  * Este archivo centraliza todo el contenido textual del sitio
  * para permitir su edición fácil a través de las herramientas visuales
@@ -125,8 +126,7 @@ export const reservationContent = {
   summaryTitle: "Resumen de tu estadía",
   totalLabel: "Total",
   policyLabel: "Política de reserva",
-  policyText: "Pago total por adelantado para confirmar tu reserva. Check-in desde las 15:00, check-out hasta las 12:00.",
-  domosDistribution: "Distribución de domos"
+  policyText: "Pago total por adelantado para confirmar tu reserva. Check-in desde las 15:00, check-out hasta las 12:00."
 };
 
 // Textos para la sección de políticas
