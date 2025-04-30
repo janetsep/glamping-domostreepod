@@ -12,6 +12,9 @@ interface ReservationSummaryProps {
     totalPrice: number;
     breakdown: Array<{ description: string; amount: number }>;
     rateDescription?: string;
+    requiredDomos?: number;
+    domoDistribution?: Array<{ number: number; guests: number }>;
+    pricePerDomo?: number;
   };
   isAvailable: boolean;
   isLoading: boolean;
@@ -66,6 +69,21 @@ export const ReservationSummary: React.FC<ReservationSummaryProps> = ({
           <span>{formatCurrency(item.amount)}</span>
         </div>
       ))}
+      
+      {/* Mostrar distribución de domos si está disponible */}
+      {quote.domoDistribution && quote.domoDistribution.length > 0 && quote.pricePerDomo && (
+        <div className="mt-3 bg-secondary/10 p-3 rounded-md">
+          <p className="font-medium mb-2">Distribución por domo:</p>
+          <div className="grid grid-cols-1 gap-2">
+            {quote.domoDistribution.map(domo => (
+              <div key={domo.number} className="p-2 bg-secondary/30 rounded-md flex justify-between">
+                <span>Domo {domo.number}: {domo.guests} {domo.guests === 1 ? 'persona' : 'personas'}</span>
+                <span className="font-medium">{formatCurrency(quote.pricePerDomo)}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
       
       {/* Show extras breakdown if selected */}
       {hasSelectedExtras && (
