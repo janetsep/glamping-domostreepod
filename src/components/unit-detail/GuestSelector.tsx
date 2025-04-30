@@ -5,11 +5,11 @@ import { Button } from "@/components/ui/button";
 
 interface GuestSelectorProps {
   guests: number;
-  setGuests: React.Dispatch<React.SetStateAction<number>>;
+  setGuests?: React.Dispatch<React.SetStateAction<number>>; // Make setGuests optional
   maxGuests: number;
   onChange?: (guests: number) => void;
-  onGuestsChange?: (guests: number) => void; // Agregado para compatibilidad
-  maxDomos?: number; // Agregado para compatibilidad
+  onGuestsChange?: (guests: number) => void; // For compatibility
+  maxDomos?: number; // For compatibility
 }
 
 export const GuestSelector = ({ 
@@ -22,7 +22,7 @@ export const GuestSelector = ({
   const increaseGuests = () => {
     if (guests < maxGuests) {
       const newGuestCount = guests + 1;
-      setGuests(newGuestCount);
+      if (setGuests) setGuests(newGuestCount); // Check if setGuests is provided
       if (onChange) onChange(newGuestCount);
       if (onGuestsChange) onGuestsChange(newGuestCount);
     }
@@ -31,7 +31,7 @@ export const GuestSelector = ({
   const decreaseGuests = () => {
     if (guests > 1) {
       const newGuestCount = guests - 1;
-      setGuests(newGuestCount);
+      if (setGuests) setGuests(newGuestCount); // Check if setGuests is provided
       if (onChange) onChange(newGuestCount);
       if (onGuestsChange) onGuestsChange(newGuestCount);
     }
