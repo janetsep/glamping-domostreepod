@@ -2,7 +2,7 @@
 import { useState } from 'react';
 import { useToast } from '@/components/ui/use-toast';
 import { useGlampingUnits } from './useGlampingUnits';
-import { useAvailability } from './useAvailability';
+import { useAvailabilityCheck } from './useAvailabilityCheck';
 import { usePricing } from './usePricing';
 import { useReservationCreation } from './useReservationCreation';
 import { usePayment } from './usePayment';
@@ -12,8 +12,8 @@ export const useReservations = () => {
   const { toast } = useToast();
 
   // Compose all the sub-hooks
-  const { fetchGlampingUnits } = useGlampingUnits({ setIsLoading, toast });
-  const { checkAvailability } = useAvailability({ setIsLoading, toast });
+  const { fetchGlampingUnits, fetchGlampingUnit } = useGlampingUnits({ setIsLoading, toast });
+  const { checkAvailability } = useAvailabilityCheck({ setIsLoading, toast });
   const { calculateQuote } = usePricing();
   const { createReservation } = useReservationCreation({ 
     setIsLoading, 
@@ -25,6 +25,7 @@ export const useReservations = () => {
   return {
     isLoading,
     fetchGlampingUnits,
+    fetchGlampingUnit,
     createReservation,
     checkAvailability,
     calculateQuote,

@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 import { useParams, useLocation, useNavigate } from "react-router-dom";
 import { UnitHeader } from "./UnitHeader";
 import UnitContent from "./UnitContent";
-import ReservationPanel from "./ReservationPanel";
+import { ReservationPanel } from "./ReservationPanel";
 import { getDomoImages } from "@/components/unit-detail/utils/unitHelpers";
 import { useReservations } from "@/hooks/reservations";
 
@@ -11,7 +11,7 @@ const UnitDetail = () => {
   const { unitId } = useParams<{ unitId: string }>();
   const navigate = useNavigate();
   const location = useLocation();
-  const { fetchGlampingUnit } = useReservations();
+  const { fetchGlampingUnits } = useReservations();
   const [unit, setUnit] = useState<any>(null);
   const [loading, setLoading] = useState(true);
 
@@ -27,7 +27,10 @@ const UnitDetail = () => {
       }
 
       try {
-        const unitData = await fetchGlampingUnit(unitId);
+        // Obtener todas las unidades y encontrar la que coincide con el ID
+        const units = await fetchGlampingUnits();
+        const unitData = units.find(u => u.id === unitId);
+        
         if (!unitData) {
           navigate('/');
           return;
@@ -43,7 +46,7 @@ const UnitDetail = () => {
     };
 
     getUnitDetails();
-  }, [unitId, navigate, fetchGlampingUnit]);
+  }, [unitId, navigate, fetchGlampingUnits]);
 
   if (loading) {
     return (

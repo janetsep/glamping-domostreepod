@@ -16,12 +16,12 @@ const UnitContent: React.FC<UnitContentProps> = ({ unit, domoImages, travelerTyp
     <div className="space-y-8">
       <UnitInfo 
         unitName={unit.name}
-        name={unit.display_name}
+        name={unit.display_name || unit.name}
         unitId={unit.id}
         travelerType={travelerType}
       />
       
-      <UnitFeatures unitName={unit.name} />
+      <UnitFeatures />
       
       <UnitPolicies />
       
