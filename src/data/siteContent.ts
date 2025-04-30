@@ -1,4 +1,3 @@
-
 /**
  * Este archivo centraliza todo el contenido textual del sitio
  * para permitir su edición fácil a través de las herramientas visuales
@@ -185,7 +184,7 @@ export const unitDetailContent = {
   availabilityCalendarTitle: "Calendario de disponibilidad",
   calendarSelectDateText: "Selecciona una fecha para comenzar",
   priceStartsAtText: "desde",
-  domoDistribution: "Distribución de domos" // Agregado para mostrar la distribución de domos
+  domoDistribution: "Distribución de domos" // Para mostrar la distribución de domos
 };
 
 // Textos para la página de éxito de reserva
