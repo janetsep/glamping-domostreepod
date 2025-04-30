@@ -1,4 +1,3 @@
-
 import React from "react";
 import { Button } from "@/components/ui/button";
 import { Activity, ThemedPackage } from "@/types";
@@ -181,7 +180,7 @@ export const ReservationSummary: React.FC<ReservationSummaryProps> = ({
           className="flex-1 flex items-center gap-2"
         >
           <Edit size={16} />
-          Modificar reserva
+          Modificar cotización
         </Button>
       </div>
     </div>
