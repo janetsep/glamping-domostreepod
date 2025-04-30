@@ -63,12 +63,7 @@ export const ReservationSummary: React.FC<ReservationSummaryProps> = ({
       
       <hr className="my-2" />
       
-      {quote.breakdown.map((item, index) => (
-        <div key={index} className="flex justify-between items-center">
-          <span className="text-gray-700">{item.description}</span>
-          <span>{formatCurrency(item.amount)}</span>
-        </div>
-      ))}
+      {/* Eliminamos los detalles del desglose que muestran la suma redundante */}
       
       {/* Mostrar distribución de domos si está disponible */}
       {quote.domoDistribution && quote.domoDistribution.length > 0 && quote.pricePerDomo && (
