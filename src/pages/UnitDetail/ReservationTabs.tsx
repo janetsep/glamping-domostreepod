@@ -72,10 +72,10 @@ export const ReservationTabs = ({
         />
         
         <GuestSelector
-          maxGuests={maxGuests}
+          maxGuests={16} // Permitir hasta 16 huéspedes en total
           guests={guests}
           onGuestsChange={onGuestsChange}
-          maxDomos={4}
+          maxDomos={4} // Máximo 4 domos disponibles
           requiredDomos={requiredDomos}
           onDomosChange={onDomosChange}
         />

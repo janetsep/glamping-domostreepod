@@ -43,7 +43,8 @@ export const GuestSelector = ({
   }, [guests, maxDomoGuests, initialRequiredDomos]);
 
   const increaseGuests = () => {
-    if (guests < maxGuests) {
+    // Permitir hasta 16 huéspedes en total
+    if (guests < 16) {
       const newGuestCount = guests + 1;
       if (setGuests) setGuests(newGuestCount);
       if (onChange) onChange(newGuestCount);
@@ -116,7 +117,7 @@ export const GuestSelector = ({
               size="sm"
               className="h-8 w-8 rounded-full p-0"
               onClick={increaseGuests}
-              disabled={guests >= maxGuests}
+              disabled={guests >= 16}
             >
               <Plus className="h-3 w-3" />
               <span className="sr-only">Más huéspedes</span>
