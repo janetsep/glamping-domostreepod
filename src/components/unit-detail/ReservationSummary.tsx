@@ -3,7 +3,7 @@ import React from "react";
 import { Button } from "@/components/ui/button";
 import { Activity, ThemedPackage } from "@/types";
 import { ExtrasDetails } from "./ExtrasDetails";
-import { RefreshCcw } from "lucide-react";
+import { RefreshCcw, Edit } from "lucide-react";
 
 interface ReservationSummaryProps {
   quote: {
@@ -45,6 +45,11 @@ export const ReservationSummary: React.FC<ReservationSummaryProps> = ({
   const activitiesTotal = selectedActivities.reduce((sum, activity) => sum + activity.price, 0);
   const packagesTotal = selectedPackages.reduce((sum, pkg) => sum + pkg.price, 0);
   const extrasTotal = activitiesTotal + packagesTotal;
+
+  // El precio base ahora es el precio de los domos sin extras
+  const basePrice = quote.totalPrice;
+  // El precio total es el precio base más los extras
+  const finalTotal = basePrice + extrasTotal;
 
   return (
     <div className="space-y-4">
@@ -115,7 +120,7 @@ export const ReservationSummary: React.FC<ReservationSummaryProps> = ({
       
       <div className="flex justify-between items-center font-bold">
         <span>Total</span>
-        <span>{formatCurrency(quote.totalPrice)}</span>
+        <span>{formatCurrency(finalTotal)}</span>
       </div>
 
       <div className="flex flex-col sm:flex-row gap-2 sm:gap-4 mt-6">
@@ -132,8 +137,8 @@ export const ReservationSummary: React.FC<ReservationSummaryProps> = ({
           variant="outline"
           className="flex-1 flex items-center gap-2"
         >
-          <RefreshCcw size={16} />
-          Nueva reserva
+          <Edit size={16} />
+          Modificar reserva
         </Button>
       </div>
     </div>

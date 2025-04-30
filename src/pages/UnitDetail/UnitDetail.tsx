@@ -50,6 +50,8 @@ const UnitDetail = () => {
                     setGuests={controller.state.setGuests}
                     setAdults={controller.state.setAdults}
                     setChildren={controller.state.setChildren}
+                    adults={controller.state.adults}
+                    children={controller.state.children}
                     requiredDomos={controller.state.requiredDomos}
                     isAvailable={controller.state.isAvailable}
                     showQuote={controller.state.showQuote}
