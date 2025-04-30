@@ -10,6 +10,7 @@ import AboutUs from "./pages/AboutUs";
 import NotFound from "./pages/NotFound";
 import Index from "./pages/Index";
 import UnitDetail from "./pages/UnitDetail";
+import TravelerType from "./pages/TravelerType";
 import { useEffect } from "react";
 import WebPayReturn from "./pages/WebPayReturn";
 
@@ -20,6 +21,7 @@ const router = createBrowserRouter(
       <Route index element={<Index />} />
       <Route path="sobre-nosotros" element={<AboutUs />} />
       <Route path="unit/:unitId" element={<UnitDetail />} />
+      <Route path="tipo-viajero/:typeId" element={<TravelerType />} />
       <Route path="webpay/return" element={<WebPayReturn />} />
     </Route>
   )

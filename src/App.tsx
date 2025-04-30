@@ -6,6 +6,7 @@ import Footer from './components/footer';
 import Index from './pages/Index';
 import AboutUs from './pages/AboutUs';
 import UnitDetail from './pages/UnitDetail';
+import TravelerType from './pages/TravelerType';
 import WebPayReturn from './pages/WebPayReturn';
 import NotFound from './pages/NotFound';
 import Auth from './pages/Auth';
@@ -26,6 +27,7 @@ const App = () => {
       <Route path="/" element={<AppLayout><Index /></AppLayout>} />
       <Route path="/about" element={<AppLayout><AboutUs /></AppLayout>} />
       <Route path="/unit/:unitId" element={<AppLayout><UnitDetail /></AppLayout>} />
+      <Route path="/tipo-viajero/:typeId" element={<AppLayout><TravelerType /></AppLayout>} />
       <Route path="/webpay/return" element={<AppLayout><WebPayReturn /></AppLayout>} />
       <Route path="/auth" element={<AppLayout><Auth /></AppLayout>} />
       <Route path="*" element={<AppLayout><NotFound /></AppLayout>} />
