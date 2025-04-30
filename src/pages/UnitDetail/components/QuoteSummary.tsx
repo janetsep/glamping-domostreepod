@@ -82,6 +82,18 @@ export const QuoteSummary = ({
         <p>Salida: {endDate?.toLocaleDateString()}</p>
         <p>Huéspedes: {guests}</p>
         <p>Domos necesarios: {requiredDomos}</p>
+        
+        <div className="mt-3">
+          <p className="font-medium">Distribución por domo:</p>
+          <div className="grid grid-cols-1 gap-2 mt-2">
+            {domoDistribution.map(domo => (
+              <div key={domo.number} className="p-2 bg-secondary/30 rounded-md flex justify-between">
+                <span>Domo {domo.number}: {domo.guests} {domo.guests === 1 ? 'persona' : 'personas'}</span>
+                <span className="font-medium">${pricePerDomo.toLocaleString()}</span>
+              </div>
+            ))}
+          </div>
+        </div>
       </div>
     </>
   );
