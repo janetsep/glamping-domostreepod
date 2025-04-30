@@ -73,6 +73,19 @@ export const ReservationSummary: React.FC<ReservationSummaryProps> = ({
     );
   };
 
+  // Función para mostrar mensaje para domos adicionales sin huéspedes
+  const getDomoDescription = (item: any) => {
+    if (item.guests === 0) {
+      return (
+        <>
+          <span>Domo {item.domoNumber}: 2 personas</span>
+          <span className="text-xs text-amber-600 ml-2">(Domo adicional)</span>
+        </>
+      );
+    }
+    return <span>Domo {item.domoNumber}: {item.guests} {item.guests === 1 ? 'persona' : 'personas'}</span>;
+  };
+
   return (
     <div className="space-y-4">
       <h3 className="text-lg font-semibold mb-2">Resumen de tu estadía</h3>
@@ -100,13 +113,17 @@ export const ReservationSummary: React.FC<ReservationSummaryProps> = ({
         <div className="mt-3 bg-secondary/10 p-3 rounded-md">
           <p className="font-medium mb-2">Distribución por domo:</p>
           <div className="grid grid-cols-1 gap-2">
-            {/* Mostrar todos los domos de la distribución */}
-            {quote.breakdown.filter(item => item.domoNumber && item.domoNumber > 0).map(item => (
-              <div key={item.domoNumber} className="p-2 bg-secondary/30 rounded-md flex justify-between">
-                <span>Domo {item.domoNumber}: {item.guests} {item.guests === 1 ? 'persona' : 'personas'}</span>
-                <span className="font-medium">{formatCurrency(item.amount)}</span>
-              </div>
-            ))}
+            {/* Mostrar todos los domos de la distribución, incluso los que no tienen huéspedes */}
+            {quote.breakdown
+              .filter(item => item.domoNumber && item.domoNumber > 0)
+              .map(item => (
+                <div key={item.domoNumber} className="p-2 bg-secondary/30 rounded-md flex justify-between">
+                  <div className="flex items-center">
+                    {getDomoDescription(item)}
+                  </div>
+                  <span className="font-medium">{formatCurrency(item.amount)}</span>
+                </div>
+              ))}
           </div>
         </div>
       )}

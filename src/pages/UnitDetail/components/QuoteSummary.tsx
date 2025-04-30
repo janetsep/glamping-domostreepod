@@ -31,10 +31,8 @@ export const QuoteSummary = ({
   guests,
   requiredDomos
 }: QuoteSummaryProps) => {
-  // Ya no necesitamos generar manualmente la distribución de domos,
-  // ahora viene directamente del cálculo de la cotización
+  // Usamos la distribución que viene directamente de la cotización
   const domoDistribution = quote?.domoDistribution || [];
-  const pricePerDomo = quote ? Math.round(quote.basePrice / requiredDomos) : 0;
 
   return (
     <>

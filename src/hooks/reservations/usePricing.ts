@@ -16,12 +16,15 @@ export const usePricing = () => {
     let totalNightsPrice = 0;
     let breakdown = [];
     
-    // Generar distribución de huéspedes por domo
+    // Generar distribución de huéspedes por domo, ahora considerando todos los domos seleccionados
     const domoDistribution = generateDomoDistribution(guests, requiredDomos);
     
     // Calcular precio por cada domo según distribución de huéspedes
     for (const domo of domoDistribution) {
-      const priceForThisDomo = getPriceByGuestsAndSeason(checkIn, domo.guests);
+      // Si un domo no tiene huéspedes asignados pero fue seleccionado manualmente,
+      // aplicamos la tarifa de 2 personas (mínima para domos adicionales)
+      const guestsForPrice = domo.guests === 0 ? 2 : domo.guests;
+      const priceForThisDomo = getPriceByGuestsAndSeason(checkIn, guestsForPrice);
       
       // Aplicar ajustes de precios según duración de la estadía
       let adjustedPrice = priceForThisDomo;
@@ -38,9 +41,9 @@ export const usePricing = () => {
       totalNightsPrice += domoTotalPrice;
       
       breakdown.push({
-        description: `Domo ${domo.number}: ${domo.guests} ${domo.guests === 1 ? 'persona' : 'personas'} x ${nights} ${nights === 1 ? 'noche' : 'noches'} x $${Math.round(adjustedPrice).toLocaleString()}`,
+        description: `Domo ${domo.number}: ${domo.guests === 0 ? '2' : domo.guests} ${domo.guests === 1 ? 'persona' : 'personas'} x ${nights} ${nights === 1 ? 'noche' : 'noches'} x $${Math.round(adjustedPrice).toLocaleString()}`,
         amount: domoTotalPrice,
-        guests: domo.guests,
+        guests: domo.guests === 0 ? 2 : domo.guests,
         domoNumber: domo.number
       });
     }
@@ -80,7 +83,7 @@ export const usePricing = () => {
 };
 
 /**
- * Distribuye los huéspedes entre los domos
+ * Distribuye los huéspedes entre los domos, asegurando que se muestren todos los domos seleccionados
  */
 const generateDomoDistribution = (guests: number, requiredDomos: number) => {
   // Si solo hay un domo, todos los huéspedes van ahí
@@ -97,8 +100,12 @@ const generateDomoDistribution = (guests: number, requiredDomos: number) => {
     const domoGuests = Math.min(remainingGuests, maxGuestsPerDomo);
     distribution.push({ number: i, guests: domoGuests });
     remainingGuests -= domoGuests;
-    
-    if (remainingGuests <= 0) break;
+  }
+
+  // Ahora, aseguramos que todos los domos seleccionados estén en la distribución,
+  // incluso si no tienen huéspedes asignados
+  while (distribution.length < requiredDomos) {
+    distribution.push({ number: distribution.length + 1, guests: 0 });
   }
 
   return distribution;
