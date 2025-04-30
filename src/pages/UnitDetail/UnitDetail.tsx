@@ -49,6 +49,7 @@ const UnitDetail = () => {
                     guests={controller.state.guests}
                     setGuests={controller.state.setGuests}
                     requiredDomos={controller.state.requiredDomos}
+                    setRequiredDomos={controller.state.setRequiredDomos}
                     isAvailable={controller.state.isAvailable}
                     showQuote={controller.state.showQuote}
                     quote={controller.state.quote}

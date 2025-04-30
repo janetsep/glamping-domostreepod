@@ -1,4 +1,3 @@
-
 import { useState, useEffect, useRef } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useReservations } from "@/hooks/reservations";
@@ -149,6 +148,7 @@ export const useUnitDetailState = (unitId: string | undefined) => {
     guests,
     setGuests,
     requiredDomos,
+    setRequiredDomos,
     checkAvailability,
     calculateQuote,
     createReservation,

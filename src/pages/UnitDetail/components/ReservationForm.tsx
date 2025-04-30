@@ -15,6 +15,7 @@ interface ReservationFormProps {
   guests: number;
   setGuests: (guests: number) => void;
   requiredDomos?: number;
+  setRequiredDomos?: (domos: number) => void;
   isAvailable: boolean | null;
   onReservation: () => void;
   selectedActivities: Activity[];
@@ -41,6 +42,7 @@ export const ReservationForm = ({
   guests,
   setGuests,
   requiredDomos = 1,
+  setRequiredDomos,
   isAvailable,
   onReservation,
   selectedActivities,
@@ -57,6 +59,12 @@ export const ReservationForm = ({
   handleCalendarDateSelect,
   handleAlternativeDateSelect
 }: ReservationFormProps) => {
+  const handleDomosChange = (domos: number) => {
+    if (setRequiredDomos) {
+      setRequiredDomos(domos);
+    }
+  };
+
   return (
     <>
       <AvailabilityCalendarSheet 
@@ -77,6 +85,8 @@ export const ReservationForm = ({
           maxGuests={4} // Default value for TreePod domes
           guests={guests}
           onGuestsChange={setGuests}
+          requiredDomos={requiredDomos}
+          onDomosChange={handleDomosChange}
           isAvailable={isAvailable}
           selectedActivities={selectedActivities}
           onActivityToggle={onActivityToggle}

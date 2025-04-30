@@ -16,6 +16,8 @@ interface ReservationTabsProps {
   maxGuests: number;
   guests: number;
   onGuestsChange: (guests: number) => void;
+  requiredDomos?: number;
+  onDomosChange?: (domos: number) => void;
   isAvailable: boolean | null;
   selectedActivities: Activity[];
   onActivityToggle: (activity: Activity) => void;
@@ -36,6 +38,8 @@ export const ReservationTabs = ({
   maxGuests,
   guests,
   onGuestsChange,
+  requiredDomos,
+  onDomosChange,
   isAvailable,
   selectedActivities,
   onActivityToggle,
@@ -72,6 +76,8 @@ export const ReservationTabs = ({
           guests={guests}
           onGuestsChange={onGuestsChange}
           maxDomos={4}
+          requiredDomos={requiredDomos}
+          onDomosChange={onDomosChange}
         />
         
         {isAvailable === false && (
