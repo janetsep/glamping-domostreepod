@@ -76,24 +76,13 @@ export const QuoteSummary = ({
         selectedPackages={selectedPackages}
         hasSelectedExtras={selectedActivities.length > 0 || selectedPackages.length > 0}
       />
+      
       <div className="text-sm text-muted-foreground mt-4">
         <p>Fechas seleccionadas:</p>
         <p>Entrada: {startDate?.toLocaleDateString()}</p>
         <p>Salida: {endDate?.toLocaleDateString()}</p>
         <p>Huéspedes: {guests}</p>
         <p>Domos necesarios: {requiredDomos}</p>
-        
-        <div className="mt-3">
-          <p className="font-medium">Distribución por domo:</p>
-          <div className="grid grid-cols-1 gap-2 mt-2">
-            {domoDistribution.map(domo => (
-              <div key={domo.number} className="p-2 bg-secondary/30 rounded-md flex justify-between">
-                <span>Domo {domo.number}: {domo.guests} {domo.guests === 1 ? 'persona' : 'personas'}</span>
-                <span className="font-medium">${pricePerDomo.toLocaleString()}</span>
-              </div>
-            ))}
-          </div>
-        </div>
       </div>
     </>
   );
