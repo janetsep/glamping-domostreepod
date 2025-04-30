@@ -4,7 +4,6 @@ import Hero from "@/components/Hero";
 import Benefits from "@/components/Benefits";
 import Testimonials from "@/components/Testimonials";
 import Location from "@/components/Location";
-import TravelerTypes from "@/components/TravelerTypes";
 import Packages from "@/components/Packages";
 import Gallery from "@/components/Gallery";
 import SimplifiedContact from "@/components/SimplifiedContact";
@@ -41,9 +40,6 @@ const Index = () => {
       <Hero />
       <div id="benefits" className="my-4 md:my-8">
         <Benefits />
-      </div>
-      <div className="my-4 md:my-8">
-        <TravelerTypes />
       </div>
       <div className="my-4 md:my-8 bg-gray-50 py-8">
         <Testimonials />

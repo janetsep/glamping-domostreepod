@@ -1,88 +1,79 @@
 
-import React, { useEffect, useState } from "react";
-import { useParams, useLocation, useNavigate } from "react-router-dom";
+import { useParams, useNavigate, useSearchParams } from "react-router-dom";
+import { useEffect } from "react";
+
+// Import our components
 import { UnitHeader } from "./UnitHeader";
-import UnitContent from "./UnitContent";
+import { UnitContent } from "./UnitContent";
 import { ReservationPanel } from "./ReservationPanel";
-import { getDomoImages } from "@/components/unit-detail/utils/unitHelpers";
-import { useReservations } from "@/hooks/reservations";
+import { ReservationConfirmation } from "./ReservationConfirmation";
+import { useUnitDetailController } from "./hooks/useUnitDetailController";
 
 const UnitDetail = () => {
   const { unitId } = useParams<{ unitId: string }>();
   const navigate = useNavigate();
-  const location = useLocation();
-  const { fetchGlampingUnits } = useReservations();
-  const [unit, setUnit] = useState<any>(null);
-  const [loading, setLoading] = useState(true);
-
-  // Obtener el tipo de viajero desde los parámetros de consulta
-  const queryParams = new URLSearchParams(location.search);
-  const travelerType = queryParams.get('type') || 'default';
-
-  useEffect(() => {
-    const getUnitDetails = async () => {
-      if (!unitId) {
-        navigate('/');
-        return;
-      }
-
-      try {
-        // Obtener todas las unidades y encontrar la que coincide con el ID
-        const units = await fetchGlampingUnits();
-        const unitData = units.find(u => u.id === unitId);
-        
-        if (!unitData) {
-          navigate('/');
-          return;
-        }
-        
-        setUnit(unitData);
-      } catch (error) {
-        console.error("Error fetching unit details:", error);
-        navigate('/');
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    getUnitDetails();
-  }, [unitId, navigate, fetchGlampingUnits]);
-
-  if (loading) {
-    return (
-      <div className="container mx-auto px-4 py-8">
-        <div className="animate-pulse">
-          <div className="h-8 w-48 bg-gray-200 rounded mb-6"></div>
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-            <div className="lg:col-span-2">
-              <div className="h-96 bg-gray-200 rounded mb-8"></div>
-            </div>
-            <div className="h-96 bg-gray-200 rounded"></div>
-          </div>
-        </div>
-      </div>
-    );
-  }
-
-  if (!unit) return null;
-
-  const domoImages = getDomoImages(unit.name);
+  const [searchParams] = useSearchParams();
+  
+  // Use our controller hook that combines all the functionality
+  const controller = useUnitDetailController(unitId, searchParams);
 
   return (
-    <div className="container mx-auto px-4 py-8">
-      <UnitHeader navigate={navigate} />
-      
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        <div className="lg:col-span-2">
-          <UnitContent 
-            unit={unit}
-            domoImages={domoImages}
-            travelerType={travelerType}
-          />
-        </div>
-        
-        <div className="sticky top-24 self-start">
-          <ReservationPanel unitId={unitId || ''} unitType={unit.unit_type} />
+    <div className="min-h-screen bg-white pt-24">
+      <div className="container mx-auto px-4">
+        <UnitHeader navigate={navigate} />
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+          {controller.state.displayUnit && (
+            <>
+              <UnitContent unit={controller.state.displayUnit} />
+
+              <div className="bg-secondary/20 p-6 rounded-lg shadow-sm">
+                {controller.state.isReservationConfirmed ? (
+                  <ReservationConfirmation 
+                    ref={controller.state.confirmationRef}
+                    startDate={controller.state.startDate}
+                    endDate={controller.state.endDate}
+                    guests={controller.state.guests}
+                    quote={controller.state.quote}
+                    paymentDetails={controller.state.paymentDetails}
+                    onNewQuote={controller.actions.handleNewQuote}
+                    reservationId={controller.state.confirmedReservationId}
+                  />
+                ) : (
+                  <ReservationPanel
+                    displayUnit={controller.state.displayUnit}
+                    startDate={controller.state.startDate}
+                    endDate={controller.state.endDate}
+                    setStartDate={controller.state.setStartDate}
+                    setEndDate={controller.state.setEndDate}
+                    guests={controller.state.guests}
+                    setGuests={controller.state.setGuests}
+                    requiredDomos={controller.state.requiredDomos}
+                    setRequiredDomos={controller.state.setRequiredDomos}
+                    isAvailable={controller.state.isAvailable}
+                    showQuote={controller.state.showQuote}
+                    quote={controller.state.quote}
+                    onReservation={controller.actions.handleReservation}
+                    onNewQuote={controller.actions.handleNewQuote}
+                    onConfirmReservation={controller.actions.handleConfirmReservation}
+                    isProcessingPayment={controller.state.isProcessingPayment}
+                    selectedActivities={controller.state.selectedActivities}
+                    selectedPackages={controller.state.selectedPackages}
+                    onActivityToggle={controller.actions.handleActivityToggle}
+                    onPackageToggle={controller.actions.handlePackageToggle}
+                    activitiesTotal={controller.state.activitiesTotal}
+                    packagesTotal={controller.state.packagesTotal}
+                    getUpdatedQuoteTotal={controller.actions.getUpdatedQuoteTotal}
+                    reservationTab={controller.state.reservationTab}
+                    setReservationTab={controller.state.setReservationTab}
+                    isPartialAvailability={controller.state.isPartialAvailability}
+                    availableDomos={controller.state.availableDomos}
+                    alternativeDates={controller.state.alternativeDates}
+                  />
+                )}
+              </div>
+            </>
+          )}
         </div>
       </div>
     </div>

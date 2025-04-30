@@ -26,7 +26,6 @@ export const useGlampingUnits = ({ setIsLoading, toast }: UseGlampingUnitsProps)
   const fetchGlampingUnits = useCallback(async () => {
     try {
       console.log('Iniciando fetchGlampingUnits');
-      setIsLoading(true);
       const { data, error } = await supabase
         .from('glamping_units')
         .select('*')
@@ -54,26 +53,8 @@ export const useGlampingUnits = ({ setIsLoading, toast }: UseGlampingUnitsProps)
       });
       // Fallback to packageData
       return packageData.map(transformPackageToUnit);
-    } finally {
-      setIsLoading(false);
     }
-  }, [toast, transformPackageToUnit, setIsLoading]);
-  
-  const fetchGlampingUnit = useCallback(async (unitId: string) => {
-    try {
-      setIsLoading(true);
-      const units = await fetchGlampingUnits();
-      return units.find(unit => unit.id === unitId);
-    } catch (error) {
-      console.error('Error fetching glamping unit:', error);
-      throw error;
-    } finally {
-      setIsLoading(false);
-    }
-  }, [fetchGlampingUnits, setIsLoading]);
+  }, [toast, transformPackageToUnit]);
 
-  return { 
-    fetchGlampingUnits,
-    fetchGlampingUnit
-  };
+  return { fetchGlampingUnits };
 };
