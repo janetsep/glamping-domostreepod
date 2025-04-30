@@ -62,8 +62,6 @@ export const QuoteSummary = ({
       <ReservationSummary
         quote={{
           ...quote,
-          totalPrice: quote.basePrice, // Precio base sin extras
-          requiredDomos: requiredDomos,
           domoDistribution: domoDistribution,
           pricePerDomo: pricePerDomo
         }}

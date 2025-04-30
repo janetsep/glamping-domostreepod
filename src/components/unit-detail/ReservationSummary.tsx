@@ -1,4 +1,3 @@
-
 import React from "react";
 import { Button } from "@/components/ui/button";
 import { Activity, ThemedPackage } from "@/types";
@@ -55,10 +54,12 @@ export const ReservationSummary: React.FC<ReservationSummaryProps> = ({
     <div className="space-y-4">
       <h3 className="text-lg font-semibold mb-2">Resumen de tu estadía</h3>
       
-      <div className="flex justify-between items-center">
-        <span className="text-gray-700">{quote.nights} {quote.nights === 1 ? 'noche' : 'noches'}</span>
-        <span className="font-semibold">{formatCurrency(quote.pricePerNight)} / noche</span>
-      </div>
+      {quote.breakdown.map((item, index) => (
+        <div key={index} className="flex justify-between items-center">
+          <span className="text-gray-700">{item.description}</span>
+          <span className="font-semibold">{formatCurrency(item.amount)}</span>
+        </div>
+      ))}
       
       {quote.rateDescription && (
         <div className="text-sm text-cyan-600 mb-2">
@@ -67,8 +68,6 @@ export const ReservationSummary: React.FC<ReservationSummaryProps> = ({
       )}
       
       <hr className="my-2" />
-      
-      {/* Eliminamos los detalles del desglose que muestran la suma redundante */}
       
       {/* Mostrar distribución de domos si está disponible */}
       {quote.domoDistribution && quote.domoDistribution.length > 0 && quote.pricePerDomo && (

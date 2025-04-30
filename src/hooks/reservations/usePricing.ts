@@ -7,7 +7,8 @@ export const usePricing = () => {
     unitPrices: GlampingUnit['prices'],
     checkIn: Date,
     checkOut: Date,
-    guests: number
+    guests: number,
+    requiredDomos: number = 1
   ) => {
     const nights = Math.ceil((checkOut.getTime() - checkIn.getTime()) / (1000 * 60 * 60 * 24));
     const basePrice = unitPrices.base_price || 120000;
@@ -25,13 +26,13 @@ export const usePricing = () => {
       pricePerNight = basePrice;
     }
     
-    // Precio total por las noches
-    const totalNightsPrice = pricePerNight * nights;
+    // Precio base por noche por domo
+    const totalNightsPrice = pricePerNight * nights * requiredDomos;
     
     // Preparar el desglose de precios
     const breakdown = [
       { 
-        description: `${nights} ${nights === 1 ? 'noche' : 'noches'} x $${Math.round(pricePerNight).toLocaleString()}`,
+        description: `${nights} ${nights === 1 ? 'noche' : 'noches'} x ${requiredDomos} ${requiredDomos === 1 ? 'domo' : 'domos'} x $${Math.round(pricePerNight).toLocaleString()}`,
         amount: totalNightsPrice 
       }
     ];
@@ -52,7 +53,8 @@ export const usePricing = () => {
       basePrice: Math.round(totalNightsPrice),
       totalPrice: Math.round(totalNightsPrice),
       breakdown,
-      rateDescription
+      rateDescription,
+      requiredDomos
     };
   }, []);
 

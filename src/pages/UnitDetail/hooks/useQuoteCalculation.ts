@@ -13,11 +13,12 @@ export const useQuoteCalculation = (state: QuoteState) => {
       state.displayUnit.prices,
       state.startDate,
       state.endDate,
-      state.guests
+      state.guests,
+      requiredDomos
     );
     
-    quoteDetails.basePrice = quoteDetails.basePrice * requiredDomos;
-    quoteDetails.totalPrice = quoteDetails.totalPrice * requiredDomos;
+    // Ya no necesitamos multiplicar el precio base por el número de domos aquí
+    // porque ahora lo hacemos directamente en calculateQuote
     quoteDetails.requiredDomos = requiredDomos;
     
     if (state.selectedActivities.length > 0 || state.selectedPackages.length > 0) {
