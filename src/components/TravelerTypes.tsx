@@ -65,8 +65,8 @@ const travelerCategories: TravelerCategory[] = [
 const TravelerTypes = () => {
   const navigate = useNavigate();
 
-  const handleReserveClick = () => {
-    navigate(`/unit/48a7a330-ebae-4e79-8f53-31a84ac900d9`);
+  const handleReserveClick = (travelerType: string) => {
+    navigate(`/unit/48a7a330-ebae-4e79-8f53-31a84ac900d9?type=${travelerType}`);
   };
 
   return (
@@ -81,7 +81,11 @@ const TravelerTypes = () => {
         
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
           {travelerCategories.map((category) => (
-            <div key={category.id} className="relative group rounded-lg overflow-hidden shadow-lg h-[350px]">
+            <div 
+              key={category.id} 
+              className="relative group rounded-lg overflow-hidden shadow-lg h-[350px] cursor-pointer"
+              onClick={() => handleReserveClick(category.id)}
+            >
               <div className="absolute inset-0">
                 <img 
                   src={category.image} 
@@ -105,7 +109,7 @@ const TravelerTypes = () => {
         
         <div className="flex justify-center mt-12">
           <Button 
-            onClick={handleReserveClick}
+            onClick={() => handleReserveClick("default")}
             className="bg-cyan-500 hover:bg-cyan-600 text-white px-8 py-2 rounded-full shadow-lg transition-all duration-300 flex items-center gap-2"
           >
             <span>Reservar</span>
