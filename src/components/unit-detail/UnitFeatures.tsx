@@ -1,6 +1,6 @@
 
 import { Check } from "lucide-react";
-import { WiFi, Utensils, MapPin, Thermometer, Mountains, ShowerHead } from "lucide-react";
+import { Wifi, UtensilsCrossed, MapPin, Thermometer, Mountain, Shower } from "lucide-react";
 
 interface Feature {
   icon: React.ReactNode;
@@ -14,12 +14,12 @@ interface UnitFeaturesProps {
 export const UnitFeatures = ({ features = [] }: UnitFeaturesProps) => {
   // Si no se proporcionan características, usamos unas predeterminadas
   const defaultFeatures: Feature[] = [
-    { icon: <WiFi size={18} />, text: "Conexión WiFi Starlink" },
-    { icon: <Utensils size={18} />, text: "Parrilla para asados" },
-    { icon: <Mountains size={18} />, text: "Vista a la montaña" },
+    { icon: <Wifi size={18} />, text: "Conexión WiFi Starlink" },
+    { icon: <UtensilsCrossed size={18} />, text: "Parrilla para asados" },
+    { icon: <Mountain size={18} />, text: "Vista a la montaña" },
     { icon: <Thermometer size={18} />, text: "Calefacción" },
     { icon: <MapPin size={18} />, text: "Cerca de senderos" },
-    { icon: <ShowerHead size={18} />, text: "Agua caliente" },
+    { icon: <Shower size={18} />, text: "Agua caliente" },
   ];
   
   const displayFeatures = features.length > 0 ? features : defaultFeatures;
