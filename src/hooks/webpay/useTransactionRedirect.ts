@@ -33,9 +33,19 @@ export const useTransactionRedirect = () => {
   const redirectToHome = () => {
     navigate('/');
   };
+  
+  const redirectToUnitAfterCancel = () => {
+    const unitId = localStorage.getItem('current_unit_id');
+    if (unitId) {
+      navigate(`/unit/${unitId}`);
+    } else {
+      navigate('/');
+    }
+  };
 
   return {
     redirectToDetailPage,
-    redirectToHome
+    redirectToHome,
+    redirectToUnitAfterCancel
   };
 };

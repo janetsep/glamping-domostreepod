@@ -5,7 +5,7 @@ import { useTransactionProcessor } from './useTransactionProcessor';
 
 export const useTransactionConfirmation = () => {
   const location = useLocation();
-  const { state, processTransaction } = useTransactionProcessor();
+  const { state, processTransaction, resetState } = useTransactionProcessor();
 
   useEffect(() => {
     const handleTransactionConfirmation = async () => {
@@ -15,6 +15,7 @@ export const useTransactionConfirmation = () => {
       
       if (!token) {
         console.error("No se encontró el token de la transacción");
+        resetState();
         return;
       }
       
@@ -28,6 +29,7 @@ export const useTransactionConfirmation = () => {
   return {
     isLoading: state.isLoading,
     transactionResult: state.transactionResult,
-    error: state.error
+    error: state.error,
+    resetState
   };
 };

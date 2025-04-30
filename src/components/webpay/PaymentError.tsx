@@ -1,18 +1,30 @@
 
 import React from 'react';
 import { Button } from '@/components/ui/button';
+import { useNavigate } from 'react-router-dom';
 
 interface PaymentErrorProps {
   errorMessage: string;
 }
 
 const PaymentError: React.FC<PaymentErrorProps> = ({ errorMessage }) => {
+  const navigate = useNavigate();
+  const isUserCancellation = errorMessage.includes('cancelada por el usuario');
+
   const handleRetry = () => {
     // Recargar la página para intentar de nuevo
     window.location.reload();
   };
-
-  const isUserCancellation = errorMessage.includes('cancelada por el usuario');
+  
+  const handleBackToUnit = () => {
+    // Return to the unit detail page, removing any query parameters
+    const unitId = localStorage.getItem('current_unit_id');
+    if (unitId) {
+      navigate(`/unit/${unitId}`);
+    } else {
+      navigate('/');
+    }
+  };
 
   return (
     <div className="text-center space-y-4">
@@ -23,16 +35,29 @@ const PaymentError: React.FC<PaymentErrorProps> = ({ errorMessage }) => {
       <div className="bg-red-50 border border-red-200 rounded-lg p-6 max-w-md mx-auto">
         <p className="text-red-700 mb-4">
           {isUserCancellation 
-            ? 'La transacción fue cancelada. Puedes intentar realizar el pago nuevamente.' 
+            ? 'La transacción fue cancelada. Puedes volver a la página del domo para intentar nuevamente.' 
             : 'Hubo un problema al procesar tu pago.'}
         </p>
-        <Button 
-          onClick={handleRetry}
-          variant="destructive"
-          className="w-full max-w-xs"
-        >
-          Intentar Nuevamente
-        </Button>
+        
+        <div className="flex flex-col sm:flex-row gap-3 justify-center">
+          <Button 
+            onClick={handleBackToUnit}
+            variant="default"
+            className="w-full max-w-xs"
+          >
+            Volver al domo
+          </Button>
+          
+          {!isUserCancellation && (
+            <Button 
+              onClick={handleRetry}
+              variant="outline"
+              className="w-full max-w-xs"
+            >
+              Reintentar
+            </Button>
+          )}
+        </div>
       </div>
 
       <p className="text-sm text-muted-foreground">

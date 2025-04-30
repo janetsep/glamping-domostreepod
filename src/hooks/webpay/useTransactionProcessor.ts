@@ -27,6 +27,8 @@ export const useTransactionProcessor = () => {
   const processTransaction = async (token: string) => {
     try {
       if (!token) {
+        // Clear loading state if there's no token, likely a direct page load
+        setState(prev => ({ ...prev, isLoading: false, error: 'No se encontró el token de la transacción' }));
         throw new Error('No se encontró el token de la transacción');
       }
 
@@ -57,11 +59,16 @@ export const useTransactionProcessor = () => {
       console.log('Retrieved client info:', clientInfo);
 
       try {
+        // Timeout to cancel the request if it takes too long
+        const timeoutPromise = new Promise((_, reject) => {
+          setTimeout(() => reject(new Error('La solicitud ha caducado')), 20000);
+        });
+
         // Get the SUPABASE_ANON_KEY from environment or constants
         const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY || '';
         
         // Call edge function to confirm payment
-        const response = await fetch('https://gtxjfmvnzrsuaxryffnt.supabase.co/functions/v1/webpay-confirm', {
+        const responsePromise = fetch('https://gtxjfmvnzrsuaxryffnt.supabase.co/functions/v1/webpay-confirm', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -74,6 +81,9 @@ export const useTransactionProcessor = () => {
             client_info: clientInfo
           })
         });
+        
+        // Race between the request and the timeout
+        const response = await Promise.race([responsePromise, timeoutPromise]) as Response;
 
         if (!response.ok) {
           const errorData = await response.json();
@@ -157,6 +167,8 @@ export const useTransactionProcessor = () => {
         userErrorMessage = 'La transacción fue cancelada';
       } else if (errorMessage.includes('422')) {
         userErrorMessage = 'La transacción no pudo ser completada';
+      } else if (errorMessage.includes('caducado')) {
+        userErrorMessage = 'La solicitud ha caducado';
       }
       
       setState(prev => ({ 
@@ -173,8 +185,19 @@ export const useTransactionProcessor = () => {
     }
   };
 
+  const resetState = () => {
+    setState({
+      isLoading: false,
+      transactionResult: null,
+      error: null,
+      reservationId: null,
+      isPackage: false
+    });
+  };
+
   return {
     state,
-    processTransaction
+    processTransaction,
+    resetState
   };
 };

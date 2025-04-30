@@ -1,5 +1,5 @@
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTransactionConfirmation } from '@/hooks/webpay/useTransactionConfirmation';
 import { useEmailSender } from '@/hooks/webpay/useEmailSender';
@@ -8,7 +8,7 @@ import ClientInfoSection from '@/components/webpay/ClientInfoSection';
 import ReservationConfirmed from '@/components/webpay/ReservationConfirmed';
 
 const WebPayReturn = () => {
-  const { isLoading, transactionResult, error } = useTransactionConfirmation();
+  const { isLoading, transactionResult, error, resetState } = useTransactionConfirmation();
   const { sendEmail, isEmailSending, emailSent } = useEmailSender();
   const navigate = useNavigate();
   
@@ -18,6 +18,20 @@ const WebPayReturn = () => {
     email: localStorage.getItem('client_email') || '',
     phone: localStorage.getItem('client_phone') || ''
   });
+  
+  // Auto-redirect on error or cancellation after a short delay
+  useEffect(() => {
+    if (error) {
+      const redirectTimer = setTimeout(() => {
+        const unitId = localStorage.getItem('current_unit_id');
+        if (unitId && error.toLowerCase().includes('cancel')) {
+          navigate(`/unit/${unitId}`);
+        }
+      }, 5000); // 5 second delay
+      
+      return () => clearTimeout(redirectTimer);
+    }
+  }, [error, navigate]);
   
   // Handle successful client info submission
   const handleClientInfoSubmitted = (updatedClientInfo: {
@@ -40,7 +54,7 @@ const WebPayReturn = () => {
   const handleBackToUnit = () => {
     const unitId = localStorage.getItem('current_unit_id');
     if (unitId && transactionResult?.reservation_id) {
-      navigate(`/units/${unitId}?payment=success&reservationId=${transactionResult.reservation_id}`);
+      navigate(`/unit/${unitId}?payment=success&reservationId=${transactionResult.reservation_id}`);
     } else {
       navigate('/');
     }
