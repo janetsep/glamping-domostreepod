@@ -1,3 +1,4 @@
+
 /**
  * Este archivo centraliza todo el contenido textual del sitio
  * para permitir su edición fácil a través de las herramientas visuales
@@ -237,7 +238,7 @@ export const unitDetailContent = {
   reservationTitle: "Reserva tu estadía",
   availabilityCalendarTitle: "Calendario de disponibilidad",
   calendarSelectDateText: "Selecciona una fecha para comenzar",
-  priceStartsAtText: "desde",
+  priceStartsAtText: "desde"
 };
 
 // Textos para la página de éxito de reserva
