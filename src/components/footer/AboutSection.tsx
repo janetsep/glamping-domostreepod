@@ -1,6 +1,6 @@
 
 import { MapPin } from "lucide-react";
-import { footerContent } from "@/data/siteContent";
+import { footerContent } from "@/data/content/footer";
 
 const AboutSection = () => {
   return (

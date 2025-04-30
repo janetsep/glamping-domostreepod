@@ -1,7 +1,7 @@
 
 import { Button } from "@/components/ui/button";
 import { ArrowLeft } from "lucide-react";
-import { footerContent } from "@/data/siteContent";
+import { footerContent } from "@/data/content/footer";
 
 const Copyright = () => {
   return <div className="border-t border-gray-200 pt-6">

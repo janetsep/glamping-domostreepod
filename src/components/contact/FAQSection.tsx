@@ -1,5 +1,5 @@
 
-import { contactPageContent } from "@/data/siteContent";
+import { contactPageContent } from "@/data/content/contactPage";
 
 interface FAQ {
   question: string;
