@@ -9,3 +9,5 @@ interface UnitContentProps {
 export const UnitContent = ({ unit }: UnitContentProps) => {
   return <UnitInfo unit={unit} />;
 };
+
+export default UnitContent;

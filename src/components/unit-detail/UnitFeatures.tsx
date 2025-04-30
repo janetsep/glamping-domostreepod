@@ -1,5 +1,5 @@
 
-import { Check } from "lucide-react";
+import { Bath, Wifi, Shield, Utensils } from "lucide-react";
 
 interface Feature {
   icon: React.ReactNode;
