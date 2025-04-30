@@ -18,7 +18,8 @@ export const useQuoteCalculation = (state: QuoteState) => {
     );
     
     // Ya no necesitamos multiplicar el precio base por el número de domos aquí
-    // porque ahora lo hacemos directamente en calculateQuote
+    // porque ahora lo hacemos directamente en calculateQuote con el cálculo preciso
+    // basado en la distribución de huéspedes
     quoteDetails.requiredDomos = requiredDomos;
     
     if (state.selectedActivities.length > 0 || state.selectedPackages.length > 0) {

@@ -1,3 +1,4 @@
+
 import React from "react";
 import { Button } from "@/components/ui/button";
 import { Activity, ThemedPackage } from "@/types";
@@ -9,11 +10,16 @@ interface ReservationSummaryProps {
     nights: number;
     pricePerNight: number;
     totalPrice: number;
-    breakdown: Array<{ description: string; amount: number }>;
+    breakdown: Array<{ 
+      description: string; 
+      amount: number;
+      guests?: number;
+      domoNumber?: number;
+    }>;
     rateDescription?: string;
     requiredDomos?: number;
     domoDistribution?: Array<{ number: number; guests: number }>;
-    pricePerDomo?: number;
+    season?: 'high' | 'medium' | 'low';
   };
   isAvailable: boolean;
   isLoading: boolean;
@@ -40,26 +46,46 @@ export const ReservationSummary: React.FC<ReservationSummaryProps> = ({
     return `$${amount.toLocaleString('es-CL')}`;
   };
 
-  // Calculate totals for extras
+  // Calcular totales de extras
   const activitiesTotal = selectedActivities.reduce((sum, activity) => sum + activity.price, 0);
   const packagesTotal = selectedPackages.reduce((sum, pkg) => sum + pkg.price, 0);
   const extrasTotal = activitiesTotal + packagesTotal;
 
-  // El precio base ahora es el precio de los domos sin extras
+  // Precio base es el precio de los domos sin extras
   const basePrice = quote.totalPrice;
-  // El precio total es el precio base más los extras
+  // Precio total es el precio base más los extras
   const finalTotal = basePrice + extrasTotal;
+  
+  // Función para mostrar el título de temporada
+  const getSeasonTitle = () => {
+    if (!quote.season) return null;
+    
+    const seasonNames = {
+      high: "Temporada alta (junio a agosto)",
+      medium: "Temporada media (marzo a mayo)",
+      low: "Temporada baja (septiembre a febrero)"
+    };
+    
+    return (
+      <div className="text-sm font-medium mb-2 text-amber-600">
+        {seasonNames[quote.season]}
+      </div>
+    );
+  };
 
   return (
     <div className="space-y-4">
       <h3 className="text-lg font-semibold mb-2">Resumen de tu estadía</h3>
       
-      {quote.breakdown.map((item, index) => (
-        <div key={index} className="flex justify-between items-center">
-          <span className="text-gray-700">{item.description}</span>
-          <span className="font-semibold">{formatCurrency(item.amount)}</span>
+      {getSeasonTitle()}
+      
+      {/* Mostrar solo la línea de resumen principal */}
+      {quote.breakdown && quote.breakdown.length > 0 && (
+        <div className="flex justify-between items-center font-medium">
+          <span className="text-gray-700">{quote.breakdown[0].description}</span>
+          <span className="font-semibold">{formatCurrency(quote.breakdown[0].amount)}</span>
         </div>
-      ))}
+      )}
       
       {quote.rateDescription && (
         <div className="text-sm text-cyan-600 mb-2">
@@ -69,22 +95,23 @@ export const ReservationSummary: React.FC<ReservationSummaryProps> = ({
       
       <hr className="my-2" />
       
-      {/* Mostrar distribución de domos si está disponible */}
-      {quote.domoDistribution && quote.domoDistribution.length > 0 && quote.pricePerDomo && (
+      {/* Mostrar distribución de domos detallada */}
+      {quote.domoDistribution && quote.domoDistribution.length > 0 && (
         <div className="mt-3 bg-secondary/10 p-3 rounded-md">
           <p className="font-medium mb-2">Distribución por domo:</p>
           <div className="grid grid-cols-1 gap-2">
-            {quote.domoDistribution.map(domo => (
-              <div key={domo.number} className="p-2 bg-secondary/30 rounded-md flex justify-between">
-                <span>Domo {domo.number}: {domo.guests} {domo.guests === 1 ? 'persona' : 'personas'}</span>
-                <span className="font-medium">{formatCurrency(quote.pricePerDomo)}</span>
+            {/* Mostrar todos los domos de la distribución */}
+            {quote.breakdown.filter(item => item.domoNumber && item.domoNumber > 0).map(item => (
+              <div key={item.domoNumber} className="p-2 bg-secondary/30 rounded-md flex justify-between">
+                <span>Domo {item.domoNumber}: {item.guests} {item.guests === 1 ? 'persona' : 'personas'}</span>
+                <span className="font-medium">{formatCurrency(item.amount)}</span>
               </div>
             ))}
           </div>
         </div>
       )}
       
-      {/* Show extras breakdown if selected */}
+      {/* Mostrar desglose de extras si están seleccionados */}
       {hasSelectedExtras && (
         <>
           {selectedActivities.length > 0 && (
