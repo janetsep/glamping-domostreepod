@@ -1,6 +1,6 @@
 
 import { Check } from "lucide-react";
-import { Wifi, UtensilsCrossed, MapPin, Thermometer, Mountain, Shower } from "lucide-react";
+import { Wifi, UtensilsCrossed, MapPin, Thermometer, Mountain, Bath } from "lucide-react";
 
 interface Feature {
   icon: React.ReactNode;
@@ -19,7 +19,7 @@ export const UnitFeatures = ({ features = [] }: UnitFeaturesProps) => {
     { icon: <Mountain size={18} />, text: "Vista a la montaña" },
     { icon: <Thermometer size={18} />, text: "Calefacción" },
     { icon: <MapPin size={18} />, text: "Cerca de senderos" },
-    { icon: <Shower size={18} />, text: "Agua caliente" },
+    { icon: <Bath size={18} />, text: "Agua caliente" },
   ];
   
   const displayFeatures = features.length > 0 ? features : defaultFeatures;
