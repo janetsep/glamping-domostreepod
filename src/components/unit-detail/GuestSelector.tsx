@@ -1,88 +1,88 @@
 
-import React, { useState, useEffect } from "react";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import { Label } from "@/components/ui/label";
-import { Alert, AlertDescription } from "@/components/ui/alert";
-import { AlertCircle } from "lucide-react";
+import React from "react";
+import { Minus, Plus, Users } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 interface GuestSelectorProps {
-  maxGuests: number;
   guests: number;
-  onGuestsChange: (guests: number) => void;
-  maxDomos?: number;
+  setGuests: React.Dispatch<React.SetStateAction<number>>;
+  maxGuests: number;
+  onChange?: (guests: number) => void;
 }
 
-export const GuestSelector = ({
+export const GuestSelector = ({ 
+  guests, 
+  setGuests, 
   maxGuests,
-  guests,
-  onGuestsChange,
-  maxDomos = 4,
+  onChange 
 }: GuestSelectorProps) => {
-  const [error, setError] = useState<string | null>(null);
-  const maxTotalGuests = maxDomos * maxGuests;
-
-  useEffect(() => {
-    const requiredDomos = Math.ceil(guests / maxGuests);
-    
-    if (guests > maxTotalGuests) {
-      setError(`El máximo de huéspedes permitido es ${maxTotalGuests}`);
-    } else {
-      setError(null);
+  const increaseGuests = () => {
+    if (guests < maxGuests) {
+      const newGuestCount = guests + 1;
+      setGuests(newGuestCount);
+      if (onChange) onChange(newGuestCount);
     }
-    
-    onGuestsChange(guests);
-  }, [guests, onGuestsChange, maxTotalGuests, maxGuests]);
-
-  const calculateRequiredDomos = () => {
-    return Math.ceil(guests / maxGuests);
   };
 
+  const decreaseGuests = () => {
+    if (guests > 1) {
+      const newGuestCount = guests - 1;
+      setGuests(newGuestCount);
+      if (onChange) onChange(newGuestCount);
+    }
+  };
+
+  // Calculate required domos based on the current guest count
+  // Assuming each domo can host up to 4 guests (or whatever the maxGuests value is)
+  const maxDomoGuests = 4; // Este es el valor por defecto si no tenemos acceso al valor real por domo
+  const requiredDomos = Math.ceil(guests / maxDomoGuests);
+
   return (
-    <div className="space-y-4">
-      <div className="space-y-2">
-        <Label htmlFor="guests">Número de huéspedes</Label>
-        <Select
-          value={guests.toString()}
-          onValueChange={(value) => {
-            const newGuests = parseInt(value);
-            if (newGuests <= maxTotalGuests) {
-              onGuestsChange(newGuests);
-            }
-          }}
-        >
-          <SelectTrigger id="guests">
-            <SelectValue placeholder="Selecciona el número de huéspedes" />
-          </SelectTrigger>
-          <SelectContent>
-            {Array.from({ length: maxTotalGuests + 1 }, (_, i) => i).map((num) => (
-              <SelectItem key={`guest-${num}`} value={num.toString()}>
-                {num} {num === 1 ? "huésped" : "huéspedes"}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
+    <div className="mb-4">
+      <label className="block text-sm font-medium text-gray-700 mb-1">
+        Huéspedes
+      </label>
+
+      <div className="flex items-center justify-between">
+        <div className="flex items-center">
+          <Users className="w-5 h-5 text-primary mr-2" />
+          <span>{guests} {guests === 1 ? 'huésped' : 'huéspedes'}</span>
+        </div>
+
+        <div className="flex items-center space-x-2">
+          <Button
+            variant="outline"
+            size="sm"
+            className="h-8 w-8 rounded-full p-0"
+            onClick={decreaseGuests}
+            disabled={guests <= 1}
+          >
+            <Minus className="h-3 w-3" />
+            <span className="sr-only">Menos huéspedes</span>
+          </Button>
+          <span className="w-6 text-center">{guests}</span>
+          <Button
+            variant="outline"
+            size="sm"
+            className="h-8 w-8 rounded-full p-0"
+            onClick={increaseGuests}
+            disabled={guests >= maxGuests}
+          >
+            <Plus className="h-3 w-3" />
+            <span className="sr-only">Más huéspedes</span>
+          </Button>
+        </div>
       </div>
-
-      {error && (
-        <Alert variant="destructive">
-          <AlertCircle className="h-4 w-4" />
-          <AlertDescription>{error}</AlertDescription>
-        </Alert>
-      )}
-
-      <div className="bg-primary/10 p-3 rounded-md">
-        <p className="text-sm font-medium">Domos necesarios: {calculateRequiredDomos()}</p>
+      
+      <div>
         <p className="text-sm text-muted-foreground mt-1">
-          Huéspedes totales: {guests} personas
+          Cada domo aloja máximo {maxDomoGuests} personas.
         </p>
-        <p className="text-sm text-muted-foreground mt-1">
-          Cada domo aloja máximo {maxGuests} personas.
+        <p className="text-sm text-muted-foreground">
+          {requiredDomos > 1 
+            ? `Para ${guests} huéspedes necesitarás ${requiredDomos} domos.` 
+            : `Para ${guests} huéspedes necesitarás 1 domo.`
+          }
         </p>
       </div>
     </div>
