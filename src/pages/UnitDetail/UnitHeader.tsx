@@ -10,11 +10,20 @@ interface UnitHeaderProps {
 }
 
 export const UnitHeader = ({ navigate }: UnitHeaderProps) => {
-  const { navigateToPage } = useNavigation();
+  const { navigateToHome } = useNavigation();
   
   const handleBackClick = () => {
-    // Navegar a la página principal con el hash para la sección de paquetes
-    navigateToPage("/#packages");
+    // Primero navegamos a la página principal
+    navigateToHome();
+    
+    // Después de un breve retraso para asegurar que la navegación se completó
+    // hacemos scroll hacia la sección de paquetes
+    setTimeout(() => {
+      const packagesSection = document.getElementById('packages');
+      if (packagesSection) {
+        packagesSection.scrollIntoView({ behavior: 'smooth' });
+      }
+    }, 300); // Pequeño retraso para asegurar que la navegación se completó
   };
   
   return (
