@@ -126,7 +126,8 @@ export const reservationContent = {
   summaryTitle: "Resumen de tu estadía",
   totalLabel: "Total",
   policyLabel: "Política de reserva",
-  policyText: "Pago total por adelantado para confirmar tu reserva. Check-in desde las 15:00, check-out hasta las 12:00."
+  policyText: "Pago total por adelantado para confirmar tu reserva. Check-in desde las 15:00, check-out hasta las 12:00.",
+  domosDistribution: "Distribución de domos" // Agregado para la distribución de domos
 };
 
 // Textos para la sección de políticas
@@ -183,7 +184,8 @@ export const unitDetailContent = {
   reservationTitle: "Reserva tu estadía",
   availabilityCalendarTitle: "Calendario de disponibilidad",
   calendarSelectDateText: "Selecciona una fecha para comenzar",
-  priceStartsAtText: "desde"
+  priceStartsAtText: "desde",
+  domoDistribution: "Distribución de domos" // Agregado para mostrar la distribución de domos
 };
 
 // Textos para la página de éxito de reserva

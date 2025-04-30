@@ -31,13 +31,41 @@ export const QuoteSummary = ({
   guests,
   requiredDomos
 }: QuoteSummaryProps) => {
+  // Distribuir huéspedes entre domos
+  const generateDomoDistribution = () => {
+    // Si solo hay un domo, todos los huéspedes van ahí
+    if (requiredDomos === 1) {
+      return [{ number: 1, guests: guests }];
+    }
+
+    // Si hay múltiples domos, distribuimos los huéspedes
+    const distribution = [];
+    let remainingGuests = guests;
+    const maxGuestsPerDomo = 4;
+
+    for (let i = 1; i <= requiredDomos; i++) {
+      const domoGuests = Math.min(remainingGuests, maxGuestsPerDomo);
+      distribution.push({ number: i, guests: domoGuests });
+      remainingGuests -= domoGuests;
+      
+      if (remainingGuests <= 0) break;
+    }
+
+    return distribution;
+  };
+
+  const domoDistribution = generateDomoDistribution();
+  const pricePerDomo = quote ? Math.round(quote.basePrice / requiredDomos) : 0;
+
   return (
     <>
       <ReservationSummary
         quote={{
           ...quote,
           totalPrice: getUpdatedQuoteTotal(),
-          requiredDomos: requiredDomos
+          requiredDomos: requiredDomos,
+          domoDistribution: domoDistribution,
+          pricePerDomo: pricePerDomo
         }}
         isAvailable={isAvailable}
         isLoading={isProcessingPayment}
