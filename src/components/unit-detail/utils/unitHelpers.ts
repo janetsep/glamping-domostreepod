@@ -1,21 +1,42 @@
-
 import { Clock, Droplets, Check, Users, Smile } from "lucide-react";
 import type { Feature, Policy } from "@/types";
 import React from "react";
 
 // Images for each domo type
-export const getDomoImages = (unitName: string) => {
-  const baseImages = [
-    "/lovable-uploads/c951eccc-c6f1-4744-8bc8-fca101105107.png", // Domo exterior de día
-    "/lovable-uploads/ad46dae8-5b0a-4e4a-bf84-e0752b40f588.png", // Domo iluminado de noche
-    "/lovable-uploads/e097d405-d6e7-4410-af4a-b2cb8d55c03b.png", // Dos domos en la noche
-    "/lovable-uploads/41791139-e499-40bf-89c0-cb5a2947b4eb.png", // Entrada del recinto con auto
-    "/lovable-uploads/5bf3bb3b-da31-4f12-a031-1d7274b2b1cc.png", // Vista del cielo nocturno
-    "/lovable-uploads/365c130e-5ba5-49fa-84ed-dfb1c95cd08d.png", // Vista del camino con domos iluminados
+export const getDomoImages = (domoName: string) => {
+  // Devuelve un conjunto de imágenes predeterminadas para los domos
+  return [
+    {
+      id: 'main',
+      url: '/lovable-uploads/619d8dbf-d18c-4d22-9c72-9b823a2a52d1.png',
+      alt: 'Vista exterior del domo'
+    },
+    {
+      id: 'breakfast',
+      url: '/lovable-uploads/4bb0b8cf-adee-40c4-ac00-a3676ff6cdcc.png',
+      alt: 'Desayuno en el domo'
+    },
+    {
+      id: 'night',
+      url: '/lovable-uploads/1f579fd8-1af0-4397-9254-2cd8cbb54410.png',
+      alt: 'Vista nocturna del domo'
+    },
+    {
+      id: 'outside',
+      url: '/lovable-uploads/7f7e32a2-1e84-49ce-9d9c-fd06aece4b05.png',
+      alt: 'Entorno exterior del domo'
+    },
+    {
+      id: 'forest',
+      url: '/lovable-uploads/ba985569-8f29-4da1-af9c-2aba9a5a886b.png',
+      alt: 'Vista del bosque'
+    },
+    {
+      id: 'sunset',
+      url: '/lovable-uploads/9f5ec7ea-f65b-46be-94ba-8df609f0a24f.png',
+      alt: 'Puesta de sol en TreePod'
+    }
   ];
-  
-  // In the future, we can add specific images for different domo types
-  return baseImages;
 };
 
 // Experience images for all domos
@@ -32,15 +53,16 @@ export const getExperienceImages = () => {
 
 // Get unit-specific details based on name
 export const getUnitDetail = (unitName: string) => {
-  // Default values
-  const defaultDetail = {
+  // Información detallada sobre la unidad
+  return {
     size: "45m²",
     description: "Disfruta de una experiencia única en medio del bosque nativo de Valle Las Trancas, con todas las comodidades de un alojamiento sostenible y la tranquilidad de la naturaleza en la cordillera de los Andes.",
-    experience: "Sumérgete en la belleza natural del bosque nativo. Despierta con el canto de las aves, disfruta de senderos exclusivos, relájate en nuestras tinajas de agua mineralizada proveniente de las termas de Chillán bajo las estrellas y experimenta la desconexión total en un entorno de lujo sostenible."
+    experience: [
+      "Despierta con el canto de las aves y disfruta de un desayuno con productos frescos del invernadero.",
+      "Relájate en la tinaja de agua mineral mientras contemplas el bosque nativo.",
+      "Por la noche, observa las estrellas desde la comodidad de tu domo, con un ambiente cálido y acogedor."
+    ]
   };
-  
-  // In the future we can add specific details for different domo types
-  return defaultDetail;
 };
 
 // Get features for each domo

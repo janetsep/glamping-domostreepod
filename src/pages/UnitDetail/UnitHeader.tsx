@@ -1,18 +1,21 @@
 
 import { ArrowLeft } from "lucide-react";
-import { NavigateFunction } from "react-router-dom";
-import { Button } from "@/components/ui/button";
-import { unitDetailContent } from "@/data/siteContent";
+import { unitDetailContent } from "@/data/content/unitDetail";
 
 interface UnitHeaderProps {
-  navigate: NavigateFunction;
+  navigate: (path: string) => void;
 }
 
 export const UnitHeader = ({ navigate }: UnitHeaderProps) => {
   return (
-    <Button variant="ghost" className="mb-6" onClick={() => navigate("/")}>
-      <ArrowLeft className="mr-2" />
-      {unitDetailContent.backButton}
-    </Button>
+    <div className="flex flex-wrap items-center mb-6">
+      <button 
+        onClick={() => navigate('/')} 
+        className="flex items-center gap-2 text-primary hover:text-primary/70 transition-colors mb-2 md:mb-0"
+      >
+        <ArrowLeft size={18} />
+        <span>{unitDetailContent.backButton}</span>
+      </button>
+    </div>
   );
 };
