@@ -12,8 +12,6 @@ type ReservationState = {
   endDate?: Date;
   displayUnit: any;
   guests: number;
-  adults?: number;
-  children?: number;
   requiredDomos?: number;
   isAvailable: boolean | null;
   setIsAvailable: (isAvailable: boolean) => void;
@@ -53,11 +51,7 @@ export const useReservationActions = (state: ReservationState) => {
       return;
     }
     
-    // Validar que si hay 16 huéspedes, al menos 4 sean adultos
-    if (state.guests === 16 && (state.adults || 0) < 4) {
-      toast.error("Para 16 huéspedes, se requieren al menos 4 adultos (uno por domo).");
-      return;
-    }
+    // Eliminamos la validación de "si hay 16 huéspedes, se requieren al menos 4 adultos"
 
     await checkAvailabilityAndQuote();
   };

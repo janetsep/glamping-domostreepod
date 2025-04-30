@@ -1,4 +1,3 @@
-
 /**
  * Este archivo centraliza todo el contenido textual del sitio
  * para permitir su edición fácil a través de las herramientas visuales
@@ -112,20 +111,76 @@ export const experiencesContent = {
 
 // Textos para la sección de reservas
 export const reservationContent = {
-  title: "Reserva tu experiencia",
-  selectDatesLabel: "Selecciona las fechas",
-  guestsLabel: "Huéspedes",
-  activitiesLabel: "Actividades disponibles",
-  packagesLabel: "Paquetes temáticos",
-  checkAvailabilityButton: "Verificar disponibilidad",
-  quoteButton: "Cotizar estadía",
-  confirmButton: "Confirmar reserva",
-  newQuoteButton: "Nueva cotización",
-  modifyQuoteButton: "Modificar reserva",
-  summaryTitle: "Resumen de tu estadía",
-  totalLabel: "Total",
-  policyLabel: "Política de reserva",
-  policyText: "Pago total por adelantado para confirmar tu reserva. Check-in desde las 15:00, check-out hasta las 12:00."
+  title: "Reserva tu experiencia TreePod",
+  subTitle: "Vive la magia de desconectar en un entorno único",
+  additionalInfo: "Todas nuestras reservas incluyen: Desayuno con productos locales, acceso a zonas comunes, estacionamiento gratuito y WiFi.",
+  dates: {
+    title: "Selecciona tus fechas",
+    startDate: "Fecha de llegada",
+    endDate: "Fecha de salida",
+    unavailable: "Lo sentimos, no hay disponibilidad para las fechas seleccionadas.",
+    checkAvailability: "Verificar disponibilidad",
+    available: "¡Tenemos disponibilidad para estas fechas!",
+    reserve: "Reservar ahora",
+    book: "Reservar",
+    notAvailable: "No disponible",
+    nights: "noche(s)"
+  },
+  guests: {
+    title: "Número de huéspedes",
+    maxPerDomo: "Cada domo tiene capacidad para un máximo de 4 personas",
+    guestLabel: "huésped(es)",
+    guestsPerDomo: "huésped(es) por domo",
+    maxCapacity: "Capacidad máxima por domo",
+    requiredDomos: "Domos necesarios",
+    guests: "huéspedes",
+    total: "Total de huéspedes"
+  },
+  summary: {
+    title: "Resumen de tu reserva",
+    nights: "noche(s)",
+    perNight: "por noche",
+    total: "Total",
+    modifyReservation: "Modificar reserva",
+    confirmReservation: "Confirmar reserva",
+    domoDistribution: "Distribución por domo",
+    people: "personas",
+    person: "persona"
+  },
+  extras: {
+    title: "Extras",
+    activities: "Actividades",
+    packages: "Paquetes temáticos",
+    selected: "Seleccionado",
+    select: "Seleccionar",
+    included: "incluido",
+    totalActivities: "Total actividades",
+    totalPackages: "Total paquetes",
+    totalExtras: "Total extras incluidos"
+  },
+  policies: {
+    title: "Políticas de reserva",
+    text: "Pago total por adelantado para confirmar tu reserva. Check-in desde las 15:00, check-out hasta las 12:00."
+  },
+  dateSelector: {
+    startDate: "Fecha de llegada",
+    endDate: "Fecha de salida",
+    placeholder: "Seleccionar",
+    disabled: "No disponible"
+  },
+  availability: {
+    checkButton: "Verificar disponibilidad",
+    quoteButton: "Cotizar estadía",
+    partialTitle: "Disponibilidad limitada",
+    partialMessage: "Solo tenemos {available} domos disponibles para las fechas seleccionadas, pero tu reserva requiere {required} domos.",
+    domoInfo: "Información de domos",
+    domoNeeded: "Se necesitarán {required} domos para tu reserva."
+  },
+  alternativeDates: {
+    title: "Fechas alternativas disponibles",
+    subtitle: "Tenemos disponibilidad en estas fechas cercanas",
+    select: "Seleccionar"
+  }
 };
 
 // Textos para la sección de políticas
