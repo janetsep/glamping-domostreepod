@@ -13,7 +13,7 @@ export const contactPageContent = {
   whatsappText: "Respuesta rápida de lunes a domingo",
   phoneLabel: "Teléfono",
   phoneText: "Atención de 9:00 a 18:00 hrs",
-  emailLabel: "Correo electrónico",
+  emailContent: "Correo electrónico", // Cambiado de emailLabel a emailContent para evitar duplicación
   emailText: "Te respondemos en máximo 24 horas",
   scheduleTitle: "Horario de atención",
   scheduleText: "Nuestro equipo está disponible para atenderte de lunes a domingo. Para consultas urgentes, te recomendamos contactarnos vía WhatsApp.",

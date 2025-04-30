@@ -8,19 +8,23 @@ interface GuestSelectorProps {
   setGuests: React.Dispatch<React.SetStateAction<number>>;
   maxGuests: number;
   onChange?: (guests: number) => void;
+  onGuestsChange?: (guests: number) => void; // Agregado para compatibilidad
+  maxDomos?: number; // Agregado para compatibilidad
 }
 
 export const GuestSelector = ({ 
   guests, 
   setGuests, 
   maxGuests,
-  onChange 
+  onChange,
+  onGuestsChange // Nuevo parámetro
 }: GuestSelectorProps) => {
   const increaseGuests = () => {
     if (guests < maxGuests) {
       const newGuestCount = guests + 1;
       setGuests(newGuestCount);
       if (onChange) onChange(newGuestCount);
+      if (onGuestsChange) onGuestsChange(newGuestCount);
     }
   };
 
@@ -29,6 +33,7 @@ export const GuestSelector = ({
       const newGuestCount = guests - 1;
       setGuests(newGuestCount);
       if (onChange) onChange(newGuestCount);
+      if (onGuestsChange) onGuestsChange(newGuestCount);
     }
   };
 
