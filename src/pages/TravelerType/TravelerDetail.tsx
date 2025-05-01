@@ -42,7 +42,6 @@ const TravelerDetail = () => {
 
   return (
     <div className="pt-24 min-h-screen">
-      {/* Agrega el título de la página como título del documento */}
       <Helmet>
         <title>TreePod - {travelerType.title}</title>
       </Helmet>

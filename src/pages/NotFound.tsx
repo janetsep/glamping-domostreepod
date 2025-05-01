@@ -4,7 +4,7 @@ import { useEffect } from "react";
 import { Home, ArrowLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
-import { notFoundContent } from "@/data/siteContent";
+import { notFoundContent } from "@/data/content/notFound";
 
 const NotFound = () => {
   const location = useLocation();
