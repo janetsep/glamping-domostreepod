@@ -7,6 +7,7 @@ import { getCelebrationById, celebrationsContent } from "@/data/content/celebrat
 import { CalendarCheck, ArrowLeft, PartyPopper } from "lucide-react";
 import { Section } from "@/components/ui/Section";
 import { LazyLoadImage } from "react-lazy-load-image-component";
+import 'react-lazy-load-image-component/src/effects/blur.css';
 import { Skeleton } from "@/components/ui/skeleton";
 
 const CelebrationDetail = () => {
