@@ -22,7 +22,7 @@ export default defineConfig(({ mode }) => ({
   },
   build: {
     rollupOptions: {
-      // Asegurarse de que react-lazy-load-image-component se pueda resolver correctamente
+      // Asegurar que los módulos externos se resuelvan correctamente
       external: []
     }
   },
