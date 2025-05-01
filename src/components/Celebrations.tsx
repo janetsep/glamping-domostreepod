@@ -4,6 +4,8 @@ import { Section } from "@/components/ui/Section";
 import { celebrationsContent } from "@/data/content/celebrations";
 import { Info } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { LazyLoadImage } from "react-lazy-load-image-component";
+import { Skeleton } from "@/components/ui/skeleton";
 
 const Celebrations = () => {
   const navigate = useNavigate();
@@ -31,10 +33,14 @@ const Celebrations = () => {
               className="relative h-64 cursor-pointer"
               onClick={() => handleNavigate(celebration.id)}
             >
-              <img 
-                src={celebration.image} 
-                alt={celebration.name} 
+              <LazyLoadImage
+                src={celebration.image}
+                alt={celebration.name}
+                effect="opacity"
+                threshold={200}
                 className="w-full h-full object-cover transition-transform duration-500 ease-in-out transform hover:scale-105"
+                placeholder={<Skeleton className="w-full h-full" />}
+                wrapperClassName="w-full h-full"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent flex items-end">
                 <h3 className="text-white font-semibold text-xl p-4">

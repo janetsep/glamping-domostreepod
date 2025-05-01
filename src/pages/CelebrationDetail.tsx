@@ -6,6 +6,8 @@ import { Helmet } from "react-helmet-async";
 import { getCelebrationById, celebrationsContent } from "@/data/content/celebrations";
 import { CalendarCheck, ArrowLeft, PartyPopper } from "lucide-react";
 import { Section } from "@/components/ui/Section";
+import { LazyLoadImage } from "react-lazy-load-image-component";
+import { Skeleton } from "@/components/ui/skeleton";
 
 const CelebrationDetail = () => {
   const { celebrationId } = useParams();
@@ -39,12 +41,16 @@ const CelebrationDetail = () => {
       </Helmet>
       
       <div className="pt-24 bg-white min-h-screen">
-        {/* Hero Section */}
+        {/* Hero Section - Optimizado para carga */}
         <div className="relative h-96 mb-8">
-          <img 
-            src={celebration.image} 
-            alt={celebration.name} 
+          <LazyLoadImage
+            src={celebration.image}
+            alt={celebration.name}
+            effect="blur"
+            threshold={300}
             className="w-full h-full object-cover"
+            placeholder={<Skeleton className="w-full h-full" />}
+            wrapperClassName="w-full h-full"
           />
           <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent flex items-end">
             <div className="container mx-auto px-4 pb-8">
