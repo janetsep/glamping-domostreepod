@@ -48,11 +48,11 @@ const Index = () => {
       <div className="my-4 md:my-8">
         <Location />
       </div>
-      <div id="celebrations" className="my-4 md:my-8 bg-gray-50 py-8">
-        <Celebrations />
-      </div>
       <div id="packages" className="my-4 md:my-8">
         <Packages units={units} isLoading={isLoading} />
+      </div>
+      <div id="celebrations" className="my-4 md:my-8 bg-gray-50 py-8">
+        <Celebrations />
       </div>
       <div className="my-4 md:my-8">
         <Gallery />

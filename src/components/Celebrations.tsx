@@ -2,7 +2,7 @@
 import { Button } from "@/components/ui/button";
 import { Section } from "@/components/ui/Section";
 import { celebrationsContent } from "@/data/content/celebrations";
-import { Party } from "lucide-react";
+import { PartyPopper } from "lucide-react";
 
 const Celebrations = () => {
   return (
@@ -42,7 +42,7 @@ const Celebrations = () => {
                   className="border-primary text-primary hover:bg-primary/10"
                   onClick={() => window.location.href = "#contact"}
                 >
-                  <Party className="mr-2 h-4 w-4" />
+                  <PartyPopper className="mr-2 h-4 w-4" />
                   Consultar disponibilidad
                 </Button>
               </div>
