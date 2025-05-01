@@ -37,7 +37,7 @@ const BookOpenIcon = () => <BookOpen className="w-12 h-12 text-accent" />;
 export const experiencesData: ExperiencesData = {
   recorridos: {
     title: "Recorridos y Paisajes",
-    description: "Explora los impresionantes paisajes del Valle Las Trancas con nuestras actividades al aire libre guiadas y autoguiadas.",
+    description: "Explora los impresionantes paisajes del Valle Las Trancas, actividades al aire libre autoguiadas.",
     items: [
     {
       icon: <BikeIcon />,
