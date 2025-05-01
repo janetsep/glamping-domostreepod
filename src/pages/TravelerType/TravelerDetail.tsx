@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Section } from "@/components/ui/Section";
 import { getTravelerTypeById } from "@/data/content/travelerTypes";
 import { useNavigation } from "@/components/navigation/useNavigation";
+import { Helmet } from "react-helmet-async";
 
 // Componente de página de detalle para tipo de viajero específico
 const TravelerDetail = () => {
@@ -41,6 +42,11 @@ const TravelerDetail = () => {
 
   return (
     <div className="pt-24 min-h-screen">
+      {/* Agrega el título de la página como título del documento */}
+      <Helmet>
+        <title>TreePod - {travelerType.title}</title>
+      </Helmet>
+      
       {/* Sección Hero con imagen principal */}
       <div className="relative h-[50vh] md:h-[60vh] overflow-hidden">
         <img 

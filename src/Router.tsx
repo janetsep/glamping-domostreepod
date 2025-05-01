@@ -13,6 +13,7 @@ import UnitDetail from "./pages/UnitDetail";
 import TravelerType from "./pages/TravelerType";
 import { useEffect } from "react";
 import WebPayReturn from "./pages/WebPayReturn";
+import { HelmetProvider } from "react-helmet-async";
 
 // Create the router with all our routes
 const router = createBrowserRouter(
@@ -57,7 +58,11 @@ function Router() {
     };
   }, []);
 
-  return <RouterProvider router={router} />;
+  return (
+    <HelmetProvider>
+      <RouterProvider router={router} />
+    </HelmetProvider>
+  );
 }
 
 export { router };
