@@ -20,3 +20,5 @@ export * from './reservationSuccess';
 export * from './aboutUs';
 export * from './contactPage';
 export * from './notFound';
+export * from './travelerTypes';
+
