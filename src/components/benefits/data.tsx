@@ -143,7 +143,7 @@ export const experiencesData: ExperiencesData = {
     }, {
       icon: <UtensilsIcon />,
       title: "Sabores del Invernadero de Montaña",
-      description: "Disfruta de una experiencia gastronómica auténticamente local, con ingredientes frescos cultivados en nuestro propio invernadero.",
+      description: "Disfruta de una experiencia gastronómica auténticamente local, con ingredientes frescos cultivados en nuestro invernadero.",
       details: "Reserva tu menú especial y saborea la frescura auténtica en Valle Las Trancas en cada bocado. Cada plato rescata lo mejor de la tierra cordillerana, creando una experiencia culinaria saludable, sostenible y conectada profundamente con la naturaleza."
     }
     ],
