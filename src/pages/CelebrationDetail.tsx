@@ -1,5 +1,5 @@
 
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams, useNavigate, useEffect } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Helmet } from "react-helmet-async";
 import { getCelebrationById, celebrationsContent } from "@/data/content/celebrations";
@@ -10,6 +10,12 @@ const CelebrationDetail = () => {
   const { celebrationId } = useParams();
   const navigate = useNavigate();
   const celebration = getCelebrationById(celebrationId || "");
+
+  // Añadimos efecto para desplazarse al inicio cuando la página carga
+  useEffect(() => {
+    // Desplazamiento al inicio de la página
+    window.scrollTo(0, 0);
+  }, [celebrationId]);
 
   if (!celebration) {
     return (

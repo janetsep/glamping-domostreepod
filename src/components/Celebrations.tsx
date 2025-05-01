@@ -8,6 +8,12 @@ import { useNavigate } from "react-router-dom";
 const Celebrations = () => {
   const navigate = useNavigate();
 
+  const handleNavigate = (id: string) => {
+    // Navegamos a la página de detalle de celebración
+    navigate(`/celebracion/${id}`);
+    // No es necesario hacer scroll aquí ya que el useEffect en CelebrationDetail se encargará de eso
+  };
+
   return (
     <Section
       id="celebrations"
@@ -23,7 +29,7 @@ const Celebrations = () => {
           >
             <div 
               className="relative h-64 cursor-pointer"
-              onClick={() => navigate(`/celebracion/${celebration.id}`)}
+              onClick={() => handleNavigate(celebration.id)}
             >
               <img 
                 src={celebration.image} 
@@ -46,7 +52,7 @@ const Celebrations = () => {
                 <Button 
                   variant="outline"
                   className="border-primary text-primary hover:bg-primary/10"
-                  onClick={() => navigate(`/celebracion/${celebration.id}`)}
+                  onClick={() => handleNavigate(celebration.id)}
                 >
                   <Info className="mr-2 h-4 w-4" />
                   Ver detalles
@@ -54,7 +60,7 @@ const Celebrations = () => {
                 
                 <Button 
                   className="bg-cyan-600 hover:bg-cyan-700 text-white"
-                  onClick={() => navigate(`/celebracion/${celebration.id}`)}
+                  onClick={() => handleNavigate(celebration.id)}
                 >
                   <PartyPopper className="mr-2 h-4 w-4" />
                   Reservar
