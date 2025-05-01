@@ -2,7 +2,7 @@
 import { Button } from "@/components/ui/button";
 import { Section } from "@/components/ui/Section";
 import { celebrationsContent } from "@/data/content/celebrations";
-import { PartyPopper, Info } from "lucide-react";
+import { Info } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
 const Celebrations = () => {
@@ -48,7 +48,7 @@ const Celebrations = () => {
                 {celebration.description}
               </p>
               
-              <div className="flex justify-between">
+              <div className="flex justify-center">
                 <Button 
                   variant="outline"
                   className="border-primary text-primary hover:bg-primary/10"
@@ -56,14 +56,6 @@ const Celebrations = () => {
                 >
                   <Info className="mr-2 h-4 w-4" />
                   Ver detalles
-                </Button>
-                
-                <Button 
-                  className="bg-cyan-600 hover:bg-cyan-700 text-white"
-                  onClick={() => handleNavigate(celebration.id)}
-                >
-                  <PartyPopper className="mr-2 h-4 w-4" />
-                  Reservar
                 </Button>
               </div>
             </div>
