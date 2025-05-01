@@ -1,7 +1,6 @@
 
 import { createRoot } from 'react-dom/client'
-import { RouterProvider } from 'react-router-dom'
-import Router, { router } from './Router'
+import Router from './Router'
 import './index.css'
 import { QueryClientProvider } from '@tanstack/react-query'
 import { queryClient } from '@/lib/react-query'
@@ -10,7 +9,7 @@ import { Toaster as SonnerToaster } from '@/components/ui/sonner'
 
 createRoot(document.getElementById("root")!).render(
   <QueryClientProvider client={queryClient}>
-    <RouterProvider router={router} />
+    <Router />
     <Toaster />
     <SonnerToaster />
   </QueryClientProvider>
