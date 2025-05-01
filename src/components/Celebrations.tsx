@@ -2,9 +2,12 @@
 import { Button } from "@/components/ui/button";
 import { Section } from "@/components/ui/Section";
 import { celebrationsContent } from "@/data/content/celebrations";
-import { PartyPopper } from "lucide-react";
+import { PartyPopper, Info } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 const Celebrations = () => {
+  const navigate = useNavigate();
+
   return (
     <Section
       id="celebrations"
@@ -18,11 +21,14 @@ const Celebrations = () => {
             key={celebration.id} 
             className="bg-white rounded-lg overflow-hidden shadow-md hover:shadow-lg transition-shadow duration-300"
           >
-            <div className="relative h-64">
+            <div 
+              className="relative h-64 cursor-pointer"
+              onClick={() => navigate(`/celebracion/${celebration.id}`)}
+            >
               <img 
                 src={celebration.image} 
                 alt={celebration.name} 
-                className="w-full h-full object-cover"
+                className="w-full h-full object-cover transition-transform duration-500 ease-in-out transform hover:scale-105"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent flex items-end">
                 <h3 className="text-white font-semibold text-xl p-4">
@@ -32,18 +38,26 @@ const Celebrations = () => {
             </div>
             
             <div className="p-4 space-y-4">
-              <p className="text-gray-700">
+              <p className="text-gray-700 line-clamp-3">
                 {celebration.description}
               </p>
               
-              <div className="flex justify-end">
+              <div className="flex justify-between">
                 <Button 
                   variant="outline"
                   className="border-primary text-primary hover:bg-primary/10"
-                  onClick={() => window.location.href = "#contact"}
+                  onClick={() => navigate(`/celebracion/${celebration.id}`)}
+                >
+                  <Info className="mr-2 h-4 w-4" />
+                  Ver detalles
+                </Button>
+                
+                <Button 
+                  className="bg-cyan-600 hover:bg-cyan-700 text-white"
+                  onClick={() => navigate(`/celebracion/${celebration.id}`)}
                 >
                   <PartyPopper className="mr-2 h-4 w-4" />
-                  Consultar disponibilidad
+                  Reservar
                 </Button>
               </div>
             </div>

@@ -11,6 +11,7 @@ import NotFound from "./pages/NotFound";
 import Index from "./pages/Index";
 import UnitDetail from "./pages/UnitDetail";
 import TravelerType from "./pages/TravelerType";
+import CelebrationDetail from "./pages/CelebrationDetail";
 import { useEffect } from "react";
 import WebPayReturn from "./pages/WebPayReturn";
 import { HelmetProvider } from "react-helmet-async";
@@ -23,6 +24,7 @@ const router = createBrowserRouter(
       <Route path="sobre-nosotros" element={<AboutUs />} />
       <Route path="unit/:unitId" element={<UnitDetail />} />
       <Route path="tipo-viajero/:typeId" element={<TravelerType />} />
+      <Route path="celebracion/:celebrationId" element={<CelebrationDetail />} />
       <Route path="webpay/return" element={<WebPayReturn />} />
     </Route>
   )
