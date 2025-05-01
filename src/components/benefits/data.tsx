@@ -142,7 +142,7 @@ export const experiencesData: ExperiencesData = {
       details: "Una experiencia ideal para fortalecer lazos y crear recuerdos en medio de la naturaleza. Rodeado de bosques milenarios y bajo el cielo estrellado del Valle Las Trancas, prepara un asado memorable en familia o con amigos, conectando a través de los sabores y aromas de la gastronomía tradicional chilena."
     }, {
       icon: <UtensilsIcon />,
-      title: "Sabores del Invernadero Andino",
+      title: "Sabores del Invernadero de Montaña",
       description: "Disfruta de una experiencia gastronómica auténticamente local, con ingredientes frescos cultivados en nuestro propio invernadero.",
       details: "Reserva tu menú especial y saborea la frescura auténtica en Valle Las Trancas en cada bocado. Cada plato rescata lo mejor de la tierra cordillerana, creando una experiencia culinaria saludable, sostenible y conectada profundamente con la naturaleza."
     }
