@@ -6,7 +6,7 @@ import Testimonials from "@/components/Testimonials";
 import Location from "@/components/Location";
 import Packages from "@/components/Packages";
 import Gallery from "@/components/Gallery";
-import TravelerTypes from "@/components/TravelerTypes";
+import Celebrations from "@/components/Celebrations";
 import SimplifiedContact from "@/components/SimplifiedContact";
 import { useQuery } from "@tanstack/react-query";
 import { useEffect } from "react";
@@ -48,8 +48,8 @@ const Index = () => {
       <div className="my-4 md:my-8">
         <Location />
       </div>
-      <div id="traveler-types" className="my-4 md:my-8 bg-gray-50 py-8">
-        <TravelerTypes />
+      <div id="celebrations" className="my-4 md:my-8 bg-gray-50 py-8">
+        <Celebrations />
       </div>
       <div id="packages" className="my-4 md:my-8">
         <Packages units={units} isLoading={isLoading} />

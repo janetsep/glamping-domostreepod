@@ -13,7 +13,8 @@ import {
   Book,
   ImageIcon,
   TreePine,
-  Gamepad
+  Gamepad,
+  PartyPopper
 } from "lucide-react";
 
 export interface NavLink {
@@ -36,7 +37,7 @@ export interface SubMenuItem {
 // Navigation links with icons
 export const navigationLinks: NavLink[] = [
   { name: "Inicio", path: "/", icon: Home, id: null },
-  { name: "Domos", id: "packages", icon: House, path: null, description: "Nuestras opciones de alojamiento" },
+  { name: "Domos", id: "packages", icon: House, path: null, description: "Nuestros opciones para cada tipo de viajero" },
   { 
     name: "Experiencias", 
     id: "benefits", 
@@ -50,6 +51,7 @@ export const navigationLinks: NavLink[] = [
       { name: "Juegos de Mesa", id: "benefits", path: null, icon: Gamepad, tabId: "juegos" }
     ]
   },
+  { name: "Celebraciones", id: "celebrations", icon: PartyPopper, path: null, description: "Eventos especiales" },
   { name: "Galería", id: "gallery", icon: ImageIcon, path: null },
   { name: "Cómo llegar", id: "location", icon: Navigation, path: null, description: "Sur de Chile" },
   { name: "Contacto", id: "contact", icon: Mail, path: null }

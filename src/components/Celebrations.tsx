@@ -1,0 +1,57 @@
+
+import { Button } from "@/components/ui/button";
+import { Section } from "@/components/ui/Section";
+import { celebrationsContent } from "@/data/content/celebrations";
+import { Party } from "lucide-react";
+
+const Celebrations = () => {
+  return (
+    <Section
+      id="celebrations"
+      title={celebrationsContent.title}
+      subtitle={celebrationsContent.subtitle}
+      centered
+    >
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {celebrationsContent.celebrations.map((celebration) => (
+          <div 
+            key={celebration.id} 
+            className="bg-white rounded-lg overflow-hidden shadow-md hover:shadow-lg transition-shadow duration-300"
+          >
+            <div className="relative h-64">
+              <img 
+                src={celebration.image} 
+                alt={celebration.name} 
+                className="w-full h-full object-cover"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent flex items-end">
+                <h3 className="text-white font-semibold text-xl p-4">
+                  {celebration.name}
+                </h3>
+              </div>
+            </div>
+            
+            <div className="p-4 space-y-4">
+              <p className="text-gray-700">
+                {celebration.description}
+              </p>
+              
+              <div className="flex justify-end">
+                <Button 
+                  variant="outline"
+                  className="border-primary text-primary hover:bg-primary/10"
+                  onClick={() => window.location.href = "#contact"}
+                >
+                  <Party className="mr-2 h-4 w-4" />
+                  Consultar disponibilidad
+                </Button>
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+    </Section>
+  );
+};
+
+export default Celebrations;

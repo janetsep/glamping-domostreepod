@@ -29,7 +29,7 @@ const Packages = ({ units, isLoading }: PackagesProps) => {
       
       <div className="container mx-auto px-4">
         <h2 className="text-3xl md:text-4xl font-display font-bold text-primary mb-4 text-center">Descubre Nuestros Domos</h2>
-        <p className="text-xl text-center text-gray-600 mb-10 max-w-3xl mx-auto">Experiencias personalizadas para cada tipo de viajero. Nuestros domos se adaptan a tus necesidades y te ofrecen una experiencia única en Valle Las Trancas.</p>
+        <p className="text-xl text-center text-gray-600 mb-10 max-w-3xl mx-auto">Alojamientos personalizados para cada tipo de viajero. Nuestros domos se adaptan a tus necesidades y te ofrecen una experiencia única en Valle Las Trancas.</p>
         
         {/* Tipos de viajero con efecto hover */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">

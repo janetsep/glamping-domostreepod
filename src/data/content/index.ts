@@ -21,4 +21,5 @@ export * from './aboutUs';
 export * from './contactPage';
 export * from './notFound';
 export * from './travelerTypes';
+export * from './celebrations';
 
