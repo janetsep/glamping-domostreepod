@@ -1,56 +1,41 @@
-
 import React from "react";
-import { TreePine } from "lucide-react";
-import { Separator } from "@/components/ui/separator";
 
-const ReforestationProject = () => {
+const OurStorySection = () => {
   return (
-    <section className="py-16 bg-secondary/20">
+    <section className="py-16 bg-white">
       <div className="container mx-auto px-4">
-        <div className="bg-white rounded-lg shadow-lg p-8">
-          <div className="flex flex-col md:flex-row items-center gap-8">
-            <div className="md:w-1/3">
-              <div className="bg-primary/10 p-4 rounded-full inline-block mb-4">
-                <TreePine className="h-12 w-12 text-primary" />
-              </div>
-              <h3 className="text-2xl font-display font-bold text-primary mb-2">
-                Proyecto de Reforestación
-              </h3>
-              <p className="text-gray-700">
-                Por cada huésped que nos visita, plantamos un árbol nativo en las áreas deforestadas del Valle Las Trancas.
-              </p>
-            </div>
-            
-            <div className="md:w-2/3">
-              <div className="bg-secondary/20 rounded-lg p-6">
-                <div className="text-center mb-6">
-                  <h4 className="text-xl font-display font-bold text-primary">Nuestro Impacto</h4>
-                  <Separator className="my-4 mx-auto w-16 bg-primary" />
-                </div>
-                
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
-                  <div>
-                    <p className="text-3xl font-bold text-primary">1,200+</p>
-                    <p className="text-gray-700">Árboles plantados</p>
-                  </div>
-                  <div>
-                    <p className="text-3xl font-bold text-primary">3</p>
-                    <p className="text-gray-700">Hectáreas reforestadas</p>
-                  </div>
-                  <div>
-                    <p className="text-3xl font-bold text-primary">12</p>
-                    <p className="text-gray-700">Especies nativas</p>
-                  </div>
-                  <div>
-                    <p className="text-3xl font-bold text-primary">4+</p>
-                    <p className="text-gray-700">Años de proyecto</p>
-                  </div>
-                </div>
-                
-                <p className="text-center mt-6 text-gray-700">
-                  ¿Quieres participar? Pregunta por nuestro tour de reforestación donde podrás plantar tu propio árbol.
-                </p>
-              </div>
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+          <div>
+            <h2 className="text-3xl font-display font-bold text-primary mb-6">
+              De Visión a Realidad: Nuestra Historia
+            </h2>
+            <p className="text-gray-700 mb-4">
+              Domos Treepod nació en 2019 de la visión de Janet Mariel Sepúlveda Correa y Jaime Antonio Echeverría Migryk, quienes tras años de experiencia en hospitalidad y gestión turística, decidieron crear un concepto que trascendiera el turismo tradicional en Valle Las Trancas, evolucionando hacia un modelo regenerativo que impacta positivamente en el entorno.
+            </p>
+            <p className="text-gray-700 mb-4">
+              El Valle Las Trancas, con su impresionante bosque nativo en la cordillera de los Andes, fue el escenario perfecto para materializar este sueño. Inspirados por la arquitectura geodésica y sus beneficios para el ecosistema, establecimos domos que no solo minimizaran su huella ambiental, sino que contribuyeran activamente a la regeneración del entorno natural.
+            </p>
+            <p className="text-gray-700">
+              Hoy, Domos Treepod se ha convertido en un referente de turismo regenerativo en la Región de Ñuble, ofreciendo experiencias auténticas que conectan a nuestros huéspedes con la naturaleza mientras apoyamos la conservación del bosque nativo y fortalecemos la comunidad local a través de prácticas que van más allá de la sustentabilidad.
+            </p>
+          </div>
+          <div className="flex justify-center">
+            <div className="grid grid-cols-2 gap-4">
+              <img 
+                src="/images/founders/jaime-echeverria.jpg" 
+                alt="Jaime Antonio Echeverría Migryk, co-fundador" 
+                className="rounded-lg shadow-lg h-64 object-cover"
+              />
+              <img 
+                src="/images/founders/janet-sepulveda.jpg" 
+                alt="Janet Mariel Sepúlveda Correa, co-fundadora" 
+                className="rounded-lg shadow-lg h-64 object-cover"
+              />
+              <img 
+                src="/images/locations/valle-las-trancas.jpg" 
+                alt="Valle Las Trancas, bosque nativo" 
+                className="rounded-lg shadow-lg h-64 object-cover col-span-2"
+              />
             </div>
           </div>
         </div>
@@ -59,4 +44,4 @@ const ReforestationProject = () => {
   );
 };
 
-export default ReforestationProject;
+export default OurStorySection;
