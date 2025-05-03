@@ -12,8 +12,8 @@ const FooterNavigation = ({ navigateTo }: FooterNavigationProps) => {
     { name: "Domos", href: "/#packages", icon: House },
     { name: "Experiencias", href: "/#benefits", icon: Sparkles, 
       submenu: [
-        { name: "Tinajas de Ciprés", href: "/#benefits", icon: Droplets },
-        { name: "Recorridos y Paisajes", href: "/#benefits", icon: Mountain },
+        { name: "Tinajas", href: "/#benefits", icon: Droplets },
+        { name: "Trekking y Paisajes", href: "/#benefits", icon: Mountain },
         { name: "Historias y Cultura Local", href: "/#benefits", icon: Book },
         { name: "Baño de Bosque", href: "/#benefits", icon: TreePine },
         { name: "Juegos de Mesa", href: "/#benefits", icon: Gamepad }
