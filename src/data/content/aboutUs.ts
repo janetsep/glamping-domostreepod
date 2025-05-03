@@ -1,4 +1,4 @@
-```javascript
+
 // Textos optimizados para SEO con enfoque en turismo regenerativo - Domos Treepod
 export const aboutUsContent = {
   // Sección Hero - Optimizada para SEO con palabras clave principales
@@ -71,4 +71,3 @@ export const aboutUsContent = {
   // Llamada a la acción clara
   callToAction: "Reserva tu experiencia de turismo regenerativo en Valle Las Trancas y forma parte del cambio positivo mientras disfrutas de una estancia única en la naturaleza."
 };
-```
