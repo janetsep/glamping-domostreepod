@@ -1,9 +1,7 @@
 
 import { useState, useEffect, useRef } from "react";
-import { Button } from "@/components/ui/button";
 import { useNavigation } from "./navigation/useNavigation";
 import ScrollArrow from "./ScrollArrow";
-import { ConciergeBell } from "lucide-react";
 import { LazyLoadImage } from "react-lazy-load-image-component";
 import 'react-lazy-load-image-component/src/effects/blur.css';
 
@@ -138,17 +136,8 @@ const Hero = () => {
             Domos geodésicos con wifi Starlink y vista 360 ° al bosque andino.
           </p>
           
-          {/* Widget Elfsight de reseñas */}
+          {/* Widget Elfsight de reseñas - Reemplaza el botón */}
           <div className="mb-6 elfsight-app-58776635-7259-470b-9077-f838d052ebab" data-elfsight-app-lazy></div>
-          
-          <Button 
-            size="lg" 
-            className="bg-cyan-500 hover:bg-cyan-600 text-white text-base md:text-lg font-medium px-8 py-6 rounded-md shadow-lg transition-all duration-300" 
-            onClick={handleReserveClick}
-          >
-            <ConciergeBell className="h-5 w-5 mr-2" />
-            <span>Ver disponibilidad</span>
-          </Button>
           
           {/* ScrollArrow positioned below the button */}
           <ScrollArrow targetRef={benefitsRef} />
