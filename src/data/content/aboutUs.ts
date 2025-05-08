@@ -1,104 +1,39 @@
-import React from "react";
-import { aboutUsContent } from "../data/content/aboutUs";
 
-const OurStorySection = () => {
-  return (
-    <section className="py-16 bg-white">
-      <div className="container mx-auto px-4">
-        {/* Historia principal */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center mb-16">
-          <div>
-            <h2 className="text-3xl font-display font-bold text-primary mb-6">
-              {aboutUsContent.storyTitle}
-            </h2>
-            <p className="text-gray-700 mb-4">
-              {aboutUsContent.storyText}
-            </p>
-            <p className="text-gray-700 mb-4">
-              {aboutUsContent.storyText2}
-            </p>
-            <p className="text-gray-700">
-              {aboutUsContent.storyText3}
-            </p>
-          </div>
-          <div className="flex justify-center">
-            <div className="grid grid-cols-2 gap-4">
-              <img 
-                src="/images/founders/jaime-echeverria.jpg" 
-                alt="Jaime Antonio Echeverría Migryk, co-fundador" 
-                className="rounded-lg shadow-lg h-64 object-cover"
-              />
-              <img 
-                src="/images/founders/janet-sepulveda.jpg" 
-                alt="Janet Mariel Sepúlveda Correa, co-fundadora" 
-                className="rounded-lg shadow-lg h-64 object-cover"
-              />
-              <img 
-                src="/images/locations/valle-las-trancas.jpg" 
-                alt="Valle Las Trancas, bosque nativo" 
-                className="rounded-lg shadow-lg h-64 object-cover col-span-2"
-              />
-            </div>
-          </div>
-        </div>
+// Contenido del texto para la sección "Acerca de Nosotros"
+export const aboutUsContent = {
+  // Sección Hero
+  heroTitle: "Sobre Domos TreePod",
+  heroSubtitle: "Un concepto de alojamiento único que combina comodidad, sostenibilidad y conexión con la naturaleza en el Valle Las Trancas, Chile.",
 
-        {/* Sección de Turismo Regenerativo */}
-        <div className="mt-12">
-          <h2 className="text-3xl font-display font-bold text-primary mb-6 text-center">
-            {aboutUsContent.regenerativeTitle}
-          </h2>
-          <p className="text-gray-700 mb-6 max-w-4xl mx-auto text-center">
-            {aboutUsContent.regenerativeText1}
-          </p>
+  // Sección de Historia
+  storyTitle: "De Visión a Realidad: Nuestra Historia",
+  storyText: "Domos Treepod nació en 2019 de la visión de Janet Mariel Sepúlveda Correa y Jaime Antonio Echeverría Migryk, quienes tras años de experiencia en hospitalidad y gestión turística, decidieron crear un concepto que trascendiera el turismo tradicional en Valle Las Trancas, evolucionando hacia un modelo regenerativo que impacta positivamente en el entorno.",
+  storyText2: "El Valle Las Trancas, con su impresionante bosque nativo en la cordillera de los Andes, fue el escenario perfecto para materializar este sueño. Inspirados por la arquitectura geodésica y sus beneficios para el ecosistema, establecimos domos que no solo minimizaran su huella ambiental, sino que contribuyeran activamente a la regeneración del entorno natural.",
+  storyText3: "Hoy, Domos Treepod se ha convertido en un referente de turismo regenerativo en la Región de Ñuble, ofreciendo experiencias auténticas que conectan a nuestros huéspedes con la naturaleza mientras apoyamos la conservación del bosque nativo y fortalecemos la comunidad local a través de prácticas que van más allá de la sustentabilidad.",
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mt-12">
-            <div className="bg-gray-50 p-6 rounded-lg shadow-sm">
-              <h3 className="text-xl font-semibold text-primary mb-3">
-                Flora 100% Nativa
-              </h3>
-              <p className="text-gray-700">
-                No introducimos especies ajenas al ecosistema local. Permitimos que la naturaleza siga su ritmo, lo que ha favorecido la multiplicación natural de lupinos y añañucas, flores propias de la zona que embellecen nuestro entorno sin intervención artificial.
-              </p>
-            </div>
+  // Misión y Valores
+  missionTitle: "Nuestra Misión y Valores",
+  missionSubtitle: "En Domos TreePod, nos guiamos por principios claros que orientan cada decisión y acción que tomamos para ofrecer experiencias memorables y sostenibles.",
+  
+  // Valores
+  valueTitle1: "Conexión con la Naturaleza",
+  valueText1: "Creemos en el poder transformador del contacto directo con el entorno natural, fomentando experiencias que permiten a nuestros huéspedes reconectarse consigo mismos y con el medio ambiente.",
+  
+  valueTitle2: "Hospitalidad Auténtica",
+  valueText2: "Nos comprometemos a brindar un servicio cálido y personalizado, donde cada detalle refleja nuestra pasión por crear experiencias significativas y memorables.",
+  
+  valueTitle3: "Innovación Sostenible",
+  valueText3: "Buscamos constantemente soluciones creativas que nos permitan minimizar nuestro impacto ambiental mientras maximizamos el bienestar de nuestros huéspedes y la comunidad local.",
 
-            <div className="bg-gray-50 p-6 rounded-lg shadow-sm">
-              <h3 className="text-xl font-semibold text-primary mb-3">
-                Jardinería de No-Intervención
-              </h3>
-              <p className="text-gray-700">
-                A diferencia de otros alojamientos, no utilizamos agua para regar jardines ornamentales. Todo lo que ves en nuestro entorno es producto de los ciclos naturales de lluvia y crecimiento propios del Valle Las Trancas.
-              </p>
-            </div>
+  // Servicios
+  servicesTitle: "Nuestros Servicios Exclusivos",
+  servicesText1: "Disfruta de una experiencia única de relajación en nuestras tinajas de ciprés con aguas mineralizadas provenientes de las Termas de Chillán, reconocidas por sus propiedades terapéuticas y curativas.",
+  servicesText2: "Ofrecemos una propuesta gastronómica basada en productos frescos de nuestro propio invernadero y de productores locales, permitiéndote degustar sabores auténticos de la región.",
+  servicesText3: "Contamos con espacios diseñados para que compartas momentos inolvidables, desde fogatas bajo las estrellas hasta áreas de estar donde puedes conectar con otros viajeros o disfrutar de la tranquilidad en privado.",
 
-            <div className="bg-gray-50 p-6 rounded-lg shadow-sm">
-              <h3 className="text-xl font-semibold text-primary mb-3">
-                Agricultura Regenerativa
-              </h3>
-              <p className="text-gray-700">
-                Nuestro invernadero opera sin pesticidas y aprovecha únicamente el agua de lluvia, respetando los ciclos naturales y creando un espacio productivo que no extrae recursos del ecosistema local.
-              </p>
-            </div>
-
-            <div className="bg-gray-50 p-6 rounded-lg shadow-sm">
-              <h3 className="text-xl font-semibold text-primary mb-3">
-                Conservación de Hábitat Natural
-              </h3>
-              <p className="text-gray-700">
-                Preservamos conscientemente los árboles antiguos del bosque que rodea nuestros domos, reconociendo su valor como hábitat vital para pájaros carpinteros y otras especies que dependen de esta madera para su supervivencia.
-              </p>
-            </div>
-          </div>
-
-          <p className="text-gray-700 mt-8 max-w-4xl mx-auto text-center">
-            {aboutUsContent.regenerativeText2}
-          </p>
-          <p className="text-gray-700 mt-4 max-w-4xl mx-auto text-center">
-            {aboutUsContent.regenerativeText3}
-          </p>
-        </div>
-      </div>
-    </section>
-  );
+  // Sostenibilidad
+  regenerativeTitle: "Turismo Regenerativo: Más Allá de la Sostenibilidad",
+  regenerativeText1: "En Domos TreePod no nos conformamos con minimizar nuestro impacto ambiental; aspiramos a generar un efecto positivo en el ecosistema y la comunidad local a través de prácticas regenerativas que restauran y fortalecen el entorno natural.",
+  regenerativeText2: "Nuestra filosofía de turismo regenerativo va más allá de 'no dañar'; buscamos activamente mejorar la biodiversidad, fortalecer los sistemas naturales locales y crear valor para todos los involucrados en nuestra operación.",
+  regenerativeText3: "Te invitamos a ser parte de esta visión, donde tu estadía no solo te brinda una experiencia única, sino que contribuye a un futuro más sostenible para el Valle Las Trancas y sus comunidades."
 };
-
-export default OurStorySection;
