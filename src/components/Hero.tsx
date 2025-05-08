@@ -6,6 +6,7 @@ import ScrollArrow from "./ScrollArrow";
 import { ConciergeBell } from "lucide-react";
 import { LazyLoadImage } from "react-lazy-load-image-component";
 import 'react-lazy-load-image-component/src/effects/blur.css';
+import { Badge } from "@/components/ui/badge";
 
 const Hero = () => {
   const {
@@ -110,15 +111,16 @@ const Hero = () => {
             Glamping Sostenible en Chile
           </h1>
           <p className="text-base md:text-lg font-body text-white/90 mb-8 text-shadow max-w-xl mx-auto leading-relaxed">
-            Domo geodésicos con wifi Starlink y vistas privilegiadas.
+            Domos geodésicos con wifi Starlink y vista 360 ° al bosque andino.
           </p>
+          <Badge className="bg-amber-500 text-white mb-4 px-3 py-1">★ 4,8/5 en Google</Badge>
           <Button 
             size="lg" 
             className="bg-cyan-500 hover:bg-cyan-600 text-white text-base md:text-lg font-medium px-8 py-6 rounded-md shadow-lg transition-all duration-300" 
             onClick={handleReserveClick}
           >
             <ConciergeBell className="h-5 w-5 mr-2" />
-            <span>Reserva tu Estadía</span>
+            <span>Ver disponibilidad</span>
           </Button>
           
           {/* ScrollArrow positioned below the button */}
