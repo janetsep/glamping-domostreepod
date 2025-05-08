@@ -1,6 +1,4 @@
-
 import { useEffect } from "react";
-
 const Testimonials = () => {
   // This effect will ensure the Elfsight script loads properly
   useEffect(() => {
@@ -20,7 +18,6 @@ const Testimonials = () => {
       // No cleanup needed as we don't want to remove the script when component unmounts
     };
   }, []);
-
   return <section id="testimonials" className="py-20 bg-secondary/10">
       {/* Franja de título sin texto */}
       <div className="w-full bg-primary/5 border-b border-primary/10 py-3 mb-16">
@@ -30,13 +27,12 @@ const Testimonials = () => {
       </div>
       
       <div className="container mx-auto px-4">
-        <h2 className="text-3xl md:text-4xl font-display font-bold text-primary mb-4 text-center">Nuestros Huéspedes Opinan</h2>
-        <p className="text-xl text-center text-gray-600 mb-12 max-w-3xl mx-auto">Más de 500 visitantes han elegido Domos TreePod para vivir la montaña a su manera.</p>
+        <h2 className="text-3xl md:text-4xl font-display font-bold text-primary mb-4 text-center">¡Los Huéspedes Opinan!</h2>
+        <p className="text-xl text-center text-gray-600 mb-12 max-w-3xl mx-auto">Comentarios indican cómo es vivir la montaña en nuestro glamping.</p>
         
         {/* Elfsight All-in-One Reviews Widget */}
         <div className="elfsight-app-58776635-7259-470b-9077-f838d052ebab" data-elfsight-app-lazy></div>
       </div>
     </section>;
 };
-
 export default Testimonials;
