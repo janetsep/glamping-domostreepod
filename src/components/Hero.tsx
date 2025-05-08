@@ -1,3 +1,4 @@
+
 import { useState, useEffect, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { useNavigation } from "./navigation/useNavigation";
@@ -5,7 +6,15 @@ import ScrollArrow from "./ScrollArrow";
 import { ConciergeBell } from "lucide-react";
 import { LazyLoadImage } from "react-lazy-load-image-component";
 import 'react-lazy-load-image-component/src/effects/blur.css';
-import { Badge } from "@/components/ui/badge";
+
+// Declaración para TypeScript
+declare global {
+  interface Window {
+    elfsight?: {
+      initialize: () => void;
+    }
+  }
+}
 
 const Hero = () => {
   const {
@@ -72,6 +81,22 @@ const Hero = () => {
     };
   }, [currentImageIndex, images.length]);
 
+  // Efecto para cargar el script de Elfsight
+  useEffect(() => {
+    // Check if the script is already added to prevent duplicates
+    if (!document.querySelector('script[src="https://static.elfsight.com/platform/platform.js"]')) {
+      const script = document.createElement('script');
+      script.src = "https://static.elfsight.com/platform/platform.js";
+      script.async = true;
+      document.body.appendChild(script);
+    }
+
+    // Manually trigger Elfsight to load widgets if their platform JS is already loaded
+    if (window.elfsight) {
+      window.elfsight.initialize();
+    }
+  }, []);
+
   return (
     <section id="hero" className="h-screen relative overflow-hidden -mt-[76px]">
       {/* Background images carousel with overlay - Optimizado para lazy loading */}
@@ -112,7 +137,10 @@ const Hero = () => {
           <p className="text-base md:text-lg font-body text-white/90 mb-8 text-shadow max-w-xl mx-auto leading-relaxed">
             Domos geodésicos con wifi Starlink y vista 360 ° al bosque andino.
           </p>
-          <Badge className="bg-amber-500 text-white mb-4 px-3 py-1">★ 4,8/5 en Google</Badge>
+          
+          {/* Widget Elfsight de reseñas */}
+          <div className="mb-6 elfsight-app-58776635-7259-470b-9077-f838d052ebab" data-elfsight-app-lazy></div>
+          
           <Button 
             size="lg" 
             className="bg-cyan-500 hover:bg-cyan-600 text-white text-base md:text-lg font-medium px-8 py-6 rounded-md shadow-lg transition-all duration-300" 
