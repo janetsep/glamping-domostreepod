@@ -58,14 +58,14 @@ const Location = () => {
                 <Bird className="h-5 w-5 text-cyan-500 flex-shrink-0 mt-1" />
                 <div>
                   <h4 className="font-semibold">Fauna Local</h4>
-                  <p className="text-sm text-gray-600">Observa cóndores y otras especies autóctonas en su hábitat natural.</p>
+                  <p className="text-sm text-gray-600">Observa las especies autóctonas en su hábitat natural.</p>
                 </div>
               </div>
               <div className="flex items-start gap-3">
                 <MapPin className="h-5 w-5 text-cyan-500 flex-shrink-0 mt-1" />
                 <div>
                   <h4 className="font-semibold">Centro de Ski</h4>
-                  <p className="text-sm text-gray-600">A 20 minutos del centro de ski Nevados de Chillán.</p>
+                  <p className="text-sm text-gray-600">A 15 minutos del centro de ski Nevados de Chillán.</p>
                 </div>
               </div>
             </div>
@@ -78,21 +78,21 @@ const Location = () => {
                 <Car className="h-5 w-5 text-cyan-500 flex-shrink-0 mt-1" />
                 <div>
                   <h4 className="font-semibold">Desde Chillán</h4>
-                  <p className="text-sm text-gray-600">1.5 horas por ruta pavimentada (85 km).</p>
+                  <p className="text-sm text-gray-600">1 hora por ruta pavimentada N-55 (72 km).</p>
                 </div>
               </div>
               <div className="flex items-start gap-3">
                 <Car className="h-5 w-5 text-cyan-500 flex-shrink-0 mt-1" />
                 <div>
                   <h4 className="font-semibold">Desde Concepción</h4>
-                  <p className="text-sm text-gray-600">3 horas por autopista (230 km).</p>
+                  <p className="text-sm text-gray-600">2 horas por autopista (230 km).</p>
                 </div>
               </div>
               <div className="flex items-start gap-3">
                 <Plane className="h-5 w-5 text-cyan-500 flex-shrink-0 mt-1" />
                 <div>
                   <h4 className="font-semibold">Desde Santiago</h4>
-                  <p className="text-sm text-gray-600">5 horas por autopista (420 km) o 45 minutos en avión + 1.5 horas en auto desde Chillán.</p>
+                  <p className="text-sm text-gray-600">5 horas por autopista 5 sur  (420 km) o 45 minutos en avión + 1 hora en auto desde Chillán.</p>
                 </div>
               </div>
               <div className="flex items-start gap-3">
