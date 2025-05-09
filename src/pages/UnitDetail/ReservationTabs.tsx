@@ -16,6 +16,7 @@ interface ReservationTabsProps {
   maxGuests: number;
   guests: number;
   onGuestsChange: (guests: number) => void;
+  maxDomos: number; // Añadido explícitamente
   requiredDomos?: number;
   onDomosChange?: (domos: number) => void;
   isAvailable: boolean | null;
@@ -39,6 +40,7 @@ export const ReservationTabs = ({
   maxGuests,
   guests,
   onGuestsChange,
+  maxDomos,
   requiredDomos,
   onDomosChange,
   isAvailable,

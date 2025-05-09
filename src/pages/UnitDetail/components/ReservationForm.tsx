@@ -61,8 +61,7 @@ export const ReservationForm = ({
   handleCalendarDateSelect,
   handleAlternativeDateSelect
 }: ReservationFormProps) => {
-  // Arrays con las actividades y paquetes (esto eventualmente vendrá de una API)
-  // Simulación de datos para actividades
+  // Arrays con las actividades y paquetes
   const activities: Activity[] = [
     { 
       id: '1', 

@@ -1,4 +1,3 @@
-
 import React from "react";
 import { Button } from "@/components/ui/button";
 import { Activity, ThemedPackage } from "@/types";
@@ -56,7 +55,7 @@ export const ReservationSummary: React.FC<ReservationSummaryProps> = ({
   const extrasTotal = activitiesTotal + packagesTotal;
 
   // Precio base es el precio de los domos sin extras
-  const basePrice = quote.basePrice !== undefined ? quote.basePrice : quote.totalPrice - extrasTotal;
+  const basePrice = typeof quote.basePrice !== 'undefined' ? quote.basePrice : quote.totalPrice - extrasTotal;
   // Precio total es el precio base más los extras
   const finalTotal = quote.totalPrice;
   

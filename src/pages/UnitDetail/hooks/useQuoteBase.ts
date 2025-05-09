@@ -6,6 +6,7 @@ import { GlampingUnit } from '@/lib/supabase';
 // Define the quote state structure
 export interface QuoteState {
   showQuote: boolean;
+  setShowQuote: (show: boolean) => void;
   quote: {
     nights: number;
     pricePerNight: number;
@@ -30,6 +31,7 @@ export interface QuoteState {
   activitiesTotal: number;
   packagesTotal: number;
   reservationTab: string;
+  setReservationTab: (tab: string) => void;
   
   // Added properties needed by useQuoteCalculation
   startDate?: Date;
@@ -38,8 +40,6 @@ export interface QuoteState {
   displayUnit?: GlampingUnit;
   requiredDomos?: number;
   setQuote: (quote: any) => void;
-  setShowQuote: (show: boolean) => void;
-  setReservationTab: (tab: string) => void;
   setIsAvailable: (available: boolean) => void;
   checkAvailability: (unitId: string, checkIn: Date, checkOut: Date) => Promise<boolean>;
   calculateQuote: (prices: any, checkIn: Date, checkOut: Date, guests: number, requiredDomos: number) => any;
@@ -57,7 +57,7 @@ export const initialQuoteState: Partial<QuoteState> = {
   guests: 1
 };
 
-// Add the missing useQuoteBase function that's imported in useQuoteManagement
+// Add the useQuoteBase function that's imported in useQuoteManagement
 export const useQuoteBase = (state: QuoteState) => {
   const getUpdatedQuoteTotal = () => {
     if (!state.quote) return 0;

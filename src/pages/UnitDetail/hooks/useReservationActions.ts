@@ -1,32 +1,42 @@
+
 // Import necessary hooks and utilities
 import { useCallback } from 'react';
 import { Activity, ThemedPackage } from '@/types';
 import { supabase } from '@/lib/supabase';
 import { format } from 'date-fns';
 import { useToast } from '@/components/ui/use-toast';
-import { QuoteState } from './useQuoteBase';
 
-// Define the ReservationState interface
+// Define the ReservationState interface to match useUnitDetailController
 export interface ReservationState {
-  displayUnit: any;
+  // Basic properties
   startDate?: Date;
-  setStartDate: (date: Date | undefined) => void;
   endDate?: Date;
-  setEndDate: (date: Date | undefined) => void;
   guests: number;
+  requiredDomos?: number;
+  displayUnit?: any;
+  
+  // State setters
+  setStartDate: (date: Date | undefined) => void;
+  setEndDate: (date: Date | undefined) => void;
   setGuests: (guests: number) => void;
-  requiredDomos: number;
   setRequiredDomos: (domos: number) => void;
-  isAvailable: boolean | null;
-  setIsAvailable: (isAvailable: boolean | null) => void;
-  quote: any;
   setQuote: (quote: any) => void;
-  showQuote: boolean;
-  setShowQuote: (showQuote: boolean) => void;
+  setShowQuote: (show: boolean) => void;
+  setIsAvailable: (available: boolean) => void;
+  setReservationTab: (tab: string) => void;
+  
+  // Additional state for management
   isCheckedAvailability: boolean;
   setCheckedAvailability: (checked: boolean) => void;
-  isPartialAvailability: boolean;
   setIsPartialAvailability: (partial: boolean) => void;
+  setActivitiesTotal: (total: number) => void;
+  setPackagesTotal: (total: number) => void;
+  
+  // Extended properties needed by useReservationActions
+  isAvailable: boolean | null;
+  quote: any;
+  showQuote: boolean;
+  isPartialAvailability: boolean;
   availableDomos: number;
   setAvailableDomos: (available: number) => void;
   alternativeDates: {startDate: Date, endDate: Date}[];
@@ -36,9 +46,7 @@ export interface ReservationState {
   selectedPackages: ThemedPackage[];
   setSelectedPackages: (packages: ThemedPackage[]) => void;
   activitiesTotal: number;
-  setActivitiesTotal: (total: number) => void;
   packagesTotal: number;
-  setPackagesTotal: (total: number) => void;
   isReservationConfirmed: boolean;
   setIsReservationConfirmed: (confirmed: boolean) => void;
   confirmationRef: React.RefObject<HTMLDivElement>;
@@ -49,7 +57,6 @@ export interface ReservationState {
   confirmedReservationId: string | null;
   setConfirmedReservationId: (id: string | null) => void;
   reservationTab: string;
-  setReservationTab: (tab: string) => void;
 }
 
 // Define the useReservationActions hook
