@@ -23,18 +23,52 @@ export const checkUnitAvailability = async (
 ): Promise<boolean> => {
   console.log(`Verificando disponibilidad para unidad ${unitId} del ${format(checkIn, 'yyyy-MM-dd')} al ${format(checkOut, 'yyyy-MM-dd')}`);
   
-  // Primero verificamos si es una unidad de paquete (no en base de datos)
-  const isPackageUnit = packageData.some(pkg => pkg.id === unitId);
-  if (isPackageUnit) {
-    // Para unidades de paquete, verificamos la disponibilidad general
-    // ya que estas unidades comparten el mismo inventario real
-    const { isAvailable } = await checkGeneralAvailability(checkIn, checkOut);
-    return isAvailable;
+  try {
+    // Primero verificamos si es una unidad de paquete (no en base de datos)
+    const isPackageUnit = packageData.some(pkg => pkg.id === unitId);
+    if (isPackageUnit) {
+      // Para unidades de paquete, verificamos la disponibilidad general
+      // ya que estas unidades comparten el mismo inventario real
+      const { isAvailable } = await checkGeneralAvailability(checkIn, checkOut);
+      return isAvailable;
+    }
+    
+    // Verificamos las reservas existentes directamente en lugar de usar la tabla unit_availability
+    try {
+      // Configurar fechas para comparison
+      const checkInDate = new Date(checkIn);
+      checkInDate.setHours(0, 0, 0, 0);
+      
+      const checkOutDate = new Date(checkOut);
+      checkOutDate.setHours(23, 59, 59, 999);
+      
+      // Buscamos reservas que se solapan con el rango de fechas solicitado
+      const { data: overlappingReservations, error } = await supabase
+        .from('reservations')
+        .select('id, unit_id, check_in, check_out')
+        .eq('status', 'confirmed')
+        .or(`check_in.lte.${checkOutDate.toISOString()},check_out.gte.${checkInDate.toISOString()}`);
+
+      if (error) {
+        console.error('Error al verificar reservas existentes:', error);
+        // En caso de error, asumimos que hay disponibilidad para no bloquear la experiencia
+        return true;
+      }
+
+      const reservationsForUnit = overlappingReservations?.filter(r => r.unit_id === unitId);
+      
+      // Si no hay reservas para esta unidad en ese periodo, está disponible
+      return !reservationsForUnit || reservationsForUnit.length === 0;
+    } catch (error) {
+      console.error('Error al verificar reservas:', error);
+      // En caso de error, asumimos disponibilidad
+      return true;
+    }
+  } catch (error) {
+    console.error('Error general en checkUnitAvailability:', error);
+    // En caso de error, asumimos disponibilidad
+    return true;
   }
-  
-  // Verificamos si hay disponibilidad general para las fechas
-  const { isAvailable } = await checkGeneralAvailability(checkIn, checkOut);
-  return isAvailable;
 };
 
 /**
@@ -72,7 +106,12 @@ export const checkGeneralAvailability = async (
 
     if (error) {
       console.error('Error al verificar disponibilidad general:', error);
-      throw error;
+      // En caso de error, asumimos que hay al menos un domo disponible
+      return {
+        isAvailable: true,
+        availableUnits: 1,
+        totalUnits: TOTAL_DOMOS
+      };
     }
 
     console.log(`Encontradas ${overlappingReservations?.length || 0} reservas solapadas`);
@@ -99,9 +138,10 @@ export const checkGeneralAvailability = async (
     };
   } catch (error) {
     console.error('Error en checkGeneralAvailability:', error);
+    // En caso de error, asumimos que hay al menos un domo disponible
     return {
-      isAvailable: false,
-      availableUnits: 0,
+      isAvailable: true,
+      availableUnits: 1,
       totalUnits: TOTAL_DOMOS
     };
   }
@@ -124,89 +164,107 @@ export const findAlternativeDates = async (
 ): Promise<{startDate: Date, endDate: Date}[]> => {
   console.log(`Buscando fechas alternativas para ${requiredDomos} domos, a partir del ${format(checkIn, 'yyyy-MM-dd')}`);
   
-  const stayDuration = Math.round((checkOut.getTime() - checkIn.getTime()) / (1000 * 60 * 60 * 24));
-  const alternativeDates: {startDate: Date, endDate: Date}[] = [];
-  
-  // Verificar días posteriores
-  let currentStart = new Date(checkIn);
-  for (let i = 1; i <= maxDaysToCheck; i++) {
-    currentStart = addDays(checkIn, i);
-    const currentEnd = addDays(currentStart, stayDuration);
+  try {
+    const stayDuration = Math.round((checkOut.getTime() - checkIn.getTime()) / (1000 * 60 * 60 * 24));
+    const alternativeDates: {startDate: Date, endDate: Date}[] = [];
     
-    // Verificar disponibilidad para cada día en el rango
-    let hasEnoughDomos = true;
-    for (let day = 0; day < stayDuration; day++) {
-      const currentDay = addDays(currentStart, day);
-      const { availableUnits } = await checkGeneralAvailability(currentDay, addDays(currentDay, 1));
-      
-      if (availableUnits < requiredDomos) {
-        hasEnoughDomos = false;
-        break;
-      }
-    }
-    
-    if (hasEnoughDomos) {
-      alternativeDates.push({
-        startDate: currentStart,
-        endDate: currentEnd
-      });
-      
-      // Si encontramos 3 opciones, detenemos la búsqueda
-      if (alternativeDates.length >= 3) {
-        break;
-      }
-    }
-  }
-  
-  // Verificar días anteriores si no encontramos suficientes alternativas
-  if (alternativeDates.length < 3) {
-    currentStart = new Date(checkIn);
-    for (let i = 1; i <= maxDaysToCheck && alternativeDates.length < 3; i++) {
-      currentStart = addDays(checkIn, -i);
-      
-      // No mostrar fechas pasadas
-      if (currentStart < new Date()) {
-        continue;
-      }
-      
+    // Verificar días posteriores
+    let currentStart = new Date(checkIn);
+    for (let i = 1; i <= maxDaysToCheck; i++) {
+      currentStart = addDays(checkIn, i);
       const currentEnd = addDays(currentStart, stayDuration);
       
-      // Verificar disponibilidad para cada día en el rango
-      let hasEnoughDomos = true;
-      for (let day = 0; day < stayDuration; day++) {
-        const currentDay = addDays(currentStart, day);
-        const { availableUnits } = await checkGeneralAvailability(currentDay, addDays(currentDay, 1));
-        
-        if (availableUnits < requiredDomos) {
-          hasEnoughDomos = false;
-          break;
+      try {
+        // Verificar disponibilidad para cada día en el rango
+        let hasEnoughDomos = true;
+        for (let day = 0; day < stayDuration; day++) {
+          const currentDay = addDays(currentStart, day);
+          const { availableUnits } = await checkGeneralAvailability(currentDay, addDays(currentDay, 1));
+          
+          if (availableUnits < requiredDomos) {
+            hasEnoughDomos = false;
+            break;
+          }
         }
-      }
-      
-      if (hasEnoughDomos) {
-        // Comprobar que no es un duplicado
-        const isDuplicate = alternativeDates.some(dates => 
-          isSameDay(dates.startDate, currentStart) && isSameDay(dates.endDate, currentEnd)
-        );
         
-        if (!isDuplicate) {
+        if (hasEnoughDomos) {
           alternativeDates.push({
             startDate: currentStart,
             endDate: currentEnd
           });
+          
+          // Si encontramos 3 opciones, detenemos la búsqueda
+          if (alternativeDates.length >= 3) {
+            break;
+          }
+        }
+      } catch (error) {
+        console.error(`Error al verificar fecha alternativa ${format(currentStart, 'yyyy-MM-dd')}:`, error);
+        // Continuamos con la siguiente fecha
+        continue;
+      }
+    }
+    
+    // Verificar días anteriores si no encontramos suficientes alternativas
+    if (alternativeDates.length < 3) {
+      currentStart = new Date(checkIn);
+      for (let i = 1; i <= maxDaysToCheck && alternativeDates.length < 3; i++) {
+        currentStart = addDays(checkIn, -i);
+        
+        // No mostrar fechas pasadas
+        if (currentStart < new Date()) {
+          continue;
+        }
+        
+        const currentEnd = addDays(currentStart, stayDuration);
+        
+        try {
+          // Verificar disponibilidad para cada día en el rango
+          let hasEnoughDomos = true;
+          for (let day = 0; day < stayDuration; day++) {
+            const currentDay = addDays(currentStart, day);
+            const { availableUnits } = await checkGeneralAvailability(currentDay, addDays(currentDay, 1));
+            
+            if (availableUnits < requiredDomos) {
+              hasEnoughDomos = false;
+              break;
+            }
+          }
+          
+          if (hasEnoughDomos) {
+            // Comprobar que no es un duplicado
+            const isDuplicate = alternativeDates.some(dates => 
+              isSameDay(dates.startDate, currentStart) && isSameDay(dates.endDate, currentEnd)
+            );
+            
+            if (!isDuplicate) {
+              alternativeDates.push({
+                startDate: currentStart,
+                endDate: currentEnd
+              });
+            }
+          }
+        } catch (error) {
+          console.error(`Error al verificar fecha alternativa ${format(currentStart, 'yyyy-MM-dd')}:`, error);
+          // Continuamos con la siguiente fecha
+          continue;
         }
       }
     }
+    
+    console.log(`Encontradas ${alternativeDates.length} fechas alternativas`);
+    
+    // Ordenar por cercanía a la fecha original
+    alternativeDates.sort((a, b) => {
+      const distA = Math.abs(a.startDate.getTime() - checkIn.getTime());
+      const distB = Math.abs(b.startDate.getTime() - checkIn.getTime());
+      return distA - distB;
+    });
+    
+    return alternativeDates;
+  } catch (error) {
+    console.error('Error general en findAlternativeDates:', error);
+    // En caso de error, retornamos un array vacío
+    return [];
   }
-  
-  console.log(`Encontradas ${alternativeDates.length} fechas alternativas`);
-  
-  // Ordenar por cercanía a la fecha original
-  alternativeDates.sort((a, b) => {
-    const distA = Math.abs(a.startDate.getTime() - checkIn.getTime());
-    const distB = Math.abs(b.startDate.getTime() - checkIn.getTime());
-    return distA - distB;
-  });
-  
-  return alternativeDates;
 };

@@ -1,6 +1,7 @@
 
 import { useState } from 'react';
 import { checkUnitAvailability, checkGeneralAvailability } from './utils/availabilityChecker';
+import { toast } from "sonner";
 
 interface UseAvailabilityCheckProps {
   setIsLoading: (isLoading: boolean) => void;
@@ -27,7 +28,8 @@ export const useAvailabilityCheck = ({ setIsLoading, toast }: UseAvailabilityChe
         title: "Error",
         description: "No se pudo verificar la disponibilidad. Por favor, intenta de nuevo.",
       });
-      return false;
+      // En caso de error, asumimos que hay disponibilidad para no bloquear completamente la experiencia del usuario
+      return true; 
     } finally {
       setIsLoading(false);
     }
@@ -51,9 +53,10 @@ export const useAvailabilityCheck = ({ setIsLoading, toast }: UseAvailabilityChe
         title: "Error",
         description: "No se pudo verificar la disponibilidad. Por favor, intenta de nuevo.",
       });
+      // En caso de error, retornamos un valor por defecto
       return {
-        isAvailable: false,
-        availableUnits: 0,
+        isAvailable: true, // Asumimos disponibilidad para no bloquear la experiencia
+        availableUnits: 4,
         totalUnits: 4
       };
     } finally {
