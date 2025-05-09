@@ -1,6 +1,9 @@
 
 import { useState } from 'react';
-import { checkUnitAvailability, checkGeneralAvailability } from './utils/availabilityChecker';
+import { 
+  checkUnitAvailability, 
+  checkGeneralAvailability 
+} from './utils/availability';
 import { toast } from "sonner";
 
 interface UseAvailabilityCheckProps {
@@ -41,7 +44,11 @@ export const useAvailabilityCheck = ({ setIsLoading }: UseAvailabilityCheckProps
       
       const result = await checkGeneralAvailability(checkIn, checkOut);
       console.log("Resultado de disponibilidad general:", result);
-      return result;
+      return {
+        isAvailable: result.isAvailable,
+        availableUnits: result.availableUnits,
+        totalUnits: result.totalUnits
+      };
     } catch (error) {
       console.error('Error al verificar disponibilidad general:', error);
       // En caso de error, retornamos disponibilidad total

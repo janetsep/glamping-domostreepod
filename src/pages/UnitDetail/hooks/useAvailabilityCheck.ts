@@ -1,6 +1,6 @@
 
 import { toast } from "sonner";
-import { findAlternativeDates } from "@/hooks/reservations/utils/availabilityChecker";
+import { findAlternativeDates } from "@/hooks/reservations/utils/availability";
 
 type AvailabilityState = {
   startDate?: Date;
@@ -29,12 +29,10 @@ export const useAvailabilityCheck = (state: AvailabilityState) => {
         
         // Verificar disponibilidad general en lugar de por domo individual
         try {
-          const { data, error } = await import('@/hooks/reservations/utils/availabilityChecker')
+          const result = await import('@/hooks/reservations/utils/availability')
             .then(module => module.checkGeneralAvailability(state.startDate!, state.endDate!));
             
-          if (!error) {
-            availableDomos = data?.availableUnits || 4;
-          }
+          availableDomos = result.availableUnits || 4;
         } catch (error) {
           console.error('Error al verificar disponibilidad general:', error);
           // En caso de error, asumimos disponibilidad completa

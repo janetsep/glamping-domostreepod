@@ -1,4 +1,3 @@
-
 // Import necessary hooks and utilities
 import { useCallback } from 'react';
 import { Activity, ThemedPackage } from '@/types';
@@ -6,6 +5,7 @@ import { supabase } from '@/lib/supabase';
 import { format } from 'date-fns';
 import { useToast } from '@/components/ui/use-toast';
 import { toast } from "sonner";
+import { findAlternativeDates } from '@/hooks/reservations/utils/availability';
 
 // Define the ReservationState interface to match useUnitDetailController
 export interface ReservationState {
@@ -157,7 +157,6 @@ export const useReservationActions = (state: ReservationState) => {
         if (state.guests > 0 && requiredDomos > 0) {
           // Intentamos buscar fechas alternativas
           try {
-            const { findAlternativeDates } = await import('@/hooks/reservations/utils/availabilityChecker');
             const alternativeDates = await findAlternativeDates(state.startDate, state.endDate, requiredDomos);
             
             state.setAlternativeDates(alternativeDates);
