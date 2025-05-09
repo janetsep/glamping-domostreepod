@@ -14,6 +14,8 @@ type AvailabilityState = {
   setPartialAvailability?: (isPartial: boolean) => void;
   setAvailableDomos?: (count: number) => void;
   setAlternativeDates?: (dates: {startDate: Date, endDate: Date}[]) => void;
+  // Añadir la propiedad guests para controlar los mensajes
+  guests?: number;
 };
 
 export const useAvailabilityCheck = (state: AvailabilityState) => {
@@ -58,26 +60,30 @@ export const useAvailabilityCheck = (state: AvailabilityState) => {
           }
           
           // Buscar fechas alternativas donde haya suficientes domos
-          try {
-            if (state.setAlternativeDates) {
-              const alternatives = await findAlternativeDates(
-                state.startDate, 
-                state.endDate, 
-                requiredDomos
-              );
-              state.setAlternativeDates(alternatives);
+          // Solo mostrar mensajes si el usuario ha seleccionado huéspedes
+          if (state.guests && state.guests > 0) {
+            try {
+              if (state.setAlternativeDates) {
+                const alternatives = await findAlternativeDates(
+                  state.startDate, 
+                  state.endDate, 
+                  requiredDomos
+                );
+                state.setAlternativeDates(alternatives);
+              }
+            } catch (error) {
+              console.error('Error al buscar fechas alternativas:', error);
+              // Si falla la búsqueda de fechas alternativas, dejamos la lista vacía
+              if (state.setAlternativeDates) {
+                state.setAlternativeDates([]);
+              }
             }
-          } catch (error) {
-            console.error('Error al buscar fechas alternativas:', error);
-            // Si falla la búsqueda de fechas alternativas, dejamos la lista vacía
-            if (state.setAlternativeDates) {
-              state.setAlternativeDates([]);
-            }
+            
+            // Solo mostrar mensaje si el usuario ya ha seleccionado huéspedes
+            toast.warning(`Solo tenemos disponibilidad para ${availableCount} domos en las fechas seleccionadas.`, {
+              duration: 6000
+            });
           }
-          
-          toast.warning(`Solo tenemos disponibilidad para ${availableCount} domos en las fechas seleccionadas.`, {
-            duration: 6000
-          });
         } else {
           // O todos disponibles o ninguno disponible
           allAvailable = availableCount === requiredDomos;
@@ -90,33 +96,36 @@ export const useAvailabilityCheck = (state: AvailabilityState) => {
             state.setAvailableDomos(availableCount);
           }
           
-          if (allAvailable) {
-            toast.success(`Tenemos disponibilidad para los ${requiredDomos} domos necesarios.`);
-          } else {
-            // Buscar fechas alternativas donde haya suficientes domos
-            try {
-              if (state.setAlternativeDates) {
-                const alternatives = await findAlternativeDates(
-                  state.startDate, 
-                  state.endDate, 
-                  requiredDomos
-                );
-                state.setAlternativeDates(alternatives);
-                
-                if (alternatives.length > 0) {
-                  toast.error(`No hay domos disponibles para las fechas seleccionadas. Encontramos ${alternatives.length} fechas alternativas.`, {
-                    duration: 6000
-                  });
-                } else {
-                  toast.error(`No hay domos disponibles para las fechas seleccionadas.`);
+          // Solo mostrar mensajes si el usuario ha seleccionado huéspedes
+          if (state.guests && state.guests > 0) {
+            if (allAvailable) {
+              toast.success(`Tenemos disponibilidad para los ${requiredDomos} domos necesarios.`);
+            } else {
+              // Buscar fechas alternativas donde haya suficientes domos
+              try {
+                if (state.setAlternativeDates) {
+                  const alternatives = await findAlternativeDates(
+                    state.startDate, 
+                    state.endDate, 
+                    requiredDomos
+                  );
+                  state.setAlternativeDates(alternatives);
+                  
+                  if (alternatives.length > 0) {
+                    toast.error(`No hay domos disponibles para las fechas seleccionadas. Encontramos ${alternatives.length} fechas alternativas.`, {
+                      duration: 6000
+                    });
+                  } else {
+                    toast.error(`No hay domos disponibles para las fechas seleccionadas.`);
+                  }
                 }
+              } catch (error) {
+                console.error('Error al buscar fechas alternativas:', error);
+                if (state.setAlternativeDates) {
+                  state.setAlternativeDates([]);
+                }
+                toast.error(`No hay domos disponibles para las fechas seleccionadas.`);
               }
-            } catch (error) {
-              console.error('Error al buscar fechas alternativas:', error);
-              if (state.setAlternativeDates) {
-                state.setAlternativeDates([]);
-              }
-              toast.error(`No hay domos disponibles para las fechas seleccionadas.`);
             }
           }
         }
@@ -132,9 +141,12 @@ export const useAvailabilityCheck = (state: AvailabilityState) => {
         if (state.setAvailableDomos) {
           state.setAvailableDomos(requiredDomos);
         }
-        toast.warning('No pudimos verificar la disponibilidad exacta. Por favor, contacta con nosotros para confirmar tu reserva.', {
-          duration: 6000
-        });
+        // Solo mostrar mensaje si el usuario ya ha seleccionado huéspedes
+        if (state.guests && state.guests > 0) {
+          toast.warning('No pudimos verificar la disponibilidad exacta. Por favor, contacta con nosotros para confirmar tu reserva.', {
+            duration: 6000
+          });
+        }
       } finally {
         state.setCheckedAvailability(true);
       }

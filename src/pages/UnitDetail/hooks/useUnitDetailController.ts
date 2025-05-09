@@ -23,9 +23,11 @@ export const useUnitDetailController = (
   // Check availability automatically when dates are selected
   useEffect(() => {
     if (state.startDate && state.endDate) {
+      // Solo verificamos la disponibilidad después de que el usuario haya interactuado lo suficiente
+      // como para haber seleccionado ambas fechas
       actions.checkDatesAvailability();
     }
-  }, [state.startDate, state.endDate, state.displayUnit, actions]);
+  }, [state.startDate, state.endDate, state.displayUnit, state.guests, state.requiredDomos, actions]);
 
   // Reset verification state when dates change
   useEffect(() => {

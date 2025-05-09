@@ -1,3 +1,4 @@
+
 // Import necessary hooks and utilities
 import { useCallback } from 'react';
 import { Activity, ThemedPackage } from '@/types';
@@ -98,6 +99,12 @@ export const useReservationActions = (state: ReservationState) => {
         state.setAvailableDomos(state.displayUnit.domos || 4);
         state.setAlternativeDates([]);
         state.setCheckedAvailability(true);
+        
+        // Solo mostrar el mensaje de disponibilidad si el usuario ya ha seleccionado huéspedes
+        // y se ha avanzado más allá de la selección inicial
+        if (state.guests > 0 && state.requiredDomos && state.requiredDomos > 0) {
+          toast.success(`Tenemos disponibilidad para los ${state.requiredDomos || 1} domos necesarios.`);
+        }
         return;
       }
 
@@ -107,46 +114,62 @@ export const useReservationActions = (state: ReservationState) => {
       const availableDomos = Math.max(0, (state.displayUnit.domos || 4) - reservedCount);
       const requiredDomos = state.requiredDomos || 1;
 
+      console.log(`Domos reservados: ${reservedCount}, Disponibles: ${availableDomos}, Requeridos: ${requiredDomos}`);
+      
       if (availableDomos >= requiredDomos) {
         // Hay suficientes domos disponibles
         state.setIsAvailable(true);
         state.setIsPartialAvailability(false);
         state.setAvailableDomos(availableDomos);
         state.setAlternativeDates([]);
-        toast.success(`Tenemos disponibilidad para los ${requiredDomos} domos necesarios.`);
+        
+        // Solo mostrar el mensaje de disponibilidad si el usuario ya ha seleccionado huéspedes
+        if (state.guests > 0 && requiredDomos > 0) {
+          toast.success(`Tenemos disponibilidad para los ${requiredDomos} domos necesarios.`);
+        }
       } else if (availableDomos > 0) {
         // Hay disponibilidad parcial
         state.setIsAvailable(false);
         state.setIsPartialAvailability(true);
         state.setAvailableDomos(availableDomos);
         state.setAlternativeDates([]);
-        toast.warning(`Solo tenemos disponibilidad para ${availableDomos} domos en las fechas seleccionadas.`, {
-          duration: 6000
-        });
+        
+        // Solo mostrar el mensaje de disponibilidad parcial si el usuario ya ha seleccionado huéspedes
+        if (state.guests > 0 && requiredDomos > 0) {
+          toast.warning(`Solo tenemos disponibilidad para ${availableDomos} domos en las fechas seleccionadas.`, {
+            duration: 6000
+          });
+        }
       } else {
         // No hay disponibilidad
         state.setIsAvailable(false);
         state.setIsPartialAvailability(false);
         state.setAvailableDomos(0);
         
-        // Intentamos buscar fechas alternativas
-        try {
-          const alternativeDates = await import('@/hooks/reservations/utils/availabilityChecker')
-            .then(module => module.findAlternativeDates(state.startDate!, state.endDate!, requiredDomos));
-          
-          state.setAlternativeDates(alternativeDates);
-          
-          if (alternativeDates.length > 0) {
-            toast.error(`No hay domos disponibles para las fechas seleccionadas. Encontramos ${alternativeDates.length} fechas alternativas.`, {
-              duration: 6000
-            });
-          } else {
+        // Solo buscar fechas alternativas si el usuario ya ha seleccionado huéspedes
+        if (state.guests > 0 && requiredDomos > 0) {
+          // Intentamos buscar fechas alternativas
+          try {
+            const alternativeDates = await import('@/hooks/reservations/utils/availabilityChecker')
+              .then(module => module.findAlternativeDates(state.startDate!, state.endDate!, requiredDomos));
+            
+            state.setAlternativeDates(alternativeDates);
+            
+            if (alternativeDates.length > 0) {
+              toast.error(`No hay domos disponibles para las fechas seleccionadas. Encontramos ${alternativeDates.length} fechas alternativas.`, {
+                duration: 6000
+              });
+            } else {
+              toast.error(`No hay domos disponibles para las fechas seleccionadas.`);
+            }
+          } catch (error) {
+            console.error("Error buscando fechas alternativas:", error);
+            state.setAlternativeDates([]);
             toast.error(`No hay domos disponibles para las fechas seleccionadas.`);
           }
-        } catch (error) {
-          console.error("Error buscando fechas alternativas:", error);
+        } else {
+          // Si el usuario aún no ha seleccionado huéspedes, simplemente actualizamos el estado sin mostrar mensajes
           state.setAlternativeDates([]);
-          toast.error(`No hay domos disponibles para las fechas seleccionadas.`);
         }
       }
     } catch (error) {

@@ -73,7 +73,6 @@ export const checkUnitAvailability = async (
 
 /**
  * Verifica la disponibilidad general de domos para el rango de fechas indicado
- * Considera que hay disponibilidad si al menos un domo está libre
  * 
  * @param checkIn - Fecha de entrada
  * @param checkOut - Fecha de salida
@@ -106,15 +105,24 @@ export const checkGeneralAvailability = async (
 
     if (error) {
       console.error('Error al verificar disponibilidad general:', error);
-      // En caso de error, asumimos que hay al menos un domo disponible
+      // En caso de error, asumimos que hay disponibilidad total
       return {
         isAvailable: true,
-        availableUnits: 1,
+        availableUnits: TOTAL_DOMOS,
         totalUnits: TOTAL_DOMOS
       };
     }
 
-    console.log(`Encontradas ${overlappingReservations?.length || 0} reservas solapadas`);
+    if (!overlappingReservations || overlappingReservations.length === 0) {
+      // No hay reservas, disponibilidad completa
+      return {
+        isAvailable: true,
+        availableUnits: TOTAL_DOMOS,
+        totalUnits: TOTAL_DOMOS
+      };
+    }
+    
+    console.log(`Encontradas ${overlappingReservations.length} reservas solapadas`);
     
     // Contamos cuántas unidades diferentes están reservadas
     const uniqueReservedUnits = new Set(overlappingReservations?.map(r => r.unit_id) || []);
@@ -124,12 +132,9 @@ export const checkGeneralAvailability = async (
     const reservationsWithoutUnitId = (overlappingReservations || []).filter(r => !r.unit_id).length;
     const totalReservedCount = Math.min(TOTAL_DOMOS, reservedCount + reservationsWithoutUnitId);
     
-    // Ajustamos la disponibilidad al 75% del total como máximo
-    // Esto significa que de los 4 domos, solo se pueden reservar 3 (75%)
-    const maxAvailableUnits = Math.floor(TOTAL_DOMOS * 0.75);
-    const availableUnits = Math.min(maxAvailableUnits, Math.max(0, TOTAL_DOMOS - totalReservedCount));
+    const availableUnits = Math.max(0, TOTAL_DOMOS - totalReservedCount);
     
-    console.log(`Domos reservados: ${totalReservedCount}, Domos disponibles: ${availableUnits}, Máximo disponible: ${maxAvailableUnits}`);
+    console.log(`Domos reservados: ${totalReservedCount}, Domos disponibles: ${availableUnits}`);
     
     return {
       isAvailable: availableUnits > 0,
@@ -138,10 +143,10 @@ export const checkGeneralAvailability = async (
     };
   } catch (error) {
     console.error('Error en checkGeneralAvailability:', error);
-    // En caso de error, asumimos que hay al menos un domo disponible
+    // En caso de error, asumimos disponibilidad total
     return {
       isAvailable: true,
-      availableUnits: 1,
+      availableUnits: TOTAL_DOMOS,
       totalUnits: TOTAL_DOMOS
     };
   }

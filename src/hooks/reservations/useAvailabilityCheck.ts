@@ -45,7 +45,9 @@ export const useAvailabilityCheck = ({ setIsLoading, toast }: UseAvailabilityChe
     try {
       setIsLoading(true);
       
-      return await checkGeneralAvailability(checkIn, checkOut);
+      const result = await checkGeneralAvailability(checkIn, checkOut);
+      console.log("Resultado de disponibilidad general:", result);
+      return result;
     } catch (error) {
       console.error('Error al verificar disponibilidad general:', error);
       toast({
@@ -53,9 +55,9 @@ export const useAvailabilityCheck = ({ setIsLoading, toast }: UseAvailabilityChe
         title: "Error",
         description: "No se pudo verificar la disponibilidad. Por favor, intenta de nuevo.",
       });
-      // En caso de error, retornamos un valor por defecto
+      // En caso de error, retornamos disponibilidad total
       return {
-        isAvailable: true, // Asumimos disponibilidad para no bloquear la experiencia
+        isAvailable: true,
         availableUnits: 4,
         totalUnits: 4
       };
