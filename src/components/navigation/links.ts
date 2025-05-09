@@ -31,3 +31,6 @@ export const navigationLinks = [
     isExternal: false
   }
 ];
+
+// Alias for backward compatibility
+export const mainNavLinks = navigationLinks;

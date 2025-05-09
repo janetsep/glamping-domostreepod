@@ -2,15 +2,21 @@
 import { ThemedPackage } from '@/types';
 
 interface PackageSelectorProps {
-  packages: ThemedPackage[];
+  packages?: ThemedPackage[];
   selectedPackages: ThemedPackage[];
   onPackageToggle: (pkg: ThemedPackage) => void;
+  totalPrice?: number;
 }
 
-const PackageSelector = ({ packages, selectedPackages, onPackageToggle }: PackageSelectorProps) => {
+export const PackageSelector = ({ packages = [], selectedPackages, onPackageToggle, totalPrice }: PackageSelectorProps) => {
   return (
     <div className="space-y-4">
       <h3 className="font-medium text-lg">Paquetes temáticos</h3>
+      {totalPrice !== undefined && totalPrice > 0 && (
+        <div className="text-right text-sm font-medium text-primary">
+          Total paquetes: ${totalPrice.toLocaleString()}
+        </div>
+      )}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         {packages.map((pkg) => {
           const isSelected = selectedPackages.some((p) => p.id === pkg.id);
@@ -24,7 +30,7 @@ const PackageSelector = ({ packages, selectedPackages, onPackageToggle }: Packag
                 className="mt-1"
               />
               <label htmlFor={`package-${pkg.id}`} className="flex-1 cursor-pointer">
-                <div className="font-medium">{pkg.name}</div>
+                <div className="font-medium">{pkg.title || pkg.name}</div>
                 <div className="text-sm text-gray-500">{pkg.description}</div>
                 <div className="text-sm font-medium mt-1">${pkg.price.toLocaleString()}</div>
               </label>

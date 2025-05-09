@@ -2,11 +2,11 @@
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Activity, ThemedPackage } from "@/types";
-import { GuestCounter } from "@/components/unit-detail/GuestCounter";
+import GuestCounter from "@/components/unit-detail/GuestCounter";
 import { DateSelector } from "@/components/unit-detail/DateSelector";
 import { AvailabilityCalendarSheet } from "../AvailabilityCalendarSheet";
-import { ActivitiesSelector } from "./ActivitiesSelector";
-import { PackageSelector } from "./PackageSelector";
+import ActivitiesSelector from "./ActivitiesSelector";
+import PackageSelector from "./PackageSelector";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { format } from "date-fns";
 import { es } from "date-fns/locale";
