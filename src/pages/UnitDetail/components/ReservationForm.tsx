@@ -64,10 +64,34 @@ export const ReservationForm = ({
   // Arrays con las actividades y paquetes (esto eventualmente vendrá de una API)
   // Simulación de datos para actividades
   const activities: Activity[] = [
-    { id: '1', name: 'Trekking guiado', description: 'Recorrido de 4 horas por senderos naturales', price: 25000 },
-    { id: '2', name: 'Tour astronómico', description: 'Observación de estrellas con guía especializado', price: 35000 },
-    { id: '3', name: 'Clase de yoga', description: 'Sesión de 90 minutos en medio del bosque', price: 18000 },
-    { id: '4', name: 'Pase a termas', description: 'Entrada a termas naturales cercanas', price: 30000 }
+    { 
+      id: '1', 
+      name: 'Trekking guiado', 
+      description: 'Recorrido de 4 horas por senderos naturales', 
+      price: 25000,
+      image_url: '/placeholder.svg'
+    },
+    { 
+      id: '2', 
+      name: 'Tour astronómico', 
+      description: 'Observación de estrellas con guía especializado', 
+      price: 35000,
+      image_url: '/placeholder.svg'
+    },
+    { 
+      id: '3', 
+      name: 'Clase de yoga', 
+      description: 'Sesión de 90 minutos en medio del bosque', 
+      price: 18000,
+      image_url: '/placeholder.svg'
+    },
+    { 
+      id: '4', 
+      name: 'Pase a termas', 
+      description: 'Entrada a termas naturales cercanas', 
+      price: 30000,
+      image_url: '/placeholder.svg'
+    }
   ];
 
   // Simulación de datos para paquetes temáticos
@@ -76,19 +100,25 @@ export const ReservationForm = ({
       id: '1', 
       title: 'Romántico', 
       description: 'Champagne, pétalos de rosa y cena especial', 
-      price: 50000 
+      price: 50000, 
+      image: '/placeholder.svg',
+      detailedDescription: 'Un paquete especial para parejas'
     },
     { 
       id: '2', 
       title: 'Aventura', 
       description: 'Equipamiento para trekking y pack de supervivencia', 
-      price: 40000 
+      price: 40000,
+      image: '/placeholder.svg',
+      detailedDescription: 'Para los amantes de la aventura'
     },
     { 
       id: '3', 
       title: 'Relax Total', 
       description: 'Sales de baño, aromaterapia y masajes', 
-      price: 60000 
+      price: 60000,
+      image: '/placeholder.svg',
+      detailedDescription: 'Disfruta de una experiencia de relajación completa'
     }
   ];
 
@@ -106,6 +136,7 @@ export const ReservationForm = ({
       maxGuests={16} // Maximum capacity
       guests={guests}
       onGuestsChange={setGuests}
+      maxDomos={4} // Máximo 4 domos disponibles
       requiredDomos={requiredDomos}
       onDomosChange={setRequiredDomos}
       isAvailable={isAvailable}

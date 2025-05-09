@@ -1,3 +1,4 @@
+
 import { useState, useEffect, useRef } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useReservations } from "@/hooks/reservations";
@@ -21,6 +22,7 @@ export const useUnitDetailState = (unitId: string | undefined) => {
   const [isProcessingPayment, setIsProcessingPayment] = useState(false);
   const [paymentDetails, setPaymentDetails] = useState<any>(null);
   const [checkedAvailability, setCheckedAvailability] = useState(false);
+  const [isCheckedAvailability, setIsCheckedAvailability] = useState(false);
   const [selectedActivities, setSelectedActivities] = useState<Activity[]>([]);
   const [selectedPackages, setSelectedPackages] = useState<ThemedPackage[]>([]);
   const [activitiesTotal, setActivitiesTotal] = useState(0);
@@ -37,7 +39,7 @@ export const useUnitDetailState = (unitId: string | undefined) => {
     phone: ''
   });
   const confirmationRef = useRef<HTMLDivElement>(null);
-  const [isPartialAvailability, setPartialAvailability] = useState<boolean>(false);
+  const [isPartialAvailability, setIsPartialAvailability] = useState<boolean>(false);
   const [availableDomos, setAvailableDomos] = useState<number>(0);
   const [alternativeDates, setAlternativeDates] = useState<{startDate: Date, endDate: Date}[]>([]);
 
@@ -169,12 +171,16 @@ export const useUnitDetailState = (unitId: string | undefined) => {
     setPaymentDetails,
     checkedAvailability,
     setCheckedAvailability,
+    isCheckedAvailability,
+    setIsCheckedAvailability,
     selectedActivities,
     setSelectedActivities,
     selectedPackages,
     setSelectedPackages,
     activitiesTotal,
+    setActivitiesTotal,
     packagesTotal,
+    setPackagesTotal,
     reservationTab,
     setReservationTab,
     confirmedReservationId,
@@ -183,7 +189,7 @@ export const useUnitDetailState = (unitId: string | undefined) => {
     setClientInformation,
     confirmationRef,
     isPartialAvailability,
-    setPartialAvailability,
+    setIsPartialAvailability,
     availableDomos,
     setAvailableDomos,
     alternativeDates,

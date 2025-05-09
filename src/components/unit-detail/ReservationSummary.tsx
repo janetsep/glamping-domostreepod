@@ -10,6 +10,7 @@ interface ReservationSummaryProps {
     nights: number;
     pricePerNight: number;
     totalPrice: number;
+    basePrice?: number;
     breakdown: Array<{ 
       description: string; 
       amount: number;
@@ -18,7 +19,10 @@ interface ReservationSummaryProps {
     }>;
     rateDescription?: string;
     requiredDomos?: number;
-    domoDistribution?: Array<{ number: number; guests: number }>;
+    domoDistribution?: Array<{ 
+      domoNumber: number; 
+      guests: number 
+    }>;
     season?: 'high' | 'medium' | 'low';
   };
   isAvailable: boolean;
@@ -52,7 +56,7 @@ export const ReservationSummary: React.FC<ReservationSummaryProps> = ({
   const extrasTotal = activitiesTotal + packagesTotal;
 
   // Precio base es el precio de los domos sin extras
-  const basePrice = quote.totalPrice - extrasTotal;
+  const basePrice = quote.basePrice !== undefined ? quote.basePrice : quote.totalPrice - extrasTotal;
   // Precio total es el precio base más los extras
   const finalTotal = quote.totalPrice;
   
@@ -115,12 +119,12 @@ export const ReservationSummary: React.FC<ReservationSummaryProps> = ({
           <div className="grid grid-cols-1 gap-2">
             {/* Mostrar todos los domos de la distribución */}
             {quote.domoDistribution.map(domo => (
-              <div key={domo.number} className="p-2 bg-secondary/30 rounded-md flex justify-between">
+              <div key={domo.domoNumber} className="p-2 bg-secondary/30 rounded-md flex justify-between">
                 <div className="flex items-center">
-                  <span>Domo {domo.number}: {domo.guests} {domo.guests === 1 ? 'persona' : 'personas'}</span>
+                  <span>Domo {domo.domoNumber}: {domo.guests} {domo.guests === 1 ? 'persona' : 'personas'}</span>
                 </div>
                 <span className="font-medium">
-                  {formatCurrency(quote.basePrice / quote.domoDistribution.length)}
+                  {formatCurrency(basePrice / quote.domoDistribution.length)}
                 </span>
               </div>
             ))}

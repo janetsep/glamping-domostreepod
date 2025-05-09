@@ -1,6 +1,7 @@
 
 // Importing necessary types
 import { Activity, ThemedPackage } from '@/types';
+import { GlampingUnit } from '@/lib/supabase';
 
 // Define the quote state structure
 export interface QuoteState {
@@ -29,15 +30,45 @@ export interface QuoteState {
   activitiesTotal: number;
   packagesTotal: number;
   reservationTab: string;
+  
+  // Added properties needed by useQuoteCalculation
+  startDate?: Date;
+  endDate?: Date;
+  guests: number;
+  displayUnit?: GlampingUnit;
+  requiredDomos?: number;
+  setQuote: (quote: any) => void;
+  setShowQuote: (show: boolean) => void;
+  setReservationTab: (tab: string) => void;
+  setIsAvailable: (available: boolean) => void;
+  checkAvailability: (unitId: string, checkIn: Date, checkOut: Date) => Promise<boolean>;
+  calculateQuote: (prices: any, checkIn: Date, checkOut: Date, guests: number, requiredDomos: number) => any;
 }
 
 // Basic quote state initialization
-export const initialQuoteState: QuoteState = {
+export const initialQuoteState: Partial<QuoteState> = {
   showQuote: false,
   quote: null,
   selectedActivities: [],
   selectedPackages: [],
   activitiesTotal: 0,
   packagesTotal: 0,
-  reservationTab: 'dates'
+  reservationTab: 'dates',
+  guests: 1
+};
+
+// Add the missing useQuoteBase function that's imported in useQuoteManagement
+export const useQuoteBase = (state: QuoteState) => {
+  const getUpdatedQuoteTotal = () => {
+    if (!state.quote) return 0;
+    
+    // Calculate total price based on base price plus extras
+    const basePrice = state.quote.basePrice || state.quote.totalPrice;
+    const extrasTotal = state.activitiesTotal + state.packagesTotal;
+    return basePrice + extrasTotal;
+  };
+  
+  return {
+    getUpdatedQuoteTotal
+  };
 };
