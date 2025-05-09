@@ -1,7 +1,7 @@
 
 import { useEffect } from "react";
 import { useUnitDetailState } from "./useUnitDetailState";
-import { useReservationActions, ReservationState } from "./useReservationActions";
+import { useReservationActions, ReservationState } from "./reservationActions";
 import { usePaymentStatusHandler } from "./usePaymentStatusHandler";
 
 export const useUnitDetailController = (
