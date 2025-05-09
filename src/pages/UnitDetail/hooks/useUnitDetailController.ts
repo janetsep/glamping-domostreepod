@@ -23,8 +23,7 @@ export const useUnitDetailController = (
   // Check availability only when dates AND guests are selected
   useEffect(() => {
     if (state.startDate && state.endDate && state.guests > 0 && state.requiredDomos && state.requiredDomos > 0) {
-      // Solo verificamos la disponibilidad cuando el usuario haya seleccionado
-      // tanto las fechas como los huéspedes
+      console.log(`Verificando disponibilidad con: ${state.guests} huéspedes, ${state.requiredDomos} domos requeridos`);
       actions.checkDatesAvailability();
     }
   }, [

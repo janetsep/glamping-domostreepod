@@ -72,6 +72,8 @@ export const useReservationActions = (state: ReservationState) => {
     }
 
     try {
+      console.log(`Verificando disponibilidad para ${state.requiredDomos || 1} domos del ${format(state.startDate, 'yyyy-MM-dd')} al ${format(state.endDate, 'yyyy-MM-dd')}`);
+      
       const startDateFormatted = format(state.startDate, 'yyyy-MM-dd');
       const endDateFormatted = format(state.endDate, 'yyyy-MM-dd');
 
@@ -84,9 +86,14 @@ export const useReservationActions = (state: ReservationState) => {
 
       if (error) {
         console.error("Error fetching reservations:", error);
-        toast.error("No se pudo verificar la disponibilidad. Por favor, inténtalo de nuevo.", {
-          duration: 6000
-        });
+        
+        // Solo mostrar el mensaje si el usuario ha seleccionado huéspedes
+        if (state.guests && state.guests > 0) {
+          toast.error("No se pudo verificar la disponibilidad. Por favor, inténtalo de nuevo.", {
+            duration: 6000
+          });
+        }
+        
         state.setIsAvailable(true); // Asumimos disponibilidad en caso de error para no bloquear
         state.setCheckedAvailability(true);
         return;
@@ -94,16 +101,16 @@ export const useReservationActions = (state: ReservationState) => {
 
       if (!overlappingReservations || overlappingReservations.length === 0) {
         // No hay reservas en ese rango, hay disponibilidad completa
+        console.log("No hay reservas en el rango seleccionado, disponibilidad completa");
         state.setIsAvailable(true);
         state.setIsPartialAvailability(false);
-        state.setAvailableDomos(state.displayUnit.domos || 4);
+        state.setAvailableDomos(4); // Asumimos que hay 4 domos en total disponibles
         state.setAlternativeDates([]);
         state.setCheckedAvailability(true);
         
         // Solo mostrar el mensaje de disponibilidad si el usuario ya ha seleccionado huéspedes
-        // y se ha avanzado más allá de la selección inicial
         if (state.guests > 0 && state.requiredDomos && state.requiredDomos > 0) {
-          toast.success(`Tenemos disponibilidad para los ${state.requiredDomos || 1} domos necesarios.`);
+          toast.success(`Tenemos disponibilidad para los ${state.requiredDomos} domos necesarios.`);
         }
         return;
       }
@@ -111,7 +118,7 @@ export const useReservationActions = (state: ReservationState) => {
       // Verificamos cuántos domos están ocupados en el rango de fechas
       const uniqueReservedUnits = new Set(overlappingReservations.map(r => r.unit_id));
       const reservedCount = uniqueReservedUnits.size;
-      const availableDomos = Math.max(0, (state.displayUnit.domos || 4) - reservedCount);
+      const availableDomos = Math.max(0, 4 - reservedCount); // Asumimos que hay 4 domos en total
       const requiredDomos = state.requiredDomos || 1;
 
       console.log(`Domos reservados: ${reservedCount}, Disponibles: ${availableDomos}, Requeridos: ${requiredDomos}`);
@@ -150,10 +157,11 @@ export const useReservationActions = (state: ReservationState) => {
         if (state.guests > 0 && requiredDomos > 0) {
           // Intentamos buscar fechas alternativas
           try {
-            const alternativeDates = await import('@/hooks/reservations/utils/availabilityChecker')
-              .then(module => module.findAlternativeDates(state.startDate!, state.endDate!, requiredDomos));
+            const { findAlternativeDates } = await import('@/hooks/reservations/utils/availabilityChecker');
+            const alternativeDates = await findAlternativeDates(state.startDate, state.endDate, requiredDomos);
             
             state.setAlternativeDates(alternativeDates);
+            console.log(`Se encontraron ${alternativeDates.length} fechas alternativas`);
             
             if (alternativeDates.length > 0) {
               toast.error(`No hay domos disponibles para las fechas seleccionadas. Encontramos ${alternativeDates.length} fechas alternativas.`, {
@@ -174,9 +182,14 @@ export const useReservationActions = (state: ReservationState) => {
       }
     } catch (error) {
       console.error("Error checking availability:", error);
-      toast.error("Ocurrió un error al verificar la disponibilidad. Por favor, inténtalo de nuevo.", {
-        duration: 6000
-      });
+      
+      // Solo mostrar mensaje si el usuario ya ha seleccionado huéspedes
+      if (state.guests > 0 && state.requiredDomos && state.requiredDomos > 0) {
+        toast.error("Ocurrió un error al verificar la disponibilidad. Por favor, inténtalo de nuevo.", {
+          duration: 6000
+        });
+      }
+      
       // Asumimos disponibilidad en caso de error para no bloquear la experiencia del usuario
       state.setIsAvailable(true); 
       state.setIsPartialAvailability(false);

@@ -45,7 +45,7 @@ export const checkUnitAvailability = async (
       // Buscamos reservas que se solapan con el rango de fechas solicitado
       const { data: overlappingReservations, error } = await supabase
         .from('reservations')
-        .select('id, unit_id, check_in, check_out')
+        .select('id, unit_id, check_in, check_out, status')
         .eq('status', 'confirmed')
         .or(`check_in.lte.${checkOutDate.toISOString()},check_out.gte.${checkInDate.toISOString()}`);
 
@@ -55,7 +55,10 @@ export const checkUnitAvailability = async (
         return true;
       }
 
+      console.log(`Encontradas ${overlappingReservations?.length} reservas solapadas totales`);
+      
       const reservationsForUnit = overlappingReservations?.filter(r => r.unit_id === unitId);
+      console.log(`De las cuales ${reservationsForUnit?.length} son para la unidad ${unitId}`);
       
       // Si no hay reservas para esta unidad en ese periodo, está disponible
       return !reservationsForUnit || reservationsForUnit.length === 0;
@@ -132,11 +135,13 @@ export const checkGeneralAvailability = async (
         .map(r => r.unit_id)
     );
     const reservedUnitsCount = uniqueReservedUnits.size;
+    console.log(`Unidades únicas reservadas: ${reservedUnitsCount}`);
     
     // Contar reservas sin unit_id específico (cada una cuenta como una unidad reservada)
     const reservationsWithoutUnitId = overlappingReservations.filter(r => !r.unit_id).length;
+    console.log(`Reservas sin unit_id específico: ${reservationsWithoutUnitId}`);
     
-    // El total de unidades reservadas es la suma de ambos tipos
+    // El total de unidades reservadas es la suma de ambos tipos, pero nunca más que el total disponible
     const totalReservedCount = Math.min(TOTAL_DOMOS, reservedUnitsCount + reservationsWithoutUnitId);
     
     // Las unidades disponibles son el total menos las reservadas
@@ -189,10 +194,11 @@ export const findAlternativeDates = async (
       
       try {
         // Verificar disponibilidad para estas fechas
-        const { availableUnits } = await checkGeneralAvailability(currentStart, currentEnd);
+        const result = await checkGeneralAvailability(currentStart, currentEnd);
+        console.log(`Verificando fecha alternativa ${format(currentStart, 'yyyy-MM-dd')}: ${result.availableUnits} domos disponibles`);
         
         // Si hay suficientes domos disponibles
-        if (availableUnits >= requiredDomos) {
+        if (result.availableUnits >= requiredDomos) {
           alternativeDates.push({
             startDate: currentStart,
             endDate: currentEnd
@@ -225,10 +231,11 @@ export const findAlternativeDates = async (
         
         try {
           // Verificar disponibilidad para estas fechas
-          const { availableUnits } = await checkGeneralAvailability(currentStart, currentEnd);
+          const result = await checkGeneralAvailability(currentStart, currentEnd);
+          console.log(`Verificando fecha alternativa anterior ${format(currentStart, 'yyyy-MM-dd')}: ${result.availableUnits} domos disponibles`);
           
           // Si hay suficientes domos disponibles
-          if (availableUnits >= requiredDomos) {
+          if (result.availableUnits >= requiredDomos) {
             // Comprobar que no es un duplicado
             const isDuplicate = alternativeDates.some(dates => 
               isSameDay(dates.startDate, currentStart) && isSameDay(dates.endDate, currentEnd)
@@ -242,7 +249,7 @@ export const findAlternativeDates = async (
             }
           }
         } catch (error) {
-          console.error(`Error al verificar fecha alternativa ${format(currentStart, 'yyyy-MM-dd')}:`, error);
+          console.error(`Error al verificar fecha alternativa anterior ${format(currentStart, 'yyyy-MM-dd')}:`, error);
           // Continuamos con la siguiente fecha
           continue;
         }

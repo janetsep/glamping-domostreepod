@@ -1,3 +1,4 @@
+
 import { useState } from 'react';
 import { useAvailabilityCheck } from './useAvailabilityCheck';
 import { usePricing } from './usePricing';
@@ -12,7 +13,7 @@ export const useReservations = () => {
   const { toast } = useToast();
   
   // Import other hooks
-  const { checkAvailability, checkGeneralDomosAvailability } = useAvailabilityCheck({ setIsLoading, toast });
+  const { checkAvailability, checkGeneralDomosAvailability } = useAvailabilityCheck({ setIsLoading });
   const { calculateQuote } = usePricing();
   const { createReservation } = useReservationCreation({ 
     setIsLoading, 

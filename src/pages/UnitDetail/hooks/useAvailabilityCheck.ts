@@ -24,37 +24,34 @@ export const useAvailabilityCheck = (state: AvailabilityState) => {
       const requiredDomos = state.requiredDomos || 1;
       
       try {
-        // Verificar disponibilidad para cada domo requerido
-        let availableCount = 0;
+        // Suponer disponibilidad inicial
+        let availableDomos = 4; // TOTAL_DOMOS de availabilityChecker.ts
         
-        for (let i = 0; i < requiredDomos; i++) {
-          try {
-            const available = await state.checkAvailability(
-              state.displayUnit.id,
-              state.startDate,
-              state.endDate
-            );
-            if (available) {
-              availableCount++;
-            }
-          } catch (error) {
-            console.error(`Error al verificar disponibilidad para domo ${i}:`, error);
-            // En caso de error al verificar la disponibilidad, asumimos que el domo está disponible
-            availableCount++;
+        // Verificar disponibilidad general en lugar de por domo individual
+        try {
+          const { data, error } = await import('@/hooks/reservations/utils/availabilityChecker')
+            .then(module => module.checkGeneralAvailability(state.startDate!, state.endDate!));
+            
+          if (!error) {
+            availableDomos = data?.availableUnits || 4;
           }
+        } catch (error) {
+          console.error('Error al verificar disponibilidad general:', error);
+          // En caso de error, asumimos disponibilidad completa
+          availableDomos = 4;
         }
-
-        console.log(`Domos requeridos: ${requiredDomos}, Domos disponibles: ${availableCount}`);
+        
+        console.log(`Domos requeridos: ${requiredDomos}, Domos disponibles: ${availableDomos}`);
         
         // Determinar si hay disponibilidad total, parcial o ninguna
-        if (availableCount >= requiredDomos) {
+        if (availableDomos >= requiredDomos) {
           // Hay disponibilidad completa
           state.setIsAvailable(true);
           if (state.setPartialAvailability) {
             state.setPartialAvailability(false);
           }
           if (state.setAvailableDomos) {
-            state.setAvailableDomos(availableCount);
+            state.setAvailableDomos(availableDomos);
           }
           if (state.setAlternativeDates) {
             state.setAlternativeDates([]);
@@ -65,19 +62,19 @@ export const useAvailabilityCheck = (state: AvailabilityState) => {
             toast.success(`Tenemos disponibilidad para los ${requiredDomos} domos necesarios.`);
           }
         } 
-        else if (availableCount > 0) {
+        else if (availableDomos > 0) {
           // Hay disponibilidad parcial
           state.setIsAvailable(false);
           if (state.setPartialAvailability) {
             state.setPartialAvailability(true);
           }
           if (state.setAvailableDomos) {
-            state.setAvailableDomos(availableCount);
+            state.setAvailableDomos(availableDomos);
           }
           
           // Solo mostrar mensaje si el usuario ha seleccionado huéspedes
           if (state.guests && state.guests > 0) {
-            toast.warning(`Solo tenemos disponibilidad para ${availableCount} domos en las fechas seleccionadas.`, {
+            toast.warning(`Solo tenemos disponibilidad para ${availableDomos} domos en las fechas seleccionadas.`, {
               duration: 6000
             });
             
@@ -90,6 +87,7 @@ export const useAvailabilityCheck = (state: AvailabilityState) => {
                   requiredDomos
                 );
                 state.setAlternativeDates(alternatives);
+                console.log("Fechas alternativas encontradas:", alternatives.length);
               }
             } catch (error) {
               console.error('Error al buscar fechas alternativas:', error);
@@ -119,6 +117,7 @@ export const useAvailabilityCheck = (state: AvailabilityState) => {
                   requiredDomos
                 );
                 state.setAlternativeDates(alternatives);
+                console.log("Fechas alternativas encontradas:", alternatives.length);
                 
                 if (alternatives.length > 0) {
                   toast.error(`No hay domos disponibles para las fechas seleccionadas. Encontramos ${alternatives.length} fechas alternativas.`, {
