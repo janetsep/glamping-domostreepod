@@ -20,14 +20,21 @@ export const useUnitDetailController = (
     processPaymentStatus();
   }, [processPaymentStatus]);
 
-  // Check availability automatically when dates are selected
+  // Check availability only when dates AND guests are selected
   useEffect(() => {
-    if (state.startDate && state.endDate) {
-      // Solo verificamos la disponibilidad después de que el usuario haya interactuado lo suficiente
-      // como para haber seleccionado ambas fechas
+    if (state.startDate && state.endDate && state.guests > 0 && state.requiredDomos && state.requiredDomos > 0) {
+      // Solo verificamos la disponibilidad cuando el usuario haya seleccionado
+      // tanto las fechas como los huéspedes
       actions.checkDatesAvailability();
     }
-  }, [state.startDate, state.endDate, state.displayUnit, state.guests, state.requiredDomos, actions]);
+  }, [
+    state.startDate, 
+    state.endDate, 
+    state.guests, 
+    state.requiredDomos, 
+    state.displayUnit, 
+    actions
+  ]);
 
   // Reset verification state when dates change
   useEffect(() => {

@@ -5,13 +5,12 @@ import { toast } from "sonner";
 
 interface UseAvailabilityCheckProps {
   setIsLoading: (isLoading: boolean) => void;
-  toast: any;
 }
 
 /**
  * Hook para verificar la disponibilidad de unidades para un rango de fechas específico
  */
-export const useAvailabilityCheck = ({ setIsLoading, toast }: UseAvailabilityCheckProps) => {
+export const useAvailabilityCheck = ({ setIsLoading }: UseAvailabilityCheckProps) => {
   const checkAvailability = async (
     unitId: string,
     checkIn: Date,
@@ -23,11 +22,6 @@ export const useAvailabilityCheck = ({ setIsLoading, toast }: UseAvailabilityChe
       return await checkUnitAvailability(unitId, checkIn, checkOut);
     } catch (error) {
       console.error('Error al verificar disponibilidad:', error);
-      toast({
-        variant: "destructive",
-        title: "Error",
-        description: "No se pudo verificar la disponibilidad. Por favor, intenta de nuevo.",
-      });
       // En caso de error, asumimos que hay disponibilidad para no bloquear completamente la experiencia del usuario
       return true; 
     } finally {
@@ -50,11 +44,6 @@ export const useAvailabilityCheck = ({ setIsLoading, toast }: UseAvailabilityChe
       return result;
     } catch (error) {
       console.error('Error al verificar disponibilidad general:', error);
-      toast({
-        variant: "destructive",
-        title: "Error",
-        description: "No se pudo verificar la disponibilidad. Por favor, intenta de nuevo.",
-      });
       // En caso de error, retornamos disponibilidad total
       return {
         isAvailable: true,
