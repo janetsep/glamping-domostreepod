@@ -2,9 +2,9 @@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { DateSelector } from "@/components/unit-detail/DateSelector";
 import { GuestSelector } from "@/components/unit-detail/GuestSelector";
-import { ActivitiesSelector } from "@/components/unit-detail/ActivitiesSelector";
-import { ThemedPackagesSelector } from "@/components/unit-detail/ThemedPackagesSelector";
 import { Activity, ThemedPackage } from "@/types";
+import ActivitiesSelector from "./components/ActivitiesSelector";
+import PackageSelector from "./components/PackageSelector";
 
 interface ReservationTabsProps {
   tab: string;
@@ -26,6 +26,7 @@ interface ReservationTabsProps {
   onPackageToggle: (pkg: ThemedPackage) => void;
   packagesTotal: number;
   unitId: string;
+  activities?: Activity[];
 }
 
 export const ReservationTabs = ({
@@ -47,7 +48,8 @@ export const ReservationTabs = ({
   selectedPackages,
   onPackageToggle,
   packagesTotal,
-  unitId
+  unitId,
+  activities = []
 }: ReservationTabsProps) => {
   return (
     <Tabs 
@@ -89,17 +91,19 @@ export const ReservationTabs = ({
       
       <TabsContent value="activities">
         <ActivitiesSelector
+          activities={activities}
           selectedActivities={selectedActivities}
           onActivityToggle={onActivityToggle}
-          total={activitiesTotal}
+          totalPrice={activitiesTotal}
         />
       </TabsContent>
       
       <TabsContent value="packages">
-        <ThemedPackagesSelector
+        <PackageSelector
+          packages={selectedPackages}
           selectedPackages={selectedPackages}
           onPackageToggle={onPackageToggle}
-          total={packagesTotal}
+          totalPrice={packagesTotal}
         />
       </TabsContent>
     </Tabs>

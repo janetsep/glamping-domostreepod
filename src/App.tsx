@@ -1,5 +1,5 @@
 
-import { BrowserRouter as Router, Routes, Route, useLocation } from "react-router-dom";
+import { Routes, Route, useLocation } from "react-router-dom";
 import Layout from "./components/Layout";
 import Index from "./pages/Index";
 import UnitDetail from "./pages/UnitDetail";
@@ -28,7 +28,7 @@ const FloatingButtonHandler = () => {
 };
 
 // Componente para manejar el scroll al cambiar de ruta
-const ScrollToTop = () => {
+export const ScrollToTop = () => {
   const { pathname } = useLocation();
   
   useEffect(() => {
@@ -40,20 +40,17 @@ const ScrollToTop = () => {
 
 function App() {
   return (
-    <Router>
-      <ScrollToTop />
-      <Layout>
-        <Routes>
-          <Route path="/" element={<Index />} />
-          <Route path="/unit/:unitId" element={<UnitDetail />} />
-          <Route path="/tipo-viajero/:typeId" element={<TravelerType />} />
-          <Route path="/webpay/return" element={<WebPayReturn />} />
-        </Routes>
-        <FloatingButtonHandler />
-        <Toaster />
-        <SonnerToaster position="top-right" expand={false} richColors />
-      </Layout>
-    </Router>
+    <Layout>
+      <Routes>
+        <Route path="/" element={<Index />} />
+        <Route path="/unit/:unitId" element={<UnitDetail />} />
+        <Route path="/tipo-viajero/:typeId" element={<TravelerType />} />
+        <Route path="/webpay/return" element={<WebPayReturn />} />
+      </Routes>
+      <FloatingButtonHandler />
+      <Toaster />
+      <SonnerToaster position="top-right" expand={false} richColors />
+    </Layout>
   );
 }
 

@@ -6,7 +6,7 @@ import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
 import { Menu } from "lucide-react";
 import { useScrollContext } from "@/components/navigation/ScrollContext";
-import { mainNavLinks } from "./links";
+import { navigationLinks } from "./links";
 
 interface MainNavProps {
   className?: string;
@@ -65,10 +65,10 @@ export function MainNav({ className }: MainNavProps) {
               <p className="text-sm text-gray-500">Valle Las Trancas</p>
             </div>
             <div className="flex flex-col space-y-3">
-              {mainNavLinks.map((item) => (
+              {navigationLinks.map((item) => (
                 <NavLink
-                  key={item.href}
-                  to={item.href}
+                  key={item.id}
+                  to={item.path}
                   onClick={() => setIsOpen(false)}
                   className={({ isActive }) =>
                     cn(
@@ -79,7 +79,7 @@ export function MainNav({ className }: MainNavProps) {
                     )
                   }
                 >
-                  {item.title}
+                  {item.label}
                 </NavLink>
               ))}
             </div>
@@ -108,10 +108,10 @@ export function MainNav({ className }: MainNavProps) {
       
       {/* Desktop Navigation Links */}
       <div className="hidden md:flex md:items-center gap-6 ml-6">
-        {mainNavLinks.map((item) => (
+        {navigationLinks.map((item) => (
           <NavLink
-            key={item.href}
-            to={item.href}
+            key={item.id}
+            to={item.path}
             className={({ isActive }) =>
               cn(
                 "text-sm font-medium transition-all duration-200 relative",
@@ -125,7 +125,7 @@ export function MainNav({ className }: MainNavProps) {
               )
             }
           >
-            {item.title}
+            {item.label}
           </NavLink>
         ))}
       </div>

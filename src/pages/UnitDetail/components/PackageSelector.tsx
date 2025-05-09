@@ -8,7 +8,12 @@ interface PackageSelectorProps {
   totalPrice?: number;
 }
 
-export const PackageSelector = ({ packages = [], selectedPackages, onPackageToggle, totalPrice }: PackageSelectorProps) => {
+const PackageSelector = ({ 
+  packages = [], 
+  selectedPackages, 
+  onPackageToggle, 
+  totalPrice 
+}: PackageSelectorProps) => {
   return (
     <div className="space-y-4">
       <h3 className="font-medium text-lg">Paquetes temáticos</h3>
@@ -30,7 +35,7 @@ export const PackageSelector = ({ packages = [], selectedPackages, onPackageTogg
                 className="mt-1"
               />
               <label htmlFor={`package-${pkg.id}`} className="flex-1 cursor-pointer">
-                <div className="font-medium">{pkg.title || pkg.name}</div>
+                <div className="font-medium">{pkg.title || pkg.id}</div>
                 <div className="text-sm text-gray-500">{pkg.description}</div>
                 <div className="text-sm font-medium mt-1">${pkg.price.toLocaleString()}</div>
               </label>

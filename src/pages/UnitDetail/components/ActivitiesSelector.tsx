@@ -2,13 +2,18 @@
 import { Activity } from '@/types';
 
 interface ActivitiesSelectorProps {
-  activities: Activity[];
+  activities?: Activity[];
   selectedActivities: Activity[];
   onActivityToggle: (activity: Activity) => void;
   totalPrice?: number;
 }
 
-export const ActivitiesSelector = ({ activities, selectedActivities, onActivityToggle, totalPrice }: ActivitiesSelectorProps) => {
+const ActivitiesSelector = ({ 
+  activities = [], 
+  selectedActivities, 
+  onActivityToggle, 
+  totalPrice 
+}: ActivitiesSelectorProps) => {
   return (
     <div className="space-y-4">
       <h3 className="font-medium text-lg">Actividades disponibles</h3>
@@ -30,9 +35,9 @@ export const ActivitiesSelector = ({ activities, selectedActivities, onActivityT
                 className="mt-1"
               />
               <label htmlFor={`activity-${activity.id}`} className="flex-1 cursor-pointer">
-                <div className="font-medium">{activity.title || activity.name}</div>
+                <div className="font-medium">{activity.name || activity.id}</div>
                 <div className="text-sm text-gray-500">{activity.description}</div>
-                <div className="text-sm font-medium mt-1">${activity.price.toLocaleString()}</div>
+                <div className="text-sm font-medium mt-1">${activity.price?.toLocaleString()}</div>
               </label>
             </div>
           );

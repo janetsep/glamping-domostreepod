@@ -9,7 +9,7 @@ export interface QuoteState {
     nights: number;
     pricePerNight: number;
     totalPrice: number;
-    basePrice?: number; // Add this property for backward compatibility
+    basePrice?: number;
     breakdown: {
       description: string;
       amount: number;
@@ -41,7 +41,3 @@ export const initialQuoteState: QuoteState = {
   packagesTotal: 0,
   reservationTab: 'dates'
 };
-
-// Export the type for use in other components
-export type { QuoteState };
-export { initialQuoteState };
