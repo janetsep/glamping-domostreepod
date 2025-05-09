@@ -127,8 +127,9 @@ export const ReservationDetails: React.FC<ReservationDetailsProps> = ({
         <div className="mt-6 p-3 bg-blue-50 border border-blue-100 rounded-md">
           <p className="font-medium text-blue-800 mb-1">Información importante</p>
           <ul className="text-sm text-blue-700 list-disc pl-5 space-y-1">
-            <li>Check-in: a partir de las 15:00 hrs.</li>
+            <li>Check-in: a partir de las 16:00 hrs.</li>
             <li>Check-out: hasta las 12:00 hrs.</li>
+            <li>Pago del 50% por adelantado para confirmar tu reserva.</li>
             <li>Llevar toallas y artículos de aseo personal.</li>
             <li>Máximo 2 mascotas pequeñas por domo.</li>
             <li>Contacto de emergencia: +56 9 1234 5678</li>

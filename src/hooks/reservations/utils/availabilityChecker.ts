@@ -26,9 +26,10 @@ export const checkUnitAvailability = async (
   // Primero verificamos si es una unidad de paquete (no en base de datos)
   const isPackageUnit = packageData.some(pkg => pkg.id === unitId);
   if (isPackageUnit) {
-    // Para unidades de paquete, asumimos que siempre están disponibles
-    console.log('Unidad de paquete, asumiendo disponibilidad');
-    return true;
+    // Para unidades de paquete, verificamos la disponibilidad general
+    // ya que estas unidades comparten el mismo inventario real
+    const { isAvailable } = await checkGeneralAvailability(checkIn, checkOut);
+    return isAvailable;
   }
   
   // Verificamos si hay disponibilidad general para las fechas
@@ -84,9 +85,12 @@ export const checkGeneralAvailability = async (
     const reservationsWithoutUnitId = (overlappingReservations || []).filter(r => !r.unit_id).length;
     const totalReservedCount = Math.min(TOTAL_DOMOS, reservedCount + reservationsWithoutUnitId);
     
-    const availableUnits = Math.max(0, TOTAL_DOMOS - totalReservedCount);
+    // Ajustamos la disponibilidad al 75% del total como máximo
+    // Esto significa que de los 4 domos, solo se pueden reservar 3 (75%)
+    const maxAvailableUnits = Math.floor(TOTAL_DOMOS * 0.75);
+    const availableUnits = Math.min(maxAvailableUnits, Math.max(0, TOTAL_DOMOS - totalReservedCount));
     
-    console.log(`Domos reservados: ${totalReservedCount}, Domos disponibles: ${availableUnits}`);
+    console.log(`Domos reservados: ${totalReservedCount}, Domos disponibles: ${availableUnits}, Máximo disponible: ${maxAvailableUnits}`);
     
     return {
       isAvailable: availableUnits > 0,
