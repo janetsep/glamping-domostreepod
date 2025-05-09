@@ -2,10 +2,9 @@
 import { BrowserRouter as Router, Routes, Route, useLocation } from "react-router-dom";
 import Layout from "./components/Layout";
 import Index from "./pages/Index";
-import DomoList from "./pages/DomoList";
 import UnitDetail from "./pages/UnitDetail";
 import TravelerType from "./pages/TravelerType";
-import WebpayReturn from "./pages/WebpayReturn";
+import WebPayReturn from "./pages/WebPayReturn";
 import { Toaster } from "./components/ui/toaster";
 import { useEffect } from "react";
 import { Toaster as SonnerToaster } from "sonner";
@@ -46,10 +45,9 @@ function App() {
       <Layout>
         <Routes>
           <Route path="/" element={<Index />} />
-          <Route path="/domos" element={<DomoList />} />
           <Route path="/unit/:unitId" element={<UnitDetail />} />
           <Route path="/tipo-viajero/:typeId" element={<TravelerType />} />
-          <Route path="/webpay/return" element={<WebpayReturn />} />
+          <Route path="/webpay/return" element={<WebPayReturn />} />
         </Routes>
         <FloatingButtonHandler />
         <Toaster />

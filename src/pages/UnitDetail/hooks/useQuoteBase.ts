@@ -13,6 +13,7 @@ export interface QuoteState {
   setShowQuote: (show: boolean) => void;
   showQuote: boolean;
   isAvailable: boolean | null;
+  setIsAvailable: (isAvailable: boolean) => void;
   availableDomos?: number;
   requiredDomos?: number;
   calculateQuote: (
@@ -28,6 +29,7 @@ export interface QuoteState {
   selectedPackages: ThemedPackage[];
   activitiesTotal: number;
   packagesTotal: number;
+  checkAvailability: (unitId: string, checkIn: Date, checkOut: Date) => Promise<boolean>;
 }
 
 export const useQuoteBase = (state: QuoteState) => {

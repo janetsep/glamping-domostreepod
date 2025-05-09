@@ -1,88 +1,74 @@
 
-import { clearAllToasts } from "@/hooks/use-toast";
-import { toast } from "sonner";
 import { QuoteState } from "./useQuoteBase";
+import { toast } from "sonner";
 
 export const useQuoteCalculation = (state: QuoteState) => {
   const checkAvailabilityAndQuote = async () => {
-    if (!state.startDate || !state.endDate || !state.displayUnit) return;
-
-    const requiredDomos = state.requiredDomos || 1;
-    
-    // Verificamos si hay suficientes domos disponibles
-    if (state.availableDomos !== undefined && requiredDomos > state.availableDomos) {
-      toast.error("No hay suficientes domos disponibles para las fechas seleccionadas");
+    if (!state.startDate || !state.endDate || !state.displayUnit) {
+      toast.error("Por favor selecciona las fechas de entrada y salida");
       return;
     }
+
+    if (state.guests <= 0) {
+      toast.error("Por favor selecciona al menos 1 huésped");
+      return;
+    }
+
+    // Calcular domos requeridos
+    const requiredDomos = state.requiredDomos || 1;
     
-    // Distribución equitativa de huéspedes entre los domos
-    const baseDistribution = Math.floor(state.guests / requiredDomos);
-    const remaining = state.guests - (baseDistribution * requiredDomos);
-    
-    // Creamos el desglose de precios para cada domo
-    const breakdown = [];
-    let totalPrice = 0;
-    
-    for (let i = 0; i < requiredDomos; i++) {
-      // Calculamos los huéspedes para este domo
-      const domoGuests = i < remaining ? baseDistribution + 1 : baseDistribution;
+    // Verificar disponibilidad
+    try {
+      state.setIsAvailable(false); // Reset
       
-      // Calculamos el precio para este domo
-      const domoQuote = state.calculateQuote(
-        state.displayUnit.prices,
+      // Verificamos disponibilidad
+      const isAvailable = await state.checkAvailability(
+        state.displayUnit.id,
         state.startDate,
-        state.endDate,
-        domoGuests,
-        1 // Aquí es 1 porque estamos calculando el precio por domo individual
+        state.endDate
       );
       
-      // Añadimos el desglose para este domo
-      breakdown.push({
-        description: `Domo ${i + 1}${domoGuests > 0 ? ': ' + domoGuests + (domoGuests === 1 ? ' persona' : ' personas') : ''}`,
-        amount: domoQuote.basePrice,
-        guests: domoGuests,
-        domoNumber: i + 1
-      });
+      // Si no hay disponibilidad, mostramos mensaje y no continuamos
+      if (!isAvailable) {
+        toast.error("Lo sentimos, no hay disponibilidad para las fechas seleccionadas.");
+        state.setIsAvailable(false);
+        return;
+      }
       
-      // Acumulamos el precio total
-      totalPrice += domoQuote.basePrice;
+      // Si hay disponibilidad, calculamos la cotización
+      state.setIsAvailable(true);
+      
+      // Calculamos el precio total y la distribución de huéspedes
+      if (state.displayUnit && state.displayUnit.prices) {
+        // Obtenemos el precio base del domo
+        const basePrice = state.displayUnit.prices.base_price || 0;
+        
+        // Calculamos la cotización
+        const quote = state.calculateQuote(
+          state.displayUnit.prices,
+          state.startDate,
+          state.endDate,
+          state.guests,
+          requiredDomos
+        );
+        
+        // Al quote le agregamos las propiedades para actividades y paquetes
+        const quoteWithExtras = {
+          ...quote,
+          basePrice,
+          requiredDomos,
+        };
+        
+        // Guardamos la cotización y mostramos el resumen
+        state.setQuote(quoteWithExtras);
+        state.setShowQuote(true);
+        state.setReservationTab("summary");
+      }
+    } catch (error) {
+      console.error("Error al verificar disponibilidad:", error);
+      toast.error("Hubo un error al verificar la disponibilidad. Por favor, inténtelo de nuevo.");
     }
-    
-    // Creamos la distribución por domo para mostrar en el resumen
-    const domoDistribution = Array(requiredDomos).fill(0).map((_, i) => ({
-      number: i + 1,
-      guests: i < remaining ? baseDistribution + 1 : baseDistribution
-    }));
-    
-    // Construimos el objeto de cotización completo
-    let quoteDetails = {
-      nights: Math.ceil((state.endDate.getTime() - state.startDate.getTime()) / (1000 * 60 * 60 * 24)),
-      basePrice: totalPrice,
-      pricePerNight: totalPrice / Math.ceil((state.endDate.getTime() - state.startDate.getTime()) / (1000 * 60 * 60 * 24)),
-      totalPrice: totalPrice,
-      breakdown: breakdown,
-      requiredDomos: requiredDomos,
-      domoDistribution: domoDistribution
-    };
-    
-    // Añadimos el precio de actividades y paquetes si están seleccionados
-    if (state.selectedActivities.length > 0 || state.selectedPackages.length > 0) {
-      quoteDetails = {
-        ...quoteDetails,
-        activitiesTotal: state.activitiesTotal,
-        packagesTotal: state.packagesTotal,
-        totalPrice: totalPrice + state.activitiesTotal + state.packagesTotal,
-        selectedActivities: state.selectedActivities,
-        selectedPackages: state.selectedPackages
-      };
-    }
-    
-    state.setQuote(quoteDetails);
-    state.setShowQuote(true);
-    state.setReservationTab("summary");
   };
 
-  return {
-    checkAvailabilityAndQuote
-  };
+  return { checkAvailabilityAndQuote };
 };
