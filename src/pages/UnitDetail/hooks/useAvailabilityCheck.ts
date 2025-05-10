@@ -60,7 +60,7 @@ export const useAvailabilityCheck = (state: AvailabilityState) => {
           state.setAlternativeDates(alternatives);
         }
         
-        toast.warning(`Solo tenemos disponibilidad para ${availableCount} domos en las fechas seleccionadas.`, {
+        toast.warning(`Solo tenemos ${availableCount} de 4 domos disponibles para las fechas seleccionadas.`, {
           duration: 6000
         });
       } else {
@@ -76,7 +76,7 @@ export const useAvailabilityCheck = (state: AvailabilityState) => {
         }
         
         if (allAvailable) {
-          toast.success(`Tenemos disponibilidad para los ${requiredDomos} domos necesarios.`);
+          toast.success(`Tenemos disponibilidad para los ${requiredDomos} domos necesarios (${availableCount} de 4).`);
         } else {
           // Buscar fechas alternativas donde haya suficientes domos
           if (state.setAlternativeDates) {
@@ -92,7 +92,7 @@ export const useAvailabilityCheck = (state: AvailabilityState) => {
                 duration: 6000
               });
             } else {
-              toast.error(`No hay domos disponibles para las fechas seleccionadas.`);
+              toast.error(`No hay domos disponibles (0 de 4) para las fechas seleccionadas.`);
             }
           }
         }

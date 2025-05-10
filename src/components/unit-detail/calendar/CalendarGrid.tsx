@@ -76,14 +76,14 @@ export const CalendarGrid = ({
     return classes;
   };
 
-  // Function to get the availability percentage
-  const getAvailabilityPercentage = (day: AvailabilityCalendarDay): string => {
+  // Function to get the availability display text
+  const getAvailabilityDisplay = (day: AvailabilityCalendarDay): string => {
     if (day.availableUnits === undefined || day.totalUnits === undefined) {
       return "";
     }
     
-    const percentage = Math.round((day.availableUnits / day.totalUnits) * 100);
-    return `${percentage}%`;
+    // Mostrar la cantidad de domos disponibles de un total
+    return `${day.availableUnits}/${day.totalUnits}`;
   };
 
   return (
@@ -99,7 +99,7 @@ export const CalendarGrid = ({
           </div>
           {day.availableUnits !== undefined && isSameMonth(day.date, currentMonth) && (
             <div className="text-xs text-gray-600 mt-1 font-medium">
-              {getAvailabilityPercentage(day)}
+              {getAvailabilityDisplay(day)}
             </div>
           )}
         </div>
