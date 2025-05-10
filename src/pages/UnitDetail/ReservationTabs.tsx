@@ -17,7 +17,6 @@ interface ReservationTabsProps {
   guests: number;
   onGuestsChange: (guests: number) => void;
   requiredDomos?: number;
-  onDomosChange?: (domos: number) => void;
   isAvailable: boolean | null;
   selectedActivities: Activity[];
   onActivityToggle: (activity: Activity) => void;
@@ -26,7 +25,7 @@ interface ReservationTabsProps {
   onPackageToggle: (pkg: ThemedPackage) => void;
   packagesTotal: number;
   unitId: string;
-  availableDomos?: number; // Añadida esta propiedad
+  availableDomos?: number;
 }
 
 export const ReservationTabs = ({
@@ -40,7 +39,6 @@ export const ReservationTabs = ({
   guests,
   onGuestsChange,
   requiredDomos,
-  onDomosChange,
   isAvailable,
   selectedActivities,
   onActivityToggle,
@@ -49,7 +47,7 @@ export const ReservationTabs = ({
   onPackageToggle,
   packagesTotal,
   unitId,
-  availableDomos // Añadido este parámetro
+  availableDomos
 }: ReservationTabsProps) => {
   return (
     <Tabs 
@@ -74,13 +72,12 @@ export const ReservationTabs = ({
         />
         
         <GuestSelector
-          maxGuests={16} // Permitir hasta 16 huéspedes en total
+          maxGuests={16}
           guests={guests}
           onGuestsChange={onGuestsChange}
-          maxDomos={4} // Máximo 4 domos disponibles
+          maxDomos={4}
           requiredDomos={requiredDomos}
-          onDomosChange={onDomosChange}
-          availableDomos={availableDomos} // Pasamos la información de disponibilidad
+          availableDomos={availableDomos}
         />
         
         {isAvailable === false && (

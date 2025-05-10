@@ -19,7 +19,6 @@ interface ReservationFormProps {
   guests: number;
   setGuests: (guests: number) => void;
   requiredDomos?: number;
-  setRequiredDomos?: (domos: number) => void;
   isAvailable: boolean | null;
   onReservation: () => void;
   selectedActivities: Activity[];
@@ -46,7 +45,6 @@ export const ReservationForm = ({
   guests,
   setGuests,
   requiredDomos = 1,
-  setRequiredDomos,
   isAvailable,
   onReservation,
   selectedActivities,
@@ -97,7 +95,6 @@ export const ReservationForm = ({
         guests={guests}
         onGuestsChange={setGuests}
         requiredDomos={requiredDomos}
-        onDomosChange={setRequiredDomos}
         isAvailable={isAvailable}
         selectedActivities={selectedActivities}
         onActivityToggle={onActivityToggle}
@@ -106,12 +103,12 @@ export const ReservationForm = ({
         onPackageToggle={onPackageToggle}
         packagesTotal={packagesTotal}
         unitId={unitId}
-        availableDomos={availableDomos} // Pasamos la información de disponibilidad
+        availableDomos={availableDomos}
       />
 
       {/* Alertas de disponibilidad */}
       {isAvailable === true && (
-        <Alert variant="default" className="bg-green-50 border-green-200">
+        <Alert className="bg-green-50 border-green-200">
           <Check className="h-4 w-4 text-green-600" />
           <AlertTitle className="text-green-800">Disponible</AlertTitle>
           <AlertDescription className="text-green-700">
@@ -148,7 +145,7 @@ export const ReservationForm = ({
         size="lg"
         onClick={onReservation}
         disabled={!startDate || !endDate || isAvailable === false || 
-                 (availableDomos !== undefined && requiredDomos > availableDomos)} // Deshabilitamos el botón si no hay suficientes domos disponibles
+                 (availableDomos !== undefined && requiredDomos > availableDomos)}
       >
         Consultar disponibilidad y cotizar
       </Button>
