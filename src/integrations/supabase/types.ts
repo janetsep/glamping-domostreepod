@@ -108,51 +108,6 @@ export type Database = {
         }
         Relationships: []
       }
-      reservas: {
-        Row: {
-          comentarios: string | null
-          domo_id: string
-          email: string
-          estado: string
-          fecha_creacion: string
-          fecha_entrada: string
-          fecha_salida: string
-          id: number
-          nombre: string
-          numero_adultos: number
-          numero_ninos: number
-          telefono: string
-        }
-        Insert: {
-          comentarios?: string | null
-          domo_id: string
-          email: string
-          estado?: string
-          fecha_creacion?: string
-          fecha_entrada: string
-          fecha_salida: string
-          id?: number
-          nombre: string
-          numero_adultos: number
-          numero_ninos: number
-          telefono: string
-        }
-        Update: {
-          comentarios?: string | null
-          domo_id?: string
-          email?: string
-          estado?: string
-          fecha_creacion?: string
-          fecha_entrada?: string
-          fecha_salida?: string
-          id?: number
-          nombre?: string
-          numero_adultos?: number
-          numero_ninos?: number
-          telefono?: string
-        }
-        Relationships: []
-      }
       reservation_clients: {
         Row: {
           created_at: string

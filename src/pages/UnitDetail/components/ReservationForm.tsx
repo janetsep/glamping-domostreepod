@@ -1,10 +1,14 @@
 
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
-import { ReservationTabs } from "../ReservationTabs";
-import { AlternativeDates } from "@/components/unit-detail/AlternativeDates";
-import { Info } from "lucide-react";
-import { AvailabilityCalendarSheet } from "../AvailabilityCalendarSheet";
+import { DateSelector } from "@/components/unit-detail/DateSelector";
+import { GuestSelector } from "@/components/unit-detail/GuestSelector";
 import { Activity, ThemedPackage } from "@/types";
+import { ReservationTabs } from "../ReservationTabs";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { AlertTriangle, Calendar, Check } from "lucide-react";
+import { AvailabilityCalendarSheet } from "../AvailabilityCalendarSheet";
+import { AlternativeDates } from "@/components/unit-detail/AlternativeDates";
 
 interface ReservationFormProps {
   unitId: string;
@@ -29,8 +33,8 @@ interface ReservationFormProps {
   isPartialAvailability?: boolean;
   availableDomos?: number;
   alternativeDates?: {startDate: Date, endDate: Date}[];
-  handleCalendarDateSelect: (date: Date) => void;
-  handleAlternativeDateSelect: (start: Date, end: Date) => void;
+  handleCalendarDateSelect?: (date: Date) => void;
+  handleAlternativeDateSelect?: (startDate: Date, endDate: Date) => void;
 }
 
 export const ReservationForm = ({
@@ -54,121 +58,99 @@ export const ReservationForm = ({
   reservationTab,
   setReservationTab,
   isPartialAvailability = false,
-  availableDomos = 0,
+  availableDomos,
   alternativeDates = [],
   handleCalendarDateSelect,
   handleAlternativeDateSelect
 }: ReservationFormProps) => {
-  const handleDomosChange = (domos: number) => {
-    if (setRequiredDomos) {
-      setRequiredDomos(domos);
+  // Campo para controlar si hay que mostrar o no las fechas alternativas
+  const [showAlternatives, setShowAlternatives] = useState(false);
+
+  // Efecto para mostrar las fechas alternativas cuando no hay disponibilidad completa
+  useEffect(() => {
+    if (isAvailable === false && alternativeDates.length > 0) {
+      setShowAlternatives(true);
+    } else {
+      setShowAlternatives(false);
     }
-  };
+  }, [isAvailable, alternativeDates]);
 
   return (
-    <>
-      <AvailabilityCalendarSheet 
-        unitId={unitId} 
+    <div className="space-y-6">
+      {/* Calendario expandible */}
+      <AvailabilityCalendarSheet
+        unitId={unitId}
         onSelectDate={handleCalendarDateSelect}
         selectedStartDate={startDate}
         selectedEndDate={endDate}
       />
-      
-      <div className="space-y-4">
-        <ReservationTabs
-          tab={reservationTab}
-          onTabChange={setReservationTab}
-          startDate={startDate}
-          endDate={endDate}
-          onStartDateChange={setStartDate}
-          onEndDateChange={setEndDate}
-          maxGuests={4} // Default value for TreePod domes
-          guests={guests}
-          onGuestsChange={setGuests}
-          requiredDomos={requiredDomos}
-          onDomosChange={handleDomosChange}
-          isAvailable={isAvailable}
-          selectedActivities={selectedActivities}
-          onActivityToggle={onActivityToggle}
-          activitiesTotal={activitiesTotal}
-          selectedPackages={selectedPackages}
-          onPackageToggle={onPackageToggle}
-          packagesTotal={packagesTotal}
-          unitId={unitId}
-        />
 
-        <AvailabilityMessages 
-          isPartialAvailability={isPartialAvailability}
-          isAvailable={isAvailable}
-          availableDomos={availableDomos}
-          requiredDomos={requiredDomos}
-        />
-        
-        {isAvailable === false && alternativeDates.length > 0 && (
-          <AlternativeDates 
-            alternativeDates={alternativeDates}
-            onSelectDate={handleAlternativeDateSelect}
-            requiredDomos={requiredDomos}
-          />
-        )}
+      {/* Tabs de reserva */}
+      <ReservationTabs
+        tab={reservationTab}
+        onTabChange={setReservationTab}
+        startDate={startDate}
+        endDate={endDate}
+        onStartDateChange={setStartDate}
+        onEndDateChange={setEndDate}
+        maxGuests={16}
+        guests={guests}
+        onGuestsChange={setGuests}
+        requiredDomos={requiredDomos}
+        onDomosChange={setRequiredDomos}
+        isAvailable={isAvailable}
+        selectedActivities={selectedActivities}
+        onActivityToggle={onActivityToggle}
+        activitiesTotal={activitiesTotal}
+        selectedPackages={selectedPackages}
+        onPackageToggle={onPackageToggle}
+        packagesTotal={packagesTotal}
+        unitId={unitId}
+        availableDomos={availableDomos} // Pasamos la información de disponibilidad
+      />
 
-        <div className="mt-4 text-sm text-gray-600 p-3 bg-amber-50 border border-amber-100 rounded">
-          <p className="font-medium text-amber-800 mb-1">Política de reserva</p>
-          <p>Pago total por adelantado para confirmar tu reserva. Check-in desde las 15:00, check-out hasta las 12:00.</p>
-        </div>
-
-        <Button 
-          className="w-full mt-2" 
-          size="lg"
-          onClick={onReservation}
-          disabled={!startDate || !endDate || (isAvailable === false && !isPartialAvailability)}
-        >
-          {isAvailable === true ? 'Cotizar estadía' : 'Verificar disponibilidad'}
-        </Button>
-        
-        {(selectedActivities.length > 0 || selectedPackages.length > 0) && (
-          <div className="text-sm text-center mt-2 text-primary">
-            Has seleccionado {selectedActivities.length} actividades y {selectedPackages.length} paquetes.
-          </div>
-        )}
-      </div>
-    </>
-  );
-};
-
-interface AvailabilityMessagesProps {
-  isPartialAvailability?: boolean;
-  isAvailable: boolean | null;
-  availableDomos?: number;
-  requiredDomos?: number;
-}
-
-const AvailabilityMessages = ({ 
-  isPartialAvailability, 
-  isAvailable, 
-  availableDomos, 
-  requiredDomos 
-}: AvailabilityMessagesProps) => {
-  return (
-    <div className="mt-4 text-sm">
-      {isPartialAvailability && isAvailable === false ? (
-        <div className="bg-amber-50 p-3 rounded-md border border-amber-200">
-          <p className="font-medium text-amber-800 flex items-center gap-1.5">
-            <Info className="h-4 w-4" />
-            Disponibilidad limitada
-          </p>
-          <p className="text-amber-700 mt-1">
-            Solo tenemos <strong>{availableDomos}</strong> domos disponibles para las fechas seleccionadas, pero tu reserva requiere <strong>{requiredDomos}</strong> domos.
-          </p>
-        </div>
-      ) : (
-        <div className="bg-blue-50 p-3 rounded-md border border-blue-100">
-          <p className="font-medium text-blue-800">Información de domos</p>
-          <p className="text-blue-700 mt-1">
-            Se necesitarán <strong>{requiredDomos}</strong> domos para tu reserva.
-          </p>
-        </div>
+      {/* Alertas de disponibilidad */}
+      {isAvailable === true && (
+        <Alert variant="success" className="bg-green-50 border-green-200">
+          <Check className="h-4 w-4 text-green-600" />
+          <AlertTitle className="text-green-800">Disponible</AlertTitle>
+          <AlertDescription className="text-green-700">
+            {isPartialAvailability 
+              ? `Tenemos disponibilidad para ${availableDomos} domos en las fechas seleccionadas.` 
+              : 'Las fechas seleccionadas están disponibles para reserva.'}
+          </AlertDescription>
+        </Alert>
       )}
+
+      {isAvailable === false && (
+        <Alert variant="destructive" className="bg-red-50 border-red-200">
+          <AlertTriangle className="h-4 w-4 text-red-600" />
+          <AlertTitle className="text-red-800">No disponible</AlertTitle>
+          <AlertDescription className="text-red-700">
+            Lo sentimos, no tenemos disponibilidad para las fechas seleccionadas.
+          </AlertDescription>
+        </Alert>
+      )}
+
+      {/* Fechas alternativas */}
+      {showAlternatives && alternativeDates.length > 0 && (
+        <AlternativeDates 
+          dates={alternativeDates} 
+          onSelect={handleAlternativeDateSelect}
+        />
+      )}
+
+      {/* Botón de reserva */}
+      <Button
+        type="button"
+        className="w-full"
+        size="lg"
+        onClick={onReservation}
+        disabled={!startDate || !endDate || isAvailable === false || 
+                 (availableDomos !== undefined && requiredDomos > availableDomos)} // Deshabilitamos el botón si no hay suficientes domos disponibles
+      >
+        Consultar disponibilidad y cotizar
+      </Button>
     </div>
   );
 };

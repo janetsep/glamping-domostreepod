@@ -26,6 +26,7 @@ interface ReservationTabsProps {
   onPackageToggle: (pkg: ThemedPackage) => void;
   packagesTotal: number;
   unitId: string;
+  availableDomos?: number; // Añadida esta propiedad
 }
 
 export const ReservationTabs = ({
@@ -47,7 +48,8 @@ export const ReservationTabs = ({
   selectedPackages,
   onPackageToggle,
   packagesTotal,
-  unitId
+  unitId,
+  availableDomos // Añadido este parámetro
 }: ReservationTabsProps) => {
   return (
     <Tabs 
@@ -78,6 +80,7 @@ export const ReservationTabs = ({
           maxDomos={4} // Máximo 4 domos disponibles
           requiredDomos={requiredDomos}
           onDomosChange={onDomosChange}
+          availableDomos={availableDomos} // Pasamos la información de disponibilidad
         />
         
         {isAvailable === false && (

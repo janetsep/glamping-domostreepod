@@ -8,6 +8,7 @@ export type QuoteState = {
   guests: number;
   isAvailable: boolean | null;
   requiredDomos?: number;
+  availableDomos?: number; // Añadimos esta propiedad para rastrear el número de domos disponibles
   calculateQuote: any;
   setQuote: (quote: any) => void;
   setShowQuote: (show: boolean) => void;
