@@ -111,7 +111,7 @@ export const ReservationForm = ({
 
       {/* Alertas de disponibilidad */}
       {isAvailable === true && (
-        <Alert variant="success" className="bg-green-50 border-green-200">
+        <Alert variant="default" className="bg-green-50 border-green-200">
           <Check className="h-4 w-4 text-green-600" />
           <AlertTitle className="text-green-800">Disponible</AlertTitle>
           <AlertDescription className="text-green-700">
@@ -135,8 +135,9 @@ export const ReservationForm = ({
       {/* Fechas alternativas */}
       {showAlternatives && alternativeDates.length > 0 && (
         <AlternativeDates 
-          dates={alternativeDates} 
-          onSelect={handleAlternativeDateSelect}
+          alternativeDates={alternativeDates} 
+          onSelectDate={handleAlternativeDateSelect}
+          requiredDomos={requiredDomos}
         />
       )}
 
