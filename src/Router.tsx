@@ -4,16 +4,32 @@ import {
   RouterProvider,
   Route,
   createRoutesFromElements,
-  BrowserRouter,
 } from "react-router-dom";
 import App from "./App";
 import AboutUs from "./pages/AboutUs";
 import NotFound from "./pages/NotFound";
+import Index from "./pages/Index";
+import UnitDetail from "./pages/UnitDetail";
+import TravelerType from "./pages/TravelerType";
+import CelebrationDetail from "./pages/CelebrationDetail";
 import { useEffect } from "react";
+import WebPayReturn from "./pages/WebPayReturn";
 import { HelmetProvider } from "react-helmet-async";
-import { ScrollToTop } from "./App";
 
-// We will use BrowserRouter instead of RouterProvider to avoid nesting routers
+// Create the router with all our routes
+const router = createBrowserRouter(
+  createRoutesFromElements(
+    <Route path="/" element={<App />} errorElement={<NotFound />}>
+      <Route index element={<Index />} />
+      <Route path="sobre-nosotros" element={<AboutUs />} />
+      <Route path="unit/:unitId" element={<UnitDetail />} />
+      <Route path="tipo-viajero/:typeId" element={<TravelerType />} />
+      <Route path="celebracion/:celebrationId" element={<CelebrationDetail />} />
+      <Route path="webpay/return" element={<WebPayReturn />} />
+    </Route>
+  )
+);
+
 function Router() {
   // Handle hash navigation when the page loads or changes
   useEffect(() => {
@@ -46,12 +62,10 @@ function Router() {
 
   return (
     <HelmetProvider>
-      <BrowserRouter>
-        <ScrollToTop />
-        <App />
-      </BrowserRouter>
+      <RouterProvider router={router} />
     </HelmetProvider>
   );
 }
 
+export { router };
 export default Router;

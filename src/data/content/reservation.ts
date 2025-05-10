@@ -50,7 +50,7 @@ export const reservationContent = {
   },
   policies: {
     title: "Políticas de reserva",
-    text: "Pago del 50% por adelantado para confirmar tu reserva. Check-in desde las 16:00 hrs., check-out hasta las 12:00."
+    text: "Pago total por adelantado para confirmar tu reserva. Check-in desde las 15:00, check-out hasta las 12:00."
   },
   dateSelector: {
     startDate: "Fecha de llegada",

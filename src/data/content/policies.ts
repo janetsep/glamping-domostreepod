@@ -3,7 +3,7 @@
 export const policiesContent = {
   title: "Información Importante",
   checkInLabel: "Check-in",
-  checkInTime: "16:00 hrs",
+  checkInTime: "15:00 hrs",
   checkOutLabel: "Check-out",
   checkOutTime: "12:00 hrs",
   petsLabel: "Mascotas",

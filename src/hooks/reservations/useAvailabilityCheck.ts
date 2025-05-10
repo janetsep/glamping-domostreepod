@@ -1,19 +1,16 @@
 
 import { useState } from 'react';
-import { 
-  checkUnitAvailability, 
-  checkGeneralAvailability 
-} from './utils/availability';
-import { toast } from "sonner";
+import { checkUnitAvailability, checkGeneralAvailability } from './utils/availabilityChecker';
 
 interface UseAvailabilityCheckProps {
   setIsLoading: (isLoading: boolean) => void;
+  toast: any;
 }
 
 /**
  * Hook para verificar la disponibilidad de unidades para un rango de fechas específico
  */
-export const useAvailabilityCheck = ({ setIsLoading }: UseAvailabilityCheckProps) => {
+export const useAvailabilityCheck = ({ setIsLoading, toast }: UseAvailabilityCheckProps) => {
   const checkAvailability = async (
     unitId: string,
     checkIn: Date,
@@ -25,8 +22,12 @@ export const useAvailabilityCheck = ({ setIsLoading }: UseAvailabilityCheckProps
       return await checkUnitAvailability(unitId, checkIn, checkOut);
     } catch (error) {
       console.error('Error al verificar disponibilidad:', error);
-      // En caso de error, asumimos que hay disponibilidad para no bloquear completamente la experiencia del usuario
-      return true; 
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: "No se pudo verificar la disponibilidad. Por favor, intenta de nuevo.",
+      });
+      return false;
     } finally {
       setIsLoading(false);
     }
@@ -42,19 +43,17 @@ export const useAvailabilityCheck = ({ setIsLoading }: UseAvailabilityCheckProps
     try {
       setIsLoading(true);
       
-      const result = await checkGeneralAvailability(checkIn, checkOut);
-      console.log("Resultado de disponibilidad general:", result);
-      return {
-        isAvailable: result.isAvailable,
-        availableUnits: result.availableUnits,
-        totalUnits: result.totalUnits
-      };
+      return await checkGeneralAvailability(checkIn, checkOut);
     } catch (error) {
       console.error('Error al verificar disponibilidad general:', error);
-      // En caso de error, retornamos disponibilidad total
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: "No se pudo verificar la disponibilidad. Por favor, intenta de nuevo.",
+      });
       return {
-        isAvailable: true,
-        availableUnits: 4,
+        isAvailable: false,
+        availableUnits: 0,
         totalUnits: 4
       };
     } finally {

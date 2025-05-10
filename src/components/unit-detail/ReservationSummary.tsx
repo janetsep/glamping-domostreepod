@@ -9,7 +9,6 @@ interface ReservationSummaryProps {
     nights: number;
     pricePerNight: number;
     totalPrice: number;
-    basePrice?: number;
     breakdown: Array<{ 
       description: string; 
       amount: number;
@@ -18,10 +17,7 @@ interface ReservationSummaryProps {
     }>;
     rateDescription?: string;
     requiredDomos?: number;
-    domoDistribution?: Array<{ 
-      domoNumber: number; 
-      guests: number 
-    }>;
+    domoDistribution?: Array<{ number: number; guests: number }>;
     season?: 'high' | 'medium' | 'low';
   };
   isAvailable: boolean;
@@ -55,9 +51,9 @@ export const ReservationSummary: React.FC<ReservationSummaryProps> = ({
   const extrasTotal = activitiesTotal + packagesTotal;
 
   // Precio base es el precio de los domos sin extras
-  const basePrice = typeof quote.basePrice !== 'undefined' ? quote.basePrice : quote.totalPrice - extrasTotal;
+  const basePrice = quote.totalPrice;
   // Precio total es el precio base más los extras
-  const finalTotal = quote.totalPrice;
+  const finalTotal = basePrice + extrasTotal;
   
   // Función para mostrar el título de temporada
   const getSeasonTitle = () => {
@@ -76,7 +72,7 @@ export const ReservationSummary: React.FC<ReservationSummaryProps> = ({
     );
   };
 
-  // Función para mostrar mensaje para domos adicionales
+  // Función para mostrar mensaje para domos adicionales sin huéspedes
   const getDomoDescription = (item: any) => {
     if (item.guests === 0) {
       return (
@@ -114,19 +110,19 @@ export const ReservationSummary: React.FC<ReservationSummaryProps> = ({
       {/* Mostrar distribución de domos detallada */}
       {quote.domoDistribution && quote.domoDistribution.length > 0 && (
         <div className="mt-3 bg-secondary/10 p-3 rounded-md">
-          <p className="font-medium mb-2">Distribución equitativa por domo:</p>
+          <p className="font-medium mb-2">Distribución por domo:</p>
           <div className="grid grid-cols-1 gap-2">
-            {/* Mostrar todos los domos de la distribución */}
-            {quote.domoDistribution.map(domo => (
-              <div key={domo.domoNumber} className="p-2 bg-secondary/30 rounded-md flex justify-between">
-                <div className="flex items-center">
-                  <span>Domo {domo.domoNumber}: {domo.guests} {domo.guests === 1 ? 'persona' : 'personas'}</span>
+            {/* Mostrar todos los domos de la distribución, incluso los que no tienen huéspedes */}
+            {quote.breakdown
+              .filter(item => item.domoNumber && item.domoNumber > 0)
+              .map(item => (
+                <div key={item.domoNumber} className="p-2 bg-secondary/30 rounded-md flex justify-between">
+                  <div className="flex items-center">
+                    {getDomoDescription(item)}
+                  </div>
+                  <span className="font-medium">{formatCurrency(item.amount)}</span>
                 </div>
-                <span className="font-medium">
-                  {formatCurrency(basePrice / quote.domoDistribution.length)}
-                </span>
-              </div>
-            ))}
+              ))}
           </div>
         </div>
       )}

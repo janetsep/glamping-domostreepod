@@ -2,9 +2,9 @@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { DateSelector } from "@/components/unit-detail/DateSelector";
 import { GuestSelector } from "@/components/unit-detail/GuestSelector";
+import { ActivitiesSelector } from "@/components/unit-detail/ActivitiesSelector";
+import { ThemedPackagesSelector } from "@/components/unit-detail/ThemedPackagesSelector";
 import { Activity, ThemedPackage } from "@/types";
-import ActivitiesSelector from "./components/ActivitiesSelector";
-import PackageSelector from "./components/PackageSelector";
 
 interface ReservationTabsProps {
   tab: string;
@@ -16,7 +16,6 @@ interface ReservationTabsProps {
   maxGuests: number;
   guests: number;
   onGuestsChange: (guests: number) => void;
-  maxDomos: number; // Añadido explícitamente
   requiredDomos?: number;
   onDomosChange?: (domos: number) => void;
   isAvailable: boolean | null;
@@ -27,7 +26,6 @@ interface ReservationTabsProps {
   onPackageToggle: (pkg: ThemedPackage) => void;
   packagesTotal: number;
   unitId: string;
-  activities?: Activity[];
 }
 
 export const ReservationTabs = ({
@@ -40,7 +38,6 @@ export const ReservationTabs = ({
   maxGuests,
   guests,
   onGuestsChange,
-  maxDomos,
   requiredDomos,
   onDomosChange,
   isAvailable,
@@ -50,8 +47,7 @@ export const ReservationTabs = ({
   selectedPackages,
   onPackageToggle,
   packagesTotal,
-  unitId,
-  activities = []
+  unitId
 }: ReservationTabsProps) => {
   return (
     <Tabs 
@@ -93,19 +89,17 @@ export const ReservationTabs = ({
       
       <TabsContent value="activities">
         <ActivitiesSelector
-          activities={activities}
           selectedActivities={selectedActivities}
           onActivityToggle={onActivityToggle}
-          totalPrice={activitiesTotal}
+          total={activitiesTotal}
         />
       </TabsContent>
       
       <TabsContent value="packages">
-        <PackageSelector
-          packages={selectedPackages}
+        <ThemedPackagesSelector
           selectedPackages={selectedPackages}
           onPackageToggle={onPackageToggle}
-          totalPrice={packagesTotal}
+          total={packagesTotal}
         />
       </TabsContent>
     </Tabs>

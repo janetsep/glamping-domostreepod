@@ -1,7 +1,8 @@
 
 import { useEffect } from "react";
+import { URLSearchParams } from "url";
 import { useUnitDetailState } from "./useUnitDetailState";
-import { useReservationActions, ReservationState } from "./reservationActions";
+import { useReservationActions } from "./useReservationActions";
 import { usePaymentStatusHandler } from "./usePaymentStatusHandler";
 
 export const useUnitDetailController = (
@@ -9,7 +10,7 @@ export const useUnitDetailController = (
   searchParams: URLSearchParams
 ) => {
   // Use our custom hooks
-  const state = useUnitDetailState(unitId) as ReservationState;
+  const state = useUnitDetailState(unitId);
   const actions = useReservationActions(state);
   
   // Handle payment success and reservation confirmation from URL
@@ -20,20 +21,12 @@ export const useUnitDetailController = (
     processPaymentStatus();
   }, [processPaymentStatus]);
 
-  // Check availability only when dates AND guests are selected
+  // Check availability automatically when dates are selected
   useEffect(() => {
-    if (state.startDate && state.endDate && state.guests > 0 && state.requiredDomos && state.requiredDomos > 0) {
-      console.log(`Verificando disponibilidad con: ${state.guests} huéspedes, ${state.requiredDomos} domos requeridos`);
+    if (state.startDate && state.endDate) {
       actions.checkDatesAvailability();
     }
-  }, [
-    state.startDate, 
-    state.endDate, 
-    state.guests, 
-    state.requiredDomos, 
-    state.displayUnit, 
-    actions
-  ]);
+  }, [state.startDate, state.endDate, state.displayUnit, actions]);
 
   // Reset verification state when dates change
   useEffect(() => {
