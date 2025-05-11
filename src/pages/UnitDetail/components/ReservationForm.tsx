@@ -73,6 +73,9 @@ export const ReservationForm = ({
     }
   }, [isAvailable, alternativeDates]);
 
+  // Determinar si hay suficientes domos disponibles para la cantidad de huéspedes
+  const hasSufficientDomos = !availableDomos || !requiredDomos || availableDomos >= requiredDomos;
+
   return (
     <div className="space-y-6">
       {/* Calendario expandible */}
@@ -81,6 +84,7 @@ export const ReservationForm = ({
         onSelectDate={handleCalendarDateSelect}
         selectedStartDate={startDate}
         selectedEndDate={endDate}
+        requiredDomos={requiredDomos}
       />
 
       {/* Tabs de reserva */}
@@ -107,7 +111,7 @@ export const ReservationForm = ({
       />
 
       {/* Alertas de disponibilidad */}
-      {isAvailable === true && (
+      {isAvailable === true && hasSufficientDomos && (
         <Alert className="bg-green-50 border-green-200">
           <Check className="h-4 w-4 text-green-600" />
           <AlertTitle className="text-green-800">Disponible</AlertTitle>
@@ -115,6 +119,17 @@ export const ReservationForm = ({
             {isPartialAvailability 
               ? `Tenemos disponibilidad para ${availableDomos} domos en las fechas seleccionadas.` 
               : 'Las fechas seleccionadas están disponibles para reserva.'}
+          </AlertDescription>
+        </Alert>
+      )}
+
+      {isAvailable === true && !hasSufficientDomos && (
+        <Alert variant="destructive" className="bg-amber-50 border-amber-200">
+          <AlertTriangle className="h-4 w-4 text-amber-600" />
+          <AlertTitle className="text-amber-800">Domos insuficientes</AlertTitle>
+          <AlertDescription className="text-amber-700">
+            Se necesitan {requiredDomos} domos para {guests} huéspedes, pero solo hay {availableDomos} disponibles.
+            Por favor, reduzca la cantidad de huéspedes o seleccione otras fechas.
           </AlertDescription>
         </Alert>
       )}
@@ -145,7 +160,7 @@ export const ReservationForm = ({
         size="lg"
         onClick={onReservation}
         disabled={!startDate || !endDate || isAvailable === false || 
-                 (availableDomos !== undefined && requiredDomos > availableDomos)}
+                 (availableDomos !== undefined && requiredDomos !== undefined && requiredDomos > availableDomos)}
       >
         Consultar disponibilidad y cotizar
       </Button>

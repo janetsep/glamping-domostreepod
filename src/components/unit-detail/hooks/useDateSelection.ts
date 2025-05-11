@@ -8,13 +8,15 @@ interface UseDateSelectionProps {
   endDate: Date | undefined;
   onStartDateChange: (date: Date | undefined) => void;
   onEndDateChange: (date: Date | undefined) => void;
+  requiredDomos?: number;
 }
 
 export const useDateSelection = ({
   startDate, 
   endDate, 
   onStartDateChange, 
-  onEndDateChange
+  onEndDateChange,
+  requiredDomos = 1
 }: UseDateSelectionProps) => {
   const [startCalendarOpen, setStartCalendarOpen] = useState(false);
   const [endCalendarOpen, setEndCalendarOpen] = useState(false);
@@ -28,26 +30,43 @@ export const useDateSelection = ({
   }, [startDate]);
 
   // Check availability for a specific date
-  const checkDateAvailability = useCallback(async (date: Date): Promise<boolean> => {
+  const checkDateAvailability = useCallback(async (date: Date): Promise<{isAvailable: boolean, availableDomos: number}> => {
     try {
       const dayEnd = new Date(date);
       dayEnd.setHours(23, 59, 59, 999);
       
-      const { isAvailable } = await checkGeneralAvailability(date, dayEnd)
+      const { isAvailable, availableUnits } = await checkGeneralAvailability(date, dayEnd)
         .catch(() => ({ isAvailable: false, availableUnits: 0, totalUnits: 4 }));
       
-      return isAvailable;
+      return {
+        isAvailable,
+        availableDomos: availableUnits
+      };
     } catch (error) {
       console.error("Error checking date availability:", error);
-      return false;
+      return {
+        isAvailable: false,
+        availableDomos: 0
+      };
     }
   }, []);
 
   // Handle start date selection
   const handleStartDateSelect = async (date: Date | undefined) => {
     if (date) {
-      const isAvailable = await checkDateAvailability(date);
+      const { isAvailable, availableDomos } = await checkDateAvailability(date);
+      
       if (isAvailable) {
+        // Check if there are enough domos available
+        if (availableDomos < requiredDomos) {
+          toast({
+            title: "Domos insuficientes",
+            description: `Se necesitan ${requiredDomos} domos para la cantidad de huéspedes seleccionada, pero solo hay ${availableDomos} disponibles.`,
+            variant: "destructive"
+          });
+          // We still allow selection but warn the user
+        }
+        
         onStartDateChange(date);
         
         // If the end date is before the new start date, reset it
@@ -90,15 +109,28 @@ export const useDateSelection = ({
       
       // Check each date in the range
       let allDatesAvailable = true;
+      let minAvailableDomos = Infinity;
+      
       for (const rangeDate of dateRange) {
-        const available = await checkDateAvailability(rangeDate);
-        if (!available) {
+        const { isAvailable, availableDomos } = await checkDateAvailability(rangeDate);
+        if (!isAvailable) {
           allDatesAvailable = false;
           break;
         }
+        minAvailableDomos = Math.min(minAvailableDomos, availableDomos);
       }
       
       if (allDatesAvailable) {
+        // Check if there are enough domos available for all dates in range
+        if (minAvailableDomos < requiredDomos) {
+          toast({
+            title: "Domos insuficientes",
+            description: `Se necesitan ${requiredDomos} domos para la cantidad de huéspedes seleccionada, pero solo hay ${minAvailableDomos} disponibles en algún día del rango seleccionado.`,
+            variant: "destructive"
+          });
+          // We still allow selection but warn the user
+        }
+        
         onEndDateChange(date);
         setEndCalendarOpen(false);
       } else {
