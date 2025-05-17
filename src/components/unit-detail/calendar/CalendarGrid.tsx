@@ -81,7 +81,7 @@ export const CalendarGrid = ({
     return classes;
   };
 
-  // Function to get the availability display text
+  // Function to get the availability display text, CORREGIDO para mostrar cantidad de domos disponibles
   const getAvailabilityDisplay = (day: AvailabilityCalendarDay): string => {
     if (day.availableUnits === undefined || day.totalUnits === undefined) {
       return "";
