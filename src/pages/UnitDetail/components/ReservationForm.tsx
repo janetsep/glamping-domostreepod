@@ -74,7 +74,9 @@ export const ReservationForm = ({
   }, [isAvailable, alternativeDates]);
 
   // Determinar si hay suficientes domos disponibles para la cantidad de huéspedes
-  const hasSufficientDomos = !availableDomos || !requiredDomos || availableDomos >= requiredDomos;
+  const hasSufficientDomos = availableDomos !== undefined && requiredDomos !== undefined
+    ? availableDomos >= requiredDomos
+    : true;
 
   return (
     <div className="space-y-6">
@@ -159,8 +161,7 @@ export const ReservationForm = ({
         className="w-full"
         size="lg"
         onClick={onReservation}
-        disabled={!startDate || !endDate || isAvailable === false || 
-                 (availableDomos !== undefined && requiredDomos !== undefined && requiredDomos > availableDomos)}
+        disabled={!startDate || !endDate || isAvailable === false || !hasSufficientDomos}
       >
         Consultar disponibilidad y cotizar
       </Button>

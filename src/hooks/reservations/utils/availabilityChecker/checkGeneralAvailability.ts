@@ -51,7 +51,7 @@ export const checkGeneralAvailability = async (
     const reservationsWithoutUnitId = (overlappingReservations || []).filter(r => !r.unit_id).length;
     const totalReservedCount = Math.min(TOTAL_DOMOS, reservedCount + reservationsWithoutUnitId);
     
-    // Corregido: Calcular los domos disponibles correctamente
+    // Calcular los domos disponibles correctamente
     const availableUnits = Math.max(0, TOTAL_DOMOS - totalReservedCount);
     
     console.log(`Domos reservados: ${totalReservedCount}, Domos disponibles: ${availableUnits}`);

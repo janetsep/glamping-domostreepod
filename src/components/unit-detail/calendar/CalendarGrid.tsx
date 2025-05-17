@@ -1,4 +1,3 @@
-
 import { format, isSameMonth, isSameDay, isToday, isBefore } from "date-fns";
 import { AvailabilityCalendarDay } from "@/types";
 
@@ -91,13 +90,20 @@ export const CalendarGrid = ({
     return `${day.availableUnits}/${day.totalUnits}`;
   };
 
+  // Determina si hay suficientes domos disponibles según los requeridos
+  const hasEnoughDomos = (day: AvailabilityCalendarDay): boolean => {
+    return day.availableUnits !== undefined && 
+           requiredDomos !== undefined && 
+           day.availableUnits >= requiredDomos;
+  };
+
   // Función corregida para determinar correctamente el estado de disponibilidad
   const getAvailabilityStatus = (day: AvailabilityCalendarDay): string => {
     if (!day.isAvailable) {
       return "";
     }
     
-    // Corregido: Solo mostrar "Insuficiente" si realmente hay menos domos disponibles que los requeridos
+    // Mostrar "Insuficiente" SOLO si realmente hay menos domos disponibles que los requeridos
     if (day.availableUnits !== undefined && requiredDomos !== undefined) {
       if (day.availableUnits < requiredDomos) {
         return "Insuficiente";

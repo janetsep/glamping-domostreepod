@@ -9,9 +9,9 @@ export const useQuoteCalculation = (state: QuoteState) => {
 
     const requiredDomos = state.requiredDomos || 1;
 
-    // Primero verificamos si hay suficientes unidades disponibles
+    // Verificamos explícitamente si hay suficientes domos disponibles
     if (state.availableDomos !== undefined && requiredDomos > state.availableDomos) {
-      toast.error(`Solo hay ${state.availableDomos} domos disponibles para las fechas seleccionadas. Por favor, reduzca la cantidad de domos requeridos o seleccione otras fechas.`);
+      toast.error(`Solo hay ${state.availableDomos} domos disponibles para las fechas seleccionadas, pero se necesitan ${requiredDomos} domos para ${state.guests} huéspedes.`);
       return;
     }
 

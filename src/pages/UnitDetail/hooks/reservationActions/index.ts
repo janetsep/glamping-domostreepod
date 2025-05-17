@@ -55,7 +55,7 @@ export const useReservationActions = (state: ReservationState) => {
     // Verificamos si hay suficientes domos disponibles
     const requiredDomos = state.requiredDomos || 1;
     
-    // Corregido: Verificar correctamente la disponibilidad de domos
+    // Verificar correctamente la disponibilidad de domos
     if (state.availableDomos !== undefined && requiredDomos > state.availableDomos) {
       toast.error(`Solo hay ${state.availableDomos} domos disponibles para las fechas seleccionadas, pero se necesitan ${requiredDomos} domos para ${state.guests} huéspedes.`);
       return;

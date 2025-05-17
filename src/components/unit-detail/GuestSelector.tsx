@@ -42,6 +42,11 @@ export const GuestSelector = ({
   const availabilityPercentage = availableDomos !== undefined 
     ? Math.round((availableDomos / maxDomos) * 100) 
     : null;
+    
+  // Verificar si hay suficientes domos disponibles
+  const hasEnoughDomos = availableDomos !== undefined && requiredDomos !== undefined 
+    ? availableDomos >= requiredDomos 
+    : true;
 
   return (
     <div className="space-y-4">
@@ -77,11 +82,11 @@ export const GuestSelector = ({
             <span className="font-medium"> Se necesitarán {requiredDomos} {requiredDomos === 1 ? 'domo' : 'domos'} para {guests} {guests === 1 ? 'huésped' : 'huéspedes'}.</span>
           )}
           {availableDomos !== undefined && (
-            <span className={`block mt-1 ${availableDomos < requiredDomos ? "text-amber-600" : "text-green-600"}`}>
+            <span className={`block mt-1 ${hasEnoughDomos ? "text-green-600" : "text-amber-600"}`}>
               <InfoIcon className="h-3 w-3 inline mr-1" />
-              {availableDomos < requiredDomos 
-                ? `Solo hay ${availableDomos} de 4 domos disponibles (${availabilityPercentage}%) para las fechas seleccionadas.`
-                : `Hay ${availableDomos} de 4 domos disponibles (${availabilityPercentage}%) para las fechas seleccionadas.`}
+              {hasEnoughDomos 
+                ? `Hay ${availableDomos} de 4 domos disponibles (${availabilityPercentage}%) para las fechas seleccionadas.`
+                : `Solo hay ${availableDomos} de 4 domos disponibles (${availabilityPercentage}%) para las fechas seleccionadas.`}
             </span>
           )}
         </p>
