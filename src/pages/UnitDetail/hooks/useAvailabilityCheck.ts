@@ -100,6 +100,11 @@ export const useAvailabilityCheck = (state: AvailabilityState) => {
       
       state.setIsAvailable(allAvailable);
       state.setCheckedAvailability(true);
+      
+      // Debemos retornar explícitamente la cantidad de domos disponibles
+      if (state.setAvailableDomos) {
+        state.setAvailableDomos(availableCount);
+      }
     }
   };
 

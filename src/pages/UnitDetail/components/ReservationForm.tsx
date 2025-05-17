@@ -118,7 +118,7 @@ export const ReservationForm = ({
           <AlertDescription className="text-green-700">
             {isPartialAvailability 
               ? `Tenemos disponibilidad para ${availableDomos} domos en las fechas seleccionadas.` 
-              : 'Las fechas seleccionadas están disponibles para reserva.'}
+              : `Tenemos disponibilidad completa para las fechas seleccionadas con ${availableDomos} domos disponibles.`}
           </AlertDescription>
         </Alert>
       )}
