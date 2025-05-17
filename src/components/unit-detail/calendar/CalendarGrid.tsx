@@ -81,7 +81,7 @@ export const CalendarGrid = ({
     return classes;
   };
 
-  // Function to get the availability display text, CORREGIDO para mostrar cantidad de domos disponibles
+  // Función para obtener el texto de disponibilidad, muestra correctamente la cantidad de domos disponibles
   const getAvailabilityDisplay = (day: AvailabilityCalendarDay): string => {
     if (day.availableUnits === undefined || day.totalUnits === undefined) {
       return "";
@@ -91,12 +91,13 @@ export const CalendarGrid = ({
     return `${day.availableUnits}/${day.totalUnits}`;
   };
 
-  // Function to get availability status text
+  // Función corregida para determinar correctamente el estado de disponibilidad
   const getAvailabilityStatus = (day: AvailabilityCalendarDay): string => {
     if (!day.isAvailable) {
       return "";
     }
     
+    // Corregido: Solo mostrar "Insuficiente" si realmente hay menos domos disponibles que los requeridos
     if (day.availableUnits !== undefined && requiredDomos !== undefined) {
       if (day.availableUnits < requiredDomos) {
         return "Insuficiente";
