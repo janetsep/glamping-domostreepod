@@ -16,9 +16,9 @@ interface AvailabilityCalendarProps {
   checkDateRange?: boolean;
   selectedStartDate?: Date | null;
   selectedEndDate?: Date | null;
-  initialMonth?: Date; // Add this prop to control the initial month displayed
-  disableNightMode?: boolean; // Add this prop to disable night mode
-  requiredDomos?: number; // Add this prop to check if there are enough domos available
+  initialMonth?: Date; // Prop para controlar el mes inicial que se muestra
+  disableNightMode?: boolean; // Prop para desactivar el modo nocturno
+  requiredDomos?: number; // Prop para verificar si hay suficientes domos disponibles
 }
 
 export const AvailabilityCalendar = ({ 
@@ -31,11 +31,11 @@ export const AvailabilityCalendar = ({
   disableNightMode = false,
   requiredDomos = 1
 }: AvailabilityCalendarProps) => {
-  // Use initialMonth if provided, otherwise use current date
+  // Usar initialMonth si se proporciona, de lo contrario usar la fecha actual
   const [currentMonth, setCurrentMonth] = useState(initialMonth || new Date());
   const [selectedDate, setSelectedDate] = useState<Date | null>(selectedStartDate);
   
-  // Update current month if initialMonth changes
+  // Actualizar el mes actual si initialMonth cambia
   useEffect(() => {
     if (initialMonth) {
       setCurrentMonth(initialMonth);
@@ -45,7 +45,7 @@ export const AvailabilityCalendar = ({
   const { calendarDays, isLoading, isDateAvailable, isDateRangeAvailable } = useCalendarAvailability(unitId, currentMonth, selectedDate);
 
   const handleDateClick = async (day: AvailabilityCalendarDay) => {
-    // Check if date is in the past or if it's today after 14:00
+    // Verificar si la fecha es pasada o si es hoy después de las 14:00
     const now = new Date();
     if (isBefore(day.date, now) && !isToday(day.date)) {
       toast({
@@ -56,7 +56,7 @@ export const AvailabilityCalendar = ({
       return;
     }
     
-    // Check if it's today but after 14:00 - only if night mode is enabled
+    // Verificar si es hoy pero después de las 14:00 - solo si el modo nocturno está habilitado
     if (!disableNightMode && isToday(day.date)) {
       const currentHour = now.getHours();
       if (currentHour >= 14) {
@@ -78,7 +78,7 @@ export const AvailabilityCalendar = ({
       return;
     }
     
-    // Check if there are enough domos available
+    // Verificar si hay suficientes domos disponibles
     if (day.availableUnits !== undefined && day.availableUnits < requiredDomos) {
       toast({
         variant: "destructive",
@@ -88,7 +88,7 @@ export const AvailabilityCalendar = ({
       return;
     }
     
-    // Check if date is truly available (double-check)
+    // Verificar si la fecha está realmente disponible (verificación doble)
     const isAvailable = await isDateAvailable(day.date);
     if (!isAvailable) {
       toast({
@@ -99,8 +99,8 @@ export const AvailabilityCalendar = ({
       return;
     }
     
-    // If we're in checkDateRange mode and we have a selected start date,
-    // check if the entire range is available
+    // Si estamos en modo checkDateRange y tenemos una fecha de inicio seleccionada,
+    // verificar si todo el rango está disponible
     if (checkDateRange && selectedStartDate && day.date > selectedStartDate) {
       const rangeAvailable = await isDateRangeAvailable(selectedStartDate, day.date);
       if (!rangeAvailable) {

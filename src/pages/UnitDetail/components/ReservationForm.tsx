@@ -125,6 +125,7 @@ export const ReservationForm = ({
         </Alert>
       )}
 
+      {/* Alerta modificada para que no aparezca cuando no sea necesario */}
       {isAvailable === true && !hasSufficientDomos && (
         <Alert variant="destructive" className="bg-amber-50 border-amber-200">
           <AlertTriangle className="h-4 w-4 text-amber-600" />

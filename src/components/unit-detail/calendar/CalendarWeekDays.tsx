@@ -3,7 +3,8 @@ import { format, addDays, startOfWeek } from "date-fns";
 import { es } from "date-fns/locale";
 
 export const CalendarWeekDays = () => {
-  const weekStart = startOfWeek(new Date(), { weekStartsOn: 1 }); // Start on Monday
+  // Usar locale español para mostrar los días de la semana correctamente
+  const weekStart = startOfWeek(new Date(), { weekStartsOn: 1 }); // Comienza en lunes
   const weekDays = [];
   
   for (let i = 0; i < 7; i++) {

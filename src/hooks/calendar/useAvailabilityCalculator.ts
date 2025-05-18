@@ -5,7 +5,6 @@ import {
   endOfMonth, 
   eachDayOfInterval, 
   isSameDay,
-  addDays,
   format
 } from "date-fns";
 import { AvailabilityCalendarDay } from "@/types";
