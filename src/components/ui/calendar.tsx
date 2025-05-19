@@ -58,6 +58,7 @@ function Calendar({
         IconRight: ({ ..._props }) => <ChevronRight className="h-4 w-4" />,
       }}
       locale={es} // Usa el locale español
+      weekStartsOn={1} // Asegura que la semana comience el lunes
       {...props}
     />
   );

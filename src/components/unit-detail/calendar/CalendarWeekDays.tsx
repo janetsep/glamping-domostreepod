@@ -9,7 +9,8 @@ export const CalendarWeekDays = () => {
   
   for (let i = 0; i < 7; i++) {
     const day = addDays(weekStart, i);
-    weekDays.push(format(day, "EEEEEE", { locale: es }).toUpperCase());
+    // Usamos EEE para obtener el nombre corto del día de la semana en español
+    weekDays.push(format(day, "EEE", { locale: es }).toUpperCase());
   }
   
   return (

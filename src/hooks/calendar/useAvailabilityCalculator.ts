@@ -5,7 +5,10 @@ import {
   endOfMonth, 
   eachDayOfInterval, 
   isSameDay,
-  format
+  format,
+  startOfWeek,
+  endOfWeek,
+  addDays
 } from "date-fns";
 import { AvailabilityCalendarDay } from "@/types";
 
@@ -25,12 +28,19 @@ export const useAvailabilityCalculator = (
   // Generate calendar data with availability
   useEffect(() => {
     const calculateAvailability = async () => {
-      const start = startOfMonth(currentMonth);
-      const end = endOfMonth(currentMonth);
+      const month = new Date(currentMonth);
+      const start = startOfMonth(month);
+      const end = endOfMonth(month);
+      
+      // Calcular el inicio de la semana (lunes) del primer día del mes
+      const calendarStart = startOfWeek(start, { weekStartsOn: 1 });
+      // Calcular el fin de la semana (domingo) del último día del mes
+      const calendarEnd = endOfWeek(end, { weekStartsOn: 1 });
+      
       setIsCalculating(true);
       
       try {
-        const availabilityData = await generateAvailabilityData(start, end);
+        const availabilityData = await generateAvailabilityData(calendarStart, calendarEnd);
         setCalendarDays(availabilityData);
       } catch (error) {
         console.error("Error calculating availability:", error);
@@ -46,12 +56,12 @@ export const useAvailabilityCalculator = (
     try {
       console.log(`Generating availability data for ${format(start, 'yyyy-MM-dd')} to ${format(end, 'yyyy-MM-dd')}`);
       
-      // Get all days in month
-      const daysInMonth = eachDayOfInterval({ start, end });
+      // Get all days in the calendar view (incluye días del mes anterior y siguiente)
+      const daysInCalendar = eachDayOfInterval({ start, end });
       
       // Check availability for each day
       const availabilityMap = await Promise.all(
-        daysInMonth.map(async (day) => {
+        daysInCalendar.map(async (day) => {
           // Set the day to midnight for consistent comparison
           const dayStart = new Date(day);
           dayStart.setHours(0, 0, 0, 0);
@@ -73,7 +83,7 @@ export const useAvailabilityCalculator = (
           const reservedUnits = reservationsOnDay.length;
           const availableUnits = Math.max(0, TOTAL_UNITS - reservedUnits);
           
-          console.log(`Day ${format(day, 'yyyy-MM-dd')}: ${reservedUnits} reserved, ${availableUnits} available`);
+          console.log(`Day ${format(day, 'yyyy-MM-dd')} (${format(day, 'EEEE', { locale: es })}): ${reservedUnits} reserved, ${availableUnits} available`);
           
           return {
             date: day,

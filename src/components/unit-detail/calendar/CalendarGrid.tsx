@@ -51,7 +51,7 @@ export const CalendarGrid = ({
     let classes = "rounded-full w-10 h-10 flex items-center justify-center text-base";
     
     if (!isSameMonth(day.date, currentMonth)) {
-      classes += " text-gray-400";
+      classes += " text-gray-400 opacity-50";
     }
     
     // Verificar si este día es la fecha de inicio seleccionada
@@ -125,7 +125,7 @@ export const CalendarGrid = ({
           <div className={getDayClass(day)}>
             {format(day.date, "d")}
           </div>
-          {day.availableUnits !== undefined && isSameMonth(day.date, currentMonth) && (
+          {day.availableUnits !== undefined && (
             <>
               <div className="text-xs text-gray-600 mt-1 font-medium">
                 {getAvailabilityDisplay(day)}

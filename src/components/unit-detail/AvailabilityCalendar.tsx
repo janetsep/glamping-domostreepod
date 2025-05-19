@@ -32,7 +32,7 @@ export const AvailabilityCalendar = ({
   requiredDomos = 1
 }: AvailabilityCalendarProps) => {
   // Usar initialMonth si se proporciona, de lo contrario usar la fecha actual
-  const [currentMonth, setCurrentMonth] = useState(initialMonth || new Date());
+  const [currentMonth, setCurrentMonth] = useState<Date>(initialMonth || new Date());
   const [selectedDate, setSelectedDate] = useState<Date | null>(selectedStartDate);
   
   // Actualizar el mes actual si initialMonth cambia
@@ -154,7 +154,7 @@ export const AvailabilityCalendar = ({
           
           <div className="mt-4 text-xs text-muted-foreground">
             <p className="mb-1">* El formato de disponibilidad es: disponibles/total</p>
-            <p className="mb-1">* "Insuficiente" significa que no hay suficientes domos disponibles para la cantidad de huéspedes seleccionada</p>
+            <p className="mb-1">* "Insuficiente" significa que no hay suficientes domos disponibles para la cantidad seleccionada</p>
           </div>
           
           <CalendarLegend />
