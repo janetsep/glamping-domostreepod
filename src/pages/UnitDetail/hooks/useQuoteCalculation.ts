@@ -9,6 +9,12 @@ export const useQuoteCalculation = (state: QuoteState) => {
 
     const requiredDomos = state.requiredDomos || 1;
 
+    // Primero verificamos si hay suficientes unidades disponibles
+    if (state.availableDomos !== undefined && requiredDomos > state.availableDomos) {
+      toast.error(`Solo hay ${state.availableDomos} domos disponibles para las fechas seleccionadas. Por favor, reduzca la cantidad de domos requeridos o seleccione otras fechas.`);
+      return;
+    }
+
     let quoteDetails = state.calculateQuote(
       state.displayUnit.prices,
       state.startDate,

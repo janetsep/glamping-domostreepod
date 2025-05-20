@@ -9,6 +9,7 @@ interface CalendarGridProps {
   selectedStartDate?: Date | null;
   selectedEndDate?: Date | null;
   disableNightMode?: boolean;
+  requiredDomos?: number;
 }
 
 export const CalendarGrid = ({ 
@@ -17,7 +18,8 @@ export const CalendarGrid = ({
   onDateClick,
   selectedStartDate,
   selectedEndDate,
-  disableNightMode = false
+  disableNightMode = false,
+  requiredDomos = 1
 }: CalendarGridProps) => {
   // Function to check if a date is selectable
   const isDateSelectable = (day: AvailabilityCalendarDay): boolean => {
@@ -36,8 +38,11 @@ export const CalendarGrid = ({
       }
     }
     
-    // Check availability
-    return day.isAvailable;
+    // Check if there are enough domos available for the required number
+    const hasEnoughDomos = day.availableUnits !== undefined && day.availableUnits >= (requiredDomos || 1);
+    
+    // Only selectable if available AND has enough domos
+    return day.isAvailable && hasEnoughDomos;
   };
 
   // Function to get the CSS class for each day cell
@@ -76,14 +81,28 @@ export const CalendarGrid = ({
     return classes;
   };
 
-  // Function to get the availability percentage
-  const getAvailabilityPercentage = (day: AvailabilityCalendarDay): string => {
+  // Function to get the availability display text, CORREGIDO para mostrar cantidad de domos disponibles
+  const getAvailabilityDisplay = (day: AvailabilityCalendarDay): string => {
     if (day.availableUnits === undefined || day.totalUnits === undefined) {
       return "";
     }
     
-    const percentage = Math.round((day.availableUnits / day.totalUnits) * 100);
-    return `${percentage}%`;
+    // Mostrar la cantidad de domos disponibles de un total
+    return `${day.availableUnits}/${day.totalUnits}`;
+  };
+
+  // Function to get availability status text
+  const getAvailabilityStatus = (day: AvailabilityCalendarDay): string => {
+    if (!day.isAvailable) {
+      return "";
+    }
+    
+    if (day.availableUnits !== undefined && requiredDomos !== undefined) {
+      if (day.availableUnits < requiredDomos) {
+        return "Insuficiente";
+      }
+    }
+    return "";
   };
 
   return (
@@ -98,9 +117,16 @@ export const CalendarGrid = ({
             {format(day.date, "d")}
           </div>
           {day.availableUnits !== undefined && isSameMonth(day.date, currentMonth) && (
-            <div className="text-xs text-gray-600 mt-1 font-medium">
-              {getAvailabilityPercentage(day)}
-            </div>
+            <>
+              <div className="text-xs text-gray-600 mt-1 font-medium">
+                {getAvailabilityDisplay(day)}
+              </div>
+              {getAvailabilityStatus(day) && (
+                <div className="text-xs text-amber-600 font-medium -mt-1">
+                  {getAvailabilityStatus(day)}
+                </div>
+              )}
+            </>
           )}
         </div>
       ))}

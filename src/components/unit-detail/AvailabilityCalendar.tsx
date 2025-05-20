@@ -18,6 +18,7 @@ interface AvailabilityCalendarProps {
   selectedEndDate?: Date | null;
   initialMonth?: Date; // Add this prop to control the initial month displayed
   disableNightMode?: boolean; // Add this prop to disable night mode
+  requiredDomos?: number; // Add this prop to check if there are enough domos available
 }
 
 export const AvailabilityCalendar = ({ 
@@ -27,7 +28,8 @@ export const AvailabilityCalendar = ({
   selectedStartDate = null,
   selectedEndDate = null,
   initialMonth,
-  disableNightMode = false
+  disableNightMode = false,
+  requiredDomos = 1
 }: AvailabilityCalendarProps) => {
   // Use initialMonth if provided, otherwise use current date
   const [currentMonth, setCurrentMonth] = useState(initialMonth || new Date());
@@ -72,6 +74,16 @@ export const AvailabilityCalendar = ({
         variant: "destructive",
         title: "Fecha no disponible",
         description: "Esta fecha no está disponible para reserva."
+      });
+      return;
+    }
+    
+    // Check if there are enough domos available
+    if (day.availableUnits !== undefined && day.availableUnits < requiredDomos) {
+      toast({
+        variant: "destructive",
+        title: "Domos insuficientes",
+        description: `Se necesitan ${requiredDomos} domos, pero solo hay ${day.availableUnits} disponibles.`
       });
       return;
     }
@@ -137,7 +149,13 @@ export const AvailabilityCalendar = ({
             selectedStartDate={selectedStartDate}
             selectedEndDate={selectedEndDate}
             disableNightMode={disableNightMode}
+            requiredDomos={requiredDomos}
           />
+          
+          <div className="mt-4 text-xs text-muted-foreground">
+            <p className="mb-1">* El formato de disponibilidad es: disponibles/total</p>
+            <p className="mb-1">* "Insuficiente" significa que no hay suficientes domos disponibles para la cantidad de huéspedes seleccionada</p>
+          </div>
           
           <CalendarLegend />
         </>

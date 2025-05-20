@@ -1,3 +1,4 @@
+
 import { useState, useEffect, useRef } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useReservations } from "@/hooks/reservations";
@@ -41,6 +42,7 @@ export const useUnitDetailState = (unitId: string | undefined) => {
   const [availableDomos, setAvailableDomos] = useState<number>(0);
   const [alternativeDates, setAlternativeDates] = useState<{startDate: Date, endDate: Date}[]>([]);
 
+  // Calcular automáticamente la cantidad de domos requeridos según el número de huéspedes
   useEffect(() => {
     const MAX_GUESTS_PER_DOMO = 4;
     const domos = Math.ceil(guests / MAX_GUESTS_PER_DOMO);

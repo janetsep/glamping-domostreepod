@@ -22,6 +22,7 @@ interface DatePickerButtonProps {
   disabled?: boolean;
   initialMonth?: Date;
   checkDateRange?: boolean;
+  requiredDomos?: number;
 }
 
 export const DatePickerButton = ({
@@ -36,6 +37,7 @@ export const DatePickerButton = ({
   disabled = false,
   initialMonth,
   checkDateRange = false,
+  requiredDomos = 1
 }: DatePickerButtonProps) => {
   return (
     <Popover open={isOpen} onOpenChange={onOpenChange}>
@@ -65,6 +67,7 @@ export const DatePickerButton = ({
             selectedEndDate={selectedEndDate}
             initialMonth={initialMonth}
             disableNightMode={true}
+            requiredDomos={requiredDomos}
           />
         </div>
       </PopoverContent>
