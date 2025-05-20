@@ -1,16 +1,14 @@
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import { useParams, useLocation, useNavigate } from "react-router-dom";
 import { useToast } from "@/components/ui/use-toast";
 import { toast } from "sonner";
-import { findUnitById } from "@/components/unit-detail/utils/unitHelpers";
+import { findUnitById, calculateRequiredDomos } from "@/components/unit-detail/utils/unitHelpers";
 import { Activity, ThemedPackage } from "@/types";
 import { useAvailabilityCheck } from "@/hooks/reservations/useAvailabilityCheck";
 import { usePriceCalculator } from "@/hooks/reservations/usePricing";
 import { useReservationCreation } from "@/hooks/reservations/useReservationCreation";
 import { usePaymentStatus } from "./usePaymentStatusHandler";
-import { useReservationActions } from "./reservationActions";
-import { calculateRequiredDomos } from "@/components/unit-detail/utils/unitHelpers";
 import { useQuoteBase } from "./useQuoteBase";
 
 export const useUnitDetailController = () => {
@@ -23,17 +21,21 @@ export const useUnitDetailController = () => {
   // Estados generales
   const [isLoading, setIsLoading] = useState(false);
   const [displayUnit, setDisplayUnit] = useState<any>(null);
+  const [isReservationConfirmed, setIsReservationConfirmed] = useState(false);
+  const [confirmedReservationId, setConfirmedReservationId] = useState<string | null>(null);
+  const [paymentDetails, setPaymentDetails] = useState<any>(null);
+  const confirmationRef = useRef<HTMLDivElement>(null);
   
   // Estados de fecha y huéspedes
   const [startDate, setStartDate] = useState<Date | undefined>(undefined);
   const [endDate, setEndDate] = useState<Date | undefined>(undefined);
   const [guests, setGuests] = useState(2);
-  const [requiredDomos, setRequiredDomos] = useState<number | undefined>(1);
+  const [requiredDomos, setRequiredDomos] = useState<number>(1);
   
   // Estados de disponibilidad
   const [isAvailable, setIsAvailable] = useState<boolean | null>(null);
   const [isPartialAvailability, setPartialAvailability] = useState(false);
-  const [availableDomos, setAvailableDomos] = useState<number | undefined>(undefined);
+  const [availableDomos, setAvailableDomos] = useState<number>(0);
   const [alternativeDates, setAlternativeDates] = useState<{startDate: Date, endDate: Date}[]>([]);
   const [checkedAvailability, setCheckedAvailability] = useState(false);
   
@@ -106,8 +108,59 @@ export const useUnitDetailController = () => {
     setPackagesTotal(calculatePackagesTotal());
   }, [selectedActivities, selectedPackages]);
   
+  // Función para verificar disponibilidad
+  const checkDatesAvailability = async () => {
+    if (startDate && endDate && displayUnit && !checkedAvailability) {
+      try {
+        // Verificar disponibilidad detallada
+        const availabilityDetails = await checkDetailedAvailability(
+          displayUnit.id,
+          startDate,
+          endDate
+        );
+        
+        // Extraer datos de disponibilidad
+        const { isAvailable, availableUnits, totalUnits } = availabilityDetails;
+        
+        // Marcar disponibilidad parcial si corresponde
+        const allAvailable = availableUnits >= requiredDomos;
+        
+        if (availableUnits > 0 && availableUnits < requiredDomos) {
+          // Disponibilidad parcial (algunos domos disponibles pero no los suficientes)
+          setPartialAvailability(true);
+          setAvailableDomos(availableUnits);
+          
+          toast.warning(
+            `Solo tenemos ${availableUnits} de ${totalUnits} domos disponibles para las fechas seleccionadas.`, 
+            { duration: 6000 }
+          );
+        } else {
+          // O todos disponibles o ninguno disponible
+          setPartialAvailability(false);
+          setAvailableDomos(availableUnits);
+          
+          if (allAvailable) {
+            toast.success(`Tenemos disponibilidad para los ${requiredDomos} domos necesarios (${availableUnits} de ${totalUnits}).`);
+          } else {
+            toast.error(`No hay domos disponibles (${availableUnits} de ${totalUnits}) para las fechas seleccionadas.`);
+          }
+        }
+        
+        setIsAvailable(allAvailable);
+        setCheckedAvailability(true);
+        
+        return allAvailable;
+      } catch (error) {
+        console.error("Error al verificar disponibilidad:", error);
+        toast.error("Ocurrió un error al verificar la disponibilidad");
+        return false;
+      }
+    }
+    return false;
+  };
+  
   // Calcular cotización
-  const calculateQuote = useCallback(async () => {
+  const calculateQuotePrice = useCallback(async () => {
     if (!startDate || !endDate || !displayUnit) return null;
     
     try {
@@ -128,81 +181,144 @@ export const useUnitDetailController = () => {
     } finally {
       setIsLoading(false);
     }
-  }, [startDate, endDate, displayUnit, guests, calculatePrice]);
+  }, [startDate, endDate, displayUnit, guests, calculatePrice, setIsLoading]);
   
-  // Manejar redirección a WebPay
-  const redirectToWebpay = async (reservationId: string) => {
+  // Gestión de la cotización
+  const handleNewQuote = useCallback(async () => {
+    setShowQuote(false);
+    setCheckedAvailability(false);
+  }, []);
+  
+  const checkAvailabilityAndQuote = useCallback(async () => {
+    const isAvailable = await checkDatesAvailability();
+    
+    if (isAvailable) {
+      const quoteData = await calculateQuotePrice();
+      
+      if (quoteData) {
+        setQuote(quoteData);
+        setShowQuote(true);
+        setReservationTab("dates");
+      }
+    }
+  }, [checkDatesAvailability, calculateQuotePrice]);
+  
+  // Manejar reserva
+  const handleReservation = async () => {
+    if (!startDate || !endDate) {
+      toast.error("Por favor selecciona las fechas de entrada y salida");
+      return;
+    }
+    
+    // Verificamos si hay suficientes domos disponibles
+    if (availableDomos !== undefined && requiredDomos > availableDomos) {
+      const availabilityPercentage = Math.round((availableDomos / 4) * 100);
+      toast.error(`Solo hay ${availableDomos} de 4 domos disponibles (${availabilityPercentage}%) para las fechas seleccionadas. Por favor, reduzca la cantidad de domos requeridos o seleccione otras fechas.`);
+      return;
+    }
+
+    await checkAvailabilityAndQuote();
+  };
+
+  // Gestión de extras (actividades y paquetes)
+  const handleActivityToggle = (activity: Activity) => {
+    setSelectedActivities(prev => {
+      const exists = prev.some(item => item.id === activity.id);
+      
+      if (exists) {
+        return prev.filter(item => item.id !== activity.id);
+      } else {
+        return [...prev, activity];
+      }
+    });
+  };
+  
+  const handlePackageToggle = (pkg: ThemedPackage) => {
+    setSelectedPackages(prev => {
+      const exists = prev.some(item => item.id === pkg.id);
+      
+      if (exists) {
+        return prev.filter(item => item.id !== pkg.id);
+      } else {
+        return [...prev, pkg];
+      }
+    });
+  };
+  
+  // Total actualizado con extras
+  const getUpdatedQuoteTotal = useCallback(() => {
+    if (!quote) return 0;
+    
+    return quote.totalPrice + activitiesTotal + packagesTotal;
+  }, [quote, activitiesTotal, packagesTotal]);
+  
+  // Manejar confirmación de reserva
+  const handleConfirmReservation = async () => {
+    if (!displayUnit || !startDate || !endDate || !quote) return;
+
+    try {
+      // Verificamos si hay suficientes domos disponibles
+      if (availableDomos !== undefined && requiredDomos > availableDomos) {
+        toast.error(`Solo hay ${availableDomos} domos disponibles para las fechas seleccionadas. No es posible reservar ${requiredDomos} domos.`);
+        return;
+      }
+
+      setIsProcessingPayment(true);
+      
+      const activityIds = selectedActivities.map(a => a.id);
+      const packageIds = selectedPackages.map(p => p.id);
+      
+      const reservations = [];
+      for (let i = 0; i < requiredDomos; i++) {
+        const individualQuotePrice = quote.totalPrice / requiredDomos;
+        
+        const reservation = await createReservation(
+          displayUnit.id,
+          startDate,
+          endDate,
+          Math.ceil(guests / requiredDomos),
+          individualQuotePrice,
+          'webpay',
+          i === 0 ? activityIds : [],
+          i === 0 ? packageIds : []
+        );
+        
+        if (reservation) {
+          reservations.push(reservation);
+        }
+      }
+      
+      if (reservations.length > 0) {
+        // Redirigir a WebPay (función a implementar)
+        console.log(`Redirecting to WebPay for reservation ${reservations[0].id}`);
+        // navigate(`/webpay-return?success=true&reservation_id=${reservations[0].id}`);
+      }
+    } catch (error) {
+      console.error("Error al confirmar reserva:", error);
+      toast.error("Ha ocurrido un error al procesar tu reserva. Por favor, intenta nuevamente.");
+    } finally {
+      setIsProcessingPayment(false);
+    }
+  };
+  
+  // Redirigir a WebPay
+  const redirectToWebpay = async (reservationId: string, amount: number) => {
     // Este método requiere ser implementado con la integración de WebPay
-    console.log(`Redirecting to WebPay for reservation ${reservationId}`);
+    console.log(`Redirecting to WebPay for reservation ${reservationId} with amount ${amount}`);
     
     // Por ahora simulamos una redirección exitosa
     navigate(`/webpay-return?success=true&reservation_id=${reservationId}`);
   };
   
-  const paymentStatusHandler = usePaymentStatus({ 
+  // Comprobar parámetros URL para manejar retornos de pago
+  const { handlePaymentReturn } = usePaymentStatus({ 
+    setIsReservationConfirmed,
+    setConfirmedReservationId,
+    setPaymentDetails,
     setIsProcessingPayment,
     navigate
   });
   
-  const reservationState = {
-    startDate,
-    endDate,
-    displayUnit,
-    guests,
-    requiredDomos,
-    isAvailable,
-    setIsAvailable,
-    checkAvailability,
-    checkDetailedAvailability,
-    calculateQuote,
-    setQuote,
-    setShowQuote,
-    selectedActivities,
-    setSelectedActivities,
-    selectedPackages,
-    setSelectedPackages,
-    activitiesTotal,
-    packagesTotal,
-    checkedAvailability,
-    setCheckedAvailability,
-    setReservationTab,
-    createReservation,
-    redirectToWebpay,
-    setIsProcessingPayment,
-    quote,
-    availableDomos
-  };
-  
-  const {
-    handleActivityToggle,
-    handlePackageToggle,
-    checkDatesAvailability,
-    handleReservation,
-    handleNewQuote,
-    handleConfirmReservation,
-    getUpdatedQuoteTotal
-  } = useReservationActions(reservationState);
-  
-  const quoteBase = useQuoteBase({
-    startDate,
-    endDate,
-    displayUnit,
-    guests,
-    isAvailable,
-    requiredDomos,
-    availableDomos,
-    calculateQuote,
-    setQuote,
-    setShowQuote,
-    setReservationTab,
-    selectedActivities,
-    selectedPackages,
-    activitiesTotal,
-    packagesTotal,
-    quote
-  });
-  
-  // Comprobar parámetros URL
   useEffect(() => {
     const checkUrlParams = () => {
       const paymentStatus = queryParams.get('status');
@@ -210,13 +326,13 @@ export const useUnitDetailController = () => {
       const token = queryParams.get('token_ws');
       
       if ((paymentStatus || token) && reservationId) {
-        paymentStatusHandler.handlePaymentReturn(paymentStatus, reservationId, token);
+        handlePaymentReturn(paymentStatus, reservationId, token);
       }
     };
     
     checkUrlParams();
-  }, [location.search, queryParams, paymentStatusHandler]);
-  
+  }, [location.search, queryParams, handlePaymentReturn]);
+
   return {
     // Estados
     isLoading,
@@ -237,11 +353,16 @@ export const useUnitDetailController = () => {
     activitiesTotal,
     packagesTotal,
     reservationTab,
+    isReservationConfirmed,
+    confirmedReservationId,
+    paymentDetails,
+    confirmationRef,
     
     // Setters
     setStartDate,
     setEndDate,
     setGuests,
+    setReservationTab,
     
     // Acciones
     handleReservation,
@@ -250,10 +371,7 @@ export const useUnitDetailController = () => {
     handleActivityToggle,
     handlePackageToggle,
     checkDatesAvailability,
-    setReservationTab,
     getUpdatedQuoteTotal,
-    
-    // Handlers
-    paymentStatusHandler
+    redirectToWebpay
   };
 };

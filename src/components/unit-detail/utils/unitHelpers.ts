@@ -2,6 +2,7 @@
 import { Clock, Droplets, Check, Users, Smile } from "lucide-react";
 import type { Feature, Policy } from "@/types";
 import React from "react";
+import { supabase } from "@/lib/supabase";
 
 // Images for each domo type
 export const getDomoImages = (unitName: string) => {
@@ -96,4 +97,32 @@ export const getPolicies = (): Policy[] => {
       text: "No se permiten mascotas"
     }
   ];
+};
+
+// Calculate required domos based on number of guests
+export const calculateRequiredDomos = (guests: number, maxGuestsPerDomo: number = 4): number => {
+  return Math.ceil(guests / maxGuestsPerDomo);
+};
+
+// Find a unit by ID
+export const findUnitById = async (unitId: string) => {
+  if (!unitId) return null;
+  
+  try {
+    const { data, error } = await supabase
+      .from('glamping_units')
+      .select('*')
+      .eq('id', unitId)
+      .single();
+      
+    if (error) {
+      console.error('Error fetching unit by ID:', error);
+      return null;
+    }
+    
+    return data;
+  } catch (error) {
+    console.error('Error in findUnitById:', error);
+    return null;
+  }
 };

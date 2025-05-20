@@ -10,7 +10,7 @@ export const CalendarLegend = () => {
       </div>
       <div className="flex items-center">
         <div className="w-3 h-3 bg-amber-100 rounded-full mr-1"></div>
-        <span>Disponibilidad parcial</span>
+        <span>Disponibilidad parcial (1-3/4)</span>
       </div>
       <div className="flex items-center">
         <div className="w-3 h-3 bg-red-100 rounded-full mr-1"></div>
