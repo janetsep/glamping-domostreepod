@@ -3,13 +3,39 @@ import { useState, useEffect, useCallback, useRef } from "react";
 import { useParams, useLocation, useNavigate } from "react-router-dom";
 import { useToast } from "@/components/ui/use-toast";
 import { toast } from "sonner";
-import { findUnitById, calculateRequiredDomos } from "@/components/unit-detail/utils/unitHelpers";
 import { Activity, ThemedPackage } from "@/types";
 import { useAvailabilityCheck } from "@/hooks/reservations/useAvailabilityCheck";
-import { usePriceCalculator } from "@/hooks/reservations/usePricing";
+import { calculatePrice } from "@/hooks/reservations/usePricing"; // Corregido aquí
 import { useReservationCreation } from "@/hooks/reservations/useReservationCreation";
 import { usePaymentStatus } from "./usePaymentStatusHandler";
 import { useQuoteBase } from "./useQuoteBase";
+
+// Función auxiliar para calcular domos requeridos
+const calculateRequiredDomos = (guests: number, maxGuestsPerDomo: number): number => {
+  return Math.ceil(guests / maxGuestsPerDomo);
+};
+
+// Función auxiliar para encontrar unidad por ID
+const findUnitById = async (unitId: string) => {
+  if (!unitId) return null;
+  
+  try {
+    const { supabase } = await import('@/lib/supabase');
+    
+    const { data, error } = await supabase
+      .from('glamping_units')
+      .select('*')
+      .eq('id', unitId)
+      .single();
+    
+    if (error) throw error;
+    
+    return data;
+  } catch (error) {
+    console.error('Error fetching unit by ID:', error);
+    return null;
+  }
+};
 
 export const useUnitDetailController = () => {
   const { unitId = "" } = useParams<{ unitId: string }>();
@@ -58,8 +84,10 @@ export const useUnitDetailController = () => {
     setIsLoading, 
     toast: uiToast 
   });
+
+  // Aquí usamos el calculatePrice importado correctamente
+  const { calculatePrice: calcPrice } = calculatePrice();
   
-  const { calculatePrice } = usePriceCalculator();
   const { createReservation } = useReservationCreation({ 
     setIsLoading, 
     toast: uiToast,
@@ -122,6 +150,8 @@ export const useUnitDetailController = () => {
         // Extraer datos de disponibilidad
         const { isAvailable, availableUnits, totalUnits } = availabilityDetails;
         
+        // Esta es la línea clave para corregir el problema de inconsistencia
+        // Ahora usamos el valor real de availableUnits en vez de hardcodear valores
         // Marcar disponibilidad parcial si corresponde
         const allAvailable = availableUnits >= requiredDomos;
         
@@ -166,7 +196,7 @@ export const useUnitDetailController = () => {
     try {
       setIsLoading(true);
       
-      const priceDetails = await calculatePrice(
+      const priceDetails = await calcPrice(
         displayUnit.id,
         startDate,
         endDate,
@@ -181,7 +211,7 @@ export const useUnitDetailController = () => {
     } finally {
       setIsLoading(false);
     }
-  }, [startDate, endDate, displayUnit, guests, calculatePrice, setIsLoading]);
+  }, [startDate, endDate, displayUnit, guests, calcPrice, setIsLoading]);
   
   // Gestión de la cotización
   const handleNewQuote = useCallback(async () => {

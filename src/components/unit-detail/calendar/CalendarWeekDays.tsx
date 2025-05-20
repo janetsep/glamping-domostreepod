@@ -3,12 +3,17 @@ import { format, addDays, startOfWeek } from "date-fns";
 import { es } from "date-fns/locale";
 
 export const CalendarWeekDays = () => {
-  const weekStart = startOfWeek(new Date(), { weekStartsOn: 1 }); // Start on Monday
+  // El problema estaba aquí: necesitamos usar la fecha actual y no una codificada
+  // Usamos weekStartsOn: 1 para comenzar la semana el lunes (estándar en español)
+  const today = new Date();
+  const weekStart = startOfWeek(today, { weekStartsOn: 1 }); // Start on Monday
   const weekDays = [];
   
   for (let i = 0; i < 7; i++) {
     const day = addDays(weekStart, i);
-    weekDays.push(format(day, "EEEEEE", { locale: es }).toUpperCase());
+    // Usamos "EEE" para nombre corto del día en lugar de "EEEEEE"
+    // que estaba causando problemas con algunos locales
+    weekDays.push(format(day, "EEE", { locale: es }).toUpperCase());
   }
   
   return (

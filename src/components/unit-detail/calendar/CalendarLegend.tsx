@@ -6,15 +6,15 @@ export const CalendarLegend = () => {
     <div className="mt-4 flex flex-wrap justify-center gap-4 text-xs">
       <div className="flex items-center">
         <div className="w-3 h-3 bg-green-100 rounded-full mr-1"></div>
-        <span>Disponible (4/4)</span>
+        <span>Disponible (suficientes domos)</span>
       </div>
       <div className="flex items-center">
         <div className="w-3 h-3 bg-amber-100 rounded-full mr-1"></div>
-        <span>Disponibilidad parcial (1-3/4)</span>
+        <span>Disponibilidad parcial (domos insuficientes)</span>
       </div>
       <div className="flex items-center">
         <div className="w-3 h-3 bg-red-100 rounded-full mr-1"></div>
-        <span>No disponible (0/4)</span>
+        <span>No disponible (0 domos)</span>
       </div>
       <div className="flex items-center">
         <div className="w-3 h-3 bg-primary rounded-full mr-1"></div>
@@ -22,7 +22,7 @@ export const CalendarLegend = () => {
       </div>
       <div className="flex items-center">
         <div className="w-3 h-3 bg-gray-100 rounded-full mr-1"></div>
-        <span>No seleccionable</span>
+        <span>No seleccionable (fecha pasada)</span>
       </div>
     </div>
   );
