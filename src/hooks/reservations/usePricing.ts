@@ -2,7 +2,7 @@
 import { useState } from 'react';
 import { supabase } from '@/lib/supabase';
 
-// Este es el hook que necesita la corrección
+// Base calculator hook
 export const usePriceCalculator = () => {
   const [isLoading, setIsLoading] = useState(false);
   
@@ -110,5 +110,17 @@ export const usePriceCalculator = () => {
   return { calculatePrice, isLoading };
 };
 
-// Renombramos usePriceCalculator a calculatePrice para mantener compatibilidad con el código existente
+// Create the usePricing hook that other files are importing
+export const usePricing = () => {
+  const { calculatePrice, isLoading } = usePriceCalculator();
+  
+  // Function to calculate a quote with the same interface as expected by importers
+  const calculateQuote = async (unitId: string, checkIn: Date, checkOut: Date, guests: number, pets: number = 0) => {
+    return await calculatePrice(unitId, checkIn, checkOut, guests, pets);
+  };
+  
+  return { calculateQuote, calculatePrice, isLoading };
+};
+
+// For backward compatibility, we also export usePriceCalculator as calculatePrice
 export { usePriceCalculator as calculatePrice };
