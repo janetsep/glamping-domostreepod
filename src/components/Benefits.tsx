@@ -1,7 +1,9 @@
+
 import { useState, useEffect } from "react";
 import { BenefitsTabs } from "./benefits/BenefitsTabs";
 import { experiencesData } from "./benefits/data";
 import { useLocation } from "react-router-dom";
+
 const Benefits = () => {
   const [activeTab, setActiveTab] = useState("recorridos");
   const location = useLocation();
@@ -9,7 +11,7 @@ const Benefits = () => {
   // Check if there's a hash parameter in the URL for selecting a specific tab
   useEffect(() => {
     const hash = location.hash;
-
+    
     // If hash has a specific tab format like #benefits-recorridos
     if (hash.startsWith("#benefits-")) {
       const tabId = hash.replace("#benefits-", "");
@@ -18,7 +20,9 @@ const Benefits = () => {
       }
     }
   }, [location.hash]);
-  return <section id="benefits" className="py-10 bg-white">
+
+  return (
+    <section id="benefits" className="py-10 bg-white">
       {/* Franja de título sin texto */}
       <div className="w-full bg-primary/5 border-b border-primary/10 py-3 mb-8">
         <div className="container mx-auto px-4">
@@ -28,13 +32,15 @@ const Benefits = () => {
       
       <div className="container mx-auto px-4">
         <h2 className="text-3xl md:text-4xl font-display font-bold text-primary mb-4 text-center">Experiencias</h2>
-        <p className="text-xl text-center text-gray-600 mb-8 max-w-3xl mx-auto">Explora, relájate y saborea lo mejor del Valle Las Trancas.</p>
+        <p className="text-xl text-center text-gray-600 mb-8 max-w-3xl mx-auto">Explora, relájate y saborea lo mejor de Valle Las Trancas con nuestras actividades pensadas para disfrutar el entorno.</p>
         
         {/* Tabs UI component */}
         <div className="mb-8">
           <BenefitsTabs experiencesData={experiencesData} activeTab={activeTab} setActiveTab={setActiveTab} />
         </div>
       </div>
-    </section>;
+    </section>
+  );
 };
+
 export default Benefits;

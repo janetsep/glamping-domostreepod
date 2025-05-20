@@ -1,15 +1,20 @@
 
+import { Info } from "lucide-react";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 import { useDateSelection } from "./hooks/useDateSelection";
 import { DatePickerButton } from "./date-selector/DatePickerButton";
-import { Label } from "@/components/ui/label";
 
 interface DateSelectorProps {
-  startDate?: Date;
-  endDate?: Date;
+  startDate: Date | undefined;
+  endDate: Date | undefined;
   onStartDateChange: (date: Date | undefined) => void;
   onEndDateChange: (date: Date | undefined) => void;
   unitId: string;
-  requiredDomos?: number;
 }
 
 export const DateSelector = ({
@@ -18,7 +23,6 @@ export const DateSelector = ({
   onStartDateChange,
   onEndDateChange,
   unitId,
-  requiredDomos = 1
 }: DateSelectorProps) => {
   const {
     startCalendarOpen,
@@ -33,48 +37,58 @@ export const DateSelector = ({
     endDate,
     onStartDateChange,
     onEndDateChange,
-    requiredDomos // Pass requiredDomos to the hook
   });
 
   return (
-    <div className="space-y-4">
-      <div>
-        <Label htmlFor="start-date" className="block mb-2">
-          Fecha de entrada
-        </Label>
+    <div className="space-y-2">
+      <div className="flex justify-between items-center">
+        <h3 className="text-sm font-medium">Fechas de estadía</h3>
+        <TooltipProvider>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Info className="h-4 w-4 text-gray-400 cursor-help" />
+            </TooltipTrigger>
+            <TooltipContent>
+              <p className="text-xs max-w-xs">
+                Selecciona las fechas de entrada y salida. El sistema verificará automáticamente
+                la disponibilidad en todos nuestros domos (4 en total).
+              </p>
+            </TooltipContent>
+          </Tooltip>
+        </TooltipProvider>
+      </div>
+      <div className="grid grid-cols-2 gap-4">
         <DatePickerButton
-          label="Seleccionar fecha de entrada"
+          label="Fecha de entrada"
           date={startDate}
           isOpen={startCalendarOpen}
           onOpenChange={setStartCalendarOpen}
           onSelectDate={handleStartDateSelect}
           unitId={unitId}
-          requiredDomos={requiredDomos}
+          selectedStartDate={startDate}
+          selectedEndDate={endDate}
         />
-      </div>
 
-      <div>
-        <Label htmlFor="end-date" className="block mb-2">
-          Fecha de salida
-        </Label>
         <DatePickerButton
-          label="Seleccionar fecha de salida"
+          label="Fecha de salida"
           date={endDate}
           isOpen={endCalendarOpen}
           onOpenChange={setEndCalendarOpen}
           onSelectDate={handleEndDateSelect}
           unitId={unitId}
           selectedStartDate={startDate}
+          selectedEndDate={endDate}
+          disabled={!startDate}
           initialMonth={endDateCalendarMonth}
           checkDateRange={true}
-          disabled={!startDate}
-          requiredDomos={requiredDomos}
         />
       </div>
-
-      <div className="text-sm text-muted-foreground">
-        <p>Check-in: 15:00 hrs | Check-out: 12:00 hrs</p>
-      </div>
+      
+      {startDate && !endDate && (
+        <div className="text-sm text-amber-600 mt-1">
+          Selecciona una fecha de salida para completar tu reserva
+        </div>
+      )}
     </div>
   );
 };

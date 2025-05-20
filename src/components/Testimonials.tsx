@@ -27,8 +27,8 @@ const Testimonials = () => {
       </div>
       
       <div className="container mx-auto px-4">
-        <h2 className="text-3xl md:text-4xl font-display font-bold text-primary mb-4 text-center">¡Los Huéspedes Opinan!</h2>
-        <p className="text-xl text-center text-gray-600 mb-12 max-w-3xl mx-auto">Comentarios indican cómo es vivir la montaña en nuestro glamping.</p>
+        <h2 className="text-3xl md:text-4xl font-display font-bold text-primary mb-4 text-center">Nuestros Huéspedes Opinan</h2>
+        <p className="text-xl text-center text-gray-600 mb-12 max-w-3xl mx-auto">Más de 500 visitantes han elegido Domos TreePod para vivir la montaña a su manera.</p>
         
         {/* Elfsight All-in-One Reviews Widget */}
         <div className="elfsight-app-58776635-7259-470b-9077-f838d052ebab" data-elfsight-app-lazy></div>

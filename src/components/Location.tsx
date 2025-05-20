@@ -1,3 +1,4 @@
+
 import { MapPin, Trees, Droplets, Bird, Car, Bus, Plane, ConciergeBell } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
@@ -15,7 +16,7 @@ const Location = () => {
       
       <div className="container mx-auto px-4">
         <h2 className="text-3xl md:text-4xl font-display font-bold text-primary mb-4 text-center">¿Dónde Estamos?</h2>
-        <p className="text-xl text-center text-gray-600 mb-12 max-w-3xl mx-auto">En el Valle Las Trancas, rodeados de bosque nativo y de montañas que cambian de color con las estaciones.</p>
+        <p className="text-xl text-center text-gray-600 mb-12 max-w-3xl mx-auto">En Valle Las Trancas, a pocos minutos de las Termas de Chillán, rodeados de bosques antiguos y montañas que cambian con las estaciones.</p>
         
         <div className="w-full mb-12">
           <div className="rounded-lg overflow-hidden shadow-lg h-[400px]">
@@ -31,9 +32,13 @@ const Location = () => {
               <MapPin className="h-6 w-6 text-cyan-500 flex-shrink-0 mt-1" />
               <div>
                 <h3 className="text-xl font-semibold mb-2">Valle Las Trancas, Chile</h3>
-                <p className="text-gray-600">Ubicados a 9 km del centro de ski Nevados de Chillán, y a solo una hora de la ciudad de Chillán.</p>
+                <p className="text-gray-600">
+                  Ubicado a los pies del Volcán Chillán y rodeado de bosques nativos, nuestro glamping te ofrece una 
+                  experiencia única en uno de los valles más hermosos de la Cordillera de Los Andes, a solo 1.5 horas 
+                  de la ciudad de Chillán.
+                </p>
                 <p className="text-gray-600 mt-2">
-                  <span className="font-medium"></span> 36°54'S 71°28'O
+                  <span className="font-medium">Coordenadas GPS:</span> 36°54'S 71°28'O
                 </p>
               </div>
             </div>
@@ -58,14 +63,14 @@ const Location = () => {
                 <Bird className="h-5 w-5 text-cyan-500 flex-shrink-0 mt-1" />
                 <div>
                   <h4 className="font-semibold">Fauna Local</h4>
-                  <p className="text-sm text-gray-600">Observa las especies autóctonas en su hábitat natural.</p>
+                  <p className="text-sm text-gray-600">Observa cóndores y otras especies autóctonas en su hábitat natural.</p>
                 </div>
               </div>
               <div className="flex items-start gap-3">
                 <MapPin className="h-5 w-5 text-cyan-500 flex-shrink-0 mt-1" />
                 <div>
                   <h4 className="font-semibold">Centro de Ski</h4>
-                  <p className="text-sm text-gray-600">A 15 minutos del centro de ski Nevados de Chillán.</p>
+                  <p className="text-sm text-gray-600">A 20 minutos del centro de ski Nevados de Chillán.</p>
                 </div>
               </div>
             </div>
@@ -78,21 +83,21 @@ const Location = () => {
                 <Car className="h-5 w-5 text-cyan-500 flex-shrink-0 mt-1" />
                 <div>
                   <h4 className="font-semibold">Desde Chillán</h4>
-                  <p className="text-sm text-gray-600">1 hora por ruta pavimentada N-55 (72 km).</p>
+                  <p className="text-sm text-gray-600">1.5 horas por ruta pavimentada (85 km).</p>
                 </div>
               </div>
               <div className="flex items-start gap-3">
                 <Car className="h-5 w-5 text-cyan-500 flex-shrink-0 mt-1" />
                 <div>
                   <h4 className="font-semibold">Desde Concepción</h4>
-                  <p className="text-sm text-gray-600">2 horas por autopista (230 km).</p>
+                  <p className="text-sm text-gray-600">3 horas por autopista (230 km).</p>
                 </div>
               </div>
               <div className="flex items-start gap-3">
                 <Plane className="h-5 w-5 text-cyan-500 flex-shrink-0 mt-1" />
                 <div>
                   <h4 className="font-semibold">Desde Santiago</h4>
-                  <p className="text-sm text-gray-600">5 horas por autopista 5 sur  (420 km) o 45 minutos en avión + 1 hora en auto desde Chillán.</p>
+                  <p className="text-sm text-gray-600">5 horas por autopista (420 km) o 45 minutos en avión + 1.5 horas en auto desde Chillán.</p>
                 </div>
               </div>
               <div className="flex items-start gap-3">

@@ -17,6 +17,7 @@ interface ReservationTabsProps {
   guests: number;
   onGuestsChange: (guests: number) => void;
   requiredDomos?: number;
+  onDomosChange?: (domos: number) => void;
   isAvailable: boolean | null;
   selectedActivities: Activity[];
   onActivityToggle: (activity: Activity) => void;
@@ -25,7 +26,6 @@ interface ReservationTabsProps {
   onPackageToggle: (pkg: ThemedPackage) => void;
   packagesTotal: number;
   unitId: string;
-  availableDomos?: number;
 }
 
 export const ReservationTabs = ({
@@ -39,6 +39,7 @@ export const ReservationTabs = ({
   guests,
   onGuestsChange,
   requiredDomos,
+  onDomosChange,
   isAvailable,
   selectedActivities,
   onActivityToggle,
@@ -46,8 +47,7 @@ export const ReservationTabs = ({
   selectedPackages,
   onPackageToggle,
   packagesTotal,
-  unitId,
-  availableDomos
+  unitId
 }: ReservationTabsProps) => {
   return (
     <Tabs 
@@ -69,28 +69,20 @@ export const ReservationTabs = ({
           onStartDateChange={onStartDateChange}
           onEndDateChange={onEndDateChange}
           unitId={unitId}
-          requiredDomos={requiredDomos}
         />
         
         <GuestSelector
-          maxGuests={16}
+          maxGuests={16} // Permitir hasta 16 huéspedes en total
           guests={guests}
           onGuestsChange={onGuestsChange}
-          maxDomos={4}
+          maxDomos={4} // Máximo 4 domos disponibles
           requiredDomos={requiredDomos}
-          availableDomos={availableDomos}
+          onDomosChange={onDomosChange}
         />
         
         {isAvailable === false && (
           <div className="p-3 bg-red-50 border border-red-100 rounded text-red-800 text-sm mt-4">
             No hay disponibilidad para las fechas seleccionadas. Por favor, selecciona otras fechas.
-          </div>
-        )}
-        
-        {availableDomos !== undefined && requiredDomos !== undefined && availableDomos < requiredDomos && (
-          <div className="p-3 bg-amber-50 border border-amber-100 rounded text-amber-800 text-sm mt-4">
-            No hay suficientes domos disponibles. Se necesitan {requiredDomos} domos para {guests} huéspedes, 
-            pero solo hay {availableDomos} disponibles. Por favor, reduce la cantidad de huéspedes o selecciona otras fechas.
           </div>
         )}
       </TabsContent>

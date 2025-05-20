@@ -8,7 +8,6 @@ import Packages from "@/components/Packages";
 import Gallery from "@/components/Gallery";
 import Celebrations from "@/components/Celebrations";
 import SimplifiedContact from "@/components/SimplifiedContact";
-import SocialButtons from "@/components/contact/SocialButtons";
 import { useQuery } from "@tanstack/react-query";
 import { useEffect } from "react";
 import { toast } from "sonner";
@@ -61,7 +60,6 @@ const Index = () => {
       <div className="mt-4 md:mt-8 bg-gradient-to-r from-gray-50 to-white py-8">
         <SimplifiedContact />
       </div>
-      <SocialButtons />
     </div>
   );
 };

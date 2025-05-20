@@ -16,15 +16,13 @@ interface AvailabilityCalendarSheetProps {
   onSelectDate?: (date: Date) => void;
   selectedStartDate?: Date | null;
   selectedEndDate?: Date | null;
-  requiredDomos?: number;
 }
 
 export const AvailabilityCalendarSheet = ({
   unitId,
   onSelectDate,
   selectedStartDate,
-  selectedEndDate,
-  requiredDomos = 1
+  selectedEndDate
 }: AvailabilityCalendarSheetProps) => {
   const initialMonth = selectedStartDate || new Date(); // Use selectedStartDate as the initial month if available
   
@@ -40,8 +38,7 @@ export const AvailabilityCalendarSheet = ({
         <SheetHeader className="mb-6">
           <SheetTitle className="text-2xl">Disponibilidad</SheetTitle>
           <SheetDescription className="text-base">
-            Consulta la disponibilidad de nuestros domos. 
-            Los días en verde están disponibles para reserva y cuentan con suficientes domos para tu grupo.
+            Consulta la disponibilidad de nuestros domos. Los días en verde están disponibles para reserva.
           </SheetDescription>
         </SheetHeader>
         
@@ -53,7 +50,6 @@ export const AvailabilityCalendarSheet = ({
             selectedEndDate={selectedEndDate}
             initialMonth={initialMonth}
             disableNightMode={true}
-            requiredDomos={requiredDomos}
           />
         </div>
       </SheetContent>

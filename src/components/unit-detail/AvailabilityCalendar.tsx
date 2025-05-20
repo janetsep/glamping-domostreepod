@@ -16,9 +16,8 @@ interface AvailabilityCalendarProps {
   checkDateRange?: boolean;
   selectedStartDate?: Date | null;
   selectedEndDate?: Date | null;
-  initialMonth?: Date; // Prop para controlar el mes inicial que se muestra
-  disableNightMode?: boolean; // Prop para desactivar el modo nocturno
-  requiredDomos?: number; // Prop para verificar si hay suficientes domos disponibles
+  initialMonth?: Date; // Add this prop to control the initial month displayed
+  disableNightMode?: boolean; // Add this prop to disable night mode
 }
 
 export const AvailabilityCalendar = ({ 
@@ -28,14 +27,13 @@ export const AvailabilityCalendar = ({
   selectedStartDate = null,
   selectedEndDate = null,
   initialMonth,
-  disableNightMode = false,
-  requiredDomos = 1
+  disableNightMode = false
 }: AvailabilityCalendarProps) => {
-  // Usar initialMonth si se proporciona, de lo contrario usar la fecha actual
-  const [currentMonth, setCurrentMonth] = useState<Date>(initialMonth || new Date());
+  // Use initialMonth if provided, otherwise use current date
+  const [currentMonth, setCurrentMonth] = useState(initialMonth || new Date());
   const [selectedDate, setSelectedDate] = useState<Date | null>(selectedStartDate);
   
-  // Actualizar el mes actual si initialMonth cambia
+  // Update current month if initialMonth changes
   useEffect(() => {
     if (initialMonth) {
       setCurrentMonth(initialMonth);
@@ -45,7 +43,7 @@ export const AvailabilityCalendar = ({
   const { calendarDays, isLoading, isDateAvailable, isDateRangeAvailable } = useCalendarAvailability(unitId, currentMonth, selectedDate);
 
   const handleDateClick = async (day: AvailabilityCalendarDay) => {
-    // Verificar si la fecha es pasada o si es hoy después de las 14:00
+    // Check if date is in the past or if it's today after 14:00
     const now = new Date();
     if (isBefore(day.date, now) && !isToday(day.date)) {
       toast({
@@ -56,7 +54,7 @@ export const AvailabilityCalendar = ({
       return;
     }
     
-    // Verificar si es hoy pero después de las 14:00 - solo si el modo nocturno está habilitado
+    // Check if it's today but after 14:00 - only if night mode is enabled
     if (!disableNightMode && isToday(day.date)) {
       const currentHour = now.getHours();
       if (currentHour >= 14) {
@@ -78,17 +76,7 @@ export const AvailabilityCalendar = ({
       return;
     }
     
-    // Verificar si hay suficientes domos disponibles
-    if (day.availableUnits !== undefined && day.availableUnits < requiredDomos) {
-      toast({
-        variant: "destructive",
-        title: "Domos insuficientes",
-        description: `Se necesitan ${requiredDomos} domos, pero solo hay ${day.availableUnits} disponibles.`
-      });
-      return;
-    }
-    
-    // Verificar si la fecha está realmente disponible (verificación doble)
+    // Check if date is truly available (double-check)
     const isAvailable = await isDateAvailable(day.date);
     if (!isAvailable) {
       toast({
@@ -99,8 +87,8 @@ export const AvailabilityCalendar = ({
       return;
     }
     
-    // Si estamos en modo checkDateRange y tenemos una fecha de inicio seleccionada,
-    // verificar si todo el rango está disponible
+    // If we're in checkDateRange mode and we have a selected start date,
+    // check if the entire range is available
     if (checkDateRange && selectedStartDate && day.date > selectedStartDate) {
       const rangeAvailable = await isDateRangeAvailable(selectedStartDate, day.date);
       if (!rangeAvailable) {
@@ -149,13 +137,7 @@ export const AvailabilityCalendar = ({
             selectedStartDate={selectedStartDate}
             selectedEndDate={selectedEndDate}
             disableNightMode={disableNightMode}
-            requiredDomos={requiredDomos}
           />
-          
-          <div className="mt-4 text-xs text-muted-foreground">
-            <p className="mb-1">* El formato de disponibilidad es: disponibles/total</p>
-            <p className="mb-1">* "Insuficiente" significa que no hay suficientes domos disponibles para la cantidad seleccionada</p>
-          </div>
           
           <CalendarLegend />
         </>
