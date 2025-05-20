@@ -19,7 +19,8 @@ export const useAvailabilityCheck = ({ setIsLoading, toast }: UseAvailabilityChe
     try {
       setIsLoading(true);
       
-      return await checkUnitAvailability(unitId, checkIn, checkOut);
+      const result = await checkUnitAvailability(unitId, checkIn, checkOut);
+      return result.isAvailable;
     } catch (error) {
       console.error('Error al verificar disponibilidad:', error);
       toast({
@@ -61,8 +62,38 @@ export const useAvailabilityCheck = ({ setIsLoading, toast }: UseAvailabilityChe
     }
   };
 
+  /**
+   * Verificar información detallada de disponibilidad
+   */
+  const checkDetailedAvailability = async (
+    unitId: string,
+    checkIn: Date,
+    checkOut: Date
+  ) => {
+    try {
+      setIsLoading(true);
+      
+      return await checkUnitAvailability(unitId, checkIn, checkOut);
+    } catch (error) {
+      console.error('Error al verificar disponibilidad detallada:', error);
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: "No se pudo verificar la disponibilidad. Por favor, intenta de nuevo.",
+      });
+      return {
+        isAvailable: false,
+        availableUnits: 0,
+        totalUnits: 4
+      };
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   return { 
     checkAvailability,
-    checkGeneralDomosAvailability
+    checkGeneralDomosAvailability,
+    checkDetailedAvailability
   };
 };

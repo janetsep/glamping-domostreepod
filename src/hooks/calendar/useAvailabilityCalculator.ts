@@ -8,6 +8,7 @@ import {
   addDays,
   format
 } from "date-fns";
+import { es } from "date-fns/locale"; // Importamos el locale español
 import { AvailabilityCalendarDay } from "@/types";
 
 const TOTAL_UNITS = 4; // Total number of domos available
@@ -74,7 +75,7 @@ export const useAvailabilityCalculator = (
           const reservedUnits = reservationsOnDay.length;
           const availableUnits = Math.max(0, TOTAL_UNITS - reservedUnits);
           
-          console.log(`Day ${format(day, 'yyyy-MM-dd')}: ${reservedUnits} reserved, ${availableUnits} available`);
+          console.log(`Day ${format(day, 'yyyy-MM-dd')} (${format(day, 'EEEE', { locale: es })}): ${reservedUnits} reserved, ${availableUnits} available`);
           
           return {
             date: day,

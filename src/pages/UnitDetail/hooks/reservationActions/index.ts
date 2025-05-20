@@ -16,6 +16,11 @@ type ReservationState = {
   isAvailable: boolean | null;
   setIsAvailable: (isAvailable: boolean) => void;
   checkAvailability: (unitId: string, checkIn: Date, checkOut: Date) => Promise<boolean>;
+  checkDetailedAvailability?: (unitId: string, checkIn: Date, checkOut: Date) => Promise<{
+    isAvailable: boolean;
+    availableUnits: number;
+    totalUnits: number;
+  }>;
   calculateQuote: any;
   setQuote: (quote: any) => void;
   setShowQuote: (show: boolean) => void;
