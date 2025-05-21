@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { format } from "date-fns";
 import { supabase } from "@/lib/supabase";
@@ -9,10 +8,12 @@ import { supabase } from "@/lib/supabase";
 export const useReservationsFetcher = (currentMonth: Date) => {
   const [reservations, setReservations] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchReservations = async () => {
       setIsLoading(true);
+      setError(null);
       
       const start = new Date(currentMonth);
       start.setDate(1); // First day of month
@@ -31,22 +32,31 @@ export const useReservationsFetcher = (currentMonth: Date) => {
         const extendedEnd = new Date(end);
         extendedEnd.setDate(extendedEnd.getDate() + 7);
         
-        const { data, error } = await supabase
+        const { data, error: supabaseError } = await supabase
           .from('reservations')
           .select('*')
           .eq('status', 'confirmed')
           .or(`check_in.lte.${extendedEnd.toISOString()},check_out.gte.${extendedStart.toISOString()}`);
         
-        if (error) {
-          console.error("Error fetching reservations:", error);
+        if (supabaseError) {
+          console.error("Error fetching reservations:", supabaseError);
+          setError(supabaseError.message);
           return [];
         }
         
         console.log(`Found ${data?.length || 0} reservations for the selected month`);
+        
+        // Verifica y registra las reservas sin unit_id para depuración
+        const reservationsWithoutUnitId = (data || []).filter(r => !r.unit_id);
+        if (reservationsWithoutUnitId.length > 0) {
+          console.log(`Warning: Found ${reservationsWithoutUnitId.length} reservations without unit_id`);
+        }
+        
         setReservations(data || []);
         return data;
-      } catch (error) {
+      } catch (error: any) {
         console.error("Error in fetchReservations:", error);
+        setError(error.message || "Error desconocido al obtener reservaciones");
         return [];
       } finally {
         setIsLoading(false);
@@ -58,6 +68,7 @@ export const useReservationsFetcher = (currentMonth: Date) => {
 
   return { 
     reservations, 
-    isLoading 
+    isLoading,
+    error
   };
 };
