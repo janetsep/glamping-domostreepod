@@ -44,28 +44,16 @@ export const checkGeneralAvailability = async (
     console.log(`Encontradas ${overlappingReservations?.length || 0} reservas solapadas`);
     
     // Contamos cuántas unidades diferentes están reservadas
-    const uniqueUnitIds = new Set<string>();
-    let unassignedReservationsCount = 0;
+    const uniqueReservedUnits = new Set(overlappingReservations?.map(r => r.unit_id) || []);
+    const reservedCount = uniqueReservedUnits.size;
     
-    // Procesar cada reserva solapada
-    overlappingReservations?.forEach(reservation => {
-      if (reservation.unit_id) {
-        uniqueUnitIds.add(reservation.unit_id);
-      } else {
-        // Reservas sin unit_id específico cuentan como unidades separadas
-        unassignedReservationsCount++;
-      }
-    });
+    // Si las reservas no tienen unit_id específico, contamos cada reserva como una unidad reservada
+    const reservationsWithoutUnitId = (overlappingReservations || []).filter(r => !r.unit_id).length;
+    const totalReservedCount = Math.min(TOTAL_DOMOS, reservedCount + reservationsWithoutUnitId);
     
-    // Total de unidades reservadas: unidades únicas con ID + reservas sin ID asignado
-    const totalReservedCount = uniqueUnitIds.size + unassignedReservationsCount;
+    const availableUnits = Math.max(0, TOTAL_DOMOS - totalReservedCount);
     
-    // Asegurarnos que no exceda el total de domos disponibles
-    const effectiveReservedCount = Math.min(TOTAL_DOMOS, totalReservedCount);
-    
-    const availableUnits = Math.max(0, TOTAL_DOMOS - effectiveReservedCount);
-    
-    console.log(`Domos reservados: ${effectiveReservedCount}, Domos disponibles: ${availableUnits}`);
+    console.log(`Domos reservados: ${totalReservedCount}, Domos disponibles: ${availableUnits}`);
     
     return {
       isAvailable: availableUnits > 0,

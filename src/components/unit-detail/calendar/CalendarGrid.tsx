@@ -73,17 +73,7 @@ export const CalendarGrid = ({
     }
     // Otherwise use availability styling
     else if (day.isAvailable) {
-      if (day.availableUnits !== undefined && requiredDomos !== undefined) {
-        if (day.availableUnits < requiredDomos) {
-          // Disponibilidad parcial - no hay suficientes domos
-          classes += " bg-amber-100 text-amber-800 hover:bg-amber-200 cursor-pointer";
-        } else {
-          // Disponibilidad completa
-          classes += " bg-green-100 text-green-800 hover:bg-green-200 cursor-pointer";
-        }
-      } else {
-        classes += " bg-green-100 text-green-800 hover:bg-green-200 cursor-pointer";
-      }
+      classes += " bg-green-100 text-green-800 hover:bg-green-200 cursor-pointer";
     } else {
       classes += " bg-red-100 text-red-800 cursor-not-allowed";
     }
@@ -91,7 +81,7 @@ export const CalendarGrid = ({
     return classes;
   };
 
-  // Function to get the availability display text
+  // Function to get the availability display text, CORREGIDO para mostrar cantidad de domos disponibles
   const getAvailabilityDisplay = (day: AvailabilityCalendarDay): string => {
     if (day.availableUnits === undefined || day.totalUnits === undefined) {
       return "";

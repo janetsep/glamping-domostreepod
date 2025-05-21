@@ -30,11 +30,6 @@ export const GuestSelector = ({
   onDomosChange,
   availableDomos
 }: GuestSelectorProps) => {
-  // Calcular el máximo de huéspedes permitidos basado en domos disponibles
-  const maxAllowedGuests = availableDomos !== undefined 
-    ? Math.min(maxGuests, availableDomos * 4) 
-    : maxGuests;
-
   const handleGuestsChange = (value: string) => {
     const newGuestCount = parseInt(value);
     
@@ -63,7 +58,7 @@ export const GuestSelector = ({
           </SelectTrigger>
           <SelectContent>
             <SelectGroup>
-              {Array.from({ length: maxAllowedGuests }, (_, i) => i + 1).map(
+              {Array.from({ length: maxGuests }, (_, i) => i + 1).map(
                 (num) => (
                   <SelectItem key={num} value={num.toString()}>
                     {num} {num === 1 ? 'huésped' : 'huéspedes'}
