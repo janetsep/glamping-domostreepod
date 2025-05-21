@@ -74,7 +74,7 @@ export const ReservationPanel = ({
     setEndDate(end);
   };
   return <>
-      <h2 className="text-2xl font-display font-bold mb-6">Reserva tu experiencia en Domos TreePod</h2>
+      <h2 className="text-2xl font-display font-bold mb-6">           Reserva tu experiencia en Domos TreePod</h2>
       
       <div className="space-y-4">
         {!showQuote ? <ReservationForm unitId={displayUnit.id} startDate={startDate} endDate={endDate} setStartDate={setStartDate} setEndDate={setEndDate} guests={guests} setGuests={setGuests} requiredDomos={requiredDomos} isAvailable={isAvailable} onReservation={onReservation} selectedActivities={selectedActivities} selectedPackages={selectedPackages} onActivityToggle={onActivityToggle} onPackageToggle={onPackageToggle} activitiesTotal={activitiesTotal} packagesTotal={packagesTotal} reservationTab={reservationTab} setReservationTab={setReservationTab} isPartialAvailability={isPartialAvailability} availableDomos={availableDomos} alternativeDates={alternativeDates} handleCalendarDateSelect={handleCalendarDateSelect} handleAlternativeDateSelect={handleAlternativeDateSelect} /> : quote && <QuoteSummary quote={quote} isAvailable={isAvailable || false} isProcessingPayment={isProcessingPayment} onNewQuote={onNewQuote} onConfirmReservation={onConfirmReservation} selectedActivities={selectedActivities} selectedPackages={selectedPackages} getUpdatedQuoteTotal={getUpdatedQuoteTotal} startDate={startDate} endDate={endDate} guests={guests} requiredDomos={requiredDomos} />}
