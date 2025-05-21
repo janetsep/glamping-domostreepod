@@ -19,7 +19,7 @@ const ContactInfo = () => {
           <Phone className="h-6 w-6 text-cyan-500 mt-1 flex-shrink-0" />
           <div>
             <h4 className="font-semibold mb-1">{contactPageContent.phoneLabel}</h4>
-            <a href="tel:+56984643307" className="text-gray-600 hover:text-cyan-500 transition-colors">+56 9 8464 3307</a>
+            <a href="tel:+569 8464 3307" className="text-gray-600 hover:text-cyan-500 transition-colors">+56 9 8464 3307</a>
             <p className="text-sm text-gray-500 mt-1">{contactPageContent.phoneText}</p>
           </div>
         </div>
