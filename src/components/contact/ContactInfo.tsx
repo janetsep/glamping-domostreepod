@@ -10,7 +10,7 @@ const ContactInfo = () => {
           <MessageSquare className="h-6 w-6 text-cyan-500 mt-1 flex-shrink-0" />
           <div>
             <h4 className="font-semibold mb-1">{contactPageContent.whatsappLabel}</h4>
-            <a href="https://wa.me/56984643307" target="_blank" rel="noopener noreferrer" className="text-gray-600 hover:text-cyan-500 transition-colors">+56 9 8464 3307</a>
+            <a href="https://wa.me/569 8464 3307" target="_blank" rel="noopener noreferrer" className="text-gray-600 hover:text-cyan-500 transition-colors">+56 9 8464 3307</a>
             <p className="text-sm text-gray-500 mt-1">{contactPageContent.whatsappText}</p>
           </div>
         </div>
