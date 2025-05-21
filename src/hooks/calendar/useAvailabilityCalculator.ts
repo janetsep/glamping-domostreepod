@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { 
   startOfMonth, 
@@ -10,6 +9,7 @@ import {
   endOfWeek,
   addDays
 } from "date-fns";
+import { es } from 'date-fns/locale'; // Importar localización española
 import { AvailabilityCalendarDay } from "@/types";
 
 const TOTAL_UNITS = 4; // Total number of domos available
@@ -79,11 +79,27 @@ export const useAvailabilityCalculator = (
             );
           });
           
-          // Calculate available units (total units - reserved units)
-          const reservedUnits = reservationsOnDay.length;
-          const availableUnits = Math.max(0, TOTAL_UNITS - reservedUnits);
+          // CORRECCIÓN: Calcular correctamente las unidades reservadas
+          // Calcular unidades reservadas por unit_id único
+          const uniqueReservedUnits = new Set(reservationsOnDay
+            .map(r => r.unit_id)
+            .filter(Boolean)); // Filter out null/undefined unit_ids
           
-          console.log(`Day ${format(day, 'yyyy-MM-dd')} (${format(day, 'EEEE', { locale: es })}): ${reservedUnits} reserved, ${availableUnits} available`);
+          const reservedWithUnitId = uniqueReservedUnits.size;
+          
+          // Calcular reservas sin unit_id (cada una cuenta como una unidad separada)
+          const reservationsWithoutUnitId = reservationsOnDay.filter(r => !r.unit_id).length;
+          
+          // Total de unidades reservadas (con máximo de TOTAL_UNITS)
+          const reservedUnits = Math.min(TOTAL_UNITS, reservedWithUnitId + reservationsWithoutUnitId);
+          const availableUnits = TOTAL_UNITS - reservedUnits;
+          
+          console.log(`Day ${format(day, 'yyyy-MM-dd')} (${format(day, 'EEEE', { locale: es })}): 
+            - Total reservations: ${reservationsOnDay.length}
+            - Unique unit_ids: ${reservedWithUnitId}
+            - Reservations without unit_id: ${reservationsWithoutUnitId}
+            - Total reserved units: ${reservedUnits}
+            - Available units: ${availableUnits}`);
           
           return {
             date: day,
