@@ -2,6 +2,7 @@
 import { useState, useEffect } from 'react';
 import { toast } from 'sonner'; // Cambiado a 'sonner' que es la biblioteca de toast utilizada en el proyecto
 import { useDateAvailabilityChecker } from '../calendar/useDateAvailabilityChecker';
+import { checkGeneralAvailability } from './utils/availabilityChecker/checkGeneralAvailability';
 
 const TOTAL_DOMOS = 4;
 
@@ -83,6 +84,21 @@ export const useAvailabilityCheck = (
     
     checkAvailability();
   }, [checkInDate, checkOutDate, requiredDomos, reservations]);
+
+  // Añadir funciones necesarias para resolver los errores
+  const checkAvailability = async (unitId: string, checkIn: Date, checkOut: Date) => {
+    try {
+      const { isAvailable } = await checkGeneralAvailability(checkIn, checkOut, 1);
+      return isAvailable;
+    } catch (error) {
+      console.error('Error en checkAvailability:', error);
+      return false;
+    }
+  };
+
+  const checkGeneralDomosAvailability = async (checkIn: Date, checkOut: Date, required: number = 1) => {
+    return checkGeneralAvailability(checkIn, checkOut, required);
+  };
   
   return {
     isAvailable,
@@ -91,6 +107,8 @@ export const useAvailabilityCheck = (
     partialAvailability,
     setIsAvailable,
     setAvailableDomos,
-    setPartialAvailability
+    setPartialAvailability,
+    checkAvailability,
+    checkGeneralDomosAvailability
   };
 };

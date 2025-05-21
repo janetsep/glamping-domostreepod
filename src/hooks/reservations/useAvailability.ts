@@ -11,5 +11,10 @@ interface UseAvailabilityProps {
  * @deprecated Use useAvailabilityCheck instead
  */
 export const useAvailability = (props: UseAvailabilityProps) => {
-  return useAvailabilityCheck(props);
+  // Crear instancia de useAvailabilityCheck con valores por defecto
+  // para mantener compatibilidad con el código existente
+  const dummyDate = new Date();
+  const dummyReservations: any[] = [];
+  
+  return useAvailabilityCheck(dummyDate, dummyDate, 1, dummyReservations);
 };

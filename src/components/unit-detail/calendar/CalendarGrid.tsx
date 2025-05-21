@@ -1,20 +1,25 @@
+
 import React from 'react';
 import { format, isSameMonth, isSameDay } from 'date-fns';
 import { AvailabilityCalendarDay } from '@/types';
 
 interface CalendarGridProps {
-  days: AvailabilityCalendarDay[];
+  calendarDays: AvailabilityCalendarDay[];
   currentMonth: Date;
   onDateClick: (day: AvailabilityCalendarDay) => void;
-  selectedDate: Date | null;
+  selectedStartDate: Date | null;
+  selectedEndDate: Date | null;
+  disableNightMode?: boolean;
   requiredDomos?: number;
 }
 
 export const CalendarGrid = ({
-  days,
+  calendarDays,
   currentMonth,
   onDateClick,
-  selectedDate,
+  selectedStartDate,
+  selectedEndDate,
+  disableNightMode,
   requiredDomos = 1
 }: CalendarGridProps) => {
   // Función para obtener clases CSS según disponibilidad
@@ -28,9 +33,20 @@ export const CalendarGrid = ({
       classes += " text-gray-900";
     }
     
-    // Si está seleccionado
-    if (selectedDate && isSameDay(day.date, selectedDate)) {
+    // Si está seleccionado como fecha de inicio
+    if (selectedStartDate && isSameDay(day.date, selectedStartDate)) {
       classes += " bg-blue-100";
+    }
+    
+    // Si está seleccionado como fecha de fin
+    if (selectedEndDate && isSameDay(day.date, selectedEndDate)) {
+      classes += " bg-blue-200";
+    }
+    
+    // Si está en el rango seleccionado
+    if (selectedStartDate && selectedEndDate && 
+        day.date > selectedStartDate && day.date < selectedEndDate) {
+      classes += " bg-blue-50";
     }
     
     // Clases según disponibilidad
@@ -49,7 +65,7 @@ export const CalendarGrid = ({
 
   return (
     <div className="grid grid-cols-7 gap-2">
-      {days.map((day, index) => (
+      {calendarDays.map((day, index) => (
         <div key={index} onClick={() => onDateClick(day)}>
           <div className={getDateClasses(day)}>
             <span>{format(day.date, 'd')}</span>
