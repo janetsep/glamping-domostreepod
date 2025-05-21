@@ -1,65 +1,74 @@
-import { useState, useEffect } from 'react';
-import { Label } from "@/components/ui/label";
-import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { InfoIcon } from 'lucide-react';
+import React, { useEffect } from 'react';
+
 interface GuestSelectorProps {
-  maxGuests: number;
-  guests: number;
-  onGuestsChange: (guests: number) => void;
-  maxDomos: number;
-  requiredDomos?: number;
-  onDomosChange?: (domos: number) => void;
+  value: number;
+  onChange: (value: number) => void;
+  maxGuests?: number;
   availableDomos?: number;
+  label?: string;
+  required?: boolean;
 }
+
 export const GuestSelector = ({
-  maxGuests = 16,
-  guests,
-  onGuestsChange,
-  maxDomos = 4,
-  requiredDomos = 1,
-  onDomosChange,
-  availableDomos
+  value,
+  onChange,
+  maxGuests = 16, // Valor por defecto máximo
+  availableDomos,
+  label = 'Huéspedes',
+  required = false
 }: GuestSelectorProps) => {
-  const handleGuestsChange = (value: string) => {
-    const newGuestCount = parseInt(value);
-    if (!isNaN(newGuestCount)) {
-      onGuestsChange(newGuestCount);
+  // CORRECCIÓN: Calcular el máximo de huéspedes basado en los domos disponibles
+  const maxAllowedGuests = availableDomos !== undefined 
+    ? Math.min(maxGuests, availableDomos * 4) // Cada domo permite 4 huéspedes
+    : maxGuests;
+  
+  // Si el valor actual excede el máximo permitido, ajustarlo
+  useEffect(() => {
+    if (value > maxAllowedGuests && maxAllowedGuests > 0) {
+      onChange(maxAllowedGuests);
     }
-  };
+  }, [maxAllowedGuests, value, onChange]);
 
-  // Calcular el porcentaje de disponibilidad
-  const availabilityPercentage = availableDomos !== undefined ? Math.round(availableDomos / maxDomos * 100) : null;
+  // Crear las opciones para el selector
+  const options = Array.from(
+    { length: maxAllowedGuests }, 
+    (_, i) => ({
+      value: i + 1,
+      label: `${i + 1} ${i === 0 ? 'huésped' : 'huéspedes'}`
+    })
+  );
 
-  // Verificar si hay suficientes domos disponibles
-  const hasEnoughDomos = availableDomos !== undefined && requiredDomos !== undefined ? availableDomos >= requiredDomos : true;
-  return <div className="space-y-4">
-      <div>
-        <Label htmlFor="select-guests" className="block mb-2">Número de Huéspedes</Label>
-        <Select value={guests.toString()} onValueChange={handleGuestsChange}>
-          <SelectTrigger id="select-guests">
-            <SelectValue placeholder="Seleccione" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectGroup>
-              {Array.from({
-              length: maxGuests
-            }, (_, i) => i + 1).map(num => <SelectItem key={num} value={num.toString()}>
-                    {num} {num === 1 ? 'huésped' : 'huéspedes'}
-                  </SelectItem>)}
-            </SelectGroup>
-          </SelectContent>
-        </Select>
-      </div>
-
-      <div className="text-sm text-muted-foreground">
-        <p>
-          Cada domo puede acomodar hasta 4 personas.
-          {requiredDomos > 0 && <span className="font-medium"> Se necesitarán {requiredDomos} {requiredDomos === 1 ? 'domo' : 'domos'} para {guests} {guests === 1 ? 'huésped' : 'huéspedes'}.</span>}
-          {availableDomos !== undefined && <span className={`block mt-1 ${hasEnoughDomos ? "text-green-600" : "text-amber-600"}`}>
-              <InfoIcon className="h-3 w-3 inline mr-1" />
-              {hasEnoughDomos ? `Hay ${availableDomos} de 4 domos disponibles (${availabilityPercentage}%) para las fechas seleccionadas.` : `Solo hay ${availableDomos} de 4 domos disponibles (${availabilityPercentage}%) para las fechas seleccionadas.`}
-            </span>}
+  return (
+    <div className="w-full">
+      <label className="block text-sm font-medium text-gray-700 mb-1">
+        {label} {required && <span className="text-red-500">*</span>}
+      </label>
+      
+      <select
+        value={value}
+        onChange={(e) => onChange(Number(e.target.value))}
+        className="w-full p-2 border border-gray-300 rounded-md"
+        disabled={maxAllowedGuests === 0}
+      >
+        {options.map((option) => (
+          <option key={option.value} value={option.value}>
+            {option.label}
+          </option>
+        ))}
+      </select>
+      
+      {maxAllowedGuests < maxGuests && availableDomos !== undefined && (
+        <p className="text-amber-600 text-sm mt-1">
+          Solo hay {availableDomos} {availableDomos === 1 ? 'domo disponible' : 'domos disponibles'} 
+          (máximo {maxAllowedGuests} huéspedes).
         </p>
-      </div>
-    </div>;
+      )}
+      
+      {maxAllowedGuests === 0 && (
+        <p className="text-red-600 text-sm mt-1">
+          No hay domos disponibles para las fechas seleccionadas.
+        </p>
+      )}
+    </div>
+  );
 };
