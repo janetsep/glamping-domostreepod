@@ -1,6 +1,7 @@
+
 import { useState, useEffect } from 'react';
-import { toast } from 'react-toastify'; // Ajusta según la biblioteca que uses
-import { useDateAvailabilityChecker } from './useDateAvailabilityChecker';
+import { toast } from 'sonner'; // Cambiado a 'sonner' que es la biblioteca de toast utilizada en el proyecto
+import { useDateAvailabilityChecker } from '../calendar/useDateAvailabilityChecker';
 
 const TOTAL_DOMOS = 4;
 
