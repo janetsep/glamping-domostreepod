@@ -15,7 +15,7 @@ const UnitDetail = () => {
   const [searchParams] = useSearchParams();
   
   // Use our controller hook that combines all the functionality
-  const controller = useUnitDetailController();
+  const controller = useUnitDetailController(unitId, searchParams);
 
   return (
     <div className="min-h-screen bg-white pt-24">
@@ -23,51 +23,51 @@ const UnitDetail = () => {
         <UnitHeader navigate={navigate} />
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-          {controller.displayUnit && (
+          {controller.state.displayUnit && (
             <>
-              <UnitContent unit={controller.displayUnit} />
+              <UnitContent unit={controller.state.displayUnit} />
 
               <div className="bg-secondary/20 p-6 rounded-lg shadow-sm">
-                {controller.isReservationConfirmed ? (
+                {controller.state.isReservationConfirmed ? (
                   <ReservationConfirmation 
-                    ref={controller.confirmationRef}
-                    startDate={controller.startDate}
-                    endDate={controller.endDate}
-                    guests={controller.guests}
-                    quote={controller.quote}
-                    paymentDetails={controller.paymentDetails}
-                    onNewQuote={controller.handleNewQuote}
-                    reservationId={controller.confirmedReservationId}
+                    ref={controller.state.confirmationRef}
+                    startDate={controller.state.startDate}
+                    endDate={controller.state.endDate}
+                    guests={controller.state.guests}
+                    quote={controller.state.quote}
+                    paymentDetails={controller.state.paymentDetails}
+                    onNewQuote={controller.actions.handleNewQuote}
+                    reservationId={controller.state.confirmedReservationId}
                   />
                 ) : (
                   <ReservationPanel
-                    displayUnit={controller.displayUnit}
-                    startDate={controller.startDate}
-                    endDate={controller.endDate}
-                    setStartDate={controller.setStartDate}
-                    setEndDate={controller.setEndDate}
-                    guests={controller.guests}
-                    setGuests={controller.setGuests}
-                    requiredDomos={controller.requiredDomos}
-                    isAvailable={controller.isAvailable}
-                    showQuote={controller.showQuote}
-                    quote={controller.quote}
-                    onReservation={controller.handleReservation}
-                    onNewQuote={controller.handleNewQuote}
-                    onConfirmReservation={controller.handleConfirmReservation}
-                    isProcessingPayment={controller.isProcessingPayment}
-                    selectedActivities={controller.selectedActivities}
-                    selectedPackages={controller.selectedPackages}
-                    onActivityToggle={controller.handleActivityToggle}
-                    onPackageToggle={controller.handlePackageToggle}
-                    activitiesTotal={controller.activitiesTotal}
-                    packagesTotal={controller.packagesTotal}
-                    getUpdatedQuoteTotal={controller.getUpdatedQuoteTotal}
-                    reservationTab={controller.reservationTab}
-                    setReservationTab={controller.setReservationTab}
-                    isPartialAvailability={controller.isPartialAvailability}
-                    availableDomos={controller.availableDomos}
-                    alternativeDates={controller.alternativeDates}
+                    displayUnit={controller.state.displayUnit}
+                    startDate={controller.state.startDate}
+                    endDate={controller.state.endDate}
+                    setStartDate={controller.state.setStartDate}
+                    setEndDate={controller.state.setEndDate}
+                    guests={controller.state.guests}
+                    setGuests={controller.state.setGuests}
+                    requiredDomos={controller.state.requiredDomos}
+                    isAvailable={controller.state.isAvailable}
+                    showQuote={controller.state.showQuote}
+                    quote={controller.state.quote}
+                    onReservation={controller.actions.handleReservation}
+                    onNewQuote={controller.actions.handleNewQuote}
+                    onConfirmReservation={controller.actions.handleConfirmReservation}
+                    isProcessingPayment={controller.state.isProcessingPayment}
+                    selectedActivities={controller.state.selectedActivities}
+                    selectedPackages={controller.state.selectedPackages}
+                    onActivityToggle={controller.actions.handleActivityToggle}
+                    onPackageToggle={controller.actions.handlePackageToggle}
+                    activitiesTotal={controller.state.activitiesTotal}
+                    packagesTotal={controller.state.packagesTotal}
+                    getUpdatedQuoteTotal={controller.actions.getUpdatedQuoteTotal}
+                    reservationTab={controller.state.reservationTab}
+                    setReservationTab={controller.state.setReservationTab}
+                    isPartialAvailability={controller.state.isPartialAvailability}
+                    availableDomos={controller.state.availableDomos}
+                    alternativeDates={controller.state.alternativeDates}
                   />
                 )}
               </div>

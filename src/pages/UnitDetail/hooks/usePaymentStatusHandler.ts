@@ -1,53 +1,80 @@
 
 import { useCallback } from "react";
-import { toast } from "sonner";
+import { URLSearchParams } from "url";
+import { toast } from "@/components/ui/use-toast";
+import { supabase } from "@/lib/supabase";
 
-type PaymentStatusProps = {
-  setIsReservationConfirmed: (confirmed: boolean) => void;
-  setConfirmedReservationId: (id: string | null) => void;
-  setPaymentDetails: (details: any) => void;
-  setIsProcessingPayment: (processing: boolean) => void;
-  navigate: any;
-};
-
-export const usePaymentStatus = ({
-  setIsReservationConfirmed,
-  setConfirmedReservationId,
-  setPaymentDetails,
-  setIsProcessingPayment,
-  navigate
-}: PaymentStatusProps) => {
-  
-  const handlePaymentReturn = useCallback((status: string | null, reservationId: string | null, token: string | null = null) => {
-    if (!reservationId) return;
+export const usePaymentStatusHandler = (state: any, searchParams: URLSearchParams) => {
+  const processPaymentStatus = useCallback(async () => {
+    const paymentStatus = searchParams.get('payment');
+    const reservationId = searchParams.get('reservationId');
     
-    setIsProcessingPayment(false);
-    
-    if (status === 'success' || status === 'ok') {
-      setIsReservationConfirmed(true);
-      setConfirmedReservationId(reservationId);
-      setPaymentDetails({
-        status: 'success',
-        message: 'Pago procesado correctamente',
-        transactionId: token || 'MOCK-TX-ID'
+    if (paymentStatus === 'success' && reservationId) {
+      // First check if we haven't already processed this reservation
+      if (!state.isReservationConfirmed) {
+        // Fetch reservation details
+        try {
+          const { data: reservation, error } = await supabase
+            .from('reservations')
+            .select('*, payment_details')
+            .eq('id', reservationId)
+            .single();
+          
+          if (error) throw error;
+          
+          if (reservation) {
+            // Set reservation details in state
+            state.setIsReservationConfirmed(true);
+            state.setConfirmedReservationId(reservationId);
+            state.setPaymentDetails(reservation.payment_details);
+            
+            // Set dates
+            if (reservation.check_in) {
+              state.setStartDate(new Date(reservation.check_in));
+            }
+            
+            if (reservation.check_out) {
+              state.setEndDate(new Date(reservation.check_out));
+            }
+            
+            state.setGuests(reservation.guests);
+            
+            // Create a quote object
+            const quoteDays = Math.round(
+              (new Date(reservation.check_out).getTime() - new Date(reservation.check_in).getTime()) / 
+              (1000 * 60 * 60 * 24)
+            );
+            
+            state.setQuote({
+              nights: quoteDays,
+              basePrice: reservation.total_price,
+              totalPrice: reservation.total_price,
+              selectedActivities: [],
+              selectedPackages: []
+            });
+            
+            toast({
+              title: "Reserva confirmada",
+              description: "Tu reserva ha sido confirmada exitosamente",
+            });
+          }
+        } catch (error) {
+          console.error("Error fetching reservation details:", error);
+          toast({
+            variant: "destructive",
+            title: "Error",
+            description: "No se pudieron cargar los detalles de la reserva",
+          });
+        }
+      }
+    } else if (paymentStatus === 'failed') {
+      toast({
+        variant: "destructive",
+        title: "Pago no completado",
+        description: "El pago no se completó correctamente. Por favor, intenta de nuevo.",
       });
-      
-      toast.success('¡Reserva confirmada! Tu pago ha sido procesado correctamente.');
-      
-      // Clear URL params
-      navigate(`/unit/${reservationId}`, { replace: true });
-    } else {
-      setPaymentDetails({
-        status: 'error',
-        message: 'El pago no pudo ser procesado',
-        transactionId: token || null
-      });
-      
-      toast.error('Lo sentimos, hubo un problema con el pago. Por favor, intenta nuevamente.');
     }
-  }, [setIsReservationConfirmed, setConfirmedReservationId, setPaymentDetails, setIsProcessingPayment, navigate]);
-  
-  return {
-    handlePaymentReturn
-  };
+  }, [searchParams, state]);
+
+  return { processPaymentStatus };
 };

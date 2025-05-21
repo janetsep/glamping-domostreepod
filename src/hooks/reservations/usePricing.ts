@@ -1,126 +1,112 @@
 
-import { useState } from 'react';
-import { supabase } from '@/lib/supabase';
+import { useCallback } from 'react';
+import { GlampingUnit } from '@/lib/supabase';
+import { getPriceByGuestsAndSeason, determineSeason } from './utils/seasonalPricing';
 
-// Base calculator hook
-export const usePriceCalculator = () => {
-  const [isLoading, setIsLoading] = useState(false);
-  
-  // Función para calcular el precio según las fechas, número de invitados, etc.
-  const calculatePrice = async (
-    unitId: string,
+export const usePricing = () => {
+  const calculateQuote = useCallback((
+    unitPrices: GlampingUnit['prices'],
     checkIn: Date,
     checkOut: Date,
     guests: number,
-    pets: number = 0
+    requiredDomos: number = 1
   ) => {
-    try {
-      setIsLoading(true);
+    const nights = Math.ceil((checkOut.getTime() - checkIn.getTime()) / (1000 * 60 * 60 * 24));
+    const season = determineSeason(checkIn);
+    let totalNightsPrice = 0;
+    let breakdown = [];
+    
+    // Generar distribución de huéspedes por domo, ahora considerando todos los domos seleccionados
+    const domoDistribution = generateDomoDistribution(guests, requiredDomos);
+    
+    // Calcular precio por cada domo según distribución de huéspedes
+    for (const domo of domoDistribution) {
+      // Si un domo no tiene huéspedes asignados pero fue seleccionado manualmente,
+      // aplicamos la tarifa de 2 personas (mínima para domos adicionales)
+      const guestsForPrice = domo.guests === 0 ? 2 : domo.guests;
+      const priceForThisDomo = getPriceByGuestsAndSeason(checkIn, guestsForPrice);
       
-      // Obtener las tarifas del domo
-      const { data: unitData, error } = await supabase
-        .from('glamping_units')
-        .select('*')
-        .eq('id', unitId)
-        .single();
-      
-      if (error) throw error;
-      
-      // Cálculo de días
-      const msPerDay = 24 * 60 * 60 * 1000;
-      const diffTime = checkOut.getTime() - checkIn.getTime();
-      const nights = Math.ceil(diffTime / msPerDay);
-      
-      // Obtener la tarifa según la temporada
-      const today = new Date();
-      const month = today.getMonth() + 1; // Los meses en JS van de 0 a 11
-      let season = 'low'; // Temporada baja por defecto (septiembre a febrero)
-      
-      if (month >= 6 && month <= 8) {
-        season = 'high'; // Temporada alta (junio a agosto)
-      } else if (month >= 3 && month <= 5) {
-        season = 'medium'; // Temporada media (marzo a mayo)
+      // Aplicar ajustes de precios según duración de la estadía
+      let adjustedPrice = priceForThisDomo;
+      if (nights === 1) {
+        // 1 noche: 10% más caro
+        adjustedPrice = priceForThisDomo * 1.1;
+      } else if (nights >= 7) {
+        // 7 o más noches: 20% de descuento
+        adjustedPrice = priceForThisDomo * 0.8;
       }
       
-      const prices = unitData?.prices || {};
-      const baseRate = prices[season] || 150000; // Precio base por noche
+      // Multiplicar por el número de noches
+      const domoTotalPrice = adjustedPrice * nights;
+      totalNightsPrice += domoTotalPrice;
       
-      // Determinar cantidad de domos necesarios
-      const guestsPerDomo = 4;
-      const requiredDomos = Math.ceil(guests / guestsPerDomo);
-      
-      // Calcular precio por noche y precio total
-      const pricePerNight = baseRate * requiredDomos;
-      const totalPrice = pricePerNight * nights;
-      
-      // Calcular precio de mascotas si las hay
-      const petPrice = (unitData?.pet_price || 25000) * pets;
-      
-      // Desglose de precios
-      const breakdown = [];
-      
-      // Distribuir huéspedes en domos
-      const domoDistribution = [];
-      let remainingGuests = guests;
-      
-      for (let i = 1; i <= requiredDomos; i++) {
-        const domoGuests = Math.min(remainingGuests, guestsPerDomo);
-        remainingGuests -= domoGuests;
-        
-        domoDistribution.push({
-          number: i,
-          guests: domoGuests
-        });
-        
-        breakdown.push({
-          description: `Domo ${i}`,
-          amount: baseRate * nights,
-          domoNumber: i,
-          guests: domoGuests
-        });
-      }
-      
-      // Agregar mascotas al desglose si hay
-      if (pets > 0) {
-        breakdown.push({
-          description: `Mascotas (${pets})`,
-          amount: petPrice
-        });
-      }
-      
-      // Crear información de la cotización
-      return {
-        nights,
-        pricePerNight,
-        totalPrice: totalPrice + petPrice,
-        breakdown,
-        requiredDomos,
-        domoDistribution,
-        season,
-        rateDescription: `Tarifa de temporada ${season === 'high' ? 'alta' : season === 'medium' ? 'media' : 'baja'}`
-      };
-    } catch (error) {
-      console.error('Error calculating price:', error);
-      throw error;
-    } finally {
-      setIsLoading(false);
+      breakdown.push({
+        description: `Domo ${domo.number}: ${domo.guests === 0 ? '2' : domo.guests} ${domo.guests === 1 ? 'persona' : 'personas'} x ${nights} ${nights === 1 ? 'noche' : 'noches'} x $${Math.round(adjustedPrice).toLocaleString()}`,
+        amount: domoTotalPrice,
+        guests: domo.guests === 0 ? 2 : domo.guests,
+        domoNumber: domo.number
+      });
     }
-  };
-  
-  return { calculatePrice, isLoading };
+    
+    // Agregar línea resumen al principio del desglose
+    breakdown.unshift({
+      description: `${nights} ${nights === 1 ? 'noche' : 'noches'} x ${requiredDomos} ${requiredDomos === 1 ? 'domo' : 'domos'}`,
+      amount: totalNightsPrice,
+      guests: guests,
+      domoNumber: 0
+    });
+    
+    // Aplicar mensajes descriptivos según duración
+    let rateDescription = "";
+    if (nights === 1) {
+      rateDescription = "Tarifa para 1 noche (+10%)";
+    } else if (nights >= 7) {
+      rateDescription = "Tarifa semanal (20% descuento)";
+    } else {
+      rateDescription = "Tarifa estándar";
+    }
+    
+    return {
+      nights,
+      pricePerNight: totalNightsPrice / nights,
+      basePrice: Math.round(totalNightsPrice),
+      totalPrice: Math.round(totalNightsPrice),
+      breakdown,
+      rateDescription,
+      requiredDomos,
+      domoDistribution,
+      season
+    };
+  }, []);
+
+  return { calculateQuote };
 };
 
-// Create the usePricing hook that other files are importing
-export const usePricing = () => {
-  const { calculatePrice, isLoading } = usePriceCalculator();
-  
-  // Function to calculate a quote with the same interface as expected by importers
-  const calculateQuote = async (unitId: string, checkIn: Date, checkOut: Date, guests: number, pets: number = 0) => {
-    return await calculatePrice(unitId, checkIn, checkOut, guests, pets);
-  };
-  
-  return { calculateQuote, calculatePrice, isLoading };
-};
+/**
+ * Distribuye los huéspedes entre los domos, asegurando que se muestren todos los domos seleccionados
+ */
+const generateDomoDistribution = (guests: number, requiredDomos: number) => {
+  // Si solo hay un domo, todos los huéspedes van ahí
+  if (requiredDomos === 1) {
+    return [{ number: 1, guests: guests }];
+  }
 
-// For backward compatibility, we also export usePriceCalculator as calculatePrice
-export { usePriceCalculator as calculatePrice };
+  // Si hay múltiples domos, distribuimos los huéspedes
+  const distribution = [];
+  let remainingGuests = guests;
+  const maxGuestsPerDomo = 4;
+
+  for (let i = 1; i <= requiredDomos; i++) {
+    const domoGuests = Math.min(remainingGuests, maxGuestsPerDomo);
+    distribution.push({ number: i, guests: domoGuests });
+    remainingGuests -= domoGuests;
+  }
+
+  // Ahora, aseguramos que todos los domos seleccionados estén en la distribución,
+  // incluso si no tienen huéspedes asignados
+  while (distribution.length < requiredDomos) {
+    distribution.push({ number: distribution.length + 1, guests: 0 });
+  }
+
+  return distribution;
+};

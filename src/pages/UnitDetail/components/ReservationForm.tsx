@@ -56,7 +56,7 @@ export const ReservationForm = ({
   reservationTab,
   setReservationTab,
   isPartialAvailability = false,
-  availableDomos,
+  availableDomos = 0,
   alternativeDates = [],
   handleCalendarDateSelect,
   handleAlternativeDateSelect
@@ -66,15 +66,17 @@ export const ReservationForm = ({
 
   // Efecto para mostrar las fechas alternativas cuando no hay disponibilidad completa
   useEffect(() => {
-    if (isAvailable === false && alternativeDates.length > 0) {
+    if ((isAvailable === false || (isAvailable && availableDomos < requiredDomos)) && alternativeDates.length > 0) {
       setShowAlternatives(true);
     } else {
       setShowAlternatives(false);
     }
-  }, [isAvailable, alternativeDates]);
+  }, [isAvailable, availableDomos, requiredDomos, alternativeDates]);
 
   // Determinar si hay suficientes domos disponibles para la cantidad de huéspedes
-  const hasSufficientDomos = !availableDomos || !requiredDomos || availableDomos >= requiredDomos;
+  const hasSufficientDomos = availableDomos !== undefined && requiredDomos !== undefined
+    ? availableDomos >= requiredDomos
+    : true;
 
   return (
     <div className="space-y-6">
@@ -110,26 +112,26 @@ export const ReservationForm = ({
         availableDomos={availableDomos}
       />
 
-      {/* Alertas de disponibilidad */}
+      {/* Alertas de disponibilidad - Reordenadas y corregidas para mayor claridad */}
       {isAvailable === true && hasSufficientDomos && (
         <Alert className="bg-green-50 border-green-200">
           <Check className="h-4 w-4 text-green-600" />
           <AlertTitle className="text-green-800">Disponible</AlertTitle>
           <AlertDescription className="text-green-700">
             {isPartialAvailability 
-              ? `Tenemos disponibilidad para ${availableDomos} domos en las fechas seleccionadas.` 
-              : 'Las fechas seleccionadas están disponibles para reserva.'}
+              ? `Tenemos disponibilidad parcial con ${availableDomos} domos en las fechas seleccionadas.` 
+              : `Tenemos disponibilidad completa para las fechas seleccionadas con ${availableDomos} domos disponibles.`}
           </AlertDescription>
         </Alert>
       )}
 
-      {isAvailable === true && !hasSufficientDomos && (
-        <Alert variant="destructive" className="bg-amber-50 border-amber-200">
+      {(isAvailable === true || isAvailable === null) && !hasSufficientDomos && availableDomos > 0 && (
+        <Alert className="bg-amber-50 border-amber-200">
           <AlertTriangle className="h-4 w-4 text-amber-600" />
-          <AlertTitle className="text-amber-800">Domos insuficientes</AlertTitle>
+          <AlertTitle className="text-amber-800">Domos disponibles: {availableDomos}/{requiredDomos}</AlertTitle>
           <AlertDescription className="text-amber-700">
             Se necesitan {requiredDomos} domos para {guests} huéspedes, pero solo hay {availableDomos} disponibles.
-            Por favor, reduzca la cantidad de huéspedes o seleccione otras fechas.
+            Por favor, reduce la cantidad de huéspedes o selecciona otras fechas.
           </AlertDescription>
         </Alert>
       )}
@@ -140,6 +142,7 @@ export const ReservationForm = ({
           <AlertTitle className="text-red-800">No disponible</AlertTitle>
           <AlertDescription className="text-red-700">
             Lo sentimos, no tenemos disponibilidad para las fechas seleccionadas.
+            {availableDomos > 0 ? ` Solo hay ${availableDomos} domos disponibles.` : ''}
           </AlertDescription>
         </Alert>
       )}
@@ -159,8 +162,7 @@ export const ReservationForm = ({
         className="w-full"
         size="lg"
         onClick={onReservation}
-        disabled={!startDate || !endDate || isAvailable === false || 
-                 (availableDomos !== undefined && requiredDomos !== undefined && requiredDomos > availableDomos)}
+        disabled={!startDate || !endDate || isAvailable === false || !hasSufficientDomos}
       >
         Consultar disponibilidad y cotizar
       </Button>

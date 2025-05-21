@@ -1,5 +1,6 @@
 
 import { format, isSameMonth, isSameDay, isToday, isBefore } from "date-fns";
+import { es } from "date-fns/locale";
 import { AvailabilityCalendarDay } from "@/types";
 
 interface CalendarGridProps {
@@ -21,16 +22,16 @@ export const CalendarGrid = ({
   disableNightMode = false,
   requiredDomos = 1
 }: CalendarGridProps) => {
-  // Function to check if a date is selectable
+  // Función para verificar si una fecha es seleccionable
   const isDateSelectable = (day: AvailabilityCalendarDay): boolean => {
     const now = new Date();
     
-    // If it's a past date, it's not selectable
+    // Si es fecha pasada, no es seleccionable
     if (isBefore(day.date, now) && !isToday(day.date)) {
       return false;
     }
     
-    // If it's today but after 14:00, it's not selectable - only if night mode is not disabled
+    // Si es hoy pero después de las 14:00, no es seleccionable - solo si nightMode no está desactivado
     if (!disableNightMode && isToday(day.date)) {
       const currentHour = now.getHours();
       if (currentHour >= 14) {
@@ -38,40 +39,40 @@ export const CalendarGrid = ({
       }
     }
     
-    // Check if there are enough domos available for the required number
+    // Verificamos si hay suficientes domos disponibles para la cantidad requerida
     const hasEnoughDomos = day.availableUnits !== undefined && day.availableUnits >= (requiredDomos || 1);
     
-    // Only selectable if available AND has enough domos
+    // Solo seleccionable si está disponible Y tiene suficientes domos
     return day.isAvailable && hasEnoughDomos;
   };
 
-  // Function to get the CSS class for each day cell
+  // Función para obtener la clase CSS para cada celda de día
   const getDayClass = (day: AvailabilityCalendarDay) => {
     let classes = "rounded-full w-10 h-10 flex items-center justify-center text-base";
     
     if (!isSameMonth(day.date, currentMonth)) {
-      classes += " text-gray-400";
+      classes += " text-gray-400 opacity-50";
     }
     
-    // Check if this day is the selected start date
+    // Verificar si este día es la fecha de inicio seleccionada
     if (selectedStartDate && isSameDay(day.date, selectedStartDate)) {
       classes += " bg-primary text-white";
     } 
-    // Check if this day is the selected end date
+    // Verificar si este día es la fecha de fin seleccionada
     else if (selectedEndDate && isSameDay(day.date, selectedEndDate)) {
       classes += " bg-primary text-white";
     } 
-    // Check if day is between start and end date (highlighted range)
+    // Verificar si el día está entre la fecha de inicio y fin (rango destacado)
     else if (selectedStartDate && selectedEndDate && 
              day.date > selectedStartDate && 
              day.date < selectedEndDate) {
       classes += " bg-primary/20 text-primary-foreground";
     }
-    // Check if date is not selectable (past date or after 14:00 today)
+    // Verificar si la fecha no es seleccionable (fecha pasada o después de las 14:00 hoy)
     else if (!isDateSelectable(day)) {
       classes += " bg-gray-100 text-gray-400 cursor-not-allowed";
     }
-    // Otherwise use availability styling
+    // De lo contrario, usar el estilo de disponibilidad
     else if (day.isAvailable) {
       classes += " bg-green-100 text-green-800 hover:bg-green-200 cursor-pointer";
     } else {
@@ -81,7 +82,7 @@ export const CalendarGrid = ({
     return classes;
   };
 
-  // Function to get the availability display text, CORREGIDO para mostrar cantidad de domos disponibles
+  // Función para obtener el texto de disponibilidad, muestra correctamente la cantidad de domos disponibles
   const getAvailabilityDisplay = (day: AvailabilityCalendarDay): string => {
     if (day.availableUnits === undefined || day.totalUnits === undefined) {
       return "";
@@ -91,12 +92,20 @@ export const CalendarGrid = ({
     return `${day.availableUnits}/${day.totalUnits}`;
   };
 
-  // Function to get availability status text
+  // Determina si hay suficientes domos disponibles según los requeridos
+  const hasEnoughDomos = (day: AvailabilityCalendarDay): boolean => {
+    return day.availableUnits !== undefined && 
+           requiredDomos !== undefined && 
+           day.availableUnits >= requiredDomos;
+  };
+
+  // Función para determinar correctamente el estado de disponibilidad
   const getAvailabilityStatus = (day: AvailabilityCalendarDay): string => {
     if (!day.isAvailable) {
       return "";
     }
     
+    // Mostrar "Insuficiente" SOLO si realmente hay menos domos disponibles que los requeridos
     if (day.availableUnits !== undefined && requiredDomos !== undefined) {
       if (day.availableUnits < requiredDomos) {
         return "Insuficiente";
@@ -116,7 +125,7 @@ export const CalendarGrid = ({
           <div className={getDayClass(day)}>
             {format(day.date, "d")}
           </div>
-          {day.availableUnits !== undefined && isSameMonth(day.date, currentMonth) && (
+          {day.availableUnits !== undefined && (
             <>
               <div className="text-xs text-gray-600 mt-1 font-medium">
                 {getAvailabilityDisplay(day)}

@@ -16,11 +16,6 @@ type ReservationState = {
   isAvailable: boolean | null;
   setIsAvailable: (isAvailable: boolean) => void;
   checkAvailability: (unitId: string, checkIn: Date, checkOut: Date) => Promise<boolean>;
-  checkDetailedAvailability?: (unitId: string, checkIn: Date, checkOut: Date) => Promise<{
-    isAvailable: boolean;
-    availableUnits: number;
-    totalUnits: number;
-  }>;
   calculateQuote: any;
   setQuote: (quote: any) => void;
   setShowQuote: (show: boolean) => void;
@@ -59,11 +54,10 @@ export const useReservationActions = (state: ReservationState) => {
     
     // Verificamos si hay suficientes domos disponibles
     const requiredDomos = state.requiredDomos || 1;
-    const totalDomos = 4; // Total de domos disponibles
     
+    // Verificar correctamente la disponibilidad de domos
     if (state.availableDomos !== undefined && requiredDomos > state.availableDomos) {
-      const availabilityPercentage = Math.round((state.availableDomos / totalDomos) * 100);
-      toast.error(`Solo hay ${state.availableDomos} de ${totalDomos} domos disponibles (${availabilityPercentage}%) para las fechas seleccionadas. Por favor, reduzca la cantidad de domos requeridos o seleccione otras fechas.`);
+      toast.error(`Solo hay ${state.availableDomos} domos disponibles para las fechas seleccionadas, pero se necesitan ${requiredDomos} domos para ${state.guests} huéspedes.`);
       return;
     }
 
