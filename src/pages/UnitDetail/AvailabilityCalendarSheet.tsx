@@ -1,16 +1,7 @@
-
 import { Button } from "@/components/ui/button";
 import { Calendar } from "lucide-react";
-import {
-  Sheet,
-  SheetContent,
-  SheetDescription,
-  SheetHeader,
-  SheetTitle,
-  SheetTrigger,
-} from "@/components/ui/sheet";
+import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import { AvailabilityCalendar } from "@/components/unit-detail/AvailabilityCalendar";
-
 interface AvailabilityCalendarSheetProps {
   unitId: string;
   onSelectDate?: (date: Date) => void;
@@ -18,7 +9,6 @@ interface AvailabilityCalendarSheetProps {
   selectedEndDate?: Date | null;
   requiredDomos?: number;
 }
-
 export const AvailabilityCalendarSheet = ({
   unitId,
   onSelectDate,
@@ -27,13 +17,12 @@ export const AvailabilityCalendarSheet = ({
   requiredDomos = 1
 }: AvailabilityCalendarSheetProps) => {
   const initialMonth = selectedStartDate || new Date(); // Use selectedStartDate as the initial month if available
-  
-  return (
-    <Sheet>
+
+  return <Sheet>
       <SheetTrigger asChild>
         <Button variant="outline" className="w-full mb-6 flex gap-2">
           <Calendar className="h-4 w-4" />
-          <span>Ver calendario de disponibilidad</span>
+          <span>Ver  disponibilidad</span>
         </Button>
       </SheetTrigger>
       <SheetContent side="bottom" className="h-[100vh] pt-8 overflow-y-auto">
@@ -46,17 +35,8 @@ export const AvailabilityCalendarSheet = ({
         </SheetHeader>
         
         <div className="max-w-xl mx-auto">
-          <AvailabilityCalendar 
-            unitId={unitId} 
-            onSelectDate={onSelectDate}
-            selectedStartDate={selectedStartDate}
-            selectedEndDate={selectedEndDate}
-            initialMonth={initialMonth}
-            disableNightMode={true}
-            requiredDomos={requiredDomos}
-          />
+          <AvailabilityCalendar unitId={unitId} onSelectDate={onSelectDate} selectedStartDate={selectedStartDate} selectedEndDate={selectedEndDate} initialMonth={initialMonth} disableNightMode={true} requiredDomos={requiredDomos} />
         </div>
       </SheetContent>
-    </Sheet>
-  );
+    </Sheet>;
 };

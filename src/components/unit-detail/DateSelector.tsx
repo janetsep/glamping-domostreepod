@@ -1,8 +1,6 @@
-
 import { useDateSelection } from "./hooks/useDateSelection";
 import { DatePickerButton } from "./date-selector/DatePickerButton";
 import { Label } from "@/components/ui/label";
-
 interface DateSelectorProps {
   startDate?: Date;
   endDate?: Date;
@@ -11,7 +9,6 @@ interface DateSelectorProps {
   unitId: string;
   requiredDomos?: number;
 }
-
 export const DateSelector = ({
   startDate,
   endDate,
@@ -27,7 +24,7 @@ export const DateSelector = ({
     setEndCalendarOpen,
     endDateCalendarMonth,
     handleStartDateSelect,
-    handleEndDateSelect,
+    handleEndDateSelect
   } = useDateSelection({
     startDate,
     endDate,
@@ -35,46 +32,23 @@ export const DateSelector = ({
     onEndDateChange,
     requiredDomos // Pass requiredDomos to the hook
   });
-
-  return (
-    <div className="space-y-4">
+  return <div className="space-y-4">
       <div>
         <Label htmlFor="start-date" className="block mb-2">
           Fecha de entrada
         </Label>
-        <DatePickerButton
-          label="Seleccionar fecha de entrada"
-          date={startDate}
-          isOpen={startCalendarOpen}
-          onOpenChange={setStartCalendarOpen}
-          onSelectDate={handleStartDateSelect}
-          unitId={unitId}
-          requiredDomos={requiredDomos}
-        />
+        <DatePickerButton label="Seleccionar fecha de entrada" date={startDate} isOpen={startCalendarOpen} onOpenChange={setStartCalendarOpen} onSelectDate={handleStartDateSelect} unitId={unitId} requiredDomos={requiredDomos} />
       </div>
 
       <div>
         <Label htmlFor="end-date" className="block mb-2">
           Fecha de salida
         </Label>
-        <DatePickerButton
-          label="Seleccionar fecha de salida"
-          date={endDate}
-          isOpen={endCalendarOpen}
-          onOpenChange={setEndCalendarOpen}
-          onSelectDate={handleEndDateSelect}
-          unitId={unitId}
-          selectedStartDate={startDate}
-          initialMonth={endDateCalendarMonth}
-          checkDateRange={true}
-          disabled={!startDate}
-          requiredDomos={requiredDomos}
-        />
+        <DatePickerButton label="Seleccionar fecha de salida" date={endDate} isOpen={endCalendarOpen} onOpenChange={setEndCalendarOpen} onSelectDate={handleEndDateSelect} unitId={unitId} selectedStartDate={startDate} initialMonth={endDateCalendarMonth} checkDateRange={true} disabled={!startDate} requiredDomos={requiredDomos} />
       </div>
 
       <div className="text-sm text-muted-foreground">
-        <p>Check-in: 15:00 hrs | Check-out: 12:00 hrs</p>
+        <p>Check-in: 16:00 hrs | Check-out: 12:00 hrs</p>
       </div>
-    </div>
-  );
+    </div>;
 };
