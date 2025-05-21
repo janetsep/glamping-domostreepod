@@ -1,25 +1,26 @@
-
 import React from 'react';
 
 export const CalendarLegend = () => {
   return (
-    <div className="mt-4 flex justify-center space-x-6 text-xs">
-      <div className="flex items-center">
-        <div className="w-3 h-3 bg-green-100 rounded-full mr-1"></div>
-        <span>Disponible</span>
+    <div className="mt-4 text-sm">
+      <p className="text-gray-700 mb-2">* El formato de disponibilidad es: disponibles/total</p>
+      <div className="flex flex-wrap gap-4">
+        <div className="flex items-center">
+          <div className="h-4 w-4 rounded bg-green-100 mr-2"></div>
+          <span>Disponible (suficientes domos)</span>
+        </div>
+        <div className="flex items-center">
+          <div className="h-4 w-4 rounded bg-yellow-100 mr-2"></div>
+          <span>Disponibilidad parcial (insuficientes domos)</span>
+        </div>
+        <div className="flex items-center">
+          <div className="h-4 w-4 rounded bg-red-100 mr-2"></div>
+          <span>No disponible</span>
+        </div>
       </div>
-      <div className="flex items-center">
-        <div className="w-3 h-3 bg-red-100 rounded-full mr-1"></div>
-        <span>No disponible</span>
-      </div>
-      <div className="flex items-center">
-        <div className="w-3 h-3 bg-primary rounded-full mr-1"></div>
-        <span>Seleccionado</span>
-      </div>
-      <div className="flex items-center">
-        <div className="w-3 h-3 bg-gray-100 rounded-full mr-1"></div>
-        <span>No seleccionable</span>
-      </div>
+      <p className="mt-2 text-xs text-gray-600">
+        "Insuficiente" significa que no hay suficientes domos disponibles para la cantidad de huéspedes seleccionada.
+      </p>
     </div>
   );
 };
