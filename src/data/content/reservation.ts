@@ -2,8 +2,8 @@
 // Textos para la sección de reservas
 export const reservationContent = {
   title: "Reserva tu experiencia TreePod",
-  subTitle: "Vive la magia de desconectar en un entorno único",
-  additionalInfo: "Todas nuestras reservas incluyen: Desayuno con productos locales, acceso a zonas comunes, estacionamiento gratuito y WiFi.",
+  subTitle: "Vive la magia de un entorno único y nativo",
+  additionalInfo: "Todas nuestras reservas incluyen: Parrilla para asados, estacionamiento gratuito y WiFi.",
   dates: {
     title: "Selecciona tus fechas",
     startDate: "Fecha de llegada",
@@ -50,7 +50,7 @@ export const reservationContent = {
   },
   policies: {
     title: "Políticas de reserva",
-    text: "Pago total por adelantado para confirmar tu reserva. Check-in desde las 15:00, check-out hasta las 12:00."
+    text: "Pago del 50% por adelantado para confirmar tu reserva. Check-in desde las 16:00, check-out hasta las 12:00."
   },
   dateSelector: {
     startDate: "Fecha de llegada",
