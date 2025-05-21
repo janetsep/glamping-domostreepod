@@ -3,11 +3,11 @@
 export const policiesContent = {
   title: "Información Importante",
   checkInLabel: "Check-in",
-  checkInTime: "15:00 hrs",
+  checkInTime: "16:00 hrs",
   checkOutLabel: "Check-out",
   checkOutTime: "12:00 hrs",
   petsLabel: "Mascotas",
-  petsPolicy: "Máximo 2 mascotas pequeñas por domo",
+  petsPolicy: "Máximo 1 mascota pequeñas por domo",
   smokingLabel: "Fumar",
   smokingPolicy: "Permitido solo en áreas designadas",
   wifiLabel: "Internet",
