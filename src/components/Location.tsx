@@ -78,7 +78,7 @@ const Location = () => {
                 <Car className="h-5 w-5 text-cyan-500 flex-shrink-0 mt-1" />
                 <div>
                   <h4 className="font-semibold">Desde Chillán</h4>
-                  <p className="text-sm text-gray-600">1 hora por ruta pavimentada N-55 (72 km).</p>
+                  <p className="text-sm text-gray-600">1 hora y media por ruta pavimentada N-55.</p>
                 </div>
               </div>
               <div className="flex items-start gap-3">
@@ -92,7 +92,7 @@ const Location = () => {
                 <Plane className="h-5 w-5 text-cyan-500 flex-shrink-0 mt-1" />
                 <div>
                   <h4 className="font-semibold">Desde Santiago</h4>
-                  <p className="text-sm text-gray-600">5 horas por autopista 5 sur  (420 km) o 45 minutos en avión + 1 hora en auto desde Chillán.</p>
+                  <p className="text-sm text-gray-600">5 horas por autopista 5 sur  (420 km) o 45 minutos en avión + 1 hora y media en auto desde Chillán.</p>
                 </div>
               </div>
               <div className="flex items-start gap-3">
