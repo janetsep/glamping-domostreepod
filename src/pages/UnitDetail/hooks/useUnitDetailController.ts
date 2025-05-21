@@ -1,44 +1,31 @@
+// Añadir esto donde corresponda en useUnitDetailController.ts
 
-import { useEffect } from "react";
-import { URLSearchParams } from "url";
-import { useUnitDetailState } from "./useUnitDetailState";
-import { useReservationActions } from "./useReservationActions";
-import { usePaymentStatusHandler } from "./usePaymentStatusHandler";
-
-export const useUnitDetailController = (
-  unitId: string | undefined,
-  searchParams: URLSearchParams
-) => {
-  // Use our custom hooks
-  const state = useUnitDetailState(unitId);
-  const actions = useReservationActions(state);
+const handleReservation = async () => {
+  // ... código existente
   
-  // Handle payment success and reservation confirmation from URL
-  const { processPaymentStatus } = usePaymentStatusHandler(state, searchParams);
+  // CORRECCIÓN: Validar disponibilidad antes de continuar
+  if (availableDomos !== undefined && requiredDomos > availableDomos) {
+    toast.error(`Solo hay ${availableDomos} de 4 domos disponibles. Necesitas ${requiredDomos} para tu reserva.`);
+    return;
+  }
+  
+  // ... resto del código
+};
 
-  // Process payment status when component loads
-  useEffect(() => {
-    processPaymentStatus();
-  }, [processPaymentStatus]);
-
-  // Check availability automatically when dates are selected
-  useEffect(() => {
-    if (state.startDate && state.endDate) {
-      actions.checkDatesAvailability();
-    }
-  }, [state.startDate, state.endDate, state.displayUnit, actions]);
-
-  // Reset verification state when dates change
-  useEffect(() => {
-    if (state.startDate || state.endDate) {
-      state.setCheckedAvailability(false);
-      state.setShowQuote(false);
-      state.setQuote(null);
-    }
-  }, [state.startDate, state.endDate, state.setCheckedAvailability, state.setShowQuote, state.setQuote]);
-
-  return {
-    state,
-    actions
-  };
+const handleConfirmReservation = async () => {
+  // ... código existente
+  
+  // CORRECCIÓN: Volver a validar disponibilidad antes de confirmar
+  const { isAvailable, availableUnits } = await checkGeneralAvailability(
+    new Date(checkInDate),
+    new Date(checkOutDate),
+    requiredDomos
+  );
+  
+  if (!isAvailable) {
+    toast.error(`No hay suficiente disponibilidad. Solo hay ${availableUnits} de 4 domos disponibles.`);
+    return;
+  }
+  
+  // ... resto del código
 };
