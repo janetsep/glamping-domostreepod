@@ -2,7 +2,7 @@
 // Textos para el pie de página
 export const footerContent = {
   aboutTitle: "Sobre nosotros",
-  aboutText: "Experimenta la magia de dormir entre los árboles en nuestros exclusivos domos suspendidos en pleno corazón de Valle Las Trancas, Chile.",
+  aboutText: "Experimenta la magia de estar entre árboles a traves de nuestros domos ubicados en Valle Las Trancas, Chile.",
   linksTitle: "Enlaces rápidos",
   links: [
     { text: "Inicio", path: "/" },
