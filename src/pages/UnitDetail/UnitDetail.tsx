@@ -2,7 +2,7 @@
 // src/pages/UnitDetail/UnitDetail.tsx
 import React from 'react';
 import { useUnitDetailController } from './hooks/useUnitDetailController';
-// CORRECTO: Actualiza esta importación también
+// Corregir la importación usando rutas relativas en lugar de alias
 import { GuestSelector } from '../../components/unit-detail/GuestSelector';
 
 export const UnitDetail: React.FC = () => {
