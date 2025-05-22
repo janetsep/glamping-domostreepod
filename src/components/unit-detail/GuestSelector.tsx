@@ -1,5 +1,6 @@
 
-import React, { useEffect } from 'react';
+// src/components/GuestSelector.tsx
+import React from 'react';
 
 interface GuestSelectorProps {
   value: number;
@@ -8,36 +9,54 @@ interface GuestSelectorProps {
   availableDomos?: number;
   label?: string;
   required?: boolean;
+  disabled?: boolean;
 }
 
-export const GuestSelector = ({
+export const GuestSelector: React.FC<GuestSelectorProps> = ({
   value,
   onChange,
-  maxGuests = 16, // Valor por defecto máximo
+  maxGuests = 16,
   availableDomos,
   label = 'Huéspedes',
-  required = false
-}: GuestSelectorProps) => {
-  // CORRECCIÓN: Calcular el máximo de huéspedes basado en los domos disponibles
-  const maxAllowedGuests = availableDomos !== undefined 
-    ? Math.min(maxGuests, availableDomos * 4) // Cada domo permite 4 huéspedes
-    : maxGuests;
-  
-  // Si el valor actual excede el máximo permitido, ajustarlo
-  useEffect(() => {
-    if (value > maxAllowedGuests && maxAllowedGuests > 0) {
-      onChange(maxAllowedGuests);
+  required = false,
+  disabled = false
+}) => {
+  // Calcular el máximo de huéspedes basado en los domos disponibles
+  const getMaxAllowedGuests = () => {
+    if (availableDomos !== undefined && availableDomos > 0) {
+      return Math.min(maxGuests, availableDomos * 4);
     }
-  }, [maxAllowedGuests, value, onChange]);
+    return maxGuests;
+  };
+
+  const maxAllowedGuests = getMaxAllowedGuests();
+  
+  // Asegurar que el valor actual no exceda el máximo permitido
+  const safeValue = Math.min(value, maxAllowedGuests);
+  
+  // Si el valor es diferente al valor seguro, notificar el cambio
+  React.useEffect(() => {
+    if (value !== safeValue && safeValue > 0) {
+      onChange(safeValue);
+    }
+  }, [safeValue, value, onChange]);
 
   // Crear las opciones para el selector
-  const options = Array.from(
-    { length: maxAllowedGuests }, 
-    (_, i) => ({
-      value: i + 1,
-      label: `${i + 1} ${i === 0 ? 'huésped' : 'huéspedes'}`
-    })
-  );
+  const options = [];
+  for (let i = 1; i <= maxAllowedGuests; i++) {
+    options.push(
+      <option key={i} value={i}>
+        {i} {i === 1 ? 'huésped' : 'huéspedes'}
+      </option>
+    );
+  }
+
+  const handleChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const newValue = parseInt(e.target.value, 10);
+    if (!isNaN(newValue) && newValue > 0) {
+      onChange(newValue);
+    }
+  };
 
   return (
     <div className="w-full">
@@ -46,19 +65,21 @@ export const GuestSelector = ({
       </label>
       
       <select
-        value={value}
-        onChange={(e) => onChange(Number(e.target.value))}
-        className="w-full p-2 border border-gray-300 rounded-md"
-        disabled={maxAllowedGuests === 0}
+        value={safeValue}
+        onChange={handleChange}
+        className="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+        disabled={disabled || maxAllowedGuests === 0}
+        required={required}
       >
-        {options.map((option) => (
-          <option key={option.value} value={option.value}>
-            {option.label}
-          </option>
-        ))}
+        {maxAllowedGuests === 0 ? (
+          <option value="">No hay disponibilidad</option>
+        ) : (
+          options
+        )}
       </select>
       
-      {maxAllowedGuests < maxGuests && availableDomos !== undefined && (
+      {/* Mensajes informativos */}
+      {availableDomos !== undefined && availableDomos < 4 && availableDomos > 0 && (
         <p className="text-amber-600 text-sm mt-1">
           Solo hay {availableDomos} {availableDomos === 1 ? 'domo disponible' : 'domos disponibles'} 
           (máximo {maxAllowedGuests} huéspedes).
@@ -70,6 +91,11 @@ export const GuestSelector = ({
           No hay domos disponibles para las fechas seleccionadas.
         </p>
       )}
+      
+      {/* Información adicional */}
+      <p className="text-gray-500 text-xs mt-1">
+        Cada domo puede alojar hasta 4 huéspedes
+      </p>
     </div>
   );
 };
