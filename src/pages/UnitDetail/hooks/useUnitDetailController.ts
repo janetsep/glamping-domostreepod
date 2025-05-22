@@ -1,29 +1,53 @@
 
 // src/pages/UnitDetail/hooks/useUnitDetailController.ts
 import { useState, useEffect } from 'react';
-import { toast } from 'react-toastify';
+
+// Función simple de toast como reemplazo temporal
+const toast = {
+  error: (message: string) => {
+    console.error('Toast Error:', message);
+    alert(`Error: ${message}`); // Reemplazar con tu sistema de notificaciones
+  },
+  success: (message: string) => {
+    console.log('Toast Success:', message);
+    alert(`Éxito: ${message}`); // Reemplazar con tu sistema de notificaciones
+  },
+  warning: (message: string, options?: any) => {
+    console.warn('Toast Warning:', message);
+    alert(`Advertencia: ${message}`); // Reemplazar con tu sistema de notificaciones
+  }
+};
 
 export const useUnitDetailController = () => {
   // Estados básicos
   const [checkInDate, setCheckInDate] = useState<Date | null>(null);
   const [checkOutDate, setCheckOutDate] = useState<Date | null>(null);
-  const [guests, setGuests] = useState<number>(2); // Valor inicial por defecto
-  const [availableDomos, setAvailableDomos] = useState<number>(4); // Iniciar con disponibilidad completa
+  const [guests, setGuests] = useState<number>(2);
+  const [availableDomos, setAvailableDomos] = useState<number>(4);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   
   // Calcular domos requeridos basado en el número de huéspedes
   const requiredDomos = Math.ceil(guests / 4);
   
-  // Función para manejar cambios en el número de huéspedes
+  // 🐛 DEBUG: Función de cambio de huéspedes con logs
   const handleGuestsChange = (newGuests: number) => {
-    console.log('Cambiando huéspedes de', guests, 'a', newGuests);
+    console.log('🔍 useUnitDetailController: handleGuestsChange llamado:', {
+      currentGuests: guests,
+      newGuests,
+      typeof_newGuests: typeof newGuests
+    });
+    
     setGuests(newGuests);
+    
+    // 🐛 DEBUG: Verificar cambio después de un tick
+    setTimeout(() => {
+      console.log('🔍 useUnitDetailController: Estado después del cambio:', guests);
+    }, 100);
   };
   
   // Función para manejar cambios en la fecha de entrada
   const handleCheckInChange = (date: Date | null) => {
     setCheckInDate(date);
-    // Si la fecha de salida es anterior o igual a la de entrada, ajustarla
     if (date && checkOutDate && date >= checkOutDate) {
       const nextDay = new Date(date);
       nextDay.setDate(nextDay.getDate() + 1);
@@ -48,7 +72,6 @@ export const useUnitDetailController = () => {
       return;
     }
     
-    // Validar disponibilidad
     if (requiredDomos > availableDomos) {
       toast.error(`Solo hay ${availableDomos} de 4 domos disponibles. Necesitas ${requiredDomos} para ${guests} huéspedes.`);
       return;
@@ -57,7 +80,6 @@ export const useUnitDetailController = () => {
     setIsLoading(true);
     
     try {
-      // Aquí iría la lógica de reserva
       console.log('Procesando reserva:', {
         checkIn: checkInDate,
         checkOut: checkOutDate,
@@ -67,8 +89,6 @@ export const useUnitDetailController = () => {
       });
       
       toast.success('Verificando disponibilidad...');
-      
-      // Simular procesamiento
       await new Promise(resolve => setTimeout(resolve, 1000));
       
     } catch (error) {
@@ -79,21 +99,17 @@ export const useUnitDetailController = () => {
     }
   };
   
-  // Función básica para confirmar la reserva
-  const handleConfirmReservation = async () => {
-    await handleReservation();
-  };
-  
-  // Log para debugging
+  // 🐛 DEBUG: useEffect para monitorear cambios en guests
   useEffect(() => {
-    console.log('Estado del controlador actualizado:', {
-      guests,
-      requiredDomos,
-      availableDomos,
-      checkInDate: checkInDate?.toISOString(),
-      checkOutDate: checkOutDate?.toISOString()
-    });
-  }, [guests, requiredDomos, availableDomos, checkInDate, checkOutDate]);
+    console.log('🔍 useUnitDetailController: guests cambió a:', guests);
+  }, [guests]);
+
+  // 🐛 DEBUG: Log general del estado en cada render
+  console.log('🔍 useUnitDetailController render con estado:', {
+    guests,
+    requiredDomos,
+    handleGuestsChange: typeof handleGuestsChange
+  });
   
   // Retornar todos los valores y funciones necesarios
   return {
@@ -113,7 +129,7 @@ export const useUnitDetailController = () => {
     
     // Funciones
     handleReservation,
-    handleConfirmReservation,
+    handleConfirmReservation: handleReservation,
     handleGuestsChange
   };
 };
