@@ -75,7 +75,7 @@ export const ReservationTabs = ({
         <GuestSelector
           value={guests}
           onChange={onGuestsChange}
-          maxGuests={16}
+          maxGuests={maxGuests}
           availableDomos={availableDomos}
         />
         
