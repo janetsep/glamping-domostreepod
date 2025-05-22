@@ -1,24 +1,16 @@
 
+// src/pages/UnitDetail/UnitDetail.tsx
 import React from 'react';
 import { useUnitDetailController } from './hooks/useUnitDetailController';
-// Corregir la importación usando rutas relativas en lugar de alias
+// CORRECTO: Actualiza esta importación también
 import { GuestSelector } from '../../components/unit-detail/GuestSelector';
-import { DateSelector } from '../../components/unit-detail/DateSelector';
-import { Button } from '../../components/ui/button';
-import { CalendarIcon } from 'lucide-react';
 
 export const UnitDetail: React.FC = () => {
   const {
-    checkInDate,
-    checkOutDate,
     guests,
     handleGuestsChange,
-    requiredDomos,
     availableDomos,
-    isLoading,
-    setCheckInDate: handleCheckInChange,
-    setCheckOutDate: handleCheckOutChange,
-    handleReservation
+    // ... otros valores
   } = useUnitDetailController();
 
   // 🐛 DEBUG: Log del estado en cada render
@@ -48,25 +40,6 @@ export const UnitDetail: React.FC = () => {
         <div className="space-y-4">
           <h2 className="text-xl font-semibold">Hacer Reserva</h2>
           
-          {/* Selector de fechas */}
-          {checkInDate && checkOutDate ? (
-            <div className="flex gap-2 items-center mb-4">
-              <span className="text-sm">{checkInDate.toLocaleDateString()} - {checkOutDate.toLocaleDateString()}</span>
-              <Button variant="outline" size="sm" onClick={() => {handleCheckInChange(null); handleCheckOutChange(null);}}>
-                Cambiar fechas
-              </Button>
-            </div>
-          ) : (
-            <DateSelector 
-              startDate={checkInDate || undefined}
-              endDate={checkOutDate || undefined}
-              onStartDateChange={(date) => handleCheckInChange(date || null)}
-              onEndDateChange={(date) => handleCheckOutChange(date || null)}
-              unitId="domos"
-              requiredDomos={requiredDomos}
-            />
-          )}
-          
           <GuestSelector
             value={guests}
             onChange={debugHandleGuestsChange}
@@ -75,14 +48,6 @@ export const UnitDetail: React.FC = () => {
             label="Número de huéspedes"
             required
           />
-          
-          <Button 
-            onClick={handleReservation}
-            disabled={!checkInDate || !checkOutDate || guests === 0 || isLoading}
-            className="w-full mt-4"
-          >
-            {isLoading ? 'Procesando...' : 'Reservar ahora'}
-          </Button>
           
           {/* 🐛 DEBUG: Mostrar valores en tiempo real */}
           <div className="mt-4 p-4 bg-yellow-100 border border-yellow-400 rounded">

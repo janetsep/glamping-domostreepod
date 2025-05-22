@@ -1,16 +1,7 @@
 
 import React from 'react';
 import { format, isSameMonth, isSameDay } from 'date-fns';
-import { es } from 'date-fns/locale';
-
-// Definir el tipo para los días del calendario
-interface AvailabilityCalendarDay {
-  date: Date;
-  isAvailable: boolean;
-  isSelected?: boolean;
-  availableUnits?: number;
-  totalUnits?: number;
-}
+import { AvailabilityCalendarDay } from '@/types';
 
 interface CalendarGridProps {
   calendarDays: AvailabilityCalendarDay[];

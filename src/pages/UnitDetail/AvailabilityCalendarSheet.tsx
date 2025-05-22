@@ -1,9 +1,7 @@
-
-import { Button } from "../../components/ui/button";
+import { Button } from "@/components/ui/button";
 import { Calendar } from "lucide-react";
-import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTrigger } from "../../components/ui/sheet";
-import { AvailabilityCalendar } from "../../components/unit-detail/AvailabilityCalendar";
-
+import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
+import { AvailabilityCalendar } from "@/components/unit-detail/AvailabilityCalendar";
 interface AvailabilityCalendarSheetProps {
   unitId: string;
   onSelectDate?: (date: Date) => void;
@@ -11,7 +9,6 @@ interface AvailabilityCalendarSheetProps {
   selectedEndDate?: Date | null;
   requiredDomos?: number;
 }
-
 export const AvailabilityCalendarSheet = ({
   unitId,
   onSelectDate,
@@ -25,10 +22,10 @@ export const AvailabilityCalendarSheet = ({
       <SheetTrigger asChild>
         <Button variant="outline" className="w-full mb-6 flex gap-2">
           <Calendar className="h-4 w-4" />
-          <span>Ver disponibilidad</span>
+          <span>Ver  disponibilidad</span>
         </Button>
       </SheetTrigger>
-      <SheetContent side="bottom" className="h-[90vh] pt-8 overflow-y-auto">
+      <SheetContent side="bottom" className="h-[100vh] pt-8 overflow-y-auto">
         <SheetHeader className="mb-6">
           <SheetTitle className="text-2xl">Disponibilidad</SheetTitle>
           <SheetDescription className="text-base">
