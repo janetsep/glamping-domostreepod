@@ -82,7 +82,27 @@ export const useUnitDetailController = (unitId: string | undefined, searchParams
     handleReservation,
     handleConfirmReservation
   };
+// AÑADIR AL FINAL del useUnitDetailController, antes del return:
 
+// Función específica para manejar cambios de huéspedes
+const handleGuestsChange = (newGuests: number) => {
+  console.log('🔍 DEBUGGING: handleGuestsChange called with:', newGuests);
+  console.log('🔍 DEBUGGING: current guests before change:', state.guests);
+  state.setGuests(newGuests);
+  console.log('🔍 DEBUGGING: setGuests executed');
+};
+
+// Modificar el return para incluir acceso directo:
+return {
+  state,
+  actions: extendedActions,
+  // AÑADIR ESTAS LÍNEAS:
+  guests: state.guests,
+  setGuests: handleGuestsChange,
+  availableDomos: state.availableDomos,
+  requiredDomos: state.requiredDomos
+};
+  
   return {
     state,
     actions: extendedActions
