@@ -1,4 +1,3 @@
-
 // Agregamos importaciones necesarias
 import { useState, useEffect, useCallback } from "react";
 import { useSearchParams } from "react-router-dom";
@@ -14,12 +13,36 @@ export const useUnitDetailController = (unitId: string | undefined, searchParams
   // Usar las acciones
   const actions = useReservationActions(state);
 
+  // 🐛 DEBUG: Log del estado en cada render
+  console.log('🔍 useUnitDetailController render con estado:', {
+    guests: state.guests,
+    availableDomos: state.availableDomos,
+    requiredDomos: state.requiredDomos,
+    setGuests: typeof state.setGuests
+  });
+
+  // CORRECCIÓN: Función específica para manejar cambios de huéspedes con debugging
+  const handleGuestsChange = useCallback((newGuests: number) => {
+    console.log('🔍 useUnitDetailController: handleGuestsChange llamado:', {
+      currentGuests: state.guests,
+      newGuests,
+      typeof_newGuests: typeof newGuests
+    });
+    
+    state.setGuests(newGuests);
+    
+    // 🐛 DEBUG: Verificar cambio después de un tick
+    setTimeout(() => {
+      console.log('🔍 useUnitDetailController: Estado después del cambio:', state.guests);
+    }, 100);
+  }, [state.setGuests, state.guests]);
+
   // Extraer parámetros de URL si existen
   useEffect(() => {
     const checkIn = searchParams.get('checkIn');
     const checkOut = searchParams.get('checkOut');
     const guestsParam = searchParams.get('guests');
-
+    
     if (checkIn) {
       state.setStartDate(new Date(checkIn));
     }
@@ -27,9 +50,12 @@ export const useUnitDetailController = (unitId: string | undefined, searchParams
       state.setEndDate(new Date(checkOut));
     }
     if (guestsParam) {
-      state.setGuests(parseInt(guestsParam, 10));
+      const guestsFromUrl = parseInt(guestsParam, 10);
+      if (!isNaN(guestsFromUrl) && guestsFromUrl > 0) {
+        state.setGuests(guestsFromUrl);
+      }
     }
-  }, [searchParams]);
+  }, [searchParams, state.setStartDate, state.setEndDate, state.setGuests]);
 
   // Función adicional para validar disponibilidad antes de una reserva
   const handleReservation = async () => {
@@ -82,29 +108,30 @@ export const useUnitDetailController = (unitId: string | undefined, searchParams
     handleReservation,
     handleConfirmReservation
   };
-// AÑADIR AL FINAL del useUnitDetailController, antes del return:
 
-// Función específica para manejar cambios de huéspedes
-const handleGuestsChange = (newGuests: number) => {
-  console.log('🔍 DEBUGGING: handleGuestsChange called with:', newGuests);
-  console.log('🔍 DEBUGGING: current guests before change:', state.guests);
-  state.setGuests(newGuests);
-  console.log('🔍 DEBUGGING: setGuests executed');
-};
-
-// Modificar el return para incluir acceso directo:
-return {
-  state,
-  actions: extendedActions,
-  // AÑADIR ESTAS LÍNEAS:
-  guests: state.guests,
-  setGuests: handleGuestsChange,
-  availableDomos: state.availableDomos,
-  requiredDomos: state.requiredDomos
-};
-  
+  // CORRECCIÓN: Return simplificado con acceso directo a las propiedades necesarias
   return {
+    // Estado completo (para retrocompatibilidad)
     state,
-    actions: extendedActions
+    actions: extendedActions,
+    
+    // AÑADIDO: Acceso directo para el GuestSelector
+    guests: state.guests,
+    setGuests: handleGuestsChange,
+    handleGuestsChange,
+    availableDomos: state.availableDomos,
+    requiredDomos: state.requiredDomos,
+    maxGuests: 16,
+    maxDomos: 4,
+    
+    // Otros valores útiles
+    startDate: state.startDate,
+    endDate: state.endDate,
+    setStartDate: state.setStartDate,
+    setEndDate: state.setEndDate,
+    isAvailable: state.isAvailable,
+    quote: state.quote,
+    showQuote: state.showQuote,
+    displayUnit: state.displayUnit
   };
 };
