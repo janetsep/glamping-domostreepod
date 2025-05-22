@@ -1,63 +1,82 @@
 
-// src/pages/UnitDetail/UnitDetail.tsx
-import React from 'react';
-import { useUnitDetailController } from './hooks/useUnitDetailController';
-// CORRECTO: Actualiza esta importación también
-import { GuestSelector } from '../../components/unit-detail/GuestSelector';
+import { useParams, useNavigate, useSearchParams } from "react-router-dom";
+import { useEffect } from "react";
 
-export const UnitDetail: React.FC = () => {
-  const {
-    guests,
-    handleGuestsChange,
-    availableDomos,
-    // ... otros valores
-  } = useUnitDetailController();
+// Import our components
+import { UnitHeader } from "./UnitHeader";
+import { UnitContent } from "./UnitContent";
+import { ReservationPanel } from "./ReservationPanel";
+import { ReservationConfirmation } from "./ReservationConfirmation";
+import { useUnitDetailController } from "./hooks/useUnitDetailController";
 
-  // 🐛 DEBUG: Log del estado en cada render
-  console.log('🔍 UnitDetail render con:', {
-    guests,
-    handleGuestsChange: typeof handleGuestsChange,
-    availableDomos
-  });
-
-  // 🐛 DEBUG: Función wrapper para debugging
-  const debugHandleGuestsChange = (newGuests: number) => {
-    console.log('🔍 UnitDetail: debugHandleGuestsChange llamado con:', newGuests);
-    handleGuestsChange(newGuests);
-  };
+const UnitDetail = () => {
+  const { unitId } = useParams<{ unitId: string }>();
+  const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  
+  // Use our controller hook that combines all the functionality
+  const controller = useUnitDetailController(unitId, searchParams);
 
   return (
-    <div className="container mx-auto p-4">
-      <h1 className="text-3xl font-bold mb-6">Detalle de la Unidad</h1>
-      
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-        <div className="space-y-4">
-          <h2 className="text-xl font-semibold">Información del Domo</h2>
-          <p>Capacidad máxima: 4 huéspedes por domo</p>
-          <p>Domos disponibles: {availableDomos}</p>
-        </div>
-        
-        <div className="space-y-4">
-          <h2 className="text-xl font-semibold">Hacer Reserva</h2>
-          
-          <GuestSelector
-            value={guests}
-            onChange={debugHandleGuestsChange}
-            maxGuests={16}
-            availableDomos={availableDomos}
-            label="Número de huéspedes"
-            required
-          />
-          
-          {/* 🐛 DEBUG: Mostrar valores en tiempo real */}
-          <div className="mt-4 p-4 bg-yellow-100 border border-yellow-400 rounded">
-            <h4 className="font-bold">🐛 DEBUG INFO (remover en producción):</h4>
-            <p>Guests actual: {guests}</p>
-            <p>Tipo de handleGuestsChange: {typeof handleGuestsChange}</p>
-            <p>Available Domos: {availableDomos}</p>
-          </div>
+    <div className="min-h-screen bg-white pt-24">
+      <div className="container mx-auto px-4">
+        <UnitHeader navigate={navigate} />
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+          {controller.state.displayUnit && (
+            <>
+              <UnitContent unit={controller.state.displayUnit} />
+
+              <div className="bg-secondary/20 p-6 rounded-lg shadow-sm">
+                {controller.state.isReservationConfirmed ? (
+                  <ReservationConfirmation 
+                    ref={controller.state.confirmationRef}
+                    startDate={controller.state.startDate}
+                    endDate={controller.state.endDate}
+                    guests={controller.state.guests}
+                    quote={controller.state.quote}
+                    paymentDetails={controller.state.paymentDetails}
+                    onNewQuote={controller.actions.handleNewQuote}
+                    reservationId={controller.state.confirmedReservationId}
+                  />
+                ) : (
+                  <ReservationPanel
+                    displayUnit={controller.state.displayUnit}
+                    startDate={controller.state.startDate}
+                    endDate={controller.state.endDate}
+                    setStartDate={controller.state.setStartDate}
+                    setEndDate={controller.state.setEndDate}
+                    guests={controller.state.guests}
+                    setGuests={controller.state.setGuests}
+                    requiredDomos={controller.state.requiredDomos}
+                    isAvailable={controller.state.isAvailable}
+                    showQuote={controller.state.showQuote}
+                    quote={controller.state.quote}
+                    onReservation={controller.actions.handleReservation}
+                    onNewQuote={controller.actions.handleNewQuote}
+                    onConfirmReservation={controller.actions.handleConfirmReservation}
+                    isProcessingPayment={controller.state.isProcessingPayment}
+                    selectedActivities={controller.state.selectedActivities}
+                    selectedPackages={controller.state.selectedPackages}
+                    onActivityToggle={controller.actions.handleActivityToggle}
+                    onPackageToggle={controller.actions.handlePackageToggle}
+                    activitiesTotal={controller.state.activitiesTotal}
+                    packagesTotal={controller.state.packagesTotal}
+                    getUpdatedQuoteTotal={controller.actions.getUpdatedQuoteTotal}
+                    reservationTab={controller.state.reservationTab}
+                    setReservationTab={controller.state.setReservationTab}
+                    isPartialAvailability={controller.state.isPartialAvailability}
+                    availableDomos={controller.state.availableDomos}
+                    alternativeDates={controller.state.alternativeDates}
+                  />
+                )}
+              </div>
+            </>
+          )}
         </div>
       </div>
     </div>
   );
 };
+
+export default UnitDetail;

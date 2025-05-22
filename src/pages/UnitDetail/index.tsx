@@ -1,3 +1,3 @@
 
-import { UnitDetail } from "./UnitDetail";
+import UnitDetail from "./UnitDetail";
 export default UnitDetail;

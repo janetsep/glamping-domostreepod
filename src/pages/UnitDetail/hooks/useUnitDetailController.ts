@@ -1,135 +1,90 @@
 
-// src/pages/UnitDetail/hooks/useUnitDetailController.ts
-import { useState, useEffect } from 'react';
+// Agregamos importaciones necesarias
+import { useState, useEffect, useCallback } from "react";
+import { useSearchParams } from "react-router-dom";
+import { toast } from "sonner";
+import { useUnitDetailState } from "./useUnitDetailState";
+import { useReservationActions } from "./useReservationActions";
+import { checkGeneralAvailability } from "@/hooks/reservations/utils/availabilityChecker/checkGeneralAvailability";
 
-// Función simple de toast como reemplazo temporal
-const toast = {
-  error: (message: string) => {
-    console.error('Toast Error:', message);
-    alert(`Error: ${message}`); // Reemplazar con tu sistema de notificaciones
-  },
-  success: (message: string) => {
-    console.log('Toast Success:', message);
-    alert(`Éxito: ${message}`); // Reemplazar con tu sistema de notificaciones
-  },
-  warning: (message: string, options?: any) => {
-    console.warn('Toast Warning:', message);
-    alert(`Advertencia: ${message}`); // Reemplazar con tu sistema de notificaciones
-  }
-};
+export const useUnitDetailController = (unitId: string | undefined, searchParams: URLSearchParams) => {
+  // Usar el estado principal
+  const state = useUnitDetailState(unitId);
+  
+  // Usar las acciones
+  const actions = useReservationActions(state);
 
-export const useUnitDetailController = () => {
-  // Estados básicos
-  const [checkInDate, setCheckInDate] = useState<Date | null>(null);
-  const [checkOutDate, setCheckOutDate] = useState<Date | null>(null);
-  const [guests, setGuests] = useState<number>(2);
-  const [availableDomos, setAvailableDomos] = useState<number>(4);
-  const [isLoading, setIsLoading] = useState<boolean>(false);
-  
-  // Calcular domos requeridos basado en el número de huéspedes
-  const requiredDomos = Math.ceil(guests / 4);
-  
-  // 🐛 DEBUG: Función de cambio de huéspedes con logs
-  const handleGuestsChange = (newGuests: number) => {
-    console.log('🔍 useUnitDetailController: handleGuestsChange llamado:', {
-      currentGuests: guests,
-      newGuests,
-      typeof_newGuests: typeof newGuests
-    });
-    
-    setGuests(newGuests);
-    
-    // 🐛 DEBUG: Verificar cambio después de un tick
-    setTimeout(() => {
-      console.log('🔍 useUnitDetailController: Estado después del cambio:', guests);
-    }, 100);
-  };
-  
-  // Función para manejar cambios en la fecha de entrada
-  const handleCheckInChange = (date: Date | null) => {
-    setCheckInDate(date);
-    if (date && checkOutDate && date >= checkOutDate) {
-      const nextDay = new Date(date);
-      nextDay.setDate(nextDay.getDate() + 1);
-      setCheckOutDate(nextDay);
-    }
-  };
-  
-  // Función para manejar cambios en la fecha de salida
-  const handleCheckOutChange = (date: Date | null) => {
-    setCheckOutDate(date);
-  };
-  
-  // Función básica para manejar la reserva
-  const handleReservation = async () => {
-    if (!checkInDate || !checkOutDate) {
-      toast.error('Por favor selecciona las fechas de entrada y salida');
-      return;
-    }
-    
-    if (guests < 1) {
-      toast.error('Por favor selecciona el número de huéspedes');
-      return;
-    }
-    
-    if (requiredDomos > availableDomos) {
-      toast.error(`Solo hay ${availableDomos} de 4 domos disponibles. Necesitas ${requiredDomos} para ${guests} huéspedes.`);
-      return;
-    }
-    
-    setIsLoading(true);
-    
-    try {
-      console.log('Procesando reserva:', {
-        checkIn: checkInDate,
-        checkOut: checkOutDate,
-        guests,
-        requiredDomos,
-        availableDomos
-      });
-      
-      toast.success('Verificando disponibilidad...');
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      
-    } catch (error) {
-      console.error('Error en la reserva:', error);
-      toast.error('Error al procesar la reserva');
-    } finally {
-      setIsLoading(false);
-    }
-  };
-  
-  // 🐛 DEBUG: useEffect para monitorear cambios en guests
+  // Extraer parámetros de URL si existen
   useEffect(() => {
-    console.log('🔍 useUnitDetailController: guests cambió a:', guests);
-  }, [guests]);
+    const checkIn = searchParams.get('checkIn');
+    const checkOut = searchParams.get('checkOut');
+    const guestsParam = searchParams.get('guests');
 
-  // 🐛 DEBUG: Log general del estado en cada render
-  console.log('🔍 useUnitDetailController render con estado:', {
-    guests,
-    requiredDomos,
-    handleGuestsChange: typeof handleGuestsChange
-  });
-  
-  // Retornar todos los valores y funciones necesarios
-  return {
-    // Estados
-    checkInDate,
-    checkOutDate,
-    guests,
-    requiredDomos,
-    availableDomos,
-    isLoading,
+    if (checkIn) {
+      state.setStartDate(new Date(checkIn));
+    }
+    if (checkOut) {
+      state.setEndDate(new Date(checkOut));
+    }
+    if (guestsParam) {
+      state.setGuests(parseInt(guestsParam, 10));
+    }
+  }, [searchParams]);
+
+  // Función adicional para validar disponibilidad antes de una reserva
+  const handleReservation = async () => {
+    // Validar antes de continuar
+    if (!state.startDate || !state.endDate) {
+      toast.error("Por favor selecciona las fechas de entrada y salida");
+      return;
+    }
     
-    // Setters
-    setCheckInDate: handleCheckInChange,
-    setCheckOutDate: handleCheckOutChange,
-    setGuests: handleGuestsChange,
-    setAvailableDomos,
+    // Verificamos si hay suficientes domos disponibles
+    if (state.availableDomos !== undefined && state.requiredDomos !== undefined) {
+      if (state.requiredDomos > state.availableDomos) {
+        toast.error(`Solo hay ${state.availableDomos} de 4 domos disponibles. Necesitas ${state.requiredDomos} para tu reserva.`);
+        return;
+      }
+    }
     
-    // Funciones
+    // Continuar con la reserva
+    actions.handleReservation();
+  };
+
+  // Función para confirmar la reserva con validación adicional
+  const handleConfirmReservation = async () => {
+    if (!state.startDate || !state.endDate) {
+      toast.error("Por favor selecciona las fechas de entrada y salida");
+      return;
+    }
+    
+    // CORRECCIÓN: Volver a validar disponibilidad antes de confirmar
+    if (state.requiredDomos !== undefined) {
+      const { isAvailable, availableUnits } = await checkGeneralAvailability(
+        state.startDate,
+        state.endDate,
+        state.requiredDomos
+      );
+      
+      if (!isAvailable) {
+        toast.error(`No hay suficiente disponibilidad. Solo hay ${availableUnits} de 4 domos disponibles.`);
+        return;
+      }
+    }
+    
+    // Continuar con la confirmación
+    actions.handleConfirmReservation();
+  };
+
+  // Sobreescribir las acciones con nuestra lógica personalizada
+  const extendedActions = {
+    ...actions,
     handleReservation,
-    handleConfirmReservation: handleReservation,
-    handleGuestsChange
+    handleConfirmReservation
+  };
+
+  return {
+    state,
+    actions: extendedActions
   };
 };
