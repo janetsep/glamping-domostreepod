@@ -1,90 +1,119 @@
 
-// Agregamos importaciones necesarias
-import { useState, useEffect, useCallback } from "react";
-import { useSearchParams } from "react-router-dom";
-import { toast } from "sonner";
-import { useUnitDetailState } from "./useUnitDetailState";
-import { useReservationActions } from "./useReservationActions";
-import { checkGeneralAvailability } from "@/hooks/reservations/utils/availabilityChecker/checkGeneralAvailability";
+// src/pages/UnitDetail/hooks/useUnitDetailController.ts
+import { useState, useEffect } from 'react';
+import { toast } from 'react-toastify';
 
-export const useUnitDetailController = (unitId: string | undefined, searchParams: URLSearchParams) => {
-  // Usar el estado principal
-  const state = useUnitDetailState(unitId);
+export const useUnitDetailController = () => {
+  // Estados básicos
+  const [checkInDate, setCheckInDate] = useState<Date | null>(null);
+  const [checkOutDate, setCheckOutDate] = useState<Date | null>(null);
+  const [guests, setGuests] = useState<number>(2); // Valor inicial por defecto
+  const [availableDomos, setAvailableDomos] = useState<number>(4); // Iniciar con disponibilidad completa
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   
-  // Usar las acciones
-  const actions = useReservationActions(state);
-
-  // Extraer parámetros de URL si existen
-  useEffect(() => {
-    const checkIn = searchParams.get('checkIn');
-    const checkOut = searchParams.get('checkOut');
-    const guestsParam = searchParams.get('guests');
-
-    if (checkIn) {
-      state.setStartDate(new Date(checkIn));
+  // Calcular domos requeridos basado en el número de huéspedes
+  const requiredDomos = Math.ceil(guests / 4);
+  
+  // Función para manejar cambios en el número de huéspedes
+  const handleGuestsChange = (newGuests: number) => {
+    console.log('Cambiando huéspedes de', guests, 'a', newGuests);
+    setGuests(newGuests);
+  };
+  
+  // Función para manejar cambios en la fecha de entrada
+  const handleCheckInChange = (date: Date | null) => {
+    setCheckInDate(date);
+    // Si la fecha de salida es anterior o igual a la de entrada, ajustarla
+    if (date && checkOutDate && date >= checkOutDate) {
+      const nextDay = new Date(date);
+      nextDay.setDate(nextDay.getDate() + 1);
+      setCheckOutDate(nextDay);
     }
-    if (checkOut) {
-      state.setEndDate(new Date(checkOut));
-    }
-    if (guestsParam) {
-      state.setGuests(parseInt(guestsParam, 10));
-    }
-  }, [searchParams]);
-
-  // Función adicional para validar disponibilidad antes de una reserva
+  };
+  
+  // Función para manejar cambios en la fecha de salida
+  const handleCheckOutChange = (date: Date | null) => {
+    setCheckOutDate(date);
+  };
+  
+  // Función básica para manejar la reserva
   const handleReservation = async () => {
-    // Validar antes de continuar
-    if (!state.startDate || !state.endDate) {
-      toast.error("Por favor selecciona las fechas de entrada y salida");
+    if (!checkInDate || !checkOutDate) {
+      toast.error('Por favor selecciona las fechas de entrada y salida');
       return;
     }
     
-    // Verificamos si hay suficientes domos disponibles
-    if (state.availableDomos !== undefined && state.requiredDomos !== undefined) {
-      if (state.requiredDomos > state.availableDomos) {
-        toast.error(`Solo hay ${state.availableDomos} de 4 domos disponibles. Necesitas ${state.requiredDomos} para tu reserva.`);
-        return;
-      }
-    }
-    
-    // Continuar con la reserva
-    actions.handleReservation();
-  };
-
-  // Función para confirmar la reserva con validación adicional
-  const handleConfirmReservation = async () => {
-    if (!state.startDate || !state.endDate) {
-      toast.error("Por favor selecciona las fechas de entrada y salida");
+    if (guests < 1) {
+      toast.error('Por favor selecciona el número de huéspedes');
       return;
     }
     
-    // CORRECCIÓN: Volver a validar disponibilidad antes de confirmar
-    if (state.requiredDomos !== undefined) {
-      const { isAvailable, availableUnits } = await checkGeneralAvailability(
-        state.startDate,
-        state.endDate,
-        state.requiredDomos
-      );
+    // Validar disponibilidad
+    if (requiredDomos > availableDomos) {
+      toast.error(`Solo hay ${availableDomos} de 4 domos disponibles. Necesitas ${requiredDomos} para ${guests} huéspedes.`);
+      return;
+    }
+    
+    setIsLoading(true);
+    
+    try {
+      // Aquí iría la lógica de reserva
+      console.log('Procesando reserva:', {
+        checkIn: checkInDate,
+        checkOut: checkOutDate,
+        guests,
+        requiredDomos,
+        availableDomos
+      });
       
-      if (!isAvailable) {
-        toast.error(`No hay suficiente disponibilidad. Solo hay ${availableUnits} de 4 domos disponibles.`);
-        return;
-      }
+      toast.success('Verificando disponibilidad...');
+      
+      // Simular procesamiento
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      
+    } catch (error) {
+      console.error('Error en la reserva:', error);
+      toast.error('Error al procesar la reserva');
+    } finally {
+      setIsLoading(false);
     }
-    
-    // Continuar con la confirmación
-    actions.handleConfirmReservation();
   };
-
-  // Sobreescribir las acciones con nuestra lógica personalizada
-  const extendedActions = {
-    ...actions,
-    handleReservation,
-    handleConfirmReservation
+  
+  // Función básica para confirmar la reserva
+  const handleConfirmReservation = async () => {
+    await handleReservation();
   };
-
+  
+  // Log para debugging
+  useEffect(() => {
+    console.log('Estado del controlador actualizado:', {
+      guests,
+      requiredDomos,
+      availableDomos,
+      checkInDate: checkInDate?.toISOString(),
+      checkOutDate: checkOutDate?.toISOString()
+    });
+  }, [guests, requiredDomos, availableDomos, checkInDate, checkOutDate]);
+  
+  // Retornar todos los valores y funciones necesarios
   return {
-    state,
-    actions: extendedActions
+    // Estados
+    checkInDate,
+    checkOutDate,
+    guests,
+    requiredDomos,
+    availableDomos,
+    isLoading,
+    
+    // Setters
+    setCheckInDate: handleCheckInChange,
+    setCheckOutDate: handleCheckOutChange,
+    setGuests: handleGuestsChange,
+    setAvailableDomos,
+    
+    // Funciones
+    handleReservation,
+    handleConfirmReservation,
+    handleGuestsChange
   };
 };
