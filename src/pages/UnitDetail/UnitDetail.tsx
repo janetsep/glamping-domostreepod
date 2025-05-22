@@ -2,7 +2,7 @@
 // src/pages/UnitDetail/UnitDetail.tsx
 import React from 'react';
 import { useUnitDetailController } from './hooks/useUnitDetailController';
-import { GuestSelector } from '@/components/GuestSelector';
+import { GuestSelector } from '../../components/unit-detail/GuestSelector';
 
 export const UnitDetail: React.FC = () => {
   const {
@@ -107,3 +107,5 @@ export const UnitDetail: React.FC = () => {
     </div>
   );
 };
+
+export default UnitDetail;
