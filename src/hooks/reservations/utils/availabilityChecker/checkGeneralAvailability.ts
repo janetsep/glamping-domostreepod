@@ -16,43 +16,39 @@ export const checkGeneralAvailability = async (
       .from('reservations')
       .select('id, unit_id, check_in, check_out')
       .eq('status', 'confirmed')
-      .or(`check_in.lte.${checkOutDate.toISOString()},check_out.gte.${checkInDate.toISOString()}`);
+      .filter('check_in', 'lt', checkOutDate.toISOString())
+      .filter('check_out', 'gt', checkInDate.toISOString());
 
     if (error) {
       console.error('Error fetching reservations:', error);
       return { isAvailable: false, availableUnits: 0, error: error.message };
     }
 
-    // CORRECCIÓN: Contar correctamente las unidades reservadas
-    // Obtener unit_ids únicos
-    const uniqueReservedUnits = new Set(overlappingReservations?.map(r => r.unit_id).filter(Boolean));
-    const reservedWithUnitId = uniqueReservedUnits.size;
+    // Usar la misma lógica que el calendario: solo contar reservas con unit_id asignado
+    const reservedUnits = (overlappingReservations || [])
+      .filter(r => r.unit_id !== null && r.unit_id !== undefined)
+      .length;
     
-    // Contar reservas sin unit_id asignado
-    const reservationsWithoutUnitId = (overlappingReservations || []).filter(r => !r.unit_id).length;
+    const availableUnits = TOTAL_DOMOS - reservedUnits;
+    const isAvailable = availableUnits >= requiredDomos;
     
-    // Calcular unidades totales reservadas
-    const totalReservedCount = Math.min(TOTAL_DOMOS, reservedWithUnitId + reservationsWithoutUnitId);
-    
-    // Calcular unidades disponibles
-    const availableUnits = TOTAL_DOMOS - totalReservedCount;
-    
-    console.log(`Availability check for ${checkInDate.toISOString().split('T')[0]} to ${checkOutDate.toISOString().split('T')[0]}:
-      - Total overlapping reservations: ${overlappingReservations?.length || 0}
-      - Unique units with ID: ${reservedWithUnitId}
-      - Reservations without unit_id: ${reservationsWithoutUnitId}
-      - Total reserved: ${totalReservedCount}
-      - Available units: ${availableUnits}
-      - Required units: ${requiredDomos}
-      - Is available: ${availableUnits >= requiredDomos}`);
+    console.log(`🔍 [checkGeneralAvailability] Verificación de disponibilidad:`, {
+      fechaInicio: checkInDate.toISOString().split('T')[0],
+      fechaFin: checkOutDate.toISOString().split('T')[0],
+      totalReservas: overlappingReservations?.length || 0,
+      reservasConUnitId: reservedUnits,
+      unidadesDisponibles: availableUnits,
+      unidadesRequeridas: requiredDomos,
+      disponible: isAvailable
+    });
 
     return {
-      isAvailable: availableUnits >= requiredDomos,
+      isAvailable,
       availableUnits,
-      error: null
+      totalUnits: TOTAL_DOMOS
     };
-  } catch (error: any) {
-    console.error('Error in checkGeneralAvailability:', error);
-    return { isAvailable: false, availableUnits: 0, error: error.message };
+  } catch (error) {
+    console.error('Error en checkGeneralAvailability:', error);
+    return { isAvailable: false, availableUnits: 0, totalUnits: TOTAL_DOMOS };
   }
 };

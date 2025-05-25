@@ -54,7 +54,8 @@ export const useAvailabilityCalculator = (
 
   const generateAvailabilityData = async (start: Date, end: Date) => {
     try {
-      console.log(`Generating availability data for ${format(start, 'yyyy-MM-dd')} to ${format(end, 'yyyy-MM-dd')}`);
+      // Solo loggear el inicio del cálculo
+      console.log(`📅 [useAvailabilityCalculator] Calculando disponibilidad para el mes actual`);
       
       // Get all days in the calendar view (incluye días del mes anterior y siguiente)
       const daysInCalendar = eachDayOfInterval({ start, end });
@@ -73,38 +74,25 @@ export const useAvailabilityCalculator = (
           const reservationsOnDay = reservations.filter(reservation => {
             const checkIn = new Date(reservation.check_in);
             const checkOut = new Date(reservation.check_out);
-            
-            return (
-              (checkIn <= dayEnd && checkOut >= dayStart)
-            );
+            return (checkIn <= dayEnd && checkOut >= dayStart);
           });
           
-          // CORRECCIÓN: Calcular correctamente las unidades reservadas
-          // Calcular unidades reservadas por unit_id único
-          const uniqueReservedUnits = new Set(reservationsOnDay
-            .map(r => r.unit_id)
-            .filter(Boolean)); // Filter out null/undefined unit_ids
-          
-          const reservedWithUnitId = uniqueReservedUnits.size;
-          
-          // Calcular reservas sin unit_id (cada una cuenta como una unidad separada)
-          const reservationsWithoutUnitId = reservationsOnDay.filter(r => !r.unit_id).length;
-          
-          // Total de unidades reservadas (con máximo de TOTAL_UNITS)
-          const reservedUnits = Math.min(TOTAL_UNITS, reservedWithUnitId + reservationsWithoutUnitId);
+          const reservedUnits = reservationsOnDay.filter(r => r.unit_id !== null && r.unit_id !== undefined).length;
           const availableUnits = TOTAL_UNITS - reservedUnits;
           
-          console.log(`Day ${format(day, 'yyyy-MM-dd')} (${format(day, 'EEEE', { locale: es })}): 
-            - Total reservations: ${reservationsOnDay.length}
-            - Unique unit_ids: ${reservedWithUnitId}
-            - Reservations without unit_id: ${reservationsWithoutUnitId}
-            - Total reserved units: ${reservedUnits}
-            - Available units: ${availableUnits}`);
+          // Solo loggear días con reservas o que son el día actual
+          const isCurrentMonth = day.getMonth() === new Date().getMonth();
+          const isToday = isSameDay(day, new Date());
+          const hasReservations = reservedUnits > 0;
+          
+          if (isCurrentMonth && (isToday || hasReservations)) {
+            console.log(`📅 [useAvailabilityCalculator] ${format(day, 'yyyy-MM-dd')}: ${availableUnits} unidades disponibles${hasReservations ? ` (${reservedUnits} reservadas)` : ''}`);
+          }
           
           return {
             date: day,
             isAvailable: availableUnits > 0,
-            isSelected: selectedDate ? isSameDay(day, selectedDate) : false,
+            isSelected: false,
             availableUnits,
             totalUnits: TOTAL_UNITS
           };
@@ -113,7 +101,7 @@ export const useAvailabilityCalculator = (
       
       return availabilityMap;
     } catch (error) {
-      console.error("Error in generateAvailabilityData:", error);
+      console.error('Error generating availability data:', error);
       return [];
     }
   };

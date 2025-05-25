@@ -1,71 +1,57 @@
-import { format } from "date-fns";
+import { format, startOfDay, endOfDay } from "date-fns";
 import { eachDayOfInterval, addDays } from "date-fns";
+import { useEffect, useCallback } from "react";
 
 const TOTAL_UNITS = 4; // Total number of domos available
+
+interface Reservation {
+  check_in: string;
+  check_out: string;
+  unit_id: string | null;
+}
 
 /**
  * Hook to check availability for specific dates and date ranges
  */
-export const useDateAvailabilityChecker = (reservations: any[]) => {
-  
-  // Check if a single date is available
-  const isDateAvailable = async (date: Date, requiredUnits = 1): Promise<{isAvailable: boolean, availableUnits: number}> => {
-    try {
-      console.log(`Checking availability for single date: ${format(date, 'yyyy-MM-dd')}`);
-      
-      // Set the day to midnight for consistent comparison
-      const dayStart = new Date(date);
-      dayStart.setHours(0, 0, 0, 0);
-      
-      const dayEnd = new Date(date);
-      dayEnd.setHours(23, 59, 59, 999);
-      
-      // Count reservations that overlap with this day
-      const reservationsOnDay = reservations.filter(reservation => {
-        const checkIn = new Date(reservation.check_in);
-        const checkOut = new Date(reservation.check_out);
-        
-        return (
-          (checkIn <= dayEnd && checkOut >= dayStart)
-        );
-      });
-      
-      // CORRECCIÓN: Calcular correctamente las unidades reservadas
-      // Calcular unidades reservadas por unit_id único
-      const uniqueReservedUnits = new Set(reservationsOnDay
-        .map(r => r.unit_id)
-        .filter(Boolean)); // Filter out null/undefined unit_ids
-      
-      const reservedWithUnitId = uniqueReservedUnits.size;
-      
-      // Calcular reservas sin unit_id (cada una cuenta como una unidad separada)
-      const reservationsWithoutUnitId = reservationsOnDay.filter(r => !r.unit_id).length;
-      
-      // Total de unidades reservadas (con máximo de TOTAL_UNITS)
-      const reservedUnits = Math.min(TOTAL_UNITS, reservedWithUnitId + reservationsWithoutUnitId);
-      const availableUnits = TOTAL_UNITS - reservedUnits;
-      
-      console.log(`Date ${format(date, 'yyyy-MM-dd')} availability check results:
-        - Total reservations: ${reservationsOnDay.length}
-        - Unique unit_ids: ${reservedWithUnitId}
-        - Reservations without unit_id: ${reservationsWithoutUnitId}
-        - Total reserved units: ${reservedUnits}
-        - Available units: ${availableUnits}
-        - Required units: ${requiredUnits}
-        - Is available: ${availableUnits >= requiredUnits}`);
-      
-      return {
-        isAvailable: availableUnits >= requiredUnits,
-        availableUnits
-      };
-    } catch (error) {
-      console.error("Error checking date availability:", error);
-      return { isAvailable: false, availableUnits: 0 };
-    }
-  };
+export const useDateAvailabilityChecker = (reservations: Reservation[]) => {
+  // Solo loggear el número total de reservas al inicializar
+  useEffect(() => {
+    console.log('📅 [useDateAvailabilityChecker] Inicializado con', reservations.length, 'reservas');
+  }, [reservations.length]);
+
+  const isDateAvailable = useCallback((date: Date, requiredUnits = 1) => {
+    const start = startOfDay(date);
+    const end = endOfDay(date);
+    
+    const overlappingReservations = reservations.filter(reservation => {
+      const checkIn = new Date(reservation.check_in);
+      const checkOut = new Date(reservation.check_out);
+      return checkIn <= end && checkOut >= start;
+    });
+
+    const reservedUnits = overlappingReservations.filter(r => r.unit_id).length;
+    const availableUnits = TOTAL_UNITS - reservedUnits;
+    const isAvailable = availableUnits >= requiredUnits;
+
+    console.log('📅 [useDateAvailabilityChecker] Verificación de disponibilidad:', {
+      fecha: date.toISOString().split('T')[0],
+      disponible: isAvailable,
+      unidadesDisponibles: availableUnits,
+      unidadesRequeridas: requiredUnits,
+      reservasSolapadas: overlappingReservations.length
+    });
+
+    return {
+      isAvailable,
+      availableUnits,
+      totalUnits: TOTAL_UNITS
+    };
+  }, [reservations]);
 
   // Check if a range of dates is available
   const isDateRangeAvailable = async (startDate: Date, endDate: Date, requiredUnits = 1): Promise<{isAvailable: boolean, availableUnits: number}> => {
+    console.log(`🔍 [useDateAvailabilityChecker] isDateRangeAvailable - INICIO`);
+    console.log(`🔍 [useDateAvailabilityChecker] Parámetros recibidos:`, { startDate: startDate.toISOString().split('T')[0], endDate: endDate.toISOString().split('T')[0], requiredUnits });
     try {
       console.log(`Checking availability for date range: ${format(startDate, 'yyyy-MM-dd')} to ${format(endDate, 'yyyy-MM-dd')}`);
       

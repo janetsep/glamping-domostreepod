@@ -1,4 +1,3 @@
-
 import { Button } from "@/components/ui/button";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { format } from "date-fns";
@@ -8,14 +7,14 @@ interface CalendarHeaderProps {
   currentMonth: Date;
   onPreviousMonth: () => void;
   onNextMonth: () => void;
-  isLoading: boolean;
+  isLoading?: boolean;
 }
 
 export const CalendarHeader = ({ 
   currentMonth, 
   onPreviousMonth, 
   onNextMonth, 
-  isLoading 
+  isLoading = false 
 }: CalendarHeaderProps) => {
   return (
     <div className="flex items-center justify-between mb-6">
