@@ -1,4 +1,3 @@
-
 import {
   createBrowserRouter,
   RouterProvider,
@@ -12,6 +11,7 @@ import Index from "./pages/Index";
 import UnitDetail from "./pages/UnitDetail";
 import TravelerType from "./pages/TravelerType";
 import CelebrationDetail from "./pages/CelebrationDetail";
+import { ReservationTest } from "./pages/ReservationTest";
 import { useEffect } from "react";
 import WebPayReturn from "./pages/WebPayReturn";
 import { HelmetProvider } from "react-helmet-async";
@@ -26,6 +26,7 @@ const router = createBrowserRouter(
       <Route path="tipo-viajero/:typeId" element={<TravelerType />} />
       <Route path="celebracion/:celebrationId" element={<CelebrationDetail />} />
       <Route path="webpay/return" element={<WebPayReturn />} />
+      <Route path="demo-reservas" element={<ReservationTest />} />
     </Route>
   )
 );

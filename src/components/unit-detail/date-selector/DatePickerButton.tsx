@@ -1,4 +1,3 @@
-
 import { format } from "date-fns";
 import { es } from "date-fns/locale";
 import { CalendarIcon } from "lucide-react";
@@ -17,8 +16,8 @@ interface DatePickerButtonProps {
   onOpenChange: (open: boolean) => void;
   onSelectDate: (date: Date | undefined) => void;
   unitId: string;
-  selectedStartDate?: Date | null;
-  selectedEndDate?: Date | null;
+  selectedStartDate?: Date;
+  selectedEndDate?: Date;
   disabled?: boolean;
   initialMonth?: Date;
   checkDateRange?: boolean;
@@ -39,6 +38,22 @@ export const DatePickerButton = ({
   checkDateRange = false,
   requiredDomos = 1
 }: DatePickerButtonProps) => {
+  const handleRangeSelect = (range: { startDate: Date | undefined, endDate: Date | undefined }) => {
+    console.log('🔍 [DatePickerButton] handleRangeSelect llamado con:', {
+      startDate: range.startDate?.toISOString(),
+      endDate: range.endDate?.toISOString()
+    });
+    
+    // Si estamos seleccionando la fecha de inicio
+    if (!selectedStartDate) {
+      onSelectDate(range.startDate);
+    } 
+    // Si estamos seleccionando la fecha de fin
+    else if (selectedStartDate && !selectedEndDate) {
+      onSelectDate(range.endDate);
+    }
+  };
+
   return (
     <Popover open={isOpen} onOpenChange={onOpenChange}>
       <PopoverTrigger asChild>
@@ -61,7 +76,7 @@ export const DatePickerButton = ({
         <div className="p-3 w-[350px] sm:w-[400px] md:w-[450px]">
           <AvailabilityCalendar 
             unitId={unitId}
-            onSelectDate={onSelectDate}
+            onSelectRange={handleRangeSelect}
             checkDateRange={checkDateRange}
             selectedStartDate={selectedStartDate}
             selectedEndDate={selectedEndDate}

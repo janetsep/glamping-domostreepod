@@ -168,7 +168,7 @@ export const ReservationSummary: React.FC<ReservationSummaryProps> = ({
       <div className="flex flex-col sm:flex-row gap-2 sm:gap-4 mt-6">
         <Button
           onClick={onConfirm}
-          disabled={isLoading || !isAvailable}
+          disabled={isLoading}
           className="flex-1"
         >
           {isLoading ? "Procesando..." : buttonText}
