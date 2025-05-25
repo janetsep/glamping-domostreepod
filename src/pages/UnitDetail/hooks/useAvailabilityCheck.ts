@@ -6,7 +6,7 @@ type AvailabilityState = {
   startDate?: Date;
   endDate?: Date;
   displayUnit: any;
-  checkAvailability: (unitId: string, checkIn: Date, checkOut: Date) => Promise<boolean>;
+  checkAvailability: (guests: number, startDate: Date, endDate: Date, forceRefresh?: boolean) => Promise<{ isAvailable: boolean; availableDomes: number; requiredDomos: number; error?: string }>;
   setIsAvailable: (isAvailable: boolean) => void;
   setCheckedAvailability: (checked: boolean) => void;
   requiredDomos?: number;
@@ -107,6 +107,13 @@ export const useAvailabilityCheck = (state: AvailabilityState) => {
       }
     }
   };
+
+  // Comentamos temporalmente este useEffect para probar si es la fuente del problema
+  /*
+  useEffect(() => {
+    checkDatesAvailability();
+  }, [state.startDate, state.endDate, state.guests, state.requiredDomos]);
+  */
 
   return {
     checkDatesAvailability,

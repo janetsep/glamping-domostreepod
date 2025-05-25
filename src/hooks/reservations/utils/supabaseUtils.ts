@@ -5,7 +5,7 @@ import { SUPABASE_URL, SUPABASE_ANON_KEY } from '@/lib/constants';
  * Creates a new reservation in the database
  */
 export const createReservationEntry = async (
-  unitId: string,
+  unitIdsToAssign: string[],
   checkIn: Date,
   checkOut: Date,
   guests: number,
@@ -19,12 +19,12 @@ export const createReservationEntry = async (
     try {
       const { data, error } = await supabase
         .from('reservations')
-        .insert({
+        .insert(unitIdsToAssign.map(unitId => ({
           unit_id: unitId,
           check_in: checkIn.toISOString(),
           check_out: checkOut.toISOString(),
-          guests,
-          total_price: totalPrice,
+          guests: Math.ceil(guests / unitIdsToAssign.length),
+          total_price: totalPrice / unitIdsToAssign.length,
           status: 'pending',
           payment_method: paymentMethod,
           selected_activities: selectedActivities,
@@ -32,9 +32,8 @@ export const createReservationEntry = async (
           payment_details: {
             created_at: new Date().toISOString()
           }
-        })
-        .select()
-        .single();
+        })))
+        .select();
       
       if (error) {
         console.error('Error con cliente Supabase:', error);
@@ -54,12 +53,12 @@ export const createReservationEntry = async (
           'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
           'Prefer': 'return=representation'
         },
-        body: JSON.stringify({
+        body: JSON.stringify(unitIdsToAssign.map(unitId => ({
           unit_id: unitId,
           check_in: checkIn.toISOString(),
           check_out: checkOut.toISOString(),
-          guests,
-          total_price: totalPrice,
+          guests: Math.ceil(guests / unitIdsToAssign.length),
+          total_price: totalPrice / unitIdsToAssign.length,
           status: 'pending',
           payment_method: paymentMethod,
           selected_activities: selectedActivities,
@@ -67,7 +66,7 @@ export const createReservationEntry = async (
           payment_details: {
             created_at: new Date().toISOString()
           }
-        })
+        })))
       });
 
       if (!response.ok) {
@@ -78,7 +77,7 @@ export const createReservationEntry = async (
 
       const data = await response.json();
       console.log('Reserva creada con fetch directo:', data);
-      return data[0];
+      return data;
     }
   } catch (error) {
     console.error('Error creating reservation:', error);
@@ -191,6 +190,44 @@ export const verifyReservationUpdate = async (reservationId: string) => {
     return true;
   } catch (error) {
     console.error('Error verifying reservation update:', error);
+    throw error;
+  }
+};
+
+/**
+ * Consulta todas las reservas confirmadas en la base de datos
+ */
+export const getAllConfirmedReservations = async () => {
+  try {
+    const { data, error } = await supabase
+      .from('reservations')
+      .select('id, unit_id, check_in, check_out, status, guests, total_price, created_at')
+      .eq('status', 'confirmed')
+      .order('check_in', { ascending: true });
+
+    if (error) {
+      console.error('Error al consultar reservas:', error);
+      throw error;
+    }
+
+    console.log('📊 [Reservas Confirmadas] Total:', data?.length || 0);
+    if (data && data.length > 0) {
+      console.log('Detalles de las reservas:');
+      data.forEach(reservation => {
+        console.log(`- ID: ${reservation.id}`);
+        console.log(`  Unidad: ${reservation.unit_id || 'No asignada'}`);
+        console.log(`  Check-in: ${new Date(reservation.check_in).toLocaleDateString()}`);
+        console.log(`  Check-out: ${new Date(reservation.check_out).toLocaleDateString()}`);
+        console.log(`  Huéspedes: ${reservation.guests}`);
+        console.log(`  Precio: $${reservation.total_price}`);
+        console.log(`  Creada: ${new Date(reservation.created_at).toLocaleDateString()}`);
+        console.log('---');
+      });
+    }
+
+    return data;
+  } catch (error) {
+    console.error('Error en getAllConfirmedReservations:', error);
     throw error;
   }
 };

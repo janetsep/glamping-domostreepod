@@ -1,4 +1,3 @@
-
 import { useAvailabilityCheck } from './useAvailabilityCheck';
 
 interface UseAvailabilityProps {
@@ -11,6 +10,9 @@ interface UseAvailabilityProps {
  * @deprecated Use useAvailabilityCheck instead
  */
 export const useAvailability = (props: UseAvailabilityProps) => {
+  console.error('‼️ [Debug] useAvailability HOOK EJECUTADO!');
+  alert('‼️ [Debug] useAvailability HOOK EJECUTADO!');
+  console.log('⚠️ [DEPRECATED Hook] useAvailability está siendo llamado. Pila de llamadas (stack trace):', new Error().stack);
   // Crear instancia de useAvailabilityCheck con valores por defecto
   // para mantener compatibilidad con el código existente
   const dummyDate = new Date();

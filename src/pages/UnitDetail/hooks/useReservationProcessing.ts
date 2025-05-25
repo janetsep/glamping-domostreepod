@@ -1,4 +1,3 @@
-
 import { clearAllToasts } from "@/hooks/use-toast";
 import { toast } from "sonner";
 
@@ -14,6 +13,7 @@ type ReservationState = {
   createReservation: any;
   redirectToWebpay: any;
   setIsProcessingPayment: (isProcessing: boolean) => void;
+  refetchAvailability: () => void;
 };
 
 export const useReservationProcessing = (state: ReservationState) => {
@@ -32,28 +32,26 @@ export const useReservationProcessing = (state: ReservationState) => {
       const activityIds = state.selectedActivities.map(a => a.id);
       const packageIds = state.selectedPackages.map(p => p.id);
       
-      const reservations = [];
-      for (let i = 0; i < requiredDomos; i++) {
-        const individualQuotePrice = state.quote.totalPrice / requiredDomos;
-        
-        const reservation = await state.createReservation(
-          state.displayUnit.id,
-          state.startDate,
-          state.endDate,
-          Math.ceil(state.guests / requiredDomos),
-          individualQuotePrice,
-          'webpay',
-          i === 0 ? activityIds : [],
-          i === 0 ? packageIds : []
-        );
-        
-        if (reservation) {
-          reservations.push(reservation);
-        }
-      }
+      // CORRECCIÓN: Crear UNA sola reserva con la cantidad total de huéspedes y precio total.
+      // La lógica de asociar a domos específicos debe ocurrir en el backend/AvailabilityManager.
+      const reservation = await state.createReservation(
+        state.displayUnit.id,
+        state.startDate,
+        state.endDate,
+        state.guests, // Pasar el total de huéspedes
+        state.quote.totalPrice, // Pasar el precio total
+        'webpay',
+        activityIds,
+        packageIds,
+        requiredDomos // Asegurarse de pasar requiredDomos
+      );
       
-      if (reservations.length > 0) {
-        state.redirectToWebpay(reservations[0].id, state.quote.totalPrice);
+      // Redirigir a Webpay si la reserva fue creada exitosamente
+      if (reservation) {
+        state.redirectToWebpay(reservation.reservationId, reservation.amount);
+        // Forzar un refresco de los datos de disponibilidad después de crear la reserva
+        // Esto actualizará el calendario y otras vistas que usen estos datos.
+        state.refetchAvailability();
       }
     } catch (error) {
       console.error("Error al confirmar reserva:", error);

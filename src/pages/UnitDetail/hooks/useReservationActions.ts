@@ -1,4 +1,3 @@
-
 import { clearAllToasts } from "@/hooks/use-toast";
 import { toast } from "sonner";
 import { Activity, ThemedPackage } from "@/types";
@@ -15,7 +14,7 @@ type ReservationState = {
   requiredDomos?: number;
   isAvailable: boolean | null;
   setIsAvailable: (isAvailable: boolean) => void;
-  checkAvailability: (unitId: string, checkIn: Date, checkOut: Date) => Promise<boolean>;
+  checkAvailability: (guests: number, startDate: Date, endDate: Date, forceRefresh?: boolean) => Promise<{ isAvailable: boolean; availableDomes: number; requiredDomos: number; error?: string }>;
   calculateQuote: any;
   setQuote: (quote: any) => void;
   setShowQuote: (show: boolean) => void;

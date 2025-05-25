@@ -1,4 +1,3 @@
-
 import { clearAllToasts } from "@/hooks/use-toast";
 import { toast } from "sonner";
 import { QuoteState } from "./useQuoteBase";
@@ -8,12 +7,6 @@ export const useQuoteCalculation = (state: QuoteState) => {
     if (!state.startDate || !state.endDate || !state.displayUnit) return;
 
     const requiredDomos = state.requiredDomos || 1;
-
-    // Verificamos explícitamente si hay suficientes domos disponibles
-    if (state.availableDomos !== undefined && requiredDomos > state.availableDomos) {
-      toast.error(`Solo hay ${state.availableDomos} domos disponibles para las fechas seleccionadas, pero se necesitan ${requiredDomos} domos para ${state.guests} huéspedes.`);
-      return;
-    }
 
     let quoteDetails = state.calculateQuote(
       state.displayUnit.prices,

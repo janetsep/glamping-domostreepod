@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import { toast } from 'sonner'; // Cambiado a 'sonner' que es la biblioteca de toast utilizada en el proyecto
 import { useDateAvailabilityChecker } from '../calendar/useDateAvailabilityChecker';
@@ -15,13 +14,18 @@ export const useAvailabilityCheck = (
   requiredDomos: number,
   reservations: any[]
 ) => {
+  console.error('‼️ [Debug] useAvailabilityCheck (src/hooks/reservations) HOOK EJECUTADO con reservas:', reservations, 'Pila de llamadas:', new Error().stack);
+  console.log('🔍 [useAvailabilityCheck] Hook inicializado con reservas:', reservations);
   const [isAvailable, setIsAvailable] = useState<boolean>(false);
   const [availableDomos, setAvailableDomos] = useState<number | undefined>(undefined);
   const [isChecking, setIsChecking] = useState<boolean>(false);
   const [partialAvailability, setPartialAvailability] = useState<boolean>(false);
   
   const { isDateRangeAvailable } = useDateAvailabilityChecker(reservations);
+  console.log('🔍 [useAvailabilityCheck] useDateAvailabilityChecker instancia obtenida con reservas:', reservations);
   
+  // Comentamos temporalmente este useEffect completo para aislar la fuente de las verificaciones incorrectas
+  /*
   useEffect(() => {
     const checkAvailability = async () => {
       if (!checkInDate || !checkOutDate || requiredDomos <= 0) {
@@ -48,67 +52,28 @@ export const useAvailabilityCheck = (
         if (availableUnits > 0 && availableUnits < requiredDomos) {
           setPartialAvailability(true);
           setIsAvailable(false); // No hay suficientes domos
-          
-          toast.warning(
-            `Solo hay ${availableUnits} de ${TOTAL_DOMOS} domos disponibles. Necesitas ${requiredDomos} para tu reserva.`, 
-            { duration: 6000 }
-          );
         } else {
           setPartialAvailability(false);
-          
           if (availableUnits >= requiredDomos) {
             setIsAvailable(true);
-            toast.success(`Tenemos disponibilidad para los ${requiredDomos} domos necesarios (${availableUnits} disponibles).`);
           } else {
             setIsAvailable(false);
             toast.error(`No hay domos disponibles para las fechas seleccionadas.`);
           }
         }
-        
-        console.log(`Availability check results:
-          - Check-in: ${checkInDate.toISOString().split('T')[0]}
-          - Check-out: ${checkOutDate.toISOString().split('T')[0]}
-          - Required domos: ${requiredDomos}
-          - Available domos: ${availableUnits}
-          - isAvailable: ${isAvailable}
-          - partialAvailability: ${partialAvailability}`);
-        
       } catch (error) {
-        console.error('Error checking availability:', error);
+        console.error('Error al verificar la disponibilidad:', error);
         setIsAvailable(false);
-        toast.error('Error al verificar disponibilidad. Por favor, inténtalo de nuevo.');
+        setAvailableDomos(undefined);
+        setPartialAvailability(false);
       } finally {
         setIsChecking(false);
       }
     };
-    
+
     checkAvailability();
-  }, [checkInDate, checkOutDate, requiredDomos, reservations]);
+  }, [checkInDate, checkOutDate, requiredDomos, reservations, isDateRangeAvailable]);
+  */
 
-  // Añadir funciones necesarias para resolver los errores
-  const checkAvailability = async (unitId: string, checkIn: Date, checkOut: Date) => {
-    try {
-      const { isAvailable } = await checkGeneralAvailability(checkIn, checkOut, 1);
-      return isAvailable;
-    } catch (error) {
-      console.error('Error en checkAvailability:', error);
-      return false;
-    }
-  };
-
-  const checkGeneralDomosAvailability = async (checkIn: Date, checkOut: Date, required: number = 1) => {
-    return checkGeneralAvailability(checkIn, checkOut, required);
-  };
-  
-  return {
-    isAvailable,
-    availableDomos,
-    isChecking,
-    partialAvailability,
-    setIsAvailable,
-    setAvailableDomos,
-    setPartialAvailability,
-    checkAvailability,
-    checkGeneralDomosAvailability
-  };
+  return { isAvailable, availableDomos, isChecking, partialAvailability };
 };

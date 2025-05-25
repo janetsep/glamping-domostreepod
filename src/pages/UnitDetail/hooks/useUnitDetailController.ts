@@ -58,20 +58,6 @@ export const useUnitDetailController = (unitId: string | undefined, searchParams
       return;
     }
     
-    // CORRECCIÓN: Volver a validar disponibilidad antes de confirmar
-    if (state.requiredDomos !== undefined) {
-      const { isAvailable, availableUnits } = await checkGeneralAvailability(
-        state.startDate,
-        state.endDate,
-        state.requiredDomos
-      );
-      
-      if (!isAvailable) {
-        toast.error(`No hay suficiente disponibilidad. Solo hay ${availableUnits} de 4 domos disponibles.`);
-        return;
-      }
-    }
-    
     // Continuar con la confirmación
     actions.handleConfirmReservation();
   };

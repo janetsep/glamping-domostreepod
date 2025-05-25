@@ -1,4 +1,3 @@
-
 import { ReservationSummary } from "@/components/unit-detail/ReservationSummary";
 import { Activity, ThemedPackage } from "@/types";
 
@@ -36,28 +35,31 @@ export const QuoteSummary = ({
 
   return (
     <>
-      <ReservationSummary
-        quote={{
-          ...quote,
-          domoDistribution: domoDistribution
-        }}
-        isAvailable={isAvailable}
-        isLoading={isProcessingPayment}
-        onReserve={onNewQuote}
-        onConfirm={onConfirmReservation}
-        buttonText={isAvailable ? "Aceptar cotización" : "Nueva cotización"}
-        selectedActivities={selectedActivities}
-        selectedPackages={selectedPackages}
-        hasSelectedExtras={selectedActivities.length > 0 || selectedPackages.length > 0}
-      />
-      
-      <div className="text-sm text-muted-foreground mt-4">
-        <p>Fechas seleccionadas:</p>
-        <p>Entrada: {startDate?.toLocaleDateString()}</p>
-        <p>Salida: {endDate?.toLocaleDateString()}</p>
-        <p>Huéspedes totales: {guests}</p>
-        <p>Domos necesarios: {requiredDomos}</p>
-      </div>
+      {quote && (
+        <ReservationSummary
+          quote={{
+            ...quote,
+            domoDistribution: domoDistribution
+          }}
+          isAvailable={isAvailable}
+          isLoading={isProcessingPayment}
+          onReserve={onNewQuote}
+          onConfirm={onConfirmReservation}
+          buttonText={isAvailable ? "Pagar ahora" : "Nueva cotización"}
+          selectedActivities={selectedActivities}
+          selectedPackages={selectedPackages}
+          hasSelectedExtras={selectedActivities.length > 0 || selectedPackages.length > 0}
+        />
+      )}
+      {quote && (
+        <div className="text-sm text-muted-foreground mt-4">
+          <p>Fechas seleccionadas:</p>
+          <p>Entrada: {startDate?.toLocaleDateString()}</p>
+          <p>Salida: {endDate?.toLocaleDateString()}</p>
+          <p>Huéspedes totales: {guests}</p>
+          <p>Domos necesarios: {requiredDomos}</p>
+        </div>
+      )}
     </>
   );
 };
