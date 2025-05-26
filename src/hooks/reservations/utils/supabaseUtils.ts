@@ -1,86 +1,128 @@
 import { supabase } from '@/lib/supabase';
 import { SUPABASE_URL, SUPABASE_ANON_KEY } from '@/lib/constants';
+import { generateReservationCode } from './reservationUtils';
+
+interface ClientInfo {
+  name?: string;
+  email?: string;
+  phone?: string;
+}
+
+interface UnitCapacity {
+  unitId: string;
+  capacity: number;
+}
 
 /**
- * Creates a new reservation in the database
+ * Crea una nueva reserva en la base de datos con distribución de huéspedes y precios
  */
 export const createReservationEntry = async (
   unitIdsToAssign: string[],
   checkIn: Date,
   checkOut: Date,
-  guests: number,
+  totalGuests: number,
   totalPrice: number,
   paymentMethod: string = 'webpay',
   selectedActivities: string[] = [],
-  selectedPackages: string[] = []
+  selectedPackages: string[] = [],
+  clientInfo?: ClientInfo,
+  unitCapacities?: UnitCapacity[]
 ) => {
   try {
-    // First attempt with Supabase client
-    try {
-      const { data, error } = await supabase
-        .from('reservations')
-        .insert(unitIdsToAssign.map(unitId => ({
-          unit_id: unitId,
-          check_in: checkIn.toISOString(),
-          check_out: checkOut.toISOString(),
-          guests: Math.ceil(guests / unitIdsToAssign.length),
-          total_price: totalPrice / unitIdsToAssign.length,
-          status: 'pending',
-          payment_method: paymentMethod,
-          selected_activities: selectedActivities,
-          selected_packages: selectedPackages,
-          payment_details: {
-            created_at: new Date().toISOString()
-          }
-        })))
-        .select();
-      
-      if (error) {
-        console.error('Error con cliente Supabase:', error);
-        throw error;
-      }
-      
-      console.log('Reserva creada con cliente Supabase:', data);
-      return data;
-    } catch (supabaseError) {
-      // Fallback to direct API call
-      console.log('Intentando crear reserva con fetch directo');
-      const response = await fetch(`${SUPABASE_URL}/rest/v1/reservations`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'apikey': SUPABASE_ANON_KEY,
-          'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
-          'Prefer': 'return=representation'
-        },
-        body: JSON.stringify(unitIdsToAssign.map(unitId => ({
-          unit_id: unitId,
-          check_in: checkIn.toISOString(),
-          check_out: checkOut.toISOString(),
-          guests: Math.ceil(guests / unitIdsToAssign.length),
-          total_price: totalPrice / unitIdsToAssign.length,
-          status: 'pending',
-          payment_method: paymentMethod,
-          selected_activities: selectedActivities,
-          selected_packages: selectedPackages,
-          payment_details: {
-            created_at: new Date().toISOString()
-          }
-        })))
-      });
+    // Generar código de reserva único una sola vez para todas las reservas asociadas
+    const reservationCode = await generateReservationCode();
+    console.log('Código de reserva generado:', reservationCode);
 
-      if (!response.ok) {
-        const errorText = await response.text();
-        console.error('Error al crear reserva con fetch:', errorText);
-        throw new Error(`Error al crear reserva: ${response.status} ${errorText}`);
+    // Obtener capacidades de los domos si no se proporcionan
+    if (!unitCapacities) {
+      const { data: units, error: unitsError } = await supabase
+        .from('glamping_units')
+        .select('id, max_guests')
+        .in('id', unitIdsToAssign);
+
+      if (unitsError) {
+        console.error('Error al obtener capacidades de unidades:', unitsError);
+        throw unitsError;
       }
 
-      const data = await response.json();
-      console.log('Reserva creada con fetch directo:', data);
-      return data;
+      unitCapacities = units.map(unit => ({
+        unitId: unit.id,
+        capacity: unit.max_guests
+      }));
     }
+
+    // Ordenar unidades por capacidad (de mayor a menor)
+    unitCapacities.sort((a, b) => b.capacity - a.capacity);
+
+    // Distribuir huéspedes respetando la capacidad máxima de cada domo
+    let remainingGuests = totalGuests;
+    let remainingPrice = totalPrice;
+    const reservationsToCreate = [];
+
+    for (let i = 0; i < unitCapacities.length; i++) {
+      const unit = unitCapacities[i];
+      const isLastUnit = i === unitCapacities.length - 1;
+      
+      // Calcular huéspedes para esta unidad
+      let unitGuests: number;
+      if (isLastUnit) {
+        // Última unidad: asignar los huéspedes restantes
+        unitGuests = remainingGuests;
+      } else {
+        // Distribuir respetando la capacidad máxima del domo
+        unitGuests = Math.min(unit.capacity, remainingGuests);
+      }
+
+      // Si no hay más huéspedes para asignar, no crear más reservas
+      if (unitGuests <= 0) break;
+
+      // Calcular precio proporcional basado en la capacidad
+      const unitPrice = Math.round((unitGuests / totalGuests) * totalPrice);
+      remainingPrice -= unitPrice;
+      remainingGuests -= unitGuests;
+
+      reservationsToCreate.push({
+        unit_id: unit.unitId,
+        check_in: checkIn.toISOString(),
+        check_out: checkOut.toISOString(),
+        guests: unitGuests,
+        total_price: unitPrice,
+        status: 'pending',
+        payment_method: paymentMethod,
+        selected_activities: selectedActivities,
+        selected_packages: selectedPackages,
+        reservation_code: reservationCode, // Mismo código para todas las reservas asociadas
+        client_name: clientInfo?.name,
+        client_email: clientInfo?.email,
+        client_phone: clientInfo?.phone,
+        payment_details: {
+          created_at: new Date().toISOString()
+        }
+      });
+    }
+
+    // Ajustar el precio de la última unidad para compensar errores de redondeo
+    if (reservationsToCreate.length > 0) {
+      reservationsToCreate[reservationsToCreate.length - 1].total_price += remainingPrice;
+    }
+
+    console.log('Reservas a crear:', JSON.stringify(reservationsToCreate, null, 2));
+
+    // Crear todas las reservas en una sola transacción
+    const { data, error } = await supabase
+      .from('reservations')
+      .insert(reservationsToCreate)
+      .select();
+    
+    if (error) {
+      console.error('Error al crear reservas:', error);
+      throw error;
+    }
+    
+    console.log('Reservas creadas:', data);
+    return data;
   } catch (error) {
-    console.error('Error creating reservation:', error);
+    console.error('Error creating reservations:', error);
     throw error;
   }
 };
@@ -228,6 +270,30 @@ export const getAllConfirmedReservations = async () => {
     return data;
   } catch (error) {
     console.error('Error en getAllConfirmedReservations:', error);
+    throw error;
+  }
+};
+
+/**
+ * Actualiza el estado de todas las reservas asociadas a un código de reserva
+ */
+export const updateReservationStatus = async (reservationCode: string, status: 'pending' | 'confirmed' | 'cancelled') => {
+  try {
+    const { data, error } = await supabase
+      .from('reservations')
+      .update({ status })
+      .eq('reservation_code', reservationCode)
+      .select();
+
+    if (error) {
+      console.error('Error al actualizar estado de reservas:', error);
+      throw error;
+    }
+
+    console.log(`Reservas actualizadas a estado ${status}:`, data);
+    return data;
+  } catch (error) {
+    console.error('Error updating reservation status:', error);
     throw error;
   }
 };
