@@ -118,7 +118,14 @@ export class AvailabilityManager {
     forceRefresh: boolean = false
   ): Promise<{ isAvailable: boolean; availableDomes: number; requiredDomes: number; error?: string; availableUnitIds: string[] }> {
     console.log('🔍 [AvailabilityManager] checkAvailability - INICIO');
-    console.log('🔍 [AvailabilityManager] Parámetros:', { guests, dateRange, forceRefresh });
+    console.log('🔍 [AvailabilityManager] Parámetros:', { 
+      guests, 
+      dateRange: {
+        start: dateRange.start.toISOString(),
+        end: dateRange.end.toISOString()
+      }, 
+      forceRefresh 
+    });
     
     const cacheKey = this.getCacheKey(`all`, dateRange) + `-guests-${guests}`;
     const now = Date.now();
@@ -127,111 +134,143 @@ export class AvailabilityManager {
     if (!forceRefresh) {
       const cachedData = availabilityCache.get(cacheKey);
       if (cachedData && (now - cachedData.timestamp) < CACHE_DURATION) {
-        console.log('🔍 [AvailabilityManager] Usando datos de caché');
-        // Verificar si los datos en caché tienen la nueva propiedad availableUnitIds
+        console.log('🔍 [AvailabilityManager] Usando datos de caché:', cachedData.data);
         if ('availableUnitIds' in cachedData.data && Array.isArray(cachedData.data.availableUnitIds)) {
-          return cachedData.data; // Usar caché si es válida y tiene la nueva estructura
+          return cachedData.data;
         } else {
-          console.log('🔍 [AvailabilityManager] Caché válida encontrada, pero falta availableUnitIds o la estructura es antigua. Forzando refresco.');
-          // Invalidar esta entrada de caché o simplemente no usarla y forzar el refresco.
-          // Al no retornar aquí, el código continuará y realizará la consulta a la BD.
-          forceRefresh = true; // Asegurar que la consulta a la BD se realice
+          console.log('🔍 [AvailabilityManager] Caché inválida, forzando refresco');
+          forceRefresh = true;
         }
       }
     }
 
-    if (!forceRefresh) { // Re-check forceRefresh after potential change
-       console.log('🔍 [AvailabilityManager] No hay caché válida o forzando refresco');
-    } else {
-        console.log('🔍 [AvailabilityManager] Forzando refresco después de revisar caché.');
-    }
-
-    // Validar fechas
-    const validation = this.validateDateRange(dateRange.start, dateRange.end);
-    if (!validation.isValid) {
-      console.log('❌ [AvailabilityManager] Validación de fechas fallida:', validation.error);
-      return { isAvailable: false, availableDomes: 0, requiredDomes: 0, error: validation.error, availableUnitIds: [] };
-    }
-    console.log('✅ [AvailabilityManager] Validación de fechas exitosa');
-
     try {
       // 1. Obtener todos los domos
-      console.log('🔍 [AvailabilityManager] Consultando todos los glamping_units...');
+      console.log('🔍 [AvailabilityManager] Consultando glamping_units...');
       const { data: units, error: unitError } = await supabase
         .from('glamping_units')
-        .select('id');
+        .select('id, max_guests, name')
+        .order('max_guests', { ascending: false });
+
       if (unitError) {
         console.error('❌ [AvailabilityManager] Error al obtener unidades:', unitError);
         throw unitError;
       }
+
       if (!units || units.length === 0) {
-        console.log('[DEBUG] No hay domos registrados.');
+        console.error('❌ [AvailabilityManager] No hay domos registrados');
         return { isAvailable: false, availableDomes: 0, requiredDomes: 0, error: 'No hay domos registrados.', availableUnitIds: [] };
       }
-      const allUnitIds = units.map((u: any) => String(u.id));
-      console.log('✅ [AvailabilityManager] Unidades obtenidas. allUnitIds:', allUnitIds);
 
-      // 2. Obtener todas las reservas cruzadas para esos domos
-      console.log('🔍 [AvailabilityManager] Consultando reservas cruzadas...');
-      console.log('🔍 [AvailabilityManager] Rango de consulta:', { start: dateRange.start.toISOString(), end: dateRange.end.toISOString() });
+      console.log('✅ [AvailabilityManager] Unidades obtenidas:', {
+        total: units.length,
+        unidades: units.map(u => ({ 
+          id: u.id, 
+          nombre: u.name,
+          capacidad: u.max_guests 
+        }))
+      });
+
+      // 2. Obtener reservas solapadas
+      console.log('🔍 [AvailabilityManager] Consultando reservas solapadas...');
       const { data: reservations, error } = await supabase
         .from('reservations')
-        .select('unit_id, check_in, check_out, status')
-        .in('unit_id', allUnitIds)
+        .select('unit_id, check_in, check_out, status, reservation_code')
+        .in('unit_id', units.map(u => u.id))
         .or(`and(check_in.lt.${dateRange.end.toISOString()},check_out.gt.${dateRange.start.toISOString()})`)
         .eq('status', 'confirmed');
+
       if (error) {
         console.error('❌ [AvailabilityManager] Error al obtener reservas:', error);
         throw error;
       }
-      console.log('✅ [AvailabilityManager] Reservas obtenidas. reservations:', reservations);
+
+      console.log('📊 [AvailabilityManager] Reservas encontradas:', {
+        total: reservations?.length || 0,
+        reservas: reservations?.map(r => ({
+          unidad: r.unit_id,
+          checkIn: r.check_in,
+          checkOut: r.check_out,
+          estado: r.status,
+          codigo: r.reservation_code
+        }))
+      });
 
       // 3. Filtrar domos ocupados
-      const uniqueReservedUnitIds = new Set(reservations ? reservations.map((r: any) => String(r.unit_id)).filter(id => id !== 'null' && id !== 'undefined') : []);
-      const reservedDomosCount = uniqueReservedUnitIds.size;
+      const uniqueReservedUnitIds = new Set(
+        reservations
+          ?.filter(r => r.unit_id !== null && r.unit_id !== undefined)
+          .map(r => String(r.unit_id)) || []
+      );
 
-      console.log('🔍 [AvailabilityManager] uniqueReservedUnitIds (domos únicos reservados en rango):', Array.from(uniqueReservedUnitIds));
-      console.log('🔍 [AvailabilityManager] reservedDomosCount (cantidad de domos únicos reservados):', reservedDomosCount);
+      console.log('📊 [AvailabilityManager] Análisis de disponibilidad:', {
+        totalUnidades: units.length,
+        unidadesReservadas: uniqueReservedUnitIds.size,
+        unidadesDisponibles: units.length - uniqueReservedUnitIds.size,
+        unidadesReservadasIds: Array.from(uniqueReservedUnitIds),
+        unidadesDisponiblesIds: units
+          .map(u => u.id)
+          .filter(id => !uniqueReservedUnitIds.has(String(id)))
+      });
 
       // Calcular domos disponibles
-      const availableDomes = allUnitIds.length - reservedDomosCount;
-      console.log('🔍 [AvailabilityManager] availableDomes (total domos - domos únicos reservados):', availableDomes);
-
-      // Identificar los IDs de los domos disponibles
-      const availableUnitIds = allUnitIds.filter((id: string) => !uniqueReservedUnitIds.has(id));
-      console.log('🔍 [AvailabilityManager] availableUnitIds (domos REALMENTE disponibles): ', availableUnitIds);
+      const availableDomes = units.length - uniqueReservedUnitIds.size;
+      const availableUnitIds = units
+        .map(u => u.id)
+        .filter(id => !uniqueReservedUnitIds.has(String(id)));
 
       // 4. Calcular domos requeridos
       const requiredDomes = Math.ceil(guests / 4);
-      console.log('🔍 [AvailabilityManager] requiredDomes (basado en huéspedes):', requiredDomes);
-      console.log('🔍 [AvailabilityManager] Comparación: requiredDomes:', requiredDomes, 'availableDomes:', availableDomes);
+      console.log('📊 [AvailabilityManager] Cálculo de domos requeridos:', {
+        huéspedes: guests,
+        domosRequeridos: requiredDomes,
+        domosDisponibles: availableDomes,
+        unidadesDisponiblesIds: availableUnitIds,
+        capacidadPorDomo: 4
+      });
 
-      // 5. Verificar si hay suficientes domos
+      // 5. Verificar disponibilidad
       const isAvailable = availableDomes >= requiredDomes;
 
       // Actualizar caché
+      const result = { 
+        isAvailable, 
+        availableDomes, 
+        requiredDomes, 
+        availableUnitIds 
+      };
+      
       availabilityCache.set(cacheKey, {
-        data: { isAvailable, availableDomes, requiredDomes, availableUnitIds }, // Asegurar que availableUnitIds se guarde en caché
+        data: result,
         timestamp: now
       });
-      console.log('✅ [AvailabilityManager] Resultado final (antes de la validación de suficiencia):', { isAvailable, availableDomes, requiredDomes });
+
+      console.log('✅ [AvailabilityManager] Resultado final:', {
+        ...result,
+        fechas: {
+          checkIn: dateRange.start.toISOString(),
+          checkOut: dateRange.end.toISOString()
+        }
+      });
 
       if (!isAvailable) {
-        console.log('❌ [AvailabilityManager] No hay suficientes domos disponibles para la reserva.');
         return {
-          isAvailable: false,
-          availableDomes,
-          requiredDomes,
+          ...result,
           error: `No hay suficientes domos disponibles. Se necesitan ${requiredDomes} domo${requiredDomes > 1 ? 's' : ''} para ${guests} huésped${guests > 1 ? 'es' : ''}, pero solo hay ${availableDomes} disponible${availableDomes > 1 ? 's' : ''}.`,
-          availableUnitIds: [] // Si no hay suficiente disponibilidad, no hay domos disponibles para la reserva
+          availableUnitIds: []
         };
       }
 
-      console.log('✅ [AvailabilityManager] Suficientes domos disponibles.');
-      return { isAvailable, availableDomes, requiredDomes, availableUnitIds: availableUnitIds }; // Retornar los IDs de domos disponibles calculados
+      return result;
     } catch (error) {
-      console.error('❌ [AvailabilityManager] Error general en checkAvailability:', error);
-      return { isAvailable: false, availableDomes: 0, requiredDomes: 0, error: 'Error al verificar disponibilidad', availableUnitIds: [] };
+      console.error('❌ [AvailabilityManager] Error general:', error);
+      return { 
+        isAvailable: false, 
+        availableDomes: 0, 
+        requiredDomes: 0, 
+        error: 'Error al verificar disponibilidad', 
+        availableUnitIds: [] 
+      };
     }
   }
 

@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 import { TransactionResult, confirmTransaction, updateReservationIfNeeded } from '@/services/webpay';
 import { useMutateReservationStatus } from '@/hooks/reservations/useReservationUpdate';
@@ -25,163 +24,130 @@ export const useTransactionProcessor = () => {
   const { updateReservation } = useMutateReservationStatus();
 
   const processTransaction = async (token: string) => {
+    console.log('🔄 [processTransaction] Iniciando procesamiento de transacción con token:', token);
+    setState(prev => ({ ...prev, isLoading: true, error: null }));
+
     try {
-      if (!token) {
-        // Clear loading state if there's no token, likely a direct page load
-        setState(prev => ({ ...prev, isLoading: false, error: 'No se encontró el token de la transacción' }));
-        throw new Error('No se encontró el token de la transacción');
-      }
+      // Confirmar la transacción con WebPay
+      console.log('🔄 [processTransaction] Confirmando transacción con WebPay...');
+      const data = await confirmTransaction(token);
+      console.log('✅ [processTransaction] Transacción confirmada:', JSON.stringify(data, null, 2));
 
-      // Get stored data
-      const isPackageUnit = localStorage.getItem('is_package_unit') === 'true';
-      const storedReservationId = localStorage.getItem('current_reservation_id');
-      const unitId = localStorage.getItem('current_unit_id');
-      
-      console.log('Processing transaction with data:', {
-        token,
-        isPackageUnit,
-        storedReservationId,
-        unitId
-      });
-
-      if (storedReservationId) {
-        setState(prev => ({ ...prev, reservationId: storedReservationId, isPackage: isPackageUnit }));
-        console.log(`Found reservation ID in localStorage: ${storedReservationId}`);
-      }
-
-      // Get client information
-      const clientInfo = {
-        name: localStorage.getItem('client_name'),
-        email: localStorage.getItem('client_email'),
-        phone: localStorage.getItem('client_phone')
-      };
-      
-      console.log('Retrieved client info:', clientInfo);
-
-      try {
-        // Timeout to cancel the request if it takes too long
-        const timeoutPromise = new Promise((_, reject) => {
-          setTimeout(() => reject(new Error('La solicitud ha caducado')), 20000);
-        });
-
-        // Get the SUPABASE_ANON_KEY from environment or constants
-        const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY || '';
+      // Update reservation status if payment was successful
+      if (data.response_code === 0 && data.reservation_id) {
+        console.log(`🔄 [processTransaction] Actualizando reserva ${data.reservation_id} a estado confirmed`);
         
-        // Call edge function to confirm payment
-        const responsePromise = fetch('https://gtxjfmvnzrsuaxryffnt.supabase.co/functions/v1/webpay-confirm', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${supabaseAnonKey}`
-          },
-          body: JSON.stringify({
-            token_ws: token,
-            is_package_unit: isPackageUnit,
-            reservation_id: storedReservationId,
-            client_info: clientInfo
-          })
-        });
-        
-        // Race between the request and the timeout
-        const response = await Promise.race([responsePromise, timeoutPromise]) as Response;
+        try {
+          // Obtener el código de reserva primero
+          console.log('🔍 [processTransaction] Buscando código de reserva...');
+          const { data: primaryReservation, error: fetchError } = await supabase
+            .from('reservations')
+            .select('reservation_code, status')
+            .eq('id', data.reservation_id)
+            .single();
 
-        if (!response.ok) {
-          const errorData = await response.json();
-          console.error('Error response from edge function:', errorData);
-          
-          // Check if transaction was aborted
-          if (errorData.error?.includes('Transaction has an invalid finished state: aborted')) {
-            throw new Error('La transacción fue cancelada por el usuario o el banco');
+          if (fetchError) {
+            console.error('❌ [processTransaction] Error al obtener código de reserva:', fetchError);
+            throw new Error(`Error al obtener código de reserva: ${fetchError.message}`);
           }
-          
-          throw new Error(errorData.error || `Error HTTP: ${response.status}`);
-        }
 
-        const data = await response.json();
-        console.log('Transaction confirmed:', data);
-
-        // Update reservation status if payment was successful
-        if (data.response_code === 0 && data.reservation_id) {
-          console.log(`Updating reservation ${data.reservation_id} status to confirmed`);
-          
-          try {
-            // First attempt with updateReservation
-            const success = await updateReservation(data.reservation_id, 'confirmed', data);
-            
-            if (!success) {
-              console.warn('updateReservation failed, trying direct update');
-              
-              // Try direct update
-              const { error: updateError } = await supabase
-                .from('reservations')
-                .update({ 
-                  status: 'confirmed',
-                  payment_details: data,
-                  updated_at: new Date().toISOString()
-                })
-                .eq('id', data.reservation_id);
-              
-              if (updateError) {
-                console.error('Direct update failed:', updateError);
-                throw updateError;
-              }
-            }
-            
-            // Verify the update
-            const { data: verifyData, error: verifyError } = await supabase
-              .from('reservations')
-              .select('status, payment_details')
-              .eq('id', data.reservation_id)
-              .single();
-            
-            if (verifyError) {
-              console.error('Verification failed:', verifyError);
-            } else {
-              console.log('Verification successful:', verifyData);
-            }
-            
-          } catch (updateError) {
-            console.error('Error updating reservation status:', updateError);
+          if (!primaryReservation?.reservation_code) {
+            console.error('❌ [processTransaction] No se encontró el código de reserva');
+            throw new Error('No se encontró el código de reserva');
           }
+
+          console.log(`✅ [processTransaction] Código de reserva encontrado: ${primaryReservation.reservation_code}`);
+          console.log(`📊 [processTransaction] Estado actual: ${primaryReservation.status}`);
+
+          // Obtener todas las reservas asociadas antes de actualizar
+          console.log('🔍 [processTransaction] Buscando reservas asociadas...');
+          const { data: associatedReservations, error: fetchAssociatedError } = await supabase
+            .from('reservations')
+            .select('id, status, reservation_code')
+            .eq('reservation_code', primaryReservation.reservation_code);
+
+          if (fetchAssociatedError) {
+            console.error('❌ [processTransaction] Error al obtener reservas asociadas:', fetchAssociatedError);
+            throw new Error(`Error al obtener reservas asociadas: ${fetchAssociatedError.message}`);
+          }
+
+          console.log(`📊 [processTransaction] Reservas asociadas encontradas:`, associatedReservations);
+
+          // Actualizar todas las reservas con el mismo código
+          console.log('🔄 [processTransaction] Actualizando reservas...');
+          const { data: updateResult, error: updateError } = await supabase
+            .from('reservations')
+            .update({ 
+              status: 'confirmed',
+              payment_details: data,
+              updated_at: new Date().toISOString()
+            })
+            .eq('reservation_code', primaryReservation.reservation_code)
+            .select();
+
+          if (updateError) {
+            console.error('❌ [processTransaction] Error al actualizar reservas:', updateError);
+            throw new Error(`Error al actualizar reservas: ${updateError.message}`);
+          }
+
+          console.log('✅ [processTransaction] Resultado de la actualización:', updateResult);
+
+          // Verificar que todas las reservas se actualizaron
+          console.log('🔍 [processTransaction] Verificando actualización...');
+          const { data: verifyData, error: verifyError } = await supabase
+            .from('reservations')
+            .select('id, status, reservation_code')
+            .eq('reservation_code', primaryReservation.reservation_code);
+
+          if (verifyError) {
+            console.error('❌ [processTransaction] Error al verificar actualización:', verifyError);
+            throw new Error(`Error al verificar actualización: ${verifyError.message}`);
+          }
+
+          const allConfirmed = verifyData?.every(r => r.status === 'confirmed');
+          console.log('📊 [processTransaction] Verificación final:', {
+            totalReservas: verifyData?.length,
+            todasConfirmadas: allConfirmed,
+            detalles: verifyData
+          });
+
+          if (!allConfirmed) {
+            const noConfirmadas = verifyData?.filter(r => r.status !== 'confirmed');
+            console.error('❌ [processTransaction] Reservas no actualizadas:', noConfirmadas);
+            throw new Error(`Algunas reservas no se actualizaron: ${JSON.stringify(noConfirmadas)}`);
+          }
+
+          console.log('✅ [processTransaction] Todas las reservas actualizadas correctamente');
+        } catch (updateError) {
+          console.error('❌ [processTransaction] Error en actualización:', updateError);
+          toast.error('Error al actualizar reservas', {
+            description: updateError instanceof Error ? updateError.message : 'Error desconocido'
+          });
+          throw updateError;
         }
-        
-        setState(prev => ({ 
-          ...prev, 
-          isLoading: false, 
-          transactionResult: data 
-        }));
-        
-        return data;
-        
-      } catch (error: any) {
-        console.error('Error processing transaction:', error);
-        throw error;
-      }
-    } catch (err) {
-      console.error('Final error in processTransaction:', err);
-      const errorMessage = err instanceof Error ? err.message : 'Error desconocido';
-      
-      // Set a more user-friendly error message
-      let userErrorMessage = 'Error en la transacción';
-      if (errorMessage.includes('cancelada por el usuario')) {
-        userErrorMessage = 'La transacción fue cancelada';
-      } else if (errorMessage.includes('422')) {
-        userErrorMessage = 'La transacción no pudo ser completada';
-      } else if (errorMessage.includes('caducado')) {
-        userErrorMessage = 'La solicitud ha caducado';
+      } else {
+        console.log('⚠️ [processTransaction] Pago no exitoso o sin ID de reserva:', data);
       }
       
       setState(prev => ({ 
         ...prev, 
         isLoading: false, 
-        error: errorMessage 
+        transactionResult: data 
       }));
       
-      toast.error(userErrorMessage, {
-        description: errorMessage,
+      return data;
+    } catch (error) {
+      console.error('❌ [processTransaction] Error general:', error);
+      const errorMessage = error instanceof Error ? error.message : 'Error desconocido';
+      setState(prev => ({ 
+        ...prev, 
+        isLoading: false, 
+        error: errorMessage
+      }));
+      toast.error('Error en la transacción', {
+        description: errorMessage
       });
-      
-      return null;
+      throw error;
     }
   };
 

@@ -1,4 +1,3 @@
-
 // Handle reservation status updates and verification
 import { WebPayResponse } from "../types.ts";
 import { 
@@ -6,92 +5,120 @@ import {
   updatePaymentDetails 
 } from "./reservationUpdates.ts";
 import { processClientInfo } from "./clientInfoProcessor.ts";
+import { supabase } from "../lib/supabase.ts";
+import { TransactionResult } from "../types.ts";
 
 export async function updateReservationWithPaymentResult(
-  supabaseUrl: string,
-  supabaseKey: string,
   reservationId: string,
-  responseData: WebPayResponse,
-  clientInfo?: { name?: string; email?: string; phone?: string }
+  paymentResult: TransactionResult
 ): Promise<boolean> {
+  console.log(`🔄 [updateReservationWithPaymentResult] Iniciando actualización para reserva ${reservationId}`);
+  console.log('📝 Datos de pago:', JSON.stringify(paymentResult, null, 2));
+  
+  if (paymentResult.response_code !== 0) {
+    console.log('⚠️ [updateReservationWithPaymentResult] Pago no exitoso, no se actualiza estado');
+    return false;
+  }
+
   try {
-    // Actualizar estado de la reserva si el pago fue exitoso
-    if (responseData.response_code === 0) {
-      console.log(`Actualizando estado de reserva ${reservationId} a 'confirmed'`);
-      
-      // Primer intento de actualización
-      const updateSuccess = await updateReservationStatus(supabaseUrl, supabaseKey, reservationId, 'confirmed', responseData);
-      
-      if (updateSuccess) {
-        console.log(`Reserva ${reservationId} actualizada correctamente a 'confirmed'`);
-      } else {
-        console.error(`No se pudo actualizar la reserva ${reservationId}`);
-        
-        // Intentar actualizar nuevamente con un método alternativo
-        try {
-          console.log(`Intentando actualización alternativa para ${reservationId}`);
-          const directUpdateResponse = await fetch(`${supabaseUrl}/rest/v1/reservations?id=eq.${reservationId}`, {
-            method: 'PATCH',
-            headers: {
-              'Content-Type': 'application/json',
-              'Authorization': `Bearer ${supabaseKey}`,
-              'apikey': supabaseKey,
-              'Prefer': 'return=minimal'
-            },
-            body: JSON.stringify({
-              status: 'confirmed',
-              payment_details: responseData,
-              updated_at: new Date().toISOString()
-            })
-          });
-          
-          if (directUpdateResponse.ok) {
-            console.log(`Reserva ${reservationId} actualizada correctamente con método alternativo`);
-          } else {
-            console.error(`Error al actualizar reserva con método alternativo: ${await directUpdateResponse.text()}`);
-            
-            // Tercer intento con otro endpoint
-            console.log(`Intentando tercer método de actualización para ${reservationId}`);
-            const thirdAttemptResponse = await fetch(`${supabaseUrl}/rest/v1/rpc/update_reservation_status`, {
-              method: 'POST',
-              headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${supabaseKey}`,
-                'apikey': supabaseKey
-              },
-              body: JSON.stringify({
-                p_reservation_id: reservationId,
-                p_status: 'confirmed',
-                p_payment_details: responseData
-              })
-            });
-            
-            if (!thirdAttemptResponse.ok) {
-              console.error(`Error en tercer intento: ${await thirdAttemptResponse.text()}`);
-              return false;
-            } else {
-              console.log(`Reserva actualizada con tercer método`);
-            }
-          }
-        } catch (directUpdateError) {
-          console.error(`Error en actualización alternativa: ${directUpdateError}`);
-          return false;
-        }
-      }
-      
-      // Si hay información de cliente, actualizarla
-      if (clientInfo && (clientInfo.name || clientInfo.email || clientInfo.phone)) {
-        await processClientInfo(supabaseUrl, supabaseKey, reservationId, clientInfo);
-      }
-    } else {
-      // Actualizar con los detalles del pago fallido pero sin cambiar estado
-      console.log(`Actualizando detalles de pago para reserva ${reservationId} (pago fallido)`);
-      await updatePaymentDetails(supabaseUrl, supabaseKey, reservationId, responseData);
+    // Obtener el código de reserva primero
+    console.log('🔍 [updateReservationWithPaymentResult] Buscando código de reserva...');
+    const { data: primaryReservation, error: fetchError } = await supabase
+      .from('reservations')
+      .select('reservation_code, status')
+      .eq('id', reservationId)
+      .single();
+
+    if (fetchError) {
+      console.error('❌ [updateReservationWithPaymentResult] Error al obtener código de reserva:', fetchError);
+      return false;
     }
-    
+
+    if (!primaryReservation?.reservation_code) {
+      console.error('❌ [updateReservationWithPaymentResult] No se encontró el código de reserva');
+      return false;
+    }
+
+    console.log(`✅ [updateReservationWithPaymentResult] Código de reserva encontrado: ${primaryReservation.reservation_code}`);
+    console.log(`📊 [updateReservationWithPaymentResult] Estado actual: ${primaryReservation.status}`);
+
+    // Obtener todas las reservas asociadas antes de actualizar
+    console.log('🔍 [updateReservationWithPaymentResult] Buscando reservas asociadas...');
+    const { data: associatedReservations, error: fetchAssociatedError } = await supabase
+      .from('reservations')
+      .select('id, status, reservation_code')
+      .eq('reservation_code', primaryReservation.reservation_code);
+
+    if (fetchAssociatedError) {
+      console.error('❌ [updateReservationWithPaymentResult] Error al obtener reservas asociadas:', fetchAssociatedError);
+      return false;
+    }
+
+    console.log(`📊 [updateReservationWithPaymentResult] Reservas asociadas encontradas:`, associatedReservations);
+
+    // Intentar actualizar usando updateReservationStatus primero
+    console.log('🔄 [updateReservationWithPaymentResult] Actualizando reservas...');
+    const { data: updateResult, error: updateError } = await supabase
+      .from('reservations')
+      .update({ 
+        status: 'confirmed',
+        payment_details: paymentResult,
+        updated_at: new Date().toISOString()
+      })
+      .eq('reservation_code', primaryReservation.reservation_code)
+      .select();
+
+    if (updateError) {
+      console.error('❌ [updateReservationWithPaymentResult] Error en actualización principal:', updateError);
+      
+      // Intentar actualización directa como fallback
+      console.log('🔄 [updateReservationWithPaymentResult] Intentando actualización directa...');
+      const { error: directError } = await supabase
+        .from('reservations')
+        .update({ 
+          status: 'confirmed',
+          payment_details: paymentResult,
+          updated_at: new Date().toISOString()
+        })
+        .eq('reservation_code', primaryReservation.reservation_code);
+
+      if (directError) {
+        console.error('❌ [updateReservationWithPaymentResult] Error en actualización directa:', directError);
+        return false;
+      }
+    }
+
+    console.log('✅ [updateReservationWithPaymentResult] Resultado de la actualización:', updateResult);
+
+    // Verificar que todas las reservas se actualizaron
+    console.log('🔍 [updateReservationWithPaymentResult] Verificando actualización...');
+    const { data: verifyData, error: verifyError } = await supabase
+      .from('reservations')
+      .select('id, status, reservation_code')
+      .eq('reservation_code', primaryReservation.reservation_code);
+
+    if (verifyError) {
+      console.error('❌ [updateReservationWithPaymentResult] Error al verificar actualización:', verifyError);
+      return false;
+    }
+
+    const allConfirmed = verifyData?.every(r => r.status === 'confirmed');
+    console.log('📊 [updateReservationWithPaymentResult] Verificación final:', {
+      totalReservas: verifyData?.length,
+      todasConfirmadas: allConfirmed,
+      detalles: verifyData
+    });
+
+    if (!allConfirmed) {
+      const noConfirmadas = verifyData?.filter(r => r.status !== 'confirmed');
+      console.error('❌ [updateReservationWithPaymentResult] Reservas no actualizadas:', noConfirmadas);
+      return false;
+    }
+
+    console.log('✅ [updateReservationWithPaymentResult] Todas las reservas actualizadas correctamente');
     return true;
   } catch (error) {
-    console.error(`Error al actualizar reserva: ${error}`);
+    console.error('❌ [updateReservationWithPaymentResult] Error general:', error);
     return false;
   }
 }

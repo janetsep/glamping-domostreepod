@@ -36,7 +36,7 @@ export const useReservationCreation = ({
   const { toast } = useToast();
 
   const createReservation = useCallback(async (
-    unitId: string,
+    unitIds: string | string[],
     checkIn: Date,
     checkOut: Date,
     guests: number,
@@ -44,58 +44,37 @@ export const useReservationCreation = ({
     paymentMethod: string = 'webpay',
     selectedActivities: string[] = [],
     selectedPackages: string[] = [],
-    requiredDomos: number,
+    requiredDomos?: number,
+    availableUnitIds?: string[],
     clientInfo?: ClientInfo
   ) => {
     setIsLoading(true);
 
     try {
-      // Obtener unidades disponibles
-      const { data: availableUnits, error: unitsError } = await supabase
-        .from('glamping_units')
-        .select('id, max_guests')
-        .order('max_guests', { ascending: false });
+      const unitIdsToAssign = Array.isArray(unitIds) ? unitIds : [unitIds];
+      
+      console.log('🚀 [useReservationCreation] Iniciando creación de reserva:', {
+        unitIdsToAssign,
+        checkIn: checkIn.toISOString(),
+        checkOut: checkOut.toISOString(),
+        guests,
+        totalPrice,
+        requiredDomos,
+        availableUnitIds
+      });
 
-      if (unitsError) {
-        throw new Error('Error al obtener unidades disponibles');
+      if (!availableUnitIds) {
+        availableUnitIds = unitIdsToAssign;
       }
 
-      // Filtrar unidades disponibles para las fechas seleccionadas
-      const { data: overlappingReservations, error: reservationsError } = await supabase
-        .from('reservations')
-        .select('unit_id')
-        .or(`and(check_in.lte.${checkOut.toISOString()},check_out.gte.${checkIn.toISOString()},status.eq.confirmed)`)
-        .in('unit_id', availableUnits.map(u => u.id));
-
-      if (reservationsError) {
-        throw new Error('Error al verificar disponibilidad');
-      }
-
-      const reservedUnitIds = new Set(overlappingReservations?.map(r => r.unit_id) || []);
-      const availableUnitIds = availableUnits
-        .filter(u => !reservedUnitIds.has(u.id))
-        .map(u => u.id);
-
-      if (availableUnitIds.length < requiredDomos) {
+      if (!availableUnitIds || availableUnitIds.length < (requiredDomos || 1)) {
         throw new Error('No hay suficientes domos disponibles para las fechas seleccionadas');
       }
 
-      console.log('Datos de reserva:', {
-        check_in: checkIn.toISOString(),
-        check_out: checkOut.toISOString(),
-        guests,
-        total_price: totalPrice,
-        status: 'pending',
-        payment_method: paymentMethod,
-        selected_activities: selectedActivities,
-        selected_packages: selectedPackages,
-        availableUnitIds: availableUnitIds.slice(0, requiredDomos),
-        clientInfo
-      });
+      console.log('✅ [useReservationCreation] Unidades asignadas:', availableUnitIds);
 
-      // Crear las reservas con la información del cliente
       const reservation = await createReservationEntry(
-        availableUnitIds.slice(0, requiredDomos),
+        availableUnitIds,
         checkIn,
         checkOut,
         guests,
@@ -107,6 +86,7 @@ export const useReservationCreation = ({
       );
       
       if (reservation) {
+        console.log('✅ [useReservationCreation] Reservas creadas:', reservation);
         toast({
           title: "Reserva iniciada",
           description: "Tu reserva se ha creado y ahora serás redirigido a Webpay para completar el pago",
@@ -126,7 +106,7 @@ export const useReservationCreation = ({
         throw new Error('Error al obtener ID de reserva después de la creación.');
       }
     } catch (error) {
-      console.error('Error en createReservation:', error);
+      console.error('❌ [useReservationCreation] Error:', error);
       toast({
         title: "Error",
         description: error instanceof Error ? error.message : "Error al crear la reserva",

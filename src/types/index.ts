@@ -1,10 +1,11 @@
-
 export interface Activity {
   id: string;
-  name: string;
+  title: string;
   description: string;
   price: number;
-  image_url: string;
+  image: string;
+  duration?: string;
+  maxParticipants?: number;
 }
 
 export interface ThemedPackage {

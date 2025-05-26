@@ -44,57 +44,79 @@ export async function confirmTransaction(token_ws: string): Promise<TransactionR
 }
 
 export async function updateReservationIfNeeded(responseData: TransactionResult): Promise<string | undefined> {
-  console.log('Actualizando reserva si es necesario con datos:', JSON.stringify(responseData));
+  console.log('🔍 [updateReservationIfNeeded] Iniciando actualización con datos:', JSON.stringify(responseData, null, 2));
   
   // Si hay un ID de reserva directo y el pago fue exitoso
   if (responseData.response_code === 0 && responseData.reservation_id) {
     try {
+      console.log(`🔍 [updateReservationIfNeeded] Buscando reserva principal con ID: ${responseData.reservation_id}`);
+      
       // Obtener la reserva principal para obtener el código de reserva
       const { data: primaryReservation, error: primaryError } = await supabase
         .from('reservations')
-        .select('id, reservation_code, unit_id')
+        .select('id, reservation_code, unit_id, status')
         .eq('id', responseData.reservation_id)
         .single();
       
-      if (primaryError || !primaryReservation) {
-        console.error('Error al obtener reserva principal:', primaryError);
+      if (primaryError) {
+        console.error('❌ [updateReservationIfNeeded] Error al obtener reserva principal:', primaryError);
         return undefined;
       }
 
+      if (!primaryReservation) {
+        console.error('❌ [updateReservationIfNeeded] No se encontró la reserva principal');
+        return undefined;
+      }
+
+      console.log(`✅ [updateReservationIfNeeded] Reserva principal encontrada:`, primaryReservation);
+      console.log(`🔄 [updateReservationIfNeeded] Actualizando todas las reservas con código: ${primaryReservation.reservation_code}`);
+
       // Actualizar todas las reservas con el mismo código
-      const { error: updateError } = await supabase
+      const { data: updateResult, error: updateError } = await supabase
         .from('reservations')
         .update({ 
           status: 'confirmed',
           payment_details: responseData,
           updated_at: new Date().toISOString()
         })
-        .eq('reservation_code', primaryReservation.reservation_code);
+        .eq('reservation_code', primaryReservation.reservation_code)
+        .select();
       
       if (updateError) {
-        console.error('Error al actualizar reservas:', updateError);
+        console.error('❌ [updateReservationIfNeeded] Error al actualizar reservas:', updateError);
         return undefined;
       }
 
-      console.log(`Todas las reservas con código ${primaryReservation.reservation_code} actualizadas a confirmed`);
+      console.log(`✅ [updateReservationIfNeeded] Resultado de la actualización:`, updateResult);
       
       // Verificar que todas las reservas se actualizaron correctamente
       const { data: updatedReservations, error: verifyError } = await supabase
         .from('reservations')
-        .select('id, status')
+        .select('id, status, reservation_code')
         .eq('reservation_code', primaryReservation.reservation_code);
       
       if (verifyError) {
-        console.error('Error al verificar actualización:', verifyError);
+        console.error('❌ [updateReservationIfNeeded] Error al verificar actualización:', verifyError);
         return undefined;
       }
 
+      console.log(`🔍 [updateReservationIfNeeded] Estado final de las reservas:`, updatedReservations);
+      
       const allConfirmed = updatedReservations?.every(r => r.status === 'confirmed');
-      console.log(`Estado final de las reservas: ${allConfirmed ? 'Todas confirmadas' : 'Algunas no confirmadas'}`);
+      console.log(`✅ [updateReservationIfNeeded] Todas las reservas confirmadas: ${allConfirmed}`);
+      
+      if (!allConfirmed) {
+        console.error('❌ [updateReservationIfNeeded] Algunas reservas no se actualizaron correctamente');
+        updatedReservations?.forEach(r => {
+          if (r.status !== 'confirmed') {
+            console.error(`❌ Reserva ${r.id} (${r.reservation_code}) no está confirmada`);
+          }
+        });
+      }
       
       return primaryReservation.unit_id;
     } catch (error) {
-      console.error('Error al actualizar reservas:', error);
+      console.error('❌ [updateReservationIfNeeded] Error general:', error);
       return undefined;
     }
   } 
