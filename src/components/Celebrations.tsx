@@ -1,4 +1,3 @@
-
 import { Button } from "@/components/ui/button";
 import { Section } from "@/components/ui/Section";
 import { celebrationsContent } from "@/data/content/celebrations";
@@ -57,8 +56,7 @@ const Celebrations = () => {
               
               <div className="flex justify-center">
                 <Button 
-                  variant="outline"
-                  className="border-primary text-primary hover:bg-primary/10"
+                  className="bg-gradient-to-r from-primary to-pink-500 text-white hover:from-primary/90 hover:to-pink-500/90"
                   onClick={() => handleNavigate(celebration.id)}
                 >
                   <Info className="mr-2 h-4 w-4" />

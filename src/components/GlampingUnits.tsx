@@ -1,4 +1,3 @@
-
 import { Users, MapPin } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
@@ -65,7 +64,7 @@ const GlampingUnits = ({ units, isLoading }: GlampingUnitsProps) => {
                 {/* Overlay con mensaje de clic para más información */}
                 <div className="absolute inset-0 bg-black/40 opacity-0 hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
                   <Button 
-                    variant="secondary"
+                    className="bg-gradient-to-r from-primary to-pink-500 text-white hover:from-primary/90 hover:to-pink-500/90"
                     onClick={(e) => {
                       e.stopPropagation();
                       navigate(`/unit/${unit.id}`);

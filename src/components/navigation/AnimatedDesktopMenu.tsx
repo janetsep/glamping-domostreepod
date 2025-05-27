@@ -1,7 +1,7 @@
-
 import { NavigationLinks } from "./NavigationLinks";
 import ReserveButton from "./ReserveButton";
 import AnimatedTabIndicator from "./AnimatedTabIndicator";
+import { MessageSquare } from "lucide-react";
 
 interface AnimatedDesktopMenuProps {
   isScrolled: boolean;
@@ -24,6 +24,15 @@ const AnimatedDesktopMenu = ({
         scrollToSection={scrollToSection}
         navigateToPage={navigateToPage}
       />
+      <a 
+        href="https://wa.me/56912345678" 
+        target="_blank" 
+        rel="noopener noreferrer"
+        className="ml-4 bg-green-500 text-white p-2 rounded-full shadow-lg hover:bg-green-600 transition-colors flex items-center justify-center"
+        aria-label="Contactar por WhatsApp"
+      >
+        <MessageSquare className="h-5 w-5" />
+      </a>
       <ReserveButton
         isScrolled={isScrolled}
         handleReserveClick={handleReserveClick}

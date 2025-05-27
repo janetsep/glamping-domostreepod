@@ -1,11 +1,9 @@
-
 import { useMobile } from "@/hooks/use-mobile";
 import { useScrollDetection } from "./navigation/useScrollDetection";
 import { useNavigation } from "./navigation/useNavigation";
 import Logo from "./navigation/Logo";
 import MobileMenu from "./navigation/MobileMenu";
 import AnimatedDesktopMenu from "./navigation/AnimatedDesktopMenu";
-import FloatingReserveButton from "./navigation/FloatingReserveButton";
 
 const Navigation = () => {
   const isMobile = useMobile();
@@ -35,9 +33,6 @@ const Navigation = () => {
           )}
         </div>
       </nav>
-      
-      {/* Floating reserve button */}
-      <FloatingReserveButton />
     </>
   );
 };

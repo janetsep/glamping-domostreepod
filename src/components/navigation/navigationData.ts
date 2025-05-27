@@ -1,4 +1,3 @@
-
 import { 
   Home, 
   House,
@@ -14,7 +13,8 @@ import {
   ImageIcon,
   TreePine,
   Gamepad,
-  PartyPopper
+  PartyPopper,
+  Tent
 } from "lucide-react";
 
 export interface NavLink {

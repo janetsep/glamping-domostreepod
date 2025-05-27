@@ -1,4 +1,3 @@
-
 import { MessageSquare, Share2 } from "lucide-react";
 import { useEffect } from "react";
 
@@ -38,17 +37,6 @@ const SocialButtons = () => {
       
       {/* Elfsight Social Feed Widget - initially hidden */}
       <div className="fixed bottom-48 right-6 z-50 hidden elfsight-app-076258cc-bbf2-46dc-9d9a-610f6bd2dbd9" data-elfsight-app-lazy></div>
-      
-      {/* Botón flotante de WhatsApp */}
-      <a 
-        href="https://wa.me/56912345678" 
-        target="_blank" 
-        rel="noopener noreferrer"
-        className="fixed bottom-6 right-6 bg-green-500 text-white p-3 rounded-full shadow-lg hover:bg-green-600 transition-colors z-50"
-        aria-label="Contactar por WhatsApp"
-      >
-        <MessageSquare className="h-6 w-6" />
-      </a>
     </>
   );
 };

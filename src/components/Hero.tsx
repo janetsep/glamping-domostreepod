@@ -19,6 +19,7 @@ const Hero = () => {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [isLoaded, setIsLoaded] = useState(false);
   const benefitsRef = useRef<HTMLElement>(null);
+  const heroRef = useRef<HTMLElement>(null); // Referencia a la sección hero
 
   // Optimización: Uso de imágenes más ligeras con mejor gestión de calidad
   const images = [{
@@ -69,6 +70,29 @@ const Hero = () => {
     };
   }, [currentImageIndex, images.length]);
 
+  // Efecto para parallax
+  useEffect(() => {
+    const handleScroll = () => {
+      if (heroRef.current) {
+        const scrollY = window.scrollY;
+        // Ajustar la velocidad del parallax cambiando el divisor (un número menor = más rápido)
+        const parallaxValue = scrollY * 0.8; 
+        
+        // Aplicar el desplazamiento a cada imagen de fondo
+        const images = heroRef.current.querySelectorAll('.lazy-load-image-background');
+        images.forEach(imgContainer => {
+          (imgContainer as HTMLElement).style.transform = `translateY(${parallaxValue}px) scale(1.05)`; // Combinar con el zoom existente
+        });
+      }
+    };
+
+    window.addEventListener('scroll', handleScroll);
+
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+    };
+  }, []); // Dependencia vacía para que solo se ejecute una vez
+
   // Efecto para cargar el script de Elfsight
   useEffect(() => {
     // Check if the script is already added to prevent duplicates
@@ -84,7 +108,7 @@ const Hero = () => {
       window.elfsight.initialize();
     }
   }, []);
-  return <section id="hero" className="h-screen relative overflow-hidden -mt-[76px]">
+  return <section id="hero" ref={heroRef} className="h-screen relative overflow-hidden -mt-[76px]">
       {/* Background images carousel with overlay - Optimizado para lazy loading */}
       <div className="absolute inset-0 z-0">
         {images.map((image, index) => <div key={index} className={`absolute inset-0 transition-opacity duration-1000 ease-in-out ${currentImageIndex === index ? "opacity-100" : "opacity-0"}`} style={{

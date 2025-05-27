@@ -1,6 +1,5 @@
-
 import { useState } from "react";
-import { Menu, X } from "lucide-react";
+import { Menu, X, MessageSquare } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { NavigationLinks } from "./NavigationLinks";
@@ -33,6 +32,15 @@ const MobileMenu = ({
 
   return (
     <div className="flex items-center">
+      <a 
+        href="https://wa.me/56912345678" 
+        target="_blank" 
+        rel="noopener noreferrer"
+        className="mr-2 bg-green-500 text-white p-2 rounded-full shadow-lg hover:bg-green-600 transition-colors flex items-center justify-center"
+        aria-label="Contactar por WhatsApp"
+      >
+        <MessageSquare className="h-5 w-5" />
+      </a>
       <ReserveButton
         isScrolled={isScrolled}
         handleReserveClick={handleReserveClick}

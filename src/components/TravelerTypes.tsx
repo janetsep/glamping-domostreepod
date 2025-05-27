@@ -1,4 +1,3 @@
-
 import { Button } from "@/components/ui/button";
 import { Section } from "@/components/ui/Section";
 import { travelerTypesContent } from "@/data/content/travelerTypes";
@@ -44,8 +43,7 @@ const TravelerTypes = () => {
               
               <div className="flex justify-end">
                 <Button 
-                  variant="outline"
-                  className="border-primary text-primary hover:bg-primary/10"
+                  className="bg-gradient-to-r from-primary to-pink-500 text-white hover:from-primary/90 hover:to-pink-500/90"
                   onClick={() => handleTravelerTypeClick(type.id)}
                 >
                   Ver detalles

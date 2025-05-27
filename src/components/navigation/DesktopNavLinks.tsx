@@ -1,9 +1,9 @@
-
 import { useState } from "react";
 import { useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { ChevronDown } from "lucide-react";
 import { NavLink, SubMenuItem, navigationLinks } from "./navigationData";
+import Logo from "./Logo";
 
 interface DesktopNavLinksProps {
   isScrolled: boolean;
@@ -87,23 +87,19 @@ const DesktopNavLinks = ({
             <Button
               variant="ghost"
               onClick={() => handleClick(link, index)}
-              className={`relative overflow-hidden text-base font-medium gap-1 group ${
-                isScrolled 
-                  ? 'text-gray-700 hover:text-cyan-500' 
-                  : 'text-gray-700 hover:text-cyan-500'
-              } ${isActive ? (isScrolled ? 'text-cyan-500' : 'text-cyan-500') : ''}`}
+              className={`relative text-base font-medium gap-1 group transition-all duration-300 
+                ${isScrolled ? 'text-gray-700' : 'text-gray-700'}
+                ${isActive ? (isScrolled ? 'text-cyan-500' : 'text-cyan-500') : ''}
+                bg-transparent hover:bg-gradient-to-r hover:from-primary/20 hover:to-pink-500/20 hover:text-white
+                rounded-md px-3 py-1
+              `}
             >
-              <span className={`absolute bottom-0 left-0 w-full h-0.5 transform origin-left transition-transform duration-300 ease-out ${
-                isActive 
-                  ? 'scale-x-100 bg-cyan-500' 
-                  : 'scale-x-0 group-hover:scale-x-100 bg-cyan-500'
-              }`} />
               
               <Icon className={`h-4 w-4 transition-all duration-300 ${
                 isActive ? 'text-cyan-500' : 'text-cyan-400'
               }`} />
               
-              <span className="relative">
+              <span className="relative z-10">
                 {link.name}
               </span>
               

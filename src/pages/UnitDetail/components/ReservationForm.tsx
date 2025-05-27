@@ -6,7 +6,6 @@ import { Activity, ThemedPackage } from "@/types";
 import { ReservationTabs } from "../ReservationTabs";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { AlertTriangle, Calendar, Check } from "lucide-react";
-import { AvailabilityCalendarSheet } from "../AvailabilityCalendarSheet";
 import { AlternativeDates } from "@/components/unit-detail/AlternativeDates";
 
 interface ReservationFormProps {
@@ -98,15 +97,6 @@ export const ReservationForm = ({
 
   return (
     <div className="space-y-6">
-      {/* Calendario expandible */}
-      <AvailabilityCalendarSheet 
-        unitId={unitId} 
-        onSelectRange={handleCalendarRangeSelect}
-        selectedStartDate={startDate} 
-        selectedEndDate={endDate} 
-        requiredDomos={requiredDomos} 
-      />
-
       {/* Tabs de reserva */}
       <ReservationTabs 
         tab={reservationTab} 
