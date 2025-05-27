@@ -282,7 +282,7 @@ export const useUnitDetailState = (unitId: string | undefined) => {
     }
 
     if (result && typeof result === 'object' && 'availableDomes' in result && 'isAvailable' in result) {
-      console.log('🔍 [useUnitDetailState] Actualizando estado con:', { availableDomos: result.availableDomes, isAvailable: result.isAvailable, partialAvailability: result.availableDomes > 0 && result.availableDomes < requiredDomos });
+      console.log('🔍 [useUnitDetailState] Actualizando estado con:', { availableDomes: result.availableDomes, isAvailable: result.isAvailable, partialAvailability: result.availableDomes > 0 && result.availableDomes < requiredDomos });
       setAvailableDomos(result.availableDomes);
       setIsAvailable(result.isAvailable);
       setAvailabilityError(result.error || null); // Asegurarse de que sea string o null
@@ -346,13 +346,18 @@ export const useUnitDetailState = (unitId: string | undefined) => {
 
     try {
       setIsProcessingPayment(true);
-      const reservation = await createReservation({
-        unitId: unitId || '',
+      
+      // Usar solo los parámetros correctos para createReservation
+      const reservation = await createReservation(
+        unitId || '',
         startDate,
         endDate,
         guests,
-        quote
-      });
+        quote.totalPrice,
+        'webpay',
+        selectedActivities,
+        selectedPackages
+      );
 
       if (reservation) {
         setConfirmedReservationId(reservation.id);

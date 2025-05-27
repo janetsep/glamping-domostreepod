@@ -1,3 +1,4 @@
+
 import { createReservationEntry } from '../hooks/reservations/utils/supabaseUtils';
 
 async function createTestReservation() {
@@ -22,7 +23,7 @@ async function createTestReservation() {
     console.log('💰 Precio total:', `$${totalPrice.toLocaleString()}`);
     console.log('👤 Cliente:', clientInfo);
 
-    // Crear la reserva
+    // Crear la reserva con los parámetros correctos
     const result = await createReservationEntry(
       [], // unitIdsToAssign se obtendrá automáticamente
       checkIn,
@@ -31,8 +32,7 @@ async function createTestReservation() {
       totalPrice,
       'webpay',
       [], // actividades
-      [], // paquetes
-      clientInfo
+      [] // paquetes
     );
 
     console.log('\n✅ Reserva creada exitosamente:');
@@ -55,4 +55,4 @@ async function createTestReservation() {
 }
 
 // Ejecutar el script
-createTestReservation(); 
+createTestReservation();
