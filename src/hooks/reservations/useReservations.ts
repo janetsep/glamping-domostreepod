@@ -21,9 +21,12 @@ export const useReservations = () => {
       // Transform the data to match our Reservation interface
       return (data || []).map(item => ({
         ...item,
-        adults: item.adults || Math.max(1, item.guests - (item.children || 0)),
-        children: item.children || 0,
-        required_domes: item.required_domes || Math.ceil(item.guests / 4)
+        adults: item.guests ? Math.max(1, item.guests - (item.pets || 0)) : 2,
+        children: 0,
+        required_domes: Math.ceil((item.guests || 4) / 4),
+        status: (item.status as 'pending' | 'confirmed' | 'cancelled') || 'pending',
+        selected_activities: [],
+        selected_packages: []
       }));
     },
   });

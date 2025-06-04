@@ -40,11 +40,11 @@ export const useUnitDetailState = (unitId?: string) => {
   const [reservationTab, setReservationTab] = useState("dates");
   const [checkedAvailability, setCheckedAvailability] = useState(false);
 
-  const getCurrentStep = (): string => {
-    if (isReservationConfirmed) return "confirmation";
-    if (showQuote) return "quote";
-    if (checkedAvailability && isAvailable) return "extras";
-    return "dates";
+  const getCurrentStep = (): number => {
+    if (isReservationConfirmed) return 4;
+    if (showQuote) return 3;
+    if (checkedAvailability && isAvailable) return 2;
+    return 1;
   };
 
   const generateQuote = () => {

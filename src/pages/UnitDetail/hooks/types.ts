@@ -48,7 +48,7 @@ export interface ReservationState {
   refetchAvailability?: () => void;
   
   // Funciones requeridas
-  getCurrentStep: () => string;
+  getCurrentStep: () => number;
   confirmationRef: any;
   generateQuote: () => void;
   confirmReservation: () => void;
