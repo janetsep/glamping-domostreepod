@@ -107,13 +107,13 @@ export const ReservationPanel = ({
   };
 
   return (
-    <div className="sticky top-0 h-screen overflow-y-auto bg-white border-l border-gray-200 p-6">
-      <h2 className="text-2xl font-display font-bold mb-4">
+    <div className="sticky top-0 h-screen overflow-y-auto bg-white border-l border-gray-200 p-5">
+      <h2 className="text-xl font-display font-bold mb-3 text-sm">
         Reserva tu experiencia en Domos TreePod
       </h2>
       
       {/* Barra de progreso debajo del título */}
-      <div className="mb-6">
+      <div className="mb-5">
         <CompactReservationProgress 
           currentStep={getCurrentStep ? getCurrentStep() : 1}
           showQuote={showQuote}
@@ -122,7 +122,7 @@ export const ReservationPanel = ({
         />
       </div>
       
-      <div className="space-y-4">
+      <div className="space-y-3 text-sm">
         {!showQuote ? (
           <ReservationForm 
             unitId={displayUnit.id} 

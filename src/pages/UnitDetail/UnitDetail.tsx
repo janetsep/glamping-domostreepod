@@ -22,11 +22,11 @@ const UnitDetail = () => {
       <div className="container mx-auto px-4">
         <UnitHeader navigate={navigate} />
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-0">
+        <div className="grid grid-cols-1 lg:grid-cols-5 gap-0">
           {state.displayUnit && (
             <>
-              {/* Contenido scrollable del domo - 2/3 del ancho */}
-              <div className="lg:col-span-2">
+              {/* Contenido scrollable del domo - 3/5 del ancho */}
+              <div className="lg:col-span-3">
                 <UnitContent 
                   unit={state.displayUnit} 
                   currentStep={state.getCurrentStep()}
@@ -36,10 +36,10 @@ const UnitDetail = () => {
                 />
               </div>
 
-              {/* Panel de reserva fijo - 1/3 del ancho */}
-              <div className="lg:col-span-1">
+              {/* Panel de reserva fijo - 2/5 del ancho */}
+              <div className="lg:col-span-2">
                 {state.isReservationConfirmed ? (
-                  <div className="sticky top-0 h-screen overflow-y-auto bg-white border-l border-gray-200 p-6">
+                  <div className="sticky top-0 h-screen overflow-y-auto bg-white border-l border-gray-200 p-5">
                     <ReservationConfirmation 
                       ref={state.confirmationRef}
                       startDate={state.startDate}
