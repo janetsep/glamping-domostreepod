@@ -192,8 +192,8 @@ export const useUnitDetailState = (unitId: string | undefined) => {
         guests,
         quote.finalTotal,
         'webpay',
-        selectedActivities,
-        selectedPackages
+        selectedActivities.map(a => a.id),
+        selectedPackages.map(p => p.id)
       );
 
       if (reservation && reservation.reservationId) {

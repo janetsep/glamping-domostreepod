@@ -18,23 +18,23 @@ export const useCalendarAvailability = (unitId: string, currentMonth: Date, sele
   // Obtener reservas y la función refetch del fetcher
   const { reservations, isLoading: isLoadingReservations, refetch } = useReservationsFetcher(currentMonth);
   
-  // Calculate availability for the calendar view - fix the function call
-  const { availabilityDays, isLoading: isCalculating } = useAvailabilityCalculator();
+  // Calculate availability for the calendar view
+  const { availabilityDays, isLoading: isCalculating, calculateAvailability } = useAvailabilityCalculator();
   
   // Create date checker functions
   const { isDateAvailable: originalIsDateAvailable, isDateRangeAvailable } = useDateAvailabilityChecker(reservations);
 
   // Calculate availability based on current month and selected date
   useEffect(() => {
-    if (reservations) {
-      availabilityDays.calculateAvailability(
+    if (reservations && calculateAvailability) {
+      calculateAvailability(
         new Date(currentMonth.getFullYear(), currentMonth.getMonth(), 1),
         new Date(currentMonth.getFullYear(), currentMonth.getMonth() + 1, 0),
-        selectedDate,
-        selectedDate
+        selectedDate || undefined,
+        selectedDate || undefined
       );
     }
-  }, [currentMonth, selectedDate, reservations]);
+  }, [currentMonth, selectedDate, reservations, calculateAvailability]);
 
   // Wrap isDateAvailable to use the same logic as the calendar
   const isDateAvailable = useCallback(async (date: Date, requiredUnits = 1) => {

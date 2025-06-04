@@ -9,7 +9,6 @@ import {
   Bath, 
   Star,
   Wifi,
-  Car,
   Trees
 } from "lucide-react";
 
@@ -38,9 +37,9 @@ export const UnitInfo = ({ unit }: UnitInfoProps) => {
         </div>
       </CardHeader>
       
-      <CardContent className="space-y-6">
+      <CardContent className="space-y-4">
         <p className="text-gray-700 leading-relaxed">
-          {unit.description || "Experimenta la tranquilidad del Valle Las Trancas en nuestros exclusivos domos geodésicos. Ubicados en un bosque nativo, ofrecemos una experiencia única que combina comodidad moderna con conexión natural."}
+          Experimenta la tranquilidad del Valle Las Trancas en nuestros domos geodésicos ubicados en un bosque nativo. Una experiencia única que combina comodidad moderna con conexión natural.
         </p>
 
         <div className="flex flex-wrap gap-2">
@@ -50,22 +49,18 @@ export const UnitInfo = ({ unit }: UnitInfoProps) => {
           </Badge>
           <Badge variant="secondary" className="flex items-center gap-1">
             <Bed className="w-3 h-3" />
-            {unit.bedrooms || 1} habitación
+            Cama king size
           </Badge>
           <Badge variant="secondary" className="flex items-center gap-1">
             <Bath className="w-3 h-3" />
-            {unit.bathrooms || 1} baño
+            Baño privado
           </Badge>
         </div>
 
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+        <div className="grid grid-cols-2 gap-4">
           <div className="flex items-center gap-2 text-sm text-gray-600">
             <Wifi className="w-4 h-4" />
             <span>WiFi Starlink</span>
-          </div>
-          <div className="flex items-center gap-2 text-sm text-gray-600">
-            <Car className="w-4 h-4" />
-            <span>Estacionamiento</span>
           </div>
           <div className="flex items-center gap-2 text-sm text-gray-600">
             <Trees className="w-4 h-4" />
@@ -73,7 +68,10 @@ export const UnitInfo = ({ unit }: UnitInfoProps) => {
           </div>
           <div className="flex items-center gap-2 text-sm text-gray-600">
             <Bath className="w-4 h-4" />
-            <span>Tinajas termales</span>
+            <span>Tinajas termales*</span>
+          </div>
+          <div className="flex items-center gap-2 text-sm text-gray-600">
+            <span className="text-xs">*Previa reserva</span>
           </div>
         </div>
       </CardContent>

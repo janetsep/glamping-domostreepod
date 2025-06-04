@@ -1,16 +1,11 @@
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
 import { GlampingUnit } from "@/lib/supabase";
 import { 
   Bed, 
-  Users, 
   Wifi, 
-  Car, 
   Trees, 
-  Coffee,
   Bath,
-  Wind,
   Mountain,
   Star
 } from "lucide-react";
@@ -19,63 +14,56 @@ interface UnitFeaturesProps {
   unit: GlampingUnit;
 }
 
-const getFeatureIcon = (feature: string) => {
-  const lowerFeature = feature.toLowerCase();
-  if (lowerFeature.includes('cama')) return <Bed className="w-4 h-4" />;
-  if (lowerFeature.includes('wifi') || lowerFeature.includes('internet')) return <Wifi className="w-4 h-4" />;
-  if (lowerFeature.includes('estacionamiento')) return <Car className="w-4 h-4" />;
-  if (lowerFeature.includes('naturaleza') || lowerFeature.includes('bosque')) return <Trees className="w-4 h-4" />;
-  if (lowerFeature.includes('café') || lowerFeature.includes('cocina')) return <Coffee className="w-4 h-4" />;
-  if (lowerFeature.includes('baño') || lowerFeature.includes('tinaja')) return <Bath className="w-4 h-4" />;
-  if (lowerFeature.includes('aire') || lowerFeature.includes('ventilación')) return <Wind className="w-4 h-4" />;
-  if (lowerFeature.includes('vista') || lowerFeature.includes('montaña')) return <Mountain className="w-4 h-4" />;
-  return <Star className="w-4 h-4" />;
-};
+const features = [
+  {
+    icon: <Bed className="w-4 h-4" />,
+    title: "Cama king size",
+    description: "Máximo confort para tu descanso"
+  },
+  {
+    icon: <Wifi className="w-4 h-4" />,
+    title: "WiFi Starlink",
+    description: "Conexión de alta velocidad"
+  },
+  {
+    icon: <Trees className="w-4 h-4" />,
+    title: "Bosque nativo",
+    description: "Entorno natural preservado"
+  },
+  {
+    icon: <Bath className="w-4 h-4" />,
+    title: "Baño privado",
+    description: "Comodidades modernas"
+  },
+  {
+    icon: <Mountain className="w-4 h-4" />,
+    title: "Vista panorámica",
+    description: "Paisajes de la cordillera"
+  }
+];
 
 export const UnitFeatures = ({ unit }: UnitFeaturesProps) => {
-  // Características por defecto si no existen
-  const features = unit?.features && unit.features.length > 0 ? unit.features : [
-    "Cama king size",
-    "WiFi Starlink",
-    "Vista al bosque nativo",
-    "Baño privado",
-    "Estacionamiento incluido",
-    "Conexión con la naturaleza"
-  ];
-
   return (
     <Card>
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
           <Star className="w-5 h-5 text-primary" />
-          Características destacadas
+          Comodidades incluidas
         </CardTitle>
       </CardHeader>
       <CardContent>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+        <div className="grid grid-cols-1 gap-3">
           {features.map((feature, index) => (
-            <div key={index} className="flex items-center gap-3 p-2 rounded-lg hover:bg-gray-50">
-              {getFeatureIcon(feature)}
-              <span className="text-sm text-gray-700">{feature}</span>
+            <div key={index} className="flex items-start gap-3 p-2 rounded-lg hover:bg-gray-50">
+              <div className="flex-shrink-0 mt-1 text-primary">
+                {feature.icon}
+              </div>
+              <div>
+                <h4 className="text-sm font-medium text-gray-900">{feature.title}</h4>
+                <p className="text-xs text-gray-600">{feature.description}</p>
+              </div>
             </div>
           ))}
-        </div>
-        
-        <div className="mt-4 pt-4 border-t">
-          <div className="flex flex-wrap gap-2">
-            <Badge variant="secondary" className="flex items-center gap-1">
-              <Users className="w-3 h-3" />
-              Hasta {unit?.max_guests || 4} huéspedes
-            </Badge>
-            <Badge variant="secondary" className="flex items-center gap-1">
-              <Bed className="w-3 h-3" />
-              {unit?.bedrooms || 1} habitación
-            </Badge>
-            <Badge variant="secondary" className="flex items-center gap-1">
-              <Bath className="w-3 h-3" />
-              {unit?.bathrooms || 1} baño
-            </Badge>
-          </div>
         </div>
       </CardContent>
     </Card>
