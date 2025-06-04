@@ -8,7 +8,7 @@ export interface ReservationState {
   guests: number;
   adults: number;
   children: number;
-  requiredDomos: number; // Made required
+  requiredDomos: number;
   isAvailable: boolean | null;
   availableDomos: number;
   isPartialAvailability: boolean;
@@ -46,6 +46,12 @@ export interface ReservationState {
   createReservation: any;
   redirectToWebpay: any;
   refetchAvailability?: () => void;
+  
+  // Nuevas funciones requeridas
+  getCurrentStep: () => string;
+  confirmationRef: any;
+  generateQuote: () => void;
+  confirmReservation: () => void;
 }
 
 export interface AvailabilityState {

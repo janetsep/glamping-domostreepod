@@ -1,3 +1,3 @@
 
 export { useGlampingUnits } from './useGlampingUnits';
-export { useReservations } from './useReservations';
+export { useReservations, useReservationFunctions } from './useReservations';

@@ -30,7 +30,17 @@ export const useReservationFunctions = () => {
     return true;
   };
 
-  const createReservation = async (reservationData: any) => {
+  const createReservation = async (
+    unitId: string,
+    checkIn: Date,
+    checkOut: Date,
+    guests: number,
+    totalPrice: number,
+    paymentMethod: string,
+    selectedActivities: any[],
+    selectedPackages: any[],
+    requiredDomes: number
+  ) => {
     // Implementar lógica de creación
     return { success: true };
   };

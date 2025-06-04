@@ -1,4 +1,5 @@
-import { useState } from "react";
+
+import { useState, useRef } from "react";
 import { useGlampingUnits } from "@/hooks/reservations/useGlampingUnits";
 import { useReservationFunctions } from "@/hooks/reservations/useReservations";
 import { Activity, ThemedPackage } from "@/types";
@@ -14,6 +15,7 @@ export const useUnitDetailState = (unitId?: string) => {
   } = useReservationFunctions();
 
   const displayUnit = units.find(unit => unit.id === unitId) || units[0];
+  const confirmationRef = useRef(null);
 
   const [startDate, setStartDate] = useState<Date | undefined>();
   const [endDate, setEndDate] = useState<Date | undefined>();
@@ -37,6 +39,21 @@ export const useUnitDetailState = (unitId?: string) => {
   const [packagesTotal, setPackagesTotal] = useState(0);
   const [reservationTab, setReservationTab] = useState("dates");
   const [checkedAvailability, setCheckedAvailability] = useState(false);
+
+  const getCurrentStep = () => {
+    if (isReservationConfirmed) return "confirmation";
+    if (showQuote) return "quote";
+    if (checkedAvailability && isAvailable) return "extras";
+    return "dates";
+  };
+
+  const generateQuote = () => {
+    setShowQuote(true);
+  };
+
+  const confirmReservation = () => {
+    setIsReservationConfirmed(true);
+  };
 
   return {
     // Unit data
@@ -68,6 +85,9 @@ export const useUnitDetailState = (unitId?: string) => {
     reservationTab,
     checkedAvailability,
     
+    // Refs
+    confirmationRef,
+    
     // Setters
     setStartDate,
     setEndDate,
@@ -90,6 +110,9 @@ export const useUnitDetailState = (unitId?: string) => {
     },
     calculateQuote,
     createReservation,
-    redirectToWebpay
+    redirectToWebpay,
+    getCurrentStep,
+    generateQuote,
+    confirmReservation
   };
 };
