@@ -12,18 +12,21 @@ import SimplifiedContact from "@/components/SimplifiedContact";
 import Footer from "@/components/footer";
 import CultureSection from "@/components/CultureSection";
 import Celebrations from "@/components/Celebrations";
+import { useGlampingUnits } from "@/hooks/reservations/useGlampingUnits";
 
 const Index = () => {
+  const { data: units = [], isLoading } = useGlampingUnits();
+
   return (
     <div className="min-h-screen">
       <Hero />
       <Benefits />
       <Features />
       <CultureSection />
-      <GlampingUnits />
+      <GlampingUnits units={units} isLoading={isLoading} />
       <Gallery />
       <TravelerTypes />
-      <Packages />
+      <Packages units={units} isLoading={isLoading} />
       <Celebrations />
       <Testimonials />
       <Location />

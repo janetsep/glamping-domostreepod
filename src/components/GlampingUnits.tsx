@@ -1,3 +1,4 @@
+
 import { Users, MapPin } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
@@ -8,7 +9,7 @@ interface GlampingUnitsProps {
   isLoading: boolean;
 }
 
-const GlampingUnits = ({ units, isLoading }: GlampingUnitsProps) => {
+const GlampingUnits = ({ units = [], isLoading }: GlampingUnitsProps) => {
   const navigate = useNavigate();
 
   if (isLoading) {
@@ -24,6 +25,24 @@ const GlampingUnits = ({ units, isLoading }: GlampingUnitsProps) => {
     );
   }
 
+  // Si no hay unidades, mostrar datos de ejemplo
+  const displayUnits = units.length > 0 ? units : [
+    {
+      id: "demo-1",
+      name: "Domo TreePod 1",
+      max_guests: 4,
+      prices: { base_price: 85000 },
+      image_url: "/lovable-uploads/fd23279d-7903-4b82-871d-b0ab29e6e890.png"
+    },
+    {
+      id: "demo-2", 
+      name: "Domo TreePod 2",
+      max_guests: 4,
+      prices: { base_price: 85000 },
+      image_url: "/lovable-uploads/5bcb79d0-1a05-40e3-9088-2836fa262778.png"
+    }
+  ];
+
   return (
     <section className="py-16 bg-secondary/20">
       <div className="container mx-auto px-4">
@@ -31,7 +50,7 @@ const GlampingUnits = ({ units, isLoading }: GlampingUnitsProps) => {
           Nuestro Glamping
         </h3>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {units.map((unit) => (
+          {displayUnits.map((unit) => (
             <div 
               key={unit.id} 
               className="rounded-lg overflow-hidden shadow-lg transition-transform hover:scale-[1.02] animate-fadeIn cursor-pointer"
