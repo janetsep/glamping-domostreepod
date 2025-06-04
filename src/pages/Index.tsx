@@ -2,7 +2,6 @@
 import Hero from "@/components/Hero";
 import Benefits from "@/components/Benefits";
 import Features from "@/components/Features";
-import GlampingUnits from "@/components/GlampingUnits";
 import Gallery from "@/components/Gallery";
 import TravelerTypes from "@/components/TravelerTypes";
 import Packages from "@/components/Packages";
@@ -23,7 +22,6 @@ const Index = () => {
       <Benefits />
       <Features />
       <CultureSection />
-      <GlampingUnits units={units} isLoading={isLoading} />
       <Gallery />
       <TravelerTypes />
       <Packages units={units} isLoading={isLoading} />
