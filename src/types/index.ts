@@ -1,3 +1,4 @@
+
 export interface Activity {
   id: string;
   name: string;
@@ -18,4 +19,29 @@ export interface ThemedPackage {
   duration?: string;
   includes?: string[];
   image_url?: string;
+}
+
+export interface AvailabilityCalendarDay {
+  date: Date;
+  isAvailable: boolean;
+  isToday: boolean;
+  isSelected: boolean;
+  isInRange: boolean;
+  price?: number;
+  reservedDomos?: number;
+  totalDomos?: number;
+}
+
+export interface Feature {
+  id: string;
+  name: string;
+  icon: string;
+  description?: string;
+}
+
+export interface Policy {
+  id: string;
+  title: string;
+  description: string;
+  icon?: string;
 }
