@@ -145,9 +145,9 @@ export const useUnitDetailState = (unitId: string | undefined) => {
 
     try {
       const unitPrices = {
-        base_price: displayUnit.base_price || 50000,
-        weekend_price: displayUnit.weekend_price,
-        holiday_price: displayUnit.holiday_price
+        base_price: displayUnit.prices?.base_price || displayUnit.base_price || 50000,
+        weekend_price: displayUnit.prices?.weekend_price || displayUnit.weekend_price,
+        holiday_price: displayUnit.prices?.holiday_price || displayUnit.holiday_price
       };
 
       const calculatedQuote = calculateQuote(unitPrices, startDate, endDate, guests, requiredDomos);

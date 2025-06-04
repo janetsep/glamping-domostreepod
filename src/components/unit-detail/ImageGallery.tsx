@@ -15,7 +15,7 @@ export const ImageGallery = ({ unit }: ImageGalleryProps) => {
   
   // Proporcionar imágenes por defecto si no existen
   const images = unit?.images && unit.images.length > 0 ? unit.images : [
-    "/lovable-uploads/dafd81f1-18a1-4796-9a46-b39914b747a9.jpg"
+    unit?.image_url || "/lovable-uploads/dafd81f1-18a1-4796-9a46-b39914b747a9.jpg"
   ];
 
   const nextImage = () => {
