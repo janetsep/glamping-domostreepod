@@ -1,3 +1,4 @@
+
 import { useState } from 'react';
 import { useAvailabilityCheck } from './useAvailabilityCheck';
 import { usePricing } from './usePricing';
@@ -8,7 +9,6 @@ import { useToast } from '@/components/ui/use-toast';
 import { Activity, ThemedPackage } from '@/types';
 import { AvailabilityManager } from "./utils/availabilityManager";
 import { ReservationQueue } from "./utils/reservationQueue";
-import { v4 as uuidv4 } from 'uuid';
 
 export const useReservations = () => {
   const [isLoading, setIsLoading] = useState(false);
@@ -26,28 +26,20 @@ export const useReservations = () => {
     guests: number,
     requiredDomos: number
   ): Promise<boolean> => {
-    // Aquí necesitamos obtener el número de huéspedes requeridos.
-    // Ya no usaremos valores fijos, sino los que se pasen a la función.
-    // TODO: Asegurarse de que el número de huéspedes/domos requerido correcto se pase a esta función.
-
-    // Llamar a la función checkAvailability del AvailabilityManager
     const result = await availabilityManager.checkAvailability(
-      guests, // Pasar el número de huéspedes recibido
-      { start: checkIn, end: checkOut } // Pasar el rango de fechas
+      guests,
+      { start: checkIn, end: checkOut }
     );
 
-    // Retornar solo el booleano isAvailable para coincidir con la firma esperada
     return result.isAvailable;
   };
   
   const { calculateQuote } = usePricing();
   const { createReservation } = useReservationCreation({ 
-    setIsLoading, 
-    toast,
-    checkAvailability: checkAvailabilityForCreation
+    onSuccess: () => {},
+    onError: () => {}
   });
   const { redirectToWebpay } = usePayment({ setIsLoading });
-  // Fix: Pass both required parameters to useGlampingUnits
   const { fetchGlampingUnits } = useGlampingUnits({ setIsLoading, toast });
   
   const createReservationAndRedirect = async (
@@ -63,11 +55,9 @@ export const useReservations = () => {
     setIsLoading(true);
     
     try {
-      // Get IDs for activities and packages
       const activityIds = selectedActivities.map(a => a.id);
       const packageIds = selectedPackages.map(p => p.id);
       
-      // Create the reservation
       const reservation = await createReservation(
         unitId,
         checkIn,
@@ -80,9 +70,8 @@ export const useReservations = () => {
         requiredDomos
       );
       
-      if (reservation) {
-        const isPackageUnit = reservation.is_package_unit || false;
-        await redirectToWebpay(reservation.id, totalPrice, isPackageUnit, unitId);
+      if (reservation && reservation.reservationId) {
+        await redirectToWebpay(reservation.reservationId, totalPrice, false, unitId);
       } else {
         setIsLoading(false);
       }
@@ -107,7 +96,7 @@ export const useReservations = () => {
       availabilityManager.checkAvailability(guests, { start: startDate, end: endDate }, forceRefresh),
       
     checkGeneralAvailability: (startDate, endDate, requiredDomos) => 
-      availabilityManager.checkAvailability(requiredDomos * 4, { start: startDate, end: endDate }), // Asumiendo 4 huéspedes por domo
+      availabilityManager.checkAvailability(requiredDomos * 4, { start: startDate, end: endDate }),
       
     calculateQuote,
     createReservation,

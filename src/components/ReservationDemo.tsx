@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { useReservations } from '@/hooks/reservations';
 import { Button } from '@/components/ui/button';
@@ -24,9 +25,9 @@ export const ReservationDemo = () => {
 
   // Domo de prueba
   const demoUnit = {
-    id: "1", // Cambiado a un ID real de la base de datos
+    id: "1",
     name: "Domo 1",
-    price: 75000 // Precio por noche
+    price: 75000
   };
 
   const handleCheckAvailability = async () => {
@@ -40,9 +41,18 @@ export const ReservationDemo = () => {
       const result = await checkAvailability(
         guests,
         checkIn,
-        checkOut
+        checkOut,
+        true
       );
-      setAvailability(result);
+      
+      const availabilityResult = {
+        isAvailable: result.isAvailable,
+        availableDomes: result.availableDomes || 0,
+        requiredDomos: Math.ceil(guests / 4),
+        error: result.error
+      };
+      
+      setAvailability(availabilityResult);
       
       if (result.isAvailable) {
         toast.success("¡Las fechas están disponibles!");
@@ -77,7 +87,11 @@ export const ReservationDemo = () => {
         checkIn,
         checkOut,
         guests,
-        totalPrice
+        totalPrice,
+        'webpay',
+        [],
+        [],
+        availability.requiredDomos
       );
 
       if (reservation) {
