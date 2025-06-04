@@ -1,7 +1,7 @@
 
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
-import { Reservation } from "@/types";
+import { Reservation, AvailabilityResult } from "@/types";
 
 // Hook para obtener reservas
 export const useReservations = () => {
@@ -18,16 +18,32 @@ export const useReservations = () => {
         throw error;
       }
 
-      return data || [];
+      // Transform the data to match our Reservation interface
+      return (data || []).map(item => ({
+        ...item,
+        adults: item.adults || Math.max(1, item.guests - (item.children || 0)),
+        children: item.children || 0,
+        required_domes: item.required_domes || Math.ceil(item.guests / 4)
+      }));
     },
   });
 };
 
-// Hook para funciones de reserva (simulado por ahora)
+// Hook para funciones de reserva
 export const useReservationFunctions = () => {
-  const checkAvailability = async (unitId: string, checkIn: Date, checkOut: Date): Promise<boolean> => {
-    // Implementar lógica de disponibilidad
-    return true;
+  const checkAvailability = async (
+    guests: number,
+    checkIn: Date,
+    checkOut: Date,
+    forceRefresh?: boolean
+  ): Promise<AvailabilityResult> => {
+    // Implementar lógica de disponibilidad real
+    const requiredDomos = Math.ceil(guests / 4);
+    return {
+      isAvailable: true,
+      availableDomes: 3,
+      requiredDomos,
+    };
   };
 
   const createReservation = async (

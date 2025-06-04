@@ -1,3 +1,4 @@
+
 export interface Activity {
   id: string;
   name: string;
@@ -68,4 +69,20 @@ export interface Reservation {
   selected_activities?: Activity[];
   selected_packages?: ThemedPackage[];
   client_info?: any;
+  client_name?: string;
+  client_email?: string;
+  client_phone?: string;
+  activities?: string[];
+  services?: string[];
+  payment_details?: any;
+  pets?: number;
+  selected_activities_ids?: string[];
+  selected_packages_ids?: string[];
+}
+
+export interface AvailabilityResult {
+  isAvailable: boolean;
+  availableDomes: number;
+  requiredDomos: number;
+  error?: string;
 }

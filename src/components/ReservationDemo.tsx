@@ -8,6 +8,7 @@ import { Label } from '@/components/ui/label';
 import { format } from 'date-fns';
 import { es } from 'date-fns/locale';
 import { toast } from 'sonner';
+import { AvailabilityResult } from '@/types';
 
 export const ReservationDemo = () => {
   const { data: reservations = [], isLoading } = useReservations();
@@ -16,12 +17,7 @@ export const ReservationDemo = () => {
   const [checkOut, setCheckOut] = useState<Date>();
   const [guests, setGuests] = useState(1);
   const [isChecking, setIsChecking] = useState(false);
-  const [availability, setAvailability] = useState<{
-    isAvailable: boolean;
-    availableDomes: number;
-    requiredDomos: number;
-    error?: string;
-  } | null>(null);
+  const [availability, setAvailability] = useState<AvailabilityResult | null>(null);
 
   // Domo de prueba
   const demoUnit = {
@@ -38,21 +34,8 @@ export const ReservationDemo = () => {
 
     setIsChecking(true);
     try {
-      const result = await checkAvailability(
-        guests,
-        checkIn,
-        checkOut,
-        true
-      );
-      
-      const availabilityResult = {
-        isAvailable: result.isAvailable,
-        availableDomes: result.availableDomes || 0,
-        requiredDomos: Math.ceil(guests / 4),
-        error: result.error
-      };
-      
-      setAvailability(availabilityResult);
+      const result = await checkAvailability(guests, checkIn, checkOut);
+      setAvailability(result);
       
       if (result.isAvailable) {
         toast.success("¡Las fechas están disponibles!");

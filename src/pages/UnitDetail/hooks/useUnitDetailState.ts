@@ -2,7 +2,7 @@
 import { useState, useRef } from "react";
 import { useGlampingUnits } from "@/hooks/reservations/useGlampingUnits";
 import { useReservationFunctions } from "@/hooks/reservations/useReservations";
-import { Activity, ThemedPackage } from "@/types";
+import { Activity, ThemedPackage, AvailabilityResult } from "@/types";
 
 export const useUnitDetailState = (unitId?: string) => {
   const { data: units = [], isLoading: unitsLoading } = useGlampingUnits();
@@ -40,7 +40,7 @@ export const useUnitDetailState = (unitId?: string) => {
   const [reservationTab, setReservationTab] = useState("dates");
   const [checkedAvailability, setCheckedAvailability] = useState(false);
 
-  const getCurrentStep = () => {
+  const getCurrentStep = (): string => {
     if (isReservationConfirmed) return "confirmation";
     if (showQuote) return "quote";
     if (checkedAvailability && isAvailable) return "extras";
@@ -53,6 +53,10 @@ export const useUnitDetailState = (unitId?: string) => {
 
   const confirmReservation = () => {
     setIsReservationConfirmed(true);
+  };
+
+  const handleCheckAvailability = async (guestsCount: number, startDate: Date, endDate: Date, forceRefresh?: boolean): Promise<AvailabilityResult> => {
+    return await checkAvailability(guestsCount, startDate, endDate, forceRefresh);
   };
 
   return {
@@ -105,9 +109,7 @@ export const useUnitDetailState = (unitId?: string) => {
     setCheckedAvailability,
     
     // Functions
-    checkAvailability: async (guestsCount: number, startDate: Date, endDate: Date, forceRefresh?: boolean) => {
-      return { isAvailable: true, availableDomes: 3, requiredDomos: 1 };
-    },
+    checkAvailability: handleCheckAvailability,
     calculateQuote,
     createReservation,
     redirectToWebpay,

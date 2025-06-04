@@ -1,5 +1,5 @@
 
-import { Activity, ThemedPackage } from "@/types";
+import { Activity, ThemedPackage, AvailabilityResult } from "@/types";
 
 export interface ReservationState {
   startDate?: Date;
@@ -41,13 +41,13 @@ export interface ReservationState {
   setReservationTab: (tab: string) => void;
   setCheckedAvailability: (checked: boolean) => void;
   
-  checkAvailability: (guests: number, startDate: Date, endDate: Date, forceRefresh?: boolean) => Promise<{ isAvailable: boolean; availableDomes: number; requiredDomos: number; error?: string }>;
+  checkAvailability: (guests: number, startDate: Date, endDate: Date, forceRefresh?: boolean) => Promise<AvailabilityResult>;
   calculateQuote: any;
   createReservation: any;
   redirectToWebpay: any;
   refetchAvailability?: () => void;
   
-  // Nuevas funciones requeridas
+  // Funciones requeridas
   getCurrentStep: () => string;
   confirmationRef: any;
   generateQuote: () => void;
@@ -55,7 +55,7 @@ export interface ReservationState {
 }
 
 export interface AvailabilityState {
-  checkAvailability: (guests: number, startDate: Date, endDate: Date, forceRefresh?: boolean) => Promise<{ isAvailable: boolean; availableDomes: number; requiredDomos: number; error?: string }>;
+  checkAvailability: (guests: number, startDate: Date, endDate: Date, forceRefresh?: boolean) => Promise<AvailabilityResult>;
   setIsAvailable: (available: boolean | null) => void;
   setCheckedAvailability: (checked: boolean) => void;
 }
