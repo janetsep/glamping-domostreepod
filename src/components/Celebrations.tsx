@@ -1,3 +1,4 @@
+
 import { Button } from "@/components/ui/button";
 import { Section } from "@/components/ui/Section";
 import { celebrationsContent } from "@/data/content/celebrations";
@@ -22,6 +23,7 @@ const Celebrations = () => {
       title={celebrationsContent.title}
       subtitle={celebrationsContent.subtitle}
       centered
+      className="pt-24 pb-12" // Añadido pt-24 para compensar la cabecera fija
     >
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {celebrationsContent.celebrations.map((celebration) => (
