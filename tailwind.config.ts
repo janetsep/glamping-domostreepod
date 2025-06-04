@@ -34,7 +34,7 @@ export default {
           foreground: "#2D2D2D",
         },
         accent: {
-          DEFAULT: "#0EA5E9", // Updaded to use a more cyan color
+          DEFAULT: "#0EA5E9",
           foreground: "#FFFFFF",
         },
         destructive: {
@@ -54,14 +54,14 @@ export default {
           foreground: "hsl(var(--card-foreground))",
         },
         cyan: {
-          500: "#0EA5E9", // Using a specific cyan color
-          600: "#0284C7", // Slightly darker for hover states
+          500: "#0EA5E9",
+          600: "#0284C7",
         },
       },
       fontFamily: {
-        sans: ["Inter", "system-ui", "sans-serif"],
+        serif: ["Crimson Text", "Libre Baskerville", "serif"],
         display: ["Playfair Display", "serif"],
-        body: ["Merriweather", "serif"],
+        sans: ["Crimson Text", "serif"],
       },
       borderRadius: {
         lg: "var(--radius)",

@@ -1,6 +1,6 @@
 @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Merriweather:wght@300;400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Crimson+Text:wght@400;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Libre+Baskerville:wght@400;700&display=swap');
 
 @tailwind base;
 @tailwind components;
@@ -75,11 +75,11 @@
   }
   
   body {
-    @apply font-sans text-gray-800 bg-white text-base;
+    @apply font-serif text-gray-800 bg-white text-base;
     font-feature-settings: "ss01", "ss02", "ss03", "cv01", "cv02";
   }
 
-  /* Estilos de titulares con nuevos tamaños ajustados */
+  /* Estilos de titulares con tipografía elegante */
   h1 {
     @apply font-display font-bold text-3xl md:text-4xl lg:text-5xl;
   }
@@ -107,7 +107,7 @@
   }
   
   .section-description {
-    @apply text-base md:text-lg text-center text-gray-600 mb-10 max-w-3xl mx-auto font-body;
+    @apply text-base md:text-lg text-center text-gray-600 mb-10 max-w-3xl mx-auto font-serif;
   }
   
   .card-gradient {
@@ -120,12 +120,12 @@
   
   /* Estilos específicos para botones y CTAs */
   .cta-button {
-    @apply text-base md:text-lg lg:text-xl font-medium;
+    @apply text-base md:text-lg lg:text-xl font-medium font-serif;
   }
   
   /* Estilos para menú de navegación */
   .nav-link {
-    @apply text-sm md:text-base;
+    @apply text-sm md:text-base font-serif;
   }
 }
 
