@@ -9,7 +9,6 @@ import SimplifiedContact from "@/components/SimplifiedContact";
 import Footer from "@/components/footer";
 import CultureSection from "@/components/CultureSection";
 import Celebrations from "@/components/Celebrations";
-import WomenRelaxSection from "@/components/WomenRelaxSection";
 import { useGlampingUnits } from "@/hooks/reservations/useGlampingUnits";
 
 const Index = () => {
@@ -23,7 +22,6 @@ const Index = () => {
       <TravelerTypes />
       <Packages units={units} isLoading={isLoading} />
       <Celebrations />
-      <WomenRelaxSection />
       <Testimonials />
       <Location />
       <SimplifiedContact />

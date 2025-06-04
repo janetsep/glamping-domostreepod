@@ -1,7 +1,9 @@
 
-import { useQuery } from '@tanstack/react-query';
-import { supabase, type Reservation } from '@/lib/supabase';
+import { useQuery } from "@tanstack/react-query";
+import { supabase } from "@/integrations/supabase/client";
+import { Reservation } from "@/types";
 
+// Hook para obtener reservas
 export const useReservations = () => {
   return useQuery({
     queryKey: ['reservations'],
@@ -18,7 +20,41 @@ export const useReservations = () => {
 
       return data || [];
     },
-    staleTime: 5 * 60 * 1000, // 5 minutes
-    gcTime: 10 * 60 * 1000, // 10 minutes
   });
+};
+
+// Hook para funciones de reserva (simulado por ahora)
+export const useReservationFunctions = () => {
+  const checkAvailability = async (unitId: string, checkIn: Date, checkOut: Date): Promise<boolean> => {
+    // Implementar lógica de disponibilidad
+    return true;
+  };
+
+  const createReservation = async (reservationData: any) => {
+    // Implementar lógica de creación
+    return { success: true };
+  };
+
+  const calculateQuote = async (data: any) => {
+    // Implementar lógica de cotización
+    return { total: 0 };
+  };
+
+  const redirectToWebpay = async (data: any) => {
+    // Implementar lógica de webpay
+    return { url: '' };
+  };
+
+  const fetchGlampingUnits = async () => {
+    // Implementar lógica de unidades
+    return [];
+  };
+
+  return {
+    checkAvailability,
+    createReservation,
+    calculateQuote,
+    redirectToWebpay,
+    fetchGlampingUnits
+  };
 };

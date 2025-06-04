@@ -1,15 +1,14 @@
 
-import { GlampingUnit } from "@/lib/supabase";
 import { Activity, ThemedPackage } from "@/types";
 
 export interface ReservationState {
-  displayUnit: GlampingUnit | null;
   startDate?: Date;
   endDate?: Date;
+  displayUnit: any;
   guests: number;
   adults: number;
   children: number;
-  requiredDomos: number;
+  requiredDomos: number; // Made required
   isAvailable: boolean | null;
   availableDomos: number;
   isPartialAvailability: boolean;
@@ -27,7 +26,6 @@ export interface ReservationState {
   reservationTab: string;
   checkedAvailability: boolean;
   
-  // Setters
   setStartDate: (date: Date | undefined) => void;
   setEndDate: (date: Date | undefined) => void;
   setGuests: (guests: number) => void;
@@ -43,10 +41,15 @@ export interface ReservationState {
   setReservationTab: (tab: string) => void;
   setCheckedAvailability: (checked: boolean) => void;
   
-  // Functions
   checkAvailability: (guests: number, startDate: Date, endDate: Date, forceRefresh?: boolean) => Promise<{ isAvailable: boolean; availableDomes: number; requiredDomos: number; error?: string }>;
   calculateQuote: any;
   createReservation: any;
   redirectToWebpay: any;
   refetchAvailability?: () => void;
+}
+
+export interface AvailabilityState {
+  checkAvailability: (guests: number, startDate: Date, endDate: Date, forceRefresh?: boolean) => Promise<{ isAvailable: boolean; availableDomes: number; requiredDomos: number; error?: string }>;
+  setIsAvailable: (available: boolean | null) => void;
+  setCheckedAvailability: (checked: boolean) => void;
 }
