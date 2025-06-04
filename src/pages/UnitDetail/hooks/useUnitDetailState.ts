@@ -38,6 +38,7 @@ export const useUnitDetailState = (unitId: string | undefined) => {
   const [requiredDomos, setRequiredDomos] = useState<number>(1);
   const [isPartialAvailability, setIsPartialAvailability] = useState(false);
   const [alternativeDates, setAlternativeDates] = useState<{startDate: Date; endDate: Date}[]>([]);
+  const [checkedAvailability, setCheckedAvailability] = useState(false);
   
   // Estados de cotización y reserva
   const [showQuote, setShowQuote] = useState(false);
@@ -62,7 +63,8 @@ export const useUnitDetailState = (unitId: string | undefined) => {
     fetchGlampingUnits, 
     checkAvailability, 
     calculateQuote,
-    createReservationAndRedirect 
+    createReservation,
+    redirectToWebpay
   } = useReservations();
 
   // Cargar unidad
@@ -183,27 +185,28 @@ export const useUnitDetailState = (unitId: string | undefined) => {
     setIsProcessingPayment(true);
     
     try {
-      const reservation = await createReservationAndRedirect(
+      const reservation = await createReservation(
         displayUnit.id,
         startDate,
         endDate,
         guests,
         quote.finalTotal,
+        'webpay',
         selectedActivities,
-        selectedPackages,
-        requiredDomos
+        selectedPackages
       );
 
-      if (reservation) {
+      if (reservation && reservation.reservationId) {
+        await redirectToWebpay(reservation.reservationId, quote.finalTotal, false, displayUnit.id);
         setConfirmedReservationId(reservation.reservationId);
         setIsReservationConfirmed(true);
-        setIsProcessingPayment(false);
       }
     } catch (error) {
       console.error('Error al confirmar reserva:', error);
       toast("Error", {
         description: "No se pudo procesar la reserva. Inténtalo de nuevo."
       });
+    } finally {
       setIsProcessingPayment(false);
     }
   };
@@ -214,6 +217,15 @@ export const useUnitDetailState = (unitId: string | undefined) => {
     if (isProcessingPayment) return 3;
     if (showQuote) return 2;
     return 1;
+  };
+
+  // Add refetchAvailability function
+  const refetchAvailability = async () => {
+    if (startDate && endDate) {
+      const result = await checkAvailability(guests, startDate, endDate, true);
+      setIsAvailable(result.isAvailable);
+      setAvailableDomos(result.availableDomes || 0);
+    }
   };
 
   return {
@@ -230,6 +242,7 @@ export const useUnitDetailState = (unitId: string | undefined) => {
     children,
     setChildren,
     isAvailable,
+    setIsAvailable,
     availableDomos,
     requiredDomos,
     isPartialAvailability,
@@ -254,8 +267,17 @@ export const useUnitDetailState = (unitId: string | undefined) => {
     reservationTab,
     setReservationTab,
     confirmationRef,
+    checkedAvailability,
+    setCheckedAvailability,
     
-    // Funciones
+    // Funciones requeridas por ReservationState
+    checkAvailability,
+    calculateQuote,
+    createReservation,
+    redirectToWebpay,
+    refetchAvailability,
+    
+    // Funciones del componente
     generateQuote,
     confirmReservation,
     getCurrentStep

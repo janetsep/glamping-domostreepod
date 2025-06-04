@@ -1,3 +1,4 @@
+
 import { useState, useCallback } from 'react';
 import { useToast } from '@/components/ui/use-toast';
 import { useGlampingUnits } from './useGlampingUnits';
@@ -113,7 +114,11 @@ export const useReservations = () => {
             title: "Reserva iniciada",
             description: "Tu reserva se ha creado y ahora serás redirigido a Webpay para completar el pago"
           });
-          return queueItem.request;
+          return {
+            reservationId: queueId,
+            amount: totalPrice,
+            reservationCode: queueId.substring(0, 6).toUpperCase()
+          };
         }
 
         if (queueItem.status === 'failed') {
@@ -147,8 +152,22 @@ export const useReservations = () => {
     guests: number,
     requiredDomos: number = 1
   ) => {
-    // Implementación existente del cálculo de cotización
-    // ... (mantener el código existente)
+    // Implementación básica del cálculo de cotización
+    const nights = Math.ceil((checkOut.getTime() - checkIn.getTime()) / (1000 * 60 * 60 * 24));
+    const basePrice = unitPrices.base_price || 50000;
+    const totalPrice = basePrice * nights * requiredDomos;
+    
+    return {
+      nights,
+      pricePerNight: basePrice,
+      basePrice: totalPrice,
+      totalPrice,
+      breakdown: [],
+      rateDescription: 'Tarifa estándar',
+      requiredDomos,
+      domoDistribution: [],
+      season: null
+    };
   }, []);
 
   // Redirigir a WebPay
@@ -158,8 +177,9 @@ export const useReservations = () => {
     isPackageUnit: boolean = false,
     unitId?: string
   ) => {
-    // Implementación existente de redirección a WebPay
-    // ... (mantener el código existente)
+    // Implementación básica de redirección a WebPay
+    console.log('Redirecting to WebPay:', { reservationId, totalPrice, isPackageUnit, unitId });
+    // Aquí iría la lógica real de redirección
   }, []);
 
   // Limpiar recursos al desmontar

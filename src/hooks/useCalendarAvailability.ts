@@ -1,3 +1,4 @@
+
 import { useState, useCallback, useEffect } from "react";
 import { useReservationsFetcher } from "./calendar/useReservationsFetcher";
 import { useAvailabilityCalculator } from "./calendar/useAvailabilityCalculator";
@@ -17,15 +18,27 @@ export const useCalendarAvailability = (unitId: string, currentMonth: Date, sele
   // Obtener reservas y la función refetch del fetcher
   const { reservations, isLoading: isLoadingReservations, refetch } = useReservationsFetcher(currentMonth);
   
-  // Calculate availability for the calendar view
-  const { calendarDays, isCalculating } = useAvailabilityCalculator(currentMonth, selectedDate, reservations);
+  // Calculate availability for the calendar view - fix the function call
+  const { availabilityDays, isLoading: isCalculating } = useAvailabilityCalculator();
   
   // Create date checker functions
   const { isDateAvailable: originalIsDateAvailable, isDateRangeAvailable } = useDateAvailabilityChecker(reservations);
 
+  // Calculate availability based on current month and selected date
+  useEffect(() => {
+    if (reservations) {
+      availabilityDays.calculateAvailability(
+        new Date(currentMonth.getFullYear(), currentMonth.getMonth(), 1),
+        new Date(currentMonth.getFullYear(), currentMonth.getMonth() + 1, 0),
+        selectedDate,
+        selectedDate
+      );
+    }
+  }, [currentMonth, selectedDate, reservations]);
+
   // Wrap isDateAvailable to use the same logic as the calendar
   const isDateAvailable = useCallback(async (date: Date, requiredUnits = 1) => {
-    const day = calendarDays.find(d => 
+    const day = availabilityDays.find(d => 
       d.date.getFullYear() === date.getFullYear() &&
       d.date.getMonth() === date.getMonth() &&
       d.date.getDate() === date.getDate()
@@ -45,13 +58,13 @@ export const useCalendarAvailability = (unitId: string, currentMonth: Date, sele
     }
 
     return originalIsDateAvailable(date, requiredUnits);
-  }, [calendarDays, originalIsDateAvailable]);
+  }, [availabilityDays, originalIsDateAvailable]);
 
   // Combine loading states
   const isLoading = isLoadingReservations || isCalculating;
 
   return { 
-    calendarDays, 
+    calendarDays: availabilityDays, 
     isLoading,
     isDateAvailable,
     isDateRangeAvailable,
