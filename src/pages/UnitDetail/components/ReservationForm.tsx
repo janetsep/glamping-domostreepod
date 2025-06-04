@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { DateSelector } from "@/components/unit-detail/DateSelector";
@@ -16,6 +17,10 @@ interface ReservationFormProps {
   setEndDate: (date: Date | undefined) => void;
   guests: number;
   setGuests: (guests: number) => void;
+  adults?: number;
+  children?: number;
+  setAdults?: (adults: number) => void;
+  setChildren?: (children: number) => void;
   requiredDomos?: number;
   isAvailable: boolean | null;
   onReservation: () => void;
@@ -44,6 +49,10 @@ export const ReservationForm = ({
   setEndDate,
   guests,
   setGuests,
+  adults = 2,
+  children = 0,
+  setAdults,
+  setChildren,
   requiredDomos = 1,
   isAvailable,
   onReservation,
@@ -108,6 +117,10 @@ export const ReservationForm = ({
         maxGuests={16} 
         guests={guests} 
         onGuestsChange={setGuests} 
+        adults={adults}
+        children={children}
+        onAdultsChange={setAdults}
+        onChildrenChange={setChildren}
         requiredDomos={requiredDomos} 
         isAvailable={isAvailable} 
         selectedActivities={selectedActivities} 

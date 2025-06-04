@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useReservations } from "@/hooks/reservations";
 import { supabase, type GlampingUnit } from "@/lib/supabase";
-import { useToast } from "@/components/ui/use-toast";
+import { useToast } from "@/hooks/use-toast";
 import { packageData } from "@/components/packages/packageData";
 import { Activity, ThemedPackage } from "@/types";
 
@@ -29,6 +29,8 @@ export const useUnitDetailState = (unitId: string | undefined) => {
   const [startDate, setStartDate] = useState<Date>();
   const [endDate, setEndDate] = useState<Date>();
   const [guests, setGuests] = useState<number>(1);
+  const [adults, setAdults] = useState<number>(2);
+  const [children, setChildren] = useState<number>(0);
   const [requiredDomos, setRequiredDomos] = useState<number>(1);
   const { checkAvailability, calculateQuote, createReservation, fetchGlampingUnits, redirectToWebpay } = useReservations();
   const { toast } = useToast();
@@ -72,6 +74,12 @@ export const useUnitDetailState = (unitId: string | undefined) => {
       endDate: endDate?.toISOString()
     });
   }, [startDate, endDate]);
+
+  // Efecto para actualizar el total de huéspedes cuando cambian adultos o niños
+  useEffect(() => {
+    const newGuests = adults + children;
+    setGuests(newGuests);
+  }, [adults, children]);
 
   // Efecto para actualizar requiredDomos cuando cambia el número de huéspedes
   useEffect(() => {
@@ -401,6 +409,10 @@ export const useUnitDetailState = (unitId: string | undefined) => {
     setEndDate,
     guests,
     setGuests,
+    adults,
+    setAdults,
+    children,
+    setChildren,
     requiredDomos,
     setRequiredDomos,
     checkAvailability,

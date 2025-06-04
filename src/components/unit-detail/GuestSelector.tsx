@@ -1,4 +1,7 @@
+
 import React from 'react';
+import { Plus, Minus } from 'lucide-react';
+import { Button } from '@/components/ui/button';
 
 interface GuestSelectorProps {
   value: number;
@@ -7,34 +10,40 @@ interface GuestSelectorProps {
   availableDomos?: number;
   label?: string;
   required?: boolean;
+  adults?: number;
+  children?: number;
+  onAdultsChange?: (adults: number) => void;
+  onChildrenChange?: (children: number) => void;
 }
 
 export const GuestSelector = ({
   value,
   onChange,
   maxGuests = 16,
-  availableDomos = 4, // Valor por defecto de 4 domos
+  availableDomos = 4,
   label = 'Huéspedes',
-  required = false
+  required = false,
+  adults = 2,
+  children = 0,
+  onAdultsChange,
+  onChildrenChange
 }: GuestSelectorProps) => {
   // Calcular el máximo de huéspedes basado en los domos disponibles
   const maxAllowedGuests = Math.min(maxGuests, availableDomos * 4);
   // Calcular domos requeridos según huéspedes seleccionados
   const requiredDomos = Math.ceil(value / 4);
-  
-  // Crear las opciones para el selector
-  const options = Array.from(
-    { length: maxAllowedGuests }, 
-    (_, i) => ({
-      value: i + 1,
-      label: `${i + 1} ${i === 0 ? 'huésped' : 'huéspedes'}`
-    })
-  );
 
-  const handleChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    const newValue = parseInt(e.target.value, 10);
-    if (!isNaN(newValue) && newValue > 0) {
-      onChange(newValue);
+  const handleAdultsChange = (newAdults: number) => {
+    if (newAdults >= 0 && newAdults + children <= maxAllowedGuests) {
+      onAdultsChange?.(newAdults);
+      onChange(newAdults + children);
+    }
+  };
+
+  const handleChildrenChange = (newChildren: number) => {
+    if (newChildren >= 0 && adults + newChildren <= maxAllowedGuests) {
+      onChildrenChange?.(newChildren);
+      onChange(adults + newChildren);
     }
   };
 
@@ -42,50 +51,88 @@ export const GuestSelector = ({
     <div className="w-full">
       <label 
         htmlFor="guest-selector"
-        className="block text-sm font-medium text-gray-700 mb-1"
+        className="block text-sm font-medium text-gray-700 mb-3"
       >
-        {label} {required && <span className="text-red-500">*</span>}
+        {label} (Máx. 4 por domo) {required && <span className="text-red-500">*</span>}
       </label>
       
-      <select
-        id="guest-selector"
-        value={value}
-        onChange={handleChange}
-        className="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-        disabled={maxAllowedGuests === 0}
-        required={required}
-        aria-labelledby="guest-selector-label"
-      >
-        {maxAllowedGuests === 0 ? (
-          <option value="">No hay disponibilidad</option>
-        ) : (
-          options.map((option) => (
-            <option key={option.value} value={option.value}>
-              {option.label}
-            </option>
-          ))
-        )}
-      </select>
+      <div className="border border-gray-300 rounded-lg p-4 space-y-4 bg-white">
+        {/* Selector de Adultos */}
+        <div className="flex items-center justify-between">
+          <span className="text-sm font-medium text-gray-700">Adultos:</span>
+          <div className="flex items-center space-x-3">
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              className="w-8 h-8 p-0 rounded-full"
+              onClick={() => handleAdultsChange(adults - 1)}
+              disabled={adults <= 0}
+            >
+              <Minus className="w-4 h-4" />
+            </Button>
+            <span className="w-8 text-center font-medium">{adults}</span>
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              className="w-8 h-8 p-0 rounded-full"
+              onClick={() => handleAdultsChange(adults + 1)}
+              disabled={adults + children >= maxAllowedGuests}
+            >
+              <Plus className="w-4 h-4" />
+            </Button>
+          </div>
+        </div>
+
+        {/* Selector de Niños */}
+        <div className="flex items-center justify-between">
+          <span className="text-sm font-medium text-gray-700">Niños:</span>
+          <div className="flex items-center space-x-3">
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              className="w-8 h-8 p-0 rounded-full"
+              onClick={() => handleChildrenChange(children - 1)}
+              disabled={children <= 0}
+            >
+              <Minus className="w-4 h-4" />
+            </Button>
+            <span className="w-8 text-center font-medium">{children}</span>
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              className="w-8 h-8 p-0 rounded-full"
+              onClick={() => handleChildrenChange(children + 1)}
+              disabled={adults + children >= maxAllowedGuests}
+            >
+              <Plus className="w-4 h-4" />
+            </Button>
+          </div>
+        </div>
+      </div>
       
       {maxAllowedGuests < maxGuests && availableDomos > 0 && (
-        <p className="text-amber-600 text-sm mt-1">
+        <p className="text-amber-600 text-sm mt-2">
           Solo hay {availableDomos} {availableDomos === 1 ? 'domo disponible' : 'domos disponibles'} 
           (máximo {maxAllowedGuests} huéspedes).
         </p>
       )}
       
       {maxAllowedGuests === 0 && (
-        <p className="text-red-600 text-sm mt-1">
+        <p className="text-red-600 text-sm mt-2">
           No hay domos disponibles para las fechas seleccionadas.
         </p>
       )}
       
-      <p className="text-gray-500 text-xs mt-1">
+      <p className="text-gray-500 text-xs mt-2">
         Cada domo puede alojar hasta 4 huéspedes
       </p>
       
       {value > 0 && (
-        <p className="text-blue-700 text-sm mt-1 font-medium">
+        <p className="text-blue-700 text-sm mt-2 font-medium">
           Se necesitan {requiredDomos} domo{requiredDomos > 1 ? 's' : ''} para {value} huésped{value > 1 ? 'es' : ''}.
         </p>
       )}

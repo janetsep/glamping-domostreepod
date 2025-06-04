@@ -1,3 +1,4 @@
+
 import { GlampingUnit } from "@/lib/supabase";
 import { Activity, ThemedPackage } from "@/types";
 import { ReservationForm } from "./components/ReservationForm";
@@ -12,6 +13,10 @@ interface ReservationPanelProps {
   setEndDate: (date: Date | undefined) => void;
   guests: number;
   setGuests: (guests: number) => void;
+  adults?: number;
+  children?: number;
+  setAdults?: (adults: number) => void;
+  setChildren?: (children: number) => void;
   requiredDomos?: number;
   isAvailable: boolean | null;
   showQuote: boolean;
@@ -45,6 +50,10 @@ export const ReservationPanel = ({
   setEndDate,
   guests,
   setGuests,
+  adults = 2,
+  children = 0,
+  setAdults,
+  setChildren,
   requiredDomos = 1,
   isAvailable,
   showQuote,
@@ -108,6 +117,10 @@ export const ReservationPanel = ({
             setEndDate={setEndDate} 
             guests={guests} 
             setGuests={setGuests} 
+            adults={adults}
+            children={children}
+            setAdults={setAdults}
+            setChildren={setChildren}
             requiredDomos={requiredDomos} 
             isAvailable={isAvailable} 
             onReservation={onReservation} 
