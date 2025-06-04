@@ -2,7 +2,7 @@
 import { useState } from "react";
 import { useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { ChevronDown } from "lucide-react";
+import { ChevronDown, ChevronRight } from "lucide-react";
 import { NavLink, SubMenuItem, navigationLinks } from "./navigationData";
 
 interface DesktopNavLinksProps {
@@ -19,6 +19,7 @@ const DesktopNavLinks = ({
   const location = useLocation();
   const isHomePage = location.pathname === "/" || location.pathname === "/index";
   const [openSubmenu, setOpenSubmenu] = useState<number | null>(null);
+  const [openNestedSubmenu, setOpenNestedSubmenu] = useState<string | null>(null);
 
   const handleClick = (link: NavLink, index: number) => {
     // If link has submenu, toggle it
@@ -44,6 +45,12 @@ const DesktopNavLinks = ({
   const handleSubmenuClick = (submenuItem: SubMenuItem, e: React.MouseEvent) => {
     e.stopPropagation();
     
+    // If submenu item has nested submenu, toggle it
+    if (submenuItem.submenu && submenuItem.submenu.length > 0) {
+      setOpenNestedSubmenu(openNestedSubmenu === submenuItem.name ? null : submenuItem.name);
+      return;
+    }
+    
     if (submenuItem.path) {
       navigateToPage(submenuItem.path);
     } else if (submenuItem.id) {
@@ -64,6 +71,33 @@ const DesktopNavLinks = ({
     }
     
     setOpenSubmenu(null);
+    setOpenNestedSubmenu(null);
+  };
+
+  const handleNestedSubmenuClick = (nestedItem: SubMenuItem, e: React.MouseEvent) => {
+    e.stopPropagation();
+    
+    if (nestedItem.path) {
+      navigateToPage(nestedItem.path);
+    } else if (nestedItem.id) {
+      if (isHomePage) {
+        if (nestedItem.tabId) {
+          scrollToSection(`${nestedItem.id}`);
+          window.location.hash = `${nestedItem.id}-${nestedItem.tabId}`;
+        } else {
+          scrollToSection(nestedItem.id);
+        }
+      } else {
+        if (nestedItem.tabId) {
+          navigateToPage(`/#${nestedItem.id}-${nestedItem.tabId}`);
+        } else {
+          navigateToPage(`/#${nestedItem.id}`);
+        }
+      }
+    }
+    
+    setOpenSubmenu(null);
+    setOpenNestedSubmenu(null);
   };
 
   return (
@@ -106,15 +140,44 @@ const DesktopNavLinks = ({
                 <div className="py-1">
                   {link.submenu!.map((submenuItem) => {
                     const SubIcon = submenuItem.icon;
+                    const hasNestedSubmenu = submenuItem.submenu && submenuItem.submenu.length > 0;
+                    const isNestedOpen = openNestedSubmenu === submenuItem.name;
+                    
                     return (
-                      <button
-                        key={submenuItem.name}
-                        onClick={(e) => handleSubmenuClick(submenuItem, e)}
-                        className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-cyan-50 hover:text-cyan-500 flex items-center gap-2"
-                      >
-                        <SubIcon className="h-4 w-4" />
-                        {submenuItem.name}
-                      </button>
+                      <div key={submenuItem.name} className="relative">
+                        <button
+                          onClick={(e) => handleSubmenuClick(submenuItem, e)}
+                          className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-cyan-50 hover:text-cyan-500 flex items-center gap-2 justify-between"
+                        >
+                          <div className="flex items-center gap-2">
+                            <SubIcon className="h-4 w-4" />
+                            {submenuItem.name}
+                          </div>
+                          {hasNestedSubmenu && (
+                            <ChevronRight className={`h-3 w-3 transition-transform duration-300 ${isNestedOpen ? 'rotate-90' : ''}`} />
+                          )}
+                        </button>
+                        
+                        {hasNestedSubmenu && isNestedOpen && (
+                          <div className="absolute left-full top-0 w-56 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 z-50 ml-1">
+                            <div className="py-1">
+                              {submenuItem.submenu!.map((nestedItem) => {
+                                const NestedIcon = nestedItem.icon;
+                                return (
+                                  <button
+                                    key={nestedItem.name}
+                                    onClick={(e) => handleNestedSubmenuClick(nestedItem, e)}
+                                    className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-cyan-50 hover:text-cyan-500 flex items-center gap-2"
+                                  >
+                                    <NestedIcon className="h-4 w-4" />
+                                    {nestedItem.name}
+                                  </button>
+                                );
+                              })}
+                            </div>
+                          </div>
+                        )}
+                      </div>
                     );
                   })}
                 </div>

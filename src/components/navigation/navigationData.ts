@@ -15,7 +15,8 @@ import {
   TreePine,
   Gamepad,
   PartyPopper,
-  Tent
+  Tent,
+  Activity
 } from "lucide-react";
 
 export interface NavLink {
@@ -33,6 +34,7 @@ export interface SubMenuItem {
   path: string | null;
   icon: any;
   tabId?: string; // Added tabId property for targeting specific tab
+  submenu?: SubMenuItem[]; // Added submenu property for nested menus
 }
 
 // Navigation links with icons - Reordenadas según solicitud
@@ -55,11 +57,19 @@ export const navigationLinks: NavLink[] = [
     path: null, 
     description: "Descubre lo que ofrecemos",
     submenu: [
-      { name: "Recorridos y Paisajes", id: "benefits", path: null, icon: Mountain, tabId: "recorridos" },
-      { name: "Historias y Cultura Local", id: "benefits", path: null, icon: Book, tabId: "historias" },
-      { name: "Baño de Bosque", id: "benefits", path: null, icon: TreePine, tabId: "bosque" },
-      { name: "Juegos de Mesa", id: "benefits", path: null, icon: Gamepad, tabId: "juegos" },
-      { name: "Celebraciones", id: "celebrations", path: null, icon: PartyPopper }
+      { name: "Celebraciones", id: "celebrations", path: null, icon: PartyPopper },
+      { 
+        name: "Actividades", 
+        id: "benefits", 
+        path: null, 
+        icon: Activity,
+        submenu: [
+          { name: "Recorridos y Paisajes", id: "benefits", path: null, icon: Mountain, tabId: "recorridos" },
+          { name: "Historias y Cultura Local", id: "benefits", path: null, icon: Book, tabId: "historias" },
+          { name: "Baño de Bosque", id: "benefits", path: null, icon: TreePine, tabId: "bosque" },
+          { name: "Juegos de Mesa", id: "benefits", path: null, icon: Gamepad, tabId: "juegos" }
+        ]
+      }
     ]
   },
   { name: "Contacto", id: "contact", icon: Mail, path: null }

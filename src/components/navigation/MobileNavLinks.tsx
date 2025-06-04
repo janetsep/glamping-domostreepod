@@ -1,7 +1,7 @@
 
 import { useState } from "react";
 import { navigationLinks } from "./navigationData";
-import { ChevronDown } from "lucide-react";
+import { ChevronDown, ChevronRight } from "lucide-react";
 import { NavLink, SubMenuItem } from "./navigationData";
 
 interface MobileNavLinksProps {
@@ -16,6 +16,7 @@ const MobileNavLinks = ({
   isHomePage
 }: MobileNavLinksProps) => {
   const [openSubmenu, setOpenSubmenu] = useState<number | null>(null);
+  const [openNestedSubmenu, setOpenNestedSubmenu] = useState<string | null>(null);
   
   const handleClick = (link: NavLink, index: number) => {
     if (link.submenu && link.submenu.length > 0) {
@@ -40,6 +41,12 @@ const MobileNavLinks = ({
   const handleSubmenuClick = (submenuItem: SubMenuItem, e: React.MouseEvent) => {
     e.stopPropagation();
     
+    // If submenu item has nested submenu, toggle it
+    if (submenuItem.submenu && submenuItem.submenu.length > 0) {
+      setOpenNestedSubmenu(openNestedSubmenu === submenuItem.name ? null : submenuItem.name);
+      return;
+    }
+    
     if (submenuItem.path) {
       navigateToPage(submenuItem.path);
     } else if (submenuItem.id) {
@@ -60,6 +67,33 @@ const MobileNavLinks = ({
     }
     
     setOpenSubmenu(null);
+    setOpenNestedSubmenu(null);
+  };
+
+  const handleNestedSubmenuClick = (nestedItem: SubMenuItem, e: React.MouseEvent) => {
+    e.stopPropagation();
+    
+    if (nestedItem.path) {
+      navigateToPage(nestedItem.path);
+    } else if (nestedItem.id) {
+      if (isHomePage) {
+        if (nestedItem.tabId) {
+          scrollToSection(`${nestedItem.id}`);
+          window.location.hash = `${nestedItem.id}-${nestedItem.tabId}`;
+        } else {
+          scrollToSection(nestedItem.id);
+        }
+      } else {
+        if (nestedItem.tabId) {
+          navigateToPage(`/#${nestedItem.id}-${nestedItem.tabId}`);
+        } else {
+          navigateToPage(`/#${nestedItem.id}`);
+        }
+      }
+    }
+    
+    setOpenSubmenu(null);
+    setOpenNestedSubmenu(null);
   };
 
   return (
@@ -98,17 +132,44 @@ const MobileNavLinks = ({
               <div className="ml-14 space-y-1 mt-1 mb-2">
                 {link.submenu!.map((submenuItem) => {
                   const SubIcon = submenuItem.icon;
+                  const hasNestedSubmenu = submenuItem.submenu && submenuItem.submenu.length > 0;
+                  const isNestedOpen = openNestedSubmenu === submenuItem.name;
+                  
                   return (
-                    <button
-                      key={submenuItem.name}
-                      onClick={(e) => handleSubmenuClick(submenuItem, e)}
-                      className="group flex items-center gap-3 w-full py-3 px-4 text-left text-base hover:translate-x-1 transition-all duration-300"
-                    >
-                      <SubIcon className="h-4 w-4 text-cyan-400" />
-                      <span className="text-gray-700 group-hover:text-cyan-500 transition-colors duration-300">
-                        {submenuItem.name}
-                      </span>
-                    </button>
+                    <div key={submenuItem.name} className="space-y-1">
+                      <button
+                        onClick={(e) => handleSubmenuClick(submenuItem, e)}
+                        className="group flex items-center gap-3 w-full py-3 px-4 text-left text-base hover:translate-x-1 transition-all duration-300"
+                      >
+                        <SubIcon className="h-4 w-4 text-cyan-400" />
+                        <span className="text-gray-700 group-hover:text-cyan-500 transition-colors duration-300 flex-grow">
+                          {submenuItem.name}
+                        </span>
+                        {hasNestedSubmenu && (
+                          <ChevronRight className={`h-3 w-3 transition-transform duration-300 ${isNestedOpen ? 'rotate-90' : ''}`} />
+                        )}
+                      </button>
+                      
+                      {hasNestedSubmenu && isNestedOpen && (
+                        <div className="ml-8 space-y-1">
+                          {submenuItem.submenu!.map((nestedItem) => {
+                            const NestedIcon = nestedItem.icon;
+                            return (
+                              <button
+                                key={nestedItem.name}
+                                onClick={(e) => handleNestedSubmenuClick(nestedItem, e)}
+                                className="group flex items-center gap-3 w-full py-2 px-4 text-left text-sm hover:translate-x-1 transition-all duration-300"
+                              >
+                                <NestedIcon className="h-3 w-3 text-cyan-400" />
+                                <span className="text-gray-600 group-hover:text-cyan-500 transition-colors duration-300">
+                                  {nestedItem.name}
+                                </span>
+                              </button>
+                            );
+                          })}
+                        </div>
+                      )}
+                    </div>
                   );
                 })}
               </div>
