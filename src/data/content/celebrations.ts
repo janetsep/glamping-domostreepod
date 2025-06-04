@@ -1,8 +1,7 @@
 
-
 // Datos para las diferentes celebraciones y experiencias especiales
 export const celebrationsContent = {
-  title: "Experiencias Especiales",
+  title: "Celebraciones",
   subtitle: "Celebraciones únicas en un entorno natural incomparable",
   
   celebrations: [
@@ -37,4 +36,3 @@ export const celebrationsContent = {
 export const getCelebrationById = (id: string) => {
   return celebrationsContent.celebrations.find(celebration => celebration.id === id);
 };
-
