@@ -26,7 +26,7 @@ const Packages = ({
       
       <div className="container mx-auto px-4">
         <h2 className="text-3xl md:text-4xl font-display font-bold text-primary mb-4 text-center">Descubre Nuestros Domos</h2>
-        <p className="text-xl text-center text-gray-600 mb-10 max-w-3xl mx-auto">Hospedaje para cada tipo de viajero.</p>
+        <p className="text-xl text-center text-gray-600 mb-10 max-w-3xl mx-auto">Hospedaje para cada tipo de huesped.</p>
         
         {/* Tipos de viajero con efecto hover */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
@@ -49,18 +49,14 @@ const Packages = ({
                   <Button className="bg-cyan-600 hover:bg-cyan-700 text-white" onClick={e => {
                 e.stopPropagation();
                 handleTravelerTypeClick(type.id);
-              }}>
-                    Ver experiencia
-                  </Button>
+              }}>Detalles</Button>
                 </div>
               </div>
             </div>)}
         </div>
         
         <div className="flex justify-center mt-8">
-          <Button size="lg" onClick={() => navigate('/unit/48a7a330-ebae-4e79-8f53-31a84ac900d9')} className="bg-cyan-600 hover:bg-cyan-700">
-            Reservar ahora
-          </Button>
+          <Button size="lg" onClick={() => navigate('/unit/48a7a330-ebae-4e79-8f53-31a84ac900d9')} className="bg-cyan-600 hover:bg-cyan-700">Reservar</Button>
         </div>
       </div>
     </section>;
