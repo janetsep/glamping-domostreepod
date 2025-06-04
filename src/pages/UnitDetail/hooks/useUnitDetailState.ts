@@ -402,6 +402,13 @@ export const useUnitDetailState = (unitId: string | undefined) => {
     }
   };
 
+  const getCurrentStep = () => {
+    if (isReservationConfirmed) return 4;
+    if (isProcessingPayment) return 3;
+    if (showQuote) return 2;
+    return 1;
+  };
+
   return {
     startDate,
     setStartDate,
@@ -428,7 +435,7 @@ export const useUnitDetailState = (unitId: string | undefined) => {
     setShowQuote,
     isReservationConfirmed,
     setIsReservationConfirmed,
-    displayUnit,
+    displayUnit: unit || fallbackUnit,
     isProcessingPayment,
     setIsProcessingPayment,
     paymentDetails,
@@ -455,6 +462,7 @@ export const useUnitDetailState = (unitId: string | undefined) => {
     alternativeDates,
     setAlternativeDates,
     loadingAvailability,
-    availabilityError
+    availabilityError,
+    getCurrentStep
   };
 };

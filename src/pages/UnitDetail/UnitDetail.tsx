@@ -72,6 +72,8 @@ const UnitDetail = () => {
                     isPartialAvailability={controller.state.isPartialAvailability}
                     availableDomos={controller.state.availableDomos}
                     alternativeDates={controller.state.alternativeDates}
+                    getCurrentStep={controller.state.getCurrentStep}
+                    isReservationConfirmed={controller.state.isReservationConfirmed}
                   />
                 )}
               </div>

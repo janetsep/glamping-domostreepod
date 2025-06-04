@@ -3,6 +3,7 @@ import { GlampingUnit } from "@/lib/supabase";
 import { Activity, ThemedPackage } from "@/types";
 import { ReservationForm } from "./components/ReservationForm";
 import { QuoteSummary } from "./components/QuoteSummary";
+import { ReservationProgress } from "@/components/unit-detail/ReservationProgress";
 import { useEffect } from "react";
 
 interface ReservationPanelProps {
@@ -40,6 +41,8 @@ interface ReservationPanelProps {
     startDate: Date;
     endDate: Date;
   }[];
+  getCurrentStep?: () => number;
+  isReservationConfirmed?: boolean;
 }
 
 export const ReservationPanel = ({
@@ -73,7 +76,9 @@ export const ReservationPanel = ({
   setReservationTab,
   isPartialAvailability = false,
   availableDomos = 0,
-  alternativeDates = []
+  alternativeDates = [],
+  getCurrentStep,
+  isReservationConfirmed = false
 }: ReservationPanelProps) => {
   // Efecto para depurar cambios en las fechas
   useEffect(() => {
@@ -101,8 +106,18 @@ export const ReservationPanel = ({
     setEndDate(end);
   };
 
+  const currentStep = getCurrentStep ? getCurrentStep() : 1;
+
   return (
     <>
+      {/* Indicador de progreso */}
+      <ReservationProgress 
+        currentStep={currentStep}
+        showQuote={showQuote}
+        isProcessingPayment={isProcessingPayment}
+        isReservationConfirmed={isReservationConfirmed}
+      />
+
       <h2 className="text-2xl font-display font-bold mb-6">
         Reserva tu experiencia en Domos TreePod
       </h2>
