@@ -1,107 +1,56 @@
+import { useQuery } from '@tanstack/react-query';
+import { supabase, type GlampingUnit } from '@/lib/supabase';
+import { packageData } from '@/components/packages/packageData';
 
-import { useState } from 'react';
-import { useAvailabilityCheck } from './useAvailabilityCheck';
-import { usePricing } from './usePricing';
-import { useReservationCreation } from './useReservationCreation';
-import { usePayment } from './usePayment';
-import { useGlampingUnits } from './useGlampingUnits';
-import { useToast } from '@/components/ui/use-toast';
-import { Activity, ThemedPackage } from '@/types';
-import { AvailabilityManager } from "./utils/availabilityManager";
-import { ReservationQueue } from "./utils/reservationQueue";
+export const useGlampingUnits = () => {
+  return useQuery({
+    queryKey: ['glamping-units'],
+    queryFn: async (): Promise<GlampingUnit[]> => {
+      try {
+        console.log('Fetching glamping units from Supabase...');
+        const { data, error } = await supabase
+          .from('glamping_units')
+          .select('*')
+          .order('name');
 
-export const useReservations = () => {
-  const [isLoading, setIsLoading] = useState(false);
-  const { toast } = useToast();
-  
-  // Obtener instancias de los managers
-  const availabilityManager = AvailabilityManager.getInstance();
-  const reservationQueue = ReservationQueue.getInstance();
+        if (error) {
+          console.error('Error fetching units:', error);
+          throw error;
+        }
 
-  // Crear una función adaptadora para checkAvailability que coincida con la firma esperada por useReservationCreation
-  const checkAvailabilityForCreation = async (
-    unitId: string,
-    checkIn: Date,
-    checkOut: Date,
-    guests: number,
-    requiredDomos: number
-  ): Promise<boolean> => {
-    const result = await availabilityManager.checkAvailability(
-      guests,
-      { start: checkIn, end: checkOut }
-    );
+        if (data && data.length > 0) {
+          console.log('Units found:', data.length);
+          return data as GlampingUnit[];
+        }
 
-    return result.isAvailable;
-  };
-  
-  const { calculateQuote } = usePricing();
-  const { createReservation } = useReservationCreation({ 
-    onSuccess: () => {},
-    onError: () => {}
-  });
-  const { redirectToWebpay } = usePayment({ setIsLoading });
-  const { fetchGlampingUnits } = useGlampingUnits({ setIsLoading, toast });
-  
-  const createReservationAndRedirect = async (
-    unitId: string,
-    checkIn: Date,
-    checkOut: Date,
-    guests: number,
-    totalPrice: number,
-    selectedActivities: Activity[] = [],
-    selectedPackages: ThemedPackage[] = [],
-    requiredDomos: number
-  ) => {
-    setIsLoading(true);
-    
-    try {
-      const activityIds = selectedActivities.map(a => a.id);
-      const packageIds = selectedPackages.map(p => p.id);
-      
-      const reservation = await createReservation(
-        unitId,
-        checkIn,
-        checkOut,
-        guests,
-        totalPrice,
-        'webpay',
-        activityIds,
-        packageIds,
-        requiredDomos
-      );
-      
-      if (reservation && reservation.reservationId) {
-        await redirectToWebpay(reservation.reservationId, totalPrice, false, unitId);
-      } else {
-        setIsLoading(false);
+        console.log('No units found, using fallback data');
+        // Fallback to packageData
+        return packageData.map((packageItem): GlampingUnit => ({
+          id: packageItem.id,
+          name: packageItem.title,
+          description: packageItem.detailedDescription || packageItem.description,
+          max_guests: packageItem.maxGuests || 4,
+          prices: {
+            base_price: packageItem.price
+          },
+          image_url: packageItem.image,
+        }));
+      } catch (error) {
+        console.error('Error in useGlampingUnits:', error);
+        // Return fallback data on error
+        return packageData.map((packageItem): GlampingUnit => ({
+          id: packageItem.id,
+          name: packageItem.title,
+          description: packageItem.detailedDescription || packageItem.description,
+          max_guests: packageItem.maxGuests || 4,
+          prices: {
+            base_price: packageItem.price
+          },
+          image_url: packageItem.image,
+        }));
       }
-      
-      return reservation;
-    } catch (error) {
-      console.error('Error in createReservationAndRedirect:', error);
-      toast({
-        variant: "destructive",
-        title: "Error",
-        description: "No se pudo procesar tu reserva. Por favor, inténtalo de nuevo."
-      });
-      setIsLoading(false);
-      return null;
-    }
-  };
-  
-  return {
-    isLoading,
-    setIsLoading,
-    checkAvailability: (guests, startDate, endDate, forceRefresh) =>
-      availabilityManager.checkAvailability(guests, { start: startDate, end: endDate }, forceRefresh),
-      
-    checkGeneralAvailability: (startDate, endDate, requiredDomos) => 
-      availabilityManager.checkAvailability(requiredDomos * 4, { start: startDate, end: endDate }),
-      
-    calculateQuote,
-    createReservation,
-    redirectToWebpay,
-    fetchGlampingUnits,
-    createReservationAndRedirect
-  };
+    },
+    staleTime: 5 * 60 * 1000, // 5 minutes
+    gcTime: 10 * 60 * 1000, // 10 minutes
+  });
 };

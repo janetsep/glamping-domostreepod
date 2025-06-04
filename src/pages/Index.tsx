@@ -1,6 +1,5 @@
 
 import Hero from "@/components/Hero";
-import Features from "@/components/Features";
 import Gallery from "@/components/Gallery";
 import TravelerTypes from "@/components/TravelerTypes";
 import Packages from "@/components/Packages";
@@ -18,7 +17,6 @@ const Index = () => {
   return (
     <div className="min-h-screen">
       <Hero />
-      <Features />
       <CultureSection />
       <Gallery />
       <TravelerTypes />
