@@ -30,6 +30,8 @@ export interface AvailabilityCalendarDay {
   price?: number;
   reservedDomos?: number;
   totalDomos?: number;
+  availableUnits?: number;
+  totalUnits?: number;
 }
 
 export interface Feature {

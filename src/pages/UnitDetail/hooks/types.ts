@@ -1,46 +1,25 @@
-import { Activity, ThemedPackage } from '@/types';
-import { GlampingUnit } from '@/lib/supabase';
-
-export interface ReservationResponse {
-  id: string;
-  reservationId: string;
-  amount: number;
-  is_package_unit?: boolean;
-}
 
 export interface ReservationState {
-  displayUnit: GlampingUnit;
-  startDate: Date;
-  endDate: Date;
+  startDate?: Date;
+  endDate?: Date;
   guests: number;
-  quote: {
-    nights: number;
-    basePrice: number;
-    totalPrice: number;
-    selectedActivities: Activity[];
-    selectedPackages: ThemedPackage[];
-  };
+  adults: number;
+  children: number;
   requiredDomos: number;
-  selectedActivities: Activity[];
-  selectedPackages: ThemedPackage[];
-  setIsProcessingPayment: (isProcessing: boolean) => void;
-  createReservation: (
-    unitIds: string[],
-    checkIn: Date,
-    checkOut: Date,
-    guests: number,
-    totalPrice: number,
-    paymentMethod: string,
-    activityIds: string[],
-    packageIds: string[],
-    requiredDomos?: number,
-    availableUnitIds?: string[],
-    clientInfo?: {
-      name?: string;
-      email?: string;
-      phone?: string;
-    }
-  ) => Promise<ReservationResponse | null>;
-  redirectToWebpay: (reservationId: string, amount: number) => void;
-  refetchAvailability: () => void;
-} 
+  isAvailable: boolean | null;
+  availableDomos: number;
+  isPartialAvailability: boolean;
+  alternativeDates: { startDate: Date; endDate: Date }[];
+  showQuote: boolean;
+  quote: any;
+  isProcessingPayment: boolean;
+  isReservationConfirmed: boolean;
+  confirmedReservationId: string | null;
+  paymentDetails: any;
+  selectedActivities: any[];
+  selectedPackages: any[];
+  activitiesTotal: number;
+  packagesTotal: number;
+  reservationTab: string;
+  refetchAvailability?: () => void;
+}
