@@ -1,3 +1,4 @@
+
 import { 
   Home, 
   House,
@@ -34,10 +35,19 @@ export interface SubMenuItem {
   tabId?: string; // Added tabId property for targeting specific tab
 }
 
-// Navigation links with icons
+// Navigation links with icons - Reordenadas según solicitud
 export const navigationLinks: NavLink[] = [
-  { name: "Inicio", path: "/", icon: Home, id: null },
-  { name: "Domos", id: "packages", icon: House, path: null, description: "Nuestros opciones para cada tipo de viajero" },
+  { 
+    name: "Domos", 
+    id: "packages", 
+    icon: House, 
+    path: null, 
+    description: "Nuestras opciones para cada tipo de viajero",
+    submenu: [
+      { name: "Galería", id: "gallery", path: null, icon: ImageIcon },
+      { name: "Cómo llegar", id: "location", path: null, icon: Navigation }
+    ]
+  },
   { 
     name: "Experiencias", 
     id: "benefits", 
@@ -48,11 +58,9 @@ export const navigationLinks: NavLink[] = [
       { name: "Recorridos y Paisajes", id: "benefits", path: null, icon: Mountain, tabId: "recorridos" },
       { name: "Historias y Cultura Local", id: "benefits", path: null, icon: Book, tabId: "historias" },
       { name: "Baño de Bosque", id: "benefits", path: null, icon: TreePine, tabId: "bosque" },
-      { name: "Juegos de Mesa", id: "benefits", path: null, icon: Gamepad, tabId: "juegos" }
+      { name: "Juegos de Mesa", id: "benefits", path: null, icon: Gamepad, tabId: "juegos" },
+      { name: "Celebraciones", id: "celebrations", path: null, icon: PartyPopper }
     ]
   },
-  { name: "Celebraciones", id: "celebrations", icon: PartyPopper, path: null, description: "Eventos especiales" },
-  { name: "Galería", id: "gallery", icon: ImageIcon, path: null },
-  { name: "Cómo llegar", id: "location", icon: Navigation, path: null, description: "Sur de Chile" },
   { name: "Contacto", id: "contact", icon: Mail, path: null }
 ];

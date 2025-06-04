@@ -18,7 +18,6 @@ const MobileNavLinks = ({
   const [openSubmenu, setOpenSubmenu] = useState<number | null>(null);
   
   const handleClick = (link: NavLink, index: number) => {
-    // If link has submenu, toggle it
     if (link.submenu && link.submenu.length > 0) {
       setOpenSubmenu(openSubmenu === index ? null : index);
       return;
@@ -39,23 +38,19 @@ const MobileNavLinks = ({
   };
 
   const handleSubmenuClick = (submenuItem: SubMenuItem, e: React.MouseEvent) => {
-    e.stopPropagation(); // Prevent the parent menu from closing
+    e.stopPropagation();
     
     if (submenuItem.path) {
       navigateToPage(submenuItem.path);
     } else if (submenuItem.id) {
       if (isHomePage) {
-        // If the submenu has a specific tab to navigate to
         if (submenuItem.tabId) {
-          // Navigate to the section with tab hash
           scrollToSection(`${submenuItem.id}`);
-          // Set the hash in the URL for the specific tab
           window.location.hash = `${submenuItem.id}-${submenuItem.tabId}`;
         } else {
           scrollToSection(submenuItem.id);
         }
       } else {
-        // If not on homepage, navigate with appropriate hash
         if (submenuItem.tabId) {
           navigateToPage(`/#${submenuItem.id}-${submenuItem.tabId}`);
         } else {
@@ -64,7 +59,7 @@ const MobileNavLinks = ({
       }
     }
     
-    setOpenSubmenu(null); // Close the submenu after clicking
+    setOpenSubmenu(null);
   };
 
   return (
@@ -99,7 +94,6 @@ const MobileNavLinks = ({
               )}
             </button>
             
-            {/* Submenu for mobile */}
             {hasSubmenu && isOpen && (
               <div className="ml-14 space-y-1 mt-1 mb-2">
                 {link.submenu!.map((submenuItem) => {
