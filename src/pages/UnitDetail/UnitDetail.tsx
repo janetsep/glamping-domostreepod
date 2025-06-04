@@ -25,7 +25,13 @@ const UnitDetail = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
           {controller.state.displayUnit && (
             <>
-              <UnitContent unit={controller.state.displayUnit} />
+              <UnitContent 
+                unit={controller.state.displayUnit} 
+                currentStep={controller.state.getCurrentStep()}
+                showQuote={controller.state.showQuote}
+                isProcessingPayment={controller.state.isProcessingPayment}
+                isReservationConfirmed={controller.state.isReservationConfirmed}
+              />
 
               <div className="bg-secondary/20 p-6 rounded-lg shadow-sm">
                 {controller.state.isReservationConfirmed ? (
