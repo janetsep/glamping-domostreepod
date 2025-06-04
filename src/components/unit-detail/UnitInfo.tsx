@@ -1,24 +1,14 @@
-
 import type { GlampingUnit } from "@/lib/supabase";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { 
-  MapPin, 
-  Users, 
-  Bed, 
-  Bath, 
-  Star,
-  Wifi,
-  Trees
-} from "lucide-react";
-
+import { MapPin, Users, Bed, Bath, Star, Wifi, Trees } from "lucide-react";
 interface UnitInfoProps {
   unit: GlampingUnit;
 }
-
-export const UnitInfo = ({ unit }: UnitInfoProps) => {
-  return (
-    <Card>
+export const UnitInfo = ({
+  unit
+}: UnitInfoProps) => {
+  return <Card>
       <CardHeader>
         <div className="flex items-start justify-between">
           <div>
@@ -67,14 +57,13 @@ export const UnitInfo = ({ unit }: UnitInfoProps) => {
             <span>Bosque nativo</span>
           </div>
           <div className="flex items-center gap-2 text-sm text-gray-600">
-            <Bath className="w-4 h-4" />
-            <span>Tinajas termales*</span>
+            
+            
           </div>
           <div className="flex items-center gap-2 text-sm text-gray-600">
-            <span className="text-xs">*Previa reserva</span>
+            
           </div>
         </div>
       </CardContent>
-    </Card>
-  );
+    </Card>;
 };
