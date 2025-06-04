@@ -16,7 +16,8 @@ import {
   Gamepad,
   PartyPopper,
   Tent,
-  Activity
+  Activity,
+  Eye
 } from "lucide-react";
 
 export interface NavLink {
@@ -46,6 +47,7 @@ export const navigationLinks: NavLink[] = [
     path: null, 
     description: "Nuestras opciones para cada tipo de viajero",
     submenu: [
+      { name: "Descubre Nuestros Domos", id: "packages", path: null, icon: Eye },
       { name: "Galería", id: "gallery", path: null, icon: ImageIcon },
       { name: "Cómo llegar", id: "location", path: null, icon: Navigation }
     ]
