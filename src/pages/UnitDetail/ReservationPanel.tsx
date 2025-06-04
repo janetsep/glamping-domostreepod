@@ -3,6 +3,7 @@ import { GlampingUnit } from "@/lib/supabase";
 import { Activity, ThemedPackage } from "@/types";
 import { ReservationForm } from "./components/ReservationForm";
 import { QuoteSummary } from "./components/QuoteSummary";
+import { CompactReservationProgress } from "@/components/unit-detail/CompactReservationProgress";
 import { useEffect } from "react";
 
 interface ReservationPanelProps {
@@ -106,10 +107,20 @@ export const ReservationPanel = ({
   };
 
   return (
-    <>
-      <h2 className="text-2xl font-display font-bold mb-6">
+    <div className="sticky top-0 h-screen overflow-y-auto bg-white border-l border-gray-200 p-6">
+      <h2 className="text-2xl font-display font-bold mb-4">
         Reserva tu experiencia en Domos TreePod
       </h2>
+      
+      {/* Barra de progreso debajo del título */}
+      <div className="mb-6">
+        <CompactReservationProgress 
+          currentStep={getCurrentStep ? getCurrentStep() : 1}
+          showQuote={showQuote}
+          isProcessingPayment={isProcessingPayment}
+          isReservationConfirmed={isReservationConfirmed}
+        />
+      </div>
       
       <div className="space-y-4">
         {!showQuote ? (
@@ -160,6 +171,6 @@ export const ReservationPanel = ({
           )
         )}
       </div>
-    </>
+    </div>
   );
 };

@@ -1,37 +1,21 @@
 export interface Activity {
   id: string;
+  name: string;
   title: string;
   description: string;
   price: number;
-  image: string;
   duration?: string;
-  maxParticipants?: number;
+  category?: string;
+  image_url?: string;
 }
 
 export interface ThemedPackage {
   id: string;
+  name: string;
   title: string;
   description: string;
   price: number;
-  image: string;
-  detailedDescription: string;
-  activities?: Activity[];
-}
-
-export interface AvailabilityCalendarDay {
-  date: Date;
-  isAvailable: boolean;
-  isSelected: boolean;
-  availableUnits?: number;
-  totalUnits?: number;
-}
-
-export interface Feature {
-  icon: React.ReactNode;
-  text: string;
-}
-
-export interface Policy {
-  icon: React.ReactNode;
-  text: string;
+  duration?: string;
+  includes?: string[];
+  image_url?: string;
 }

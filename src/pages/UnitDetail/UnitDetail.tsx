@@ -7,79 +7,108 @@ import { UnitHeader } from "./UnitHeader";
 import { UnitContent } from "./UnitContent";
 import { ReservationPanel } from "./ReservationPanel";
 import { ReservationConfirmation } from "./ReservationConfirmation";
-import { useUnitDetailController } from "./hooks/useUnitDetailController";
+import { useUnitDetailState } from "./hooks/useUnitDetailState";
 
 const UnitDetail = () => {
   const { unitId } = useParams<{ unitId: string }>();
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   
-  // Use our controller hook that combines all the functionality
-  const controller = useUnitDetailController(unitId, searchParams);
+  // Use our state hook
+  const state = useUnitDetailState(unitId);
 
   return (
     <div className="min-h-screen bg-white pt-24">
       <div className="container mx-auto px-4">
         <UnitHeader navigate={navigate} />
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-          {controller.state.displayUnit && (
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-0">
+          {state.displayUnit && (
             <>
-              <UnitContent 
-                unit={controller.state.displayUnit} 
-                currentStep={controller.state.getCurrentStep()}
-                showQuote={controller.state.showQuote}
-                isProcessingPayment={controller.state.isProcessingPayment}
-                isReservationConfirmed={controller.state.isReservationConfirmed}
-              />
+              {/* Contenido scrollable del domo - 2/3 del ancho */}
+              <div className="lg:col-span-2">
+                <UnitContent 
+                  unit={state.displayUnit} 
+                  currentStep={state.getCurrentStep()}
+                  showQuote={state.showQuote}
+                  isProcessingPayment={state.isProcessingPayment}
+                  isReservationConfirmed={state.isReservationConfirmed}
+                />
+              </div>
 
-              <div className="bg-secondary/20 p-6 rounded-lg shadow-sm">
-                {controller.state.isReservationConfirmed ? (
-                  <ReservationConfirmation 
-                    ref={controller.state.confirmationRef}
-                    startDate={controller.state.startDate}
-                    endDate={controller.state.endDate}
-                    guests={controller.state.guests}
-                    quote={controller.state.quote}
-                    paymentDetails={controller.state.paymentDetails}
-                    onNewQuote={controller.actions.handleNewQuote}
-                    reservationId={controller.state.confirmedReservationId}
-                  />
+              {/* Panel de reserva fijo - 1/3 del ancho */}
+              <div className="lg:col-span-1">
+                {state.isReservationConfirmed ? (
+                  <div className="sticky top-0 h-screen overflow-y-auto bg-white border-l border-gray-200 p-6">
+                    <ReservationConfirmation 
+                      ref={state.confirmationRef}
+                      startDate={state.startDate}
+                      endDate={state.endDate}
+                      guests={state.guests}
+                      quote={state.quote}
+                      paymentDetails={state.paymentDetails}
+                      onNewQuote={() => {
+                        state.setShowQuote(false);
+                        state.setIsReservationConfirmed(false);
+                      }}
+                      reservationId={state.confirmedReservationId}
+                    />
+                  </div>
                 ) : (
                   <ReservationPanel
-                    displayUnit={controller.state.displayUnit}
-                    startDate={controller.state.startDate}
-                    endDate={controller.state.endDate}
-                    setStartDate={controller.state.setStartDate}
-                    setEndDate={controller.state.setEndDate}
-                    guests={controller.state.guests}
-                    setGuests={controller.state.setGuests}
-                    adults={controller.state.adults}
-                    children={controller.state.children}
-                    setAdults={controller.state.setAdults}
-                    setChildren={controller.state.setChildren}
-                    requiredDomos={controller.state.requiredDomos}
-                    isAvailable={controller.state.isAvailable}
-                    showQuote={controller.state.showQuote}
-                    quote={controller.state.quote}
-                    onReservation={controller.actions.handleReservation}
-                    onNewQuote={controller.actions.handleNewQuote}
-                    onConfirmReservation={controller.actions.handleConfirmReservation}
-                    isProcessingPayment={controller.state.isProcessingPayment}
-                    selectedActivities={controller.state.selectedActivities}
-                    selectedPackages={controller.state.selectedPackages}
-                    onActivityToggle={controller.actions.handleActivityToggle}
-                    onPackageToggle={controller.actions.handlePackageToggle}
-                    activitiesTotal={controller.state.activitiesTotal}
-                    packagesTotal={controller.state.packagesTotal}
-                    getUpdatedQuoteTotal={controller.actions.getUpdatedQuoteTotal}
-                    reservationTab={controller.state.reservationTab}
-                    setReservationTab={controller.state.setReservationTab}
-                    isPartialAvailability={controller.state.isPartialAvailability}
-                    availableDomos={controller.state.availableDomos}
-                    alternativeDates={controller.state.alternativeDates}
-                    getCurrentStep={controller.state.getCurrentStep}
-                    isReservationConfirmed={controller.state.isReservationConfirmed}
+                    displayUnit={state.displayUnit}
+                    startDate={state.startDate}
+                    endDate={state.endDate}
+                    setStartDate={state.setStartDate}
+                    setEndDate={state.setEndDate}
+                    guests={state.guests}
+                    setGuests={state.setGuests}
+                    adults={state.adults}
+                    children={state.children}
+                    setAdults={state.setAdults}
+                    setChildren={state.setChildren}
+                    requiredDomos={state.requiredDomos}
+                    isAvailable={state.isAvailable}
+                    showQuote={state.showQuote}
+                    quote={state.quote}
+                    onReservation={state.generateQuote}
+                    onNewQuote={() => {
+                      state.setShowQuote(false);
+                      state.setQuote(null);
+                    }}
+                    onConfirmReservation={state.confirmReservation}
+                    isProcessingPayment={state.isProcessingPayment}
+                    selectedActivities={state.selectedActivities}
+                    selectedPackages={state.selectedPackages}
+                    onActivityToggle={(activity) => {
+                      const exists = state.selectedActivities.find(a => a.id === activity.id);
+                      if (exists) {
+                        state.setSelectedActivities(state.selectedActivities.filter(a => a.id !== activity.id));
+                      } else {
+                        state.setSelectedActivities([...state.selectedActivities, activity]);
+                      }
+                    }}
+                    onPackageToggle={(pkg) => {
+                      const exists = state.selectedPackages.find(p => p.id === pkg.id);
+                      if (exists) {
+                        state.setSelectedPackages(state.selectedPackages.filter(p => p.id !== pkg.id));
+                      } else {
+                        state.setSelectedPackages([...state.selectedPackages, pkg]);
+                      }
+                    }}
+                    activitiesTotal={state.activitiesTotal}
+                    packagesTotal={state.packagesTotal}
+                    getUpdatedQuoteTotal={() => {
+                      if (!state.quote) return 0;
+                      return state.quote.totalPrice + state.activitiesTotal + state.packagesTotal;
+                    }}
+                    reservationTab={state.reservationTab}
+                    setReservationTab={state.setReservationTab}
+                    isPartialAvailability={state.isPartialAvailability}
+                    availableDomos={state.availableDomos}
+                    alternativeDates={state.alternativeDates}
+                    getCurrentStep={state.getCurrentStep}
+                    isReservationConfirmed={state.isReservationConfirmed}
                   />
                 )}
               </div>

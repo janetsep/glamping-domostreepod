@@ -51,7 +51,7 @@ export const CompactReservationProgress = ({
   };
 
   return (
-    <div className="bg-white/95 backdrop-blur-sm rounded-lg p-4 shadow-lg border border-gray-200/50">
+    <div className="bg-gray-50 rounded-lg p-4 border border-gray-200">
       <div className="flex items-center justify-between mb-3">
         <h3 className="text-sm font-semibold text-gray-900">Progreso de reserva</h3>
         <span className="text-xs text-gray-600">{Math.round(getProgressValue())}% completado</span>
