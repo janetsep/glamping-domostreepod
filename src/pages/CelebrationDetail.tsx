@@ -42,6 +42,18 @@ const CelebrationDetail = () => {
       </Helmet>
       
       <div className="pt-24 bg-white min-h-screen">
+        {/* Botón volver - Posicionado en la parte superior */}
+        <div className="container mx-auto px-4 pt-4 pb-2">
+          <Button 
+            variant="outline" 
+            onClick={() => navigate('/#celebrations')}
+            className="flex items-center gap-2 mb-4"
+          >
+            <ArrowLeft size={16} />
+            Ver todas las celebraciones
+          </Button>
+        </div>
+
         {/* Hero Section - Optimizado para carga */}
         <div className="relative h-96 mb-8">
           <LazyLoadImage
@@ -145,14 +157,15 @@ const CelebrationDetail = () => {
             </div>
           </div>
           
+          {/* Botón adicional al final de la página */}
           <div className="mt-12 text-center">
             <Button 
               variant="outline" 
               onClick={() => navigate('/#celebrations')}
-              className="flex items-center gap-2"
+              className="flex items-center gap-2 mx-auto"
             >
               <ArrowLeft size={16} />
-              Volver a celebraciones
+              Explorar otras celebraciones
             </Button>
           </div>
         </Section>
