@@ -38,38 +38,6 @@ export const travelerTypesContent = {
       secondaryImage: "/lovable-uploads/5bf3bb3b-da31-4f12-a031-1d7274b2b1cc.png"
     },
     {
-      id: "viajeros-solitarios",
-      name: "Viajeros en Solitario",
-      title: "Experiencia para Viajeros en Solitario",
-      description: "Encuentra tu refugio personal en TreePod. Nuestros domos ofrecen el balance perfecto entre soledad reconfortante y conexión con la naturaleza, ideal para viajeros solitarios que buscan tiempo para reflexionar y reconectar consigo mismos.",
-      detailedDescription: "Para aquellos que buscan un retiro personal, TreePod ofrece un santuario en medio del bosque nativo donde el silencio y la naturaleza se convierten en los mejores compañeros. Nuestros domos individuales proporcionan el espacio perfecto para la introspección, la lectura, la meditación o simplemente para desconectar del mundo exterior.\n\nLos senderos solitarios que rodean nuestras instalaciones invitan a caminatas contemplativas, donde el único sonido será el de tus propios pensamientos y el murmullo del bosque. Al caer la noche, nuestras tinajas de agua mineralizada bajo el cielo estrellado ofrecen un momento de relajación total, permitiéndote procesar tus pensamientos mientras el cuerpo se relaja.\n\nAunque el enfoque es la desconexión, entendemos la importancia de mantener cierto contacto, por lo que ofrecemos conexión WiFi Starlink para aquellos momentos en que necesites comunicarte con el mundo exterior.",
-      features: [
-        "Espacios tranquilos para la reflexión y el descanso mental",
-        "Senderos solitarios para caminatas contemplativas",
-        "Tinajas privadas para momentos de relajación total",
-        "Desayuno nutritivo con productos locales",
-        "Ambiente seguro para viajeros independientes"
-      ],
-      image: "/lovable-uploads/46cd7d70-4f1c-46b5-8309-ade38a6c32a0.png",
-      secondaryImage: "/lovable-uploads/ec4a0c77-c6b5-4ec7-a6ab-f2ef933494c3.png"
-    },
-    {
-      id: "parejas-maduras",
-      name: "Parejas Maduras",
-      title: "Experiencia para Parejas Maduras",
-      description: "TreePod ofrece una experiencia sofisticada para parejas maduras que valoran la tranquilidad, el confort y los momentos de calidad. Disfruten de la privacidad de nuestros domos, rodeados de naturaleza y con servicios exclusivos.",
-      detailedDescription: "Para las parejas maduras que buscan una experiencia de alta calidad sin renunciar al contacto con la naturaleza, TreePod ofrece el equilibrio perfecto entre comodidad y autenticidad. Nuestros domos geodésicos combinan un diseño estético con todas las comodidades que necesitan para disfrutar de una estancia memorable.\n\nCada mañana, despierten con vistas panorámicas al bosque nativo y disfruten de un desayuno elaborado con productos frescos locales. Durante el día, exploren a su ritmo los senderos cercanos o visiten las atracciones culturales y gastronómicas de la región. Al atardecer, nuestras tinajas con aguas mineralizadas provenientes de las Termas de Chillán proporcionan el escenario perfecto para relajarse mientras contemplan el cielo estrellado.\n\nEntendemos que la privacidad es fundamental, por eso cada domo está estratégicamente ubicado para ofrecer una experiencia íntima, donde puedan reconectar como pareja rodeados por la serenidad del bosque.",
-      features: [
-        "Diseño elegante con todas las comodidades necesarias",
-        "Servicio personalizado y atención a los detalles",
-        "Tinajas privadas con aguas mineralizadas para momentos de relajación",
-        "Ubicación cercana a atracciones culturales y gastronómicas",
-        "Espacios tranquilos para disfrutar de la naturaleza a su propio ritmo"
-      ],
-      image: "/lovable-uploads/8d77f343-0ff2-4d41-a7dd-54af7e387725.png",
-      secondaryImage: "/lovable-uploads/258111ea-9c35-4f22-811b-3beaeba46f33.png"
-    },
-    {
       id: "grupos-amigos",
       name: "Grupos de Amigos",
       title: "Experiencia para Grupos de Amigos",
