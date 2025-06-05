@@ -14,7 +14,6 @@ const Celebrations = () => {
   const handleNavigate = (id: string) => {
     // Navegamos a la página de detalle de celebración
     navigate(`/celebracion/${id}`);
-    // No es necesario hacer scroll aquí ya que el useEffect en CelebrationDetail se encargará de eso
   };
 
   return (
@@ -23,7 +22,7 @@ const Celebrations = () => {
       title={celebrationsContent.title}
       subtitle={celebrationsContent.subtitle}
       centered
-      className="pt-24 pb-12" // Añadido pt-24 para compensar la cabecera fija
+      className="pt-24 pb-12"
     >
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {celebrationsContent.celebrations.map((celebration) => (

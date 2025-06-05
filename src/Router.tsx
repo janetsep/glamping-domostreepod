@@ -1,3 +1,4 @@
+
 import {
   createBrowserRouter,
   RouterProvider,
@@ -24,7 +25,7 @@ const router = createBrowserRouter(
       <Route path="sobre-nosotros" element={<AboutUs />} />
       <Route path="unit/:unitId" element={<UnitDetail />} />
       <Route path="tipo-viajero/:typeId" element={<TravelerType />} />
-      <Route path="celebracion/:celebrationId" element={<CelebrationDetail />} />
+      <Route path="celebracion/:id" element={<CelebrationDetail />} />
       <Route path="webpay/return" element={<WebPayReturn />} />
       <Route path="demo-reservas" element={<ReservationTest />} />
     </Route>
