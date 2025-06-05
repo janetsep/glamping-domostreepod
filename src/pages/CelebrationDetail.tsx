@@ -14,10 +14,15 @@ const CelebrationDetail = () => {
   useEffect(() => {
     // Scroll to top when component mounts
     window.scrollTo(0, 0);
-  }, []);
+    
+    // Redirect if no ID is provided
+    if (!id) {
+      navigate('/');
+    }
+  }, [id, navigate]);
 
+  // Early return if no ID
   if (!id) {
-    navigate('/');
     return null;
   }
 
@@ -42,8 +47,14 @@ const CelebrationDetail = () => {
 
   const celebration = getCelebrationById(id);
   
+  // Use useEffect for navigation instead of during render
+  useEffect(() => {
+    if (!celebration) {
+      navigate('/');
+    }
+  }, [celebration, navigate]);
+
   if (!celebration) {
-    navigate('/');
     return null;
   }
 
