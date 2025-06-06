@@ -18,9 +18,13 @@ const AnniversarySection = () => {
     >
       <div className="max-w-6xl mx-auto">
         <Tabs defaultValue="que-incluye" className="w-full">
-          <TabsList className="grid w-full grid-cols-2 md:grid-cols-4 lg:grid-cols-7 mb-8">
+          <TabsList className="grid w-full grid-cols-3 mb-8 bg-gradient-to-r from-primary to-pink-500 p-1">
             {anniversaryDetailContent.tabs.map((tab) => (
-              <TabsTrigger key={tab.id} value={tab.id} className="text-xs md:text-sm">
+              <TabsTrigger 
+                key={tab.id} 
+                value={tab.id} 
+                className="text-white data-[state=active]:bg-white data-[state=active]:text-primary font-medium"
+              >
                 {tab.name}
               </TabsTrigger>
             ))}
