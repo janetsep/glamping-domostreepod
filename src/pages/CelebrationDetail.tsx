@@ -7,6 +7,8 @@ import { Button } from "@/components/ui/button";
 import { ArrowLeft } from "lucide-react";
 import WomenRelaxSection from "@/components/WomenRelaxSection";
 import BirthdaySection from "@/components/BirthdaySection";
+import FamilyPartySection from "@/components/FamilyPartySection";
+import AnniversarySection from "@/components/AnniversarySection";
 
 const CelebrationDetail = () => {
   const { id } = useParams<{ id: string }>();
@@ -72,6 +74,44 @@ const CelebrationDetail = () => {
           </Button>
         </div>
         <BirthdaySection />
+      </div>
+    );
+  }
+
+  // Si es la celebración de fiesta familiar, mostrar la sección detallada
+  if (id === "fiesta-familiar") {
+    return (
+      <div className="min-h-screen pt-20">
+        <div className="container mx-auto px-4 mb-8">
+          <Button 
+            variant="ghost" 
+            onClick={handleBackToCelebrations}
+            className="mb-4"
+          >
+            <ArrowLeft className="mr-2 h-4 w-4" />
+            Volver a Celebraciones
+          </Button>
+        </div>
+        <FamilyPartySection />
+      </div>
+    );
+  }
+
+  // Si es la celebración de aniversarios, mostrar la sección detallada
+  if (id === "aniversarios") {
+    return (
+      <div className="min-h-screen pt-20">
+        <div className="container mx-auto px-4 mb-8">
+          <Button 
+            variant="ghost" 
+            onClick={handleBackToCelebrations}
+            className="mb-4"
+          >
+            <ArrowLeft className="mr-2 h-4 w-4" />
+            Volver a Celebraciones
+          </Button>
+        </div>
+        <AnniversarySection />
       </div>
     );
   }
