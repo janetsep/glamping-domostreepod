@@ -1,7 +1,7 @@
 
 import { useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { getCelebrationById, womenRelaxDetailContent } from "@/data/content/celebrations";
+import { getCelebrationById } from "@/data/content/celebrations";
 import { Section } from "@/components/ui/Section";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft } from "lucide-react";
@@ -14,17 +14,28 @@ const CelebrationDetail = () => {
   useEffect(() => {
     // Scroll to top when component mounts
     window.scrollTo(0, 0);
-    
-    // Redirect if no ID is provided
-    if (!id) {
-      navigate('/');
-    }
-  }, [id, navigate]);
+  }, [id]);
 
   // Early return if no ID
   if (!id) {
+    useEffect(() => {
+      navigate('/');
+    }, [navigate]);
     return null;
   }
+
+  const handleBackToCelebrations = () => {
+    // Navigate to home page and then scroll to celebrations section
+    navigate('/', { replace: true });
+    
+    // Use setTimeout to ensure navigation completes before scrolling
+    setTimeout(() => {
+      const celebrationsElement = document.getElementById('celebrations');
+      if (celebrationsElement) {
+        celebrationsElement.scrollIntoView({ behavior: 'smooth' });
+      }
+    }, 100);
+  };
 
   // Si es la celebración de mujeres, mostrar la sección detallada
   if (id === "mujeres-relax") {
@@ -33,7 +44,7 @@ const CelebrationDetail = () => {
         <div className="container mx-auto px-4 mb-8">
           <Button 
             variant="ghost" 
-            onClick={() => navigate('/#celebrations')}
+            onClick={handleBackToCelebrations}
             className="mb-4"
           >
             <ArrowLeft className="mr-2 h-4 w-4" />
@@ -64,7 +75,7 @@ const CelebrationDetail = () => {
         <div className="container mx-auto px-4">
           <Button 
             variant="ghost" 
-            onClick={() => navigate('/#celebrations')}
+            onClick={handleBackToCelebrations}
             className="mb-8"
           >
             <ArrowLeft className="mr-2 h-4 w-4" />
