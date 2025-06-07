@@ -47,15 +47,8 @@ export const womenRelaxDetailContent = {
       id: "que-incluye",
       name: "Qué Incluye",
       title: "¿Qué Incluye el Paquete?",
-      content: "Diseñado especialmente para mujeres que buscan un respiro en la naturaleza, compartiendo momentos especiales entre amigas, madre-hija, hermanas o simplemente tiempo personal. Un tiempo para ti en medio del bosque nativo. Incluye: Domo geodésico para hasta 4 personas con 1 cama matrimonial + 2 camas de 1 plaza, baño privado completo, calefacción para todas las estaciones, vista directa al bosque nativo, conexión Starlink disponible, piscina de agua fría del río Chillán con propiedades minerales, 1 hora de tinajas de ciprés con agua mineralizada incluida, picoteo gourmet con productos del invernadero, jugos naturales y smoothies frescos, espumante de bienvenida, infusiones especiales y terraza con mobiliario para charlar al aire libre bajo las estrellas.",
+      content: "Diseñado especialmente para mujeres que buscan un respiro en la naturaleza, compartiendo momentos especiales entre amigas, madre-hija, hermanas o simplemente tiempo personal. Un tiempo para ti en medio del bosque nativo. Incluye: Domo geodésico para hasta 4 personas con 1 cama matrimonial + 2 camas de 1 plaza, baño privado completo, calefacción para todas las estaciones, vista directa al bosque nativo, conexión Starlink disponible, piscina de agua fría del río Chillán con propiedades minerales, 1 hora de tinajas de ciprés con agua mineralizada incluida, picoteo gourmet con productos del invernadero, jugos naturales y smoothies frescos, espumante de bienvenida, infusiones especiales y terraza con mobiliario para charlar al aire libre bajo las estrellas. ALIMENTACIÓN COMPLETA: Desayuno con productos frescos del invernadero, almuerzo campestre con verduras y hierbas del huerto, cena con ingredientes locales y de temporada, snacks saludables durante el día. Todas las comidas incluyen productos orgánicos cultivados en nuestro invernadero. Opciones vegetarianas y veganas disponibles.",
       image: "/lovable-uploads/ec4a0c77-c6b5-4ec7-a6ab-f2ef933494c3.png"
-    },
-    {
-      id: "alimentacion",
-      name: "Alimentación",
-      title: "Alimentación del Invernadero",
-      content: "Alimentación completa con productos frescos del invernadero propio: desayuno con productos frescos, almuerzo campestre con verduras y hierbas del huerto, cena con ingredientes locales y de temporada, y snacks saludables disponibles durante el día. Todas las comidas incluyen productos orgánicos cultivados en nuestro invernadero, garantizando frescura y calidad. Opciones vegetarianas y veganas disponibles bajo solicitud previa.",
-      image: "/lovable-uploads/ed56aab2-6ded-4bab-a2ab-2471f2fc6442.png"
     },
     {
       id: "precios",
@@ -77,15 +70,8 @@ export const birthdayDetailContent = {
       id: "que-incluye",
       name: "Qué Incluye",
       title: "¿Qué Incluye el Paquete?",
-      content: "Una celebración diferente en medio de la naturaleza, perfecta para festejar tu cumpleaños con familia, amigos o en pareja en un entorno único y privado. Incluye: Domo geodésico para hasta 4 personas con 1 cama matrimonial + 2 camas de 1 plaza, baño privado completo, calefacción para todas las estaciones, vista directa al bosque nativo, conexión Starlink disponible, piscina de agua fría del río Chillán con propiedades minerales, 1 hora de tinajas de ciprés con agua mineralizada incluida, decoración de cumpleaños en el domo y terraza, torta artesanal hecha con productos del invernadero, espumante para el brindis y picoteo festivo con productos frescos del huerto.",
+      content: "Una celebración diferente en medio de la naturaleza, perfecta para festejar tu cumpleaños con familia, amigos o en pareja en un entorno único y privado. Incluye: Domo geodésico para hasta 4 personas con 1 cama matrimonial + 2 camas de 1 plaza, baño privado completo, calefacción para todas las estaciones, vista directa al bosque nativo, conexión Starlink disponible, piscina de agua fría del río Chillán con propiedades minerales, 1 hora de tinajas de ciprés con agua mineralizada incluida, decoración de cumpleaños en el domo y terraza, torta artesanal hecha con productos del invernadero, espumante para el brindis y picoteo festivo con productos frescos del huerto. ALIMENTACIÓN COMPLETA: Desayuno especial con productos frescos del invernadero, almuerzo de celebración con verduras y hierbas del huerto, cena festiva con ingredientes locales y de temporada, torta artesanal personalizada, jugos naturales y bebidas especiales durante el día. Todas las comidas están preparadas con productos orgánicos de nuestro invernadero.",
       image: "/lovable-uploads/3c440bec-e9af-462b-95d8-45e8eec15b88.png"
-    },
-    {
-      id: "alimentacion",
-      name: "Alimentación",
-      title: "Alimentación Completa del Invernadero",
-      content: "Desayuno especial con productos frescos del invernadero propio, almuerzo de celebración con verduras y hierbas del huerto, cena festiva con ingredientes locales y de temporada, torta artesanal personalizada, y jugos naturales y bebidas especiales durante el día. Todas las comidas están preparadas con productos orgánicos de nuestro invernadero. La torta se elabora con ingredientes frescos y puede personalizarse según preferencias dietéticas.",
-      image: "/lovable-uploads/ed56aab2-6ded-4bab-a2ab-2471f2fc6442.png"
     },
     {
       id: "precios",
@@ -107,15 +93,8 @@ export const familyPartyDetailContent = {
       id: "que-incluye",
       name: "Qué Incluye",
       title: "¿Qué Incluye el Paquete?",
-      content: "Una celebración familiar en medio de la naturaleza, perfecta para reuniones familiares, celebraciones especiales, reencuentros o cualquier ocasión donde la familia quiera compartir en un entorno natural y privado. Incluye: Domo geodésico para hasta 4 personas con 1 cama matrimonial + 2 camas de 1 plaza, baño privado completo, calefacción para todas las estaciones, vista directa al bosque nativo, conexión Starlink disponible, piscina de agua fría del río Chillán con propiedades minerales, 1 hora de tinajas de ciprés con agua mineralizada incluida, decoración festiva en el domo y terraza, parrilla completa para asado familiar, bebidas para todos (jugos naturales y opciones para adultos), picoteo familiar con productos frescos del huerto y fogón nocturno con leña para compartir historias.",
+      content: "Una celebración familiar en medio de la naturaleza, perfecta para reuniones familiares, celebraciones especiales, reencuentros o cualquier ocasión donde la familia quiera compartir en un entorno natural y privado. Incluye: Domo geodésico para hasta 4 personas con 1 cama matrimonial + 2 camas de 1 plaza, baño privado completo, calefacción para todas las estaciones, vista directa al bosque nativo, conexión Starlink disponible, piscina de agua fría del río Chillán con propiedades minerales, 1 hora de tinajas de ciprés con agua mineralizada incluida, decoración festiva en el domo y terraza, parrilla completa para asado familiar, bebidas para todos (jugos naturales y opciones para adultos), picoteo familiar con productos frescos del huerto y fogón nocturno con leña para compartir historias. ALIMENTACIÓN COMPLETA: Desayuno familiar con productos frescos del invernadero, almuerzo campestre con verduras y hierbas del huerto, asado familiar con carnes y acompañamientos frescos, snacks y jugos durante el día. Todas las verduras y hierbas provienen de nuestro invernadero orgánico, incluyendo carnes para el asado y acompañamientos.",
       image: "/lovable-uploads/5bf3bb3b-da31-4f12-a031-1d7274b2b1cc.png"
-    },
-    {
-      id: "alimentacion",
-      name: "Alimentación",
-      title: "Alimentación Completa del Invernadero",
-      content: "Desayuno familiar con productos frescos del invernadero propio, almuerzo campestre con verduras y hierbas del huerto, asado familiar con carnes y acompañamientos frescos, y snacks y jugos disponibles durante el día. Todas las verduras y hierbas provienen de nuestro invernadero orgánico. El paquete incluye carnes para el asado y todos los acompañamientos necesarios. Opciones para diferentes edades y preferencias alimentarias.",
-      image: "/lovable-uploads/ed56aab2-6ded-4bab-a2ab-2471f2fc6442.png"
     },
     {
       id: "precios",
@@ -137,15 +116,8 @@ export const anniversaryDetailContent = {
       id: "que-incluye",
       name: "Qué Incluye",
       title: "¿Qué Incluye el Paquete?",
-      content: "Una celebración romántica en medio de la naturaleza, perfecta para conmemorar aniversarios de matrimonio, noviazgo o cualquier fecha especial en pareja en un entorno íntimo y privado. Incluye: Domo geodésico para hasta 4 personas con 1 cama matrimonial + 2 camas de 1 plaza, baño privado completo, calefacción para todas las estaciones, vista directa al bosque nativo, conexión Starlink disponible, ambiente romántico preparado especialmente, piscina de agua fría del río Chillán con propiedades minerales, 2 horas de tinajas de ciprés con agua mineralizada incluidas, decoración romántica en el domo y terraza, cena romántica a la luz de las velas, espumante premium para el brindis, pétalos de rosa y velas aromáticas, y masaje relajante en pareja (30 minutos).",
+      content: "Una celebración romántica en medio de la naturaleza, perfecta para conmemorar aniversarios de matrimonio, noviazgo o cualquier fecha especial en pareja en un entorno íntimo y privado. Incluye: Domo geodésico para hasta 4 personas con 1 cama matrimonial + 2 camas de 1 plaza, baño privado completo, calefacción para todas las estaciones, vista directa al bosque nativo, conexión Starlink disponible, ambiente romántico preparado especialmente, piscina de agua fría del río Chillán con propiedades minerales, 2 horas de tinajas de ciprés con agua mineralizada incluidas, decoración romántica en el domo y terraza, cena romántica a la luz de las velas, espumante premium para el brindis, pétalos de rosa y velas aromáticas, y masaje relajante en pareja (30 minutos). ALIMENTACIÓN GOURMET: Desayuno romántico servido en la terraza con productos frescos del invernadero, almuerzo ligero con productos del huerto, cena romántica de 3 tiempos con ingredientes locales gourmet, champagne y chocolates incluidos. Todas las comidas están preparadas con ingredientes orgánicos de nuestro invernadero. Menú personalizable según preferencias dietéticas.",
       image: "/lovable-uploads/258111ea-9c35-4f22-811b-3beaeba46f33.png"
-    },
-    {
-      id: "alimentacion",
-      name: "Alimentación",
-      title: "Alimentación Gourmet del Invernadero",
-      content: "Desayuno romántico servido en la terraza con productos frescos del invernadero, almuerzo ligero con productos del huerto, cena romántica de 3 tiempos con ingredientes locales gourmet, y champagne y chocolates incluidos. Todas las comidas están cuidadosamente preparadas con ingredientes orgánicos de nuestro invernadero. La cena romántica incluye opciones gourmet con maridaje especial. Menú personalizable según preferencias dietéticas con aviso previo.",
-      image: "/lovable-uploads/ed56aab2-6ded-4bab-a2ab-2471f2fc6442.png"
     },
     {
       id: "precios",

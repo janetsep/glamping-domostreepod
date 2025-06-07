@@ -32,7 +32,7 @@ const AnniversarySection = () => {
     >
       <div className="max-w-6xl mx-auto">
         <Tabs defaultValue="que-incluye" className="w-full">
-          <TabsList className="grid w-full grid-cols-3 mb-8 bg-gradient-to-r from-primary to-pink-500 p-1">
+          <TabsList className="grid w-full grid-cols-2 mb-8 bg-gradient-to-r from-primary to-pink-500 p-1">
             {anniversaryDetailContent.tabs.map((tab) => (
               <TabsTrigger 
                 key={tab.id} 
