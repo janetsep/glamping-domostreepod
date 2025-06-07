@@ -8,13 +8,19 @@ import { LazyLoadImage } from "react-lazy-load-image-component";
 import 'react-lazy-load-image-component/src/effects/blur.css';
 import { Skeleton } from "@/components/ui/skeleton";
 import { ArrowLeft } from "lucide-react";
-import { useNavigation } from "@/components/navigation/useNavigation";
+import { useNavigate } from "react-router-dom";
 
 const BirthdaySection = () => {
-  const { scrollToSection } = useNavigation();
+  const navigate = useNavigate();
 
   const handleBackToCelebrations = () => {
-    scrollToSection('celebrations');
+    navigate('/#celebrations');
+    setTimeout(() => {
+      const celebrationsElement = document.getElementById('celebrations');
+      if (celebrationsElement) {
+        celebrationsElement.scrollIntoView({ behavior: 'smooth' });
+      }
+    }, 100);
   };
 
   return (
@@ -57,14 +63,6 @@ const BirthdaySection = () => {
                         <Button className="bg-gradient-to-r from-primary to-pink-500 text-white hover:from-primary/90 hover:to-pink-500/90">
                           Reservar Cumpleaños
                         </Button>
-                        <Button 
-                          variant="outline" 
-                          onClick={handleBackToCelebrations}
-                          className="border-primary text-primary hover:bg-primary hover:text-white"
-                        >
-                          <ArrowLeft className="mr-2 h-4 w-4" />
-                          Volver a Celebraciones
-                        </Button>
                       </div>
                     </div>
                     
@@ -82,6 +80,17 @@ const BirthdaySection = () => {
                   </div>
                 </CardContent>
               </Card>
+              
+              <div className="mt-6 flex justify-center">
+                <Button 
+                  variant="outline" 
+                  onClick={handleBackToCelebrations}
+                  className="border-primary text-primary hover:bg-primary hover:text-white"
+                >
+                  <ArrowLeft className="mr-2 h-4 w-4" />
+                  Volver a Celebraciones
+                </Button>
+              </div>
             </TabsContent>
           ))}
         </Tabs>
