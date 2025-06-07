@@ -44,16 +44,6 @@ const CelebrationDetail = () => {
   if (id === "mujeres-relax") {
     return (
       <div className="min-h-screen pt-20">
-        <div className="container mx-auto px-4 mb-8">
-          <Button 
-            variant="ghost" 
-            onClick={handleBackToCelebrations}
-            className="mb-4"
-          >
-            <ArrowLeft className="mr-2 h-4 w-4" />
-            Volver a Celebraciones
-          </Button>
-        </div>
         <WomenRelaxSection />
       </div>
     );
@@ -63,16 +53,6 @@ const CelebrationDetail = () => {
   if (id === "cumpleanos") {
     return (
       <div className="min-h-screen pt-20">
-        <div className="container mx-auto px-4 mb-8">
-          <Button 
-            variant="ghost" 
-            onClick={handleBackToCelebrations}
-            className="mb-4"
-          >
-            <ArrowLeft className="mr-2 h-4 w-4" />
-            Volver a Celebraciones
-          </Button>
-        </div>
         <BirthdaySection />
       </div>
     );
@@ -82,16 +62,6 @@ const CelebrationDetail = () => {
   if (id === "fiesta-familiar") {
     return (
       <div className="min-h-screen pt-20">
-        <div className="container mx-auto px-4 mb-8">
-          <Button 
-            variant="ghost" 
-            onClick={handleBackToCelebrations}
-            className="mb-4"
-          >
-            <ArrowLeft className="mr-2 h-4 w-4" />
-            Volver a Celebraciones
-          </Button>
-        </div>
         <FamilyPartySection />
       </div>
     );
@@ -101,16 +71,6 @@ const CelebrationDetail = () => {
   if (id === "aniversarios") {
     return (
       <div className="min-h-screen pt-20">
-        <div className="container mx-auto px-4 mb-8">
-          <Button 
-            variant="ghost" 
-            onClick={handleBackToCelebrations}
-            className="mb-4"
-          >
-            <ArrowLeft className="mr-2 h-4 w-4" />
-            Volver a Celebraciones
-          </Button>
-        </div>
         <AnniversarySection />
       </div>
     );
