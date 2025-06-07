@@ -7,8 +7,16 @@ import { womenRelaxDetailContent } from "@/data/content/celebrations";
 import { LazyLoadImage } from "react-lazy-load-image-component";
 import 'react-lazy-load-image-component/src/effects/blur.css';
 import { Skeleton } from "@/components/ui/skeleton";
+import { ArrowLeft } from "lucide-react";
+import { useNavigation } from "@/components/navigation/useNavigation";
 
 const WomenRelaxSection = () => {
+  const { scrollToSection } = useNavigation();
+
+  const handleBackToCelebrations = () => {
+    scrollToSection('celebrations');
+  };
+
   return (
     <Section
       title={womenRelaxDetailContent.title}
@@ -45,9 +53,17 @@ const WomenRelaxSection = () => {
                         {tab.content}
                       </CardDescription>
                       
-                      <div className="mt-6 flex justify-center lg:justify-start">
+                      <div className="mt-6 flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
                         <Button className="bg-gradient-to-r from-primary to-pink-500 text-white hover:from-primary/90 hover:to-pink-500/90">
                           Reservar Mujeres Relax
+                        </Button>
+                        <Button 
+                          variant="outline" 
+                          onClick={handleBackToCelebrations}
+                          className="border-primary text-primary hover:bg-primary hover:text-white"
+                        >
+                          <ArrowLeft className="mr-2 h-4 w-4" />
+                          Volver a Celebraciones
                         </Button>
                       </div>
                     </div>
