@@ -26,12 +26,22 @@ export const useCalendarAvailability = (unitId: string, currentMonth: Date, sele
 
   // Calculate availability based on current month and selected date
   useEffect(() => {
-    if (reservations && calculateAvailability) {
+    if (calculateAvailability) {
+      const startOfMonth = new Date(currentMonth.getFullYear(), currentMonth.getMonth(), 1);
+      const endOfMonth = new Date(currentMonth.getFullYear(), currentMonth.getMonth() + 1, 0);
+      
+      console.log('📅 [useCalendarAvailability] Calculando disponibilidad:', {
+        mes: currentMonth.toISOString().split('T')[0],
+        totalReservas: reservations.length,
+        fechaSeleccionada: selectedDate?.toISOString().split('T')[0]
+      });
+      
       calculateAvailability(
-        new Date(currentMonth.getFullYear(), currentMonth.getMonth(), 1),
-        new Date(currentMonth.getFullYear(), currentMonth.getMonth() + 1, 0),
+        startOfMonth,
+        endOfMonth,
         selectedDate || undefined,
-        selectedDate || undefined
+        selectedDate || undefined,
+        reservations
       );
     }
   }, [currentMonth, selectedDate, reservations, calculateAvailability]);

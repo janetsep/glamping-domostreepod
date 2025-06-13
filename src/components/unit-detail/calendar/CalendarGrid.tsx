@@ -1,3 +1,4 @@
+
 import React, { useEffect } from 'react';
 import { format, isSameMonth, isSameDay } from 'date-fns';
 import { AvailabilityCalendarDay } from '@/types';
@@ -33,50 +34,53 @@ export const CalendarGrid = ({
 
   // Función para obtener clases CSS según disponibilidad
   const getDateClasses = (day: AvailabilityCalendarDay): string => {
-    let classes = "h-10 w-full rounded-full flex flex-col items-center justify-center relative cursor-pointer";
+    let classes = "h-10 w-full rounded-full flex flex-col items-center justify-center relative cursor-pointer transition-all duration-200";
     
-    // Solo loggear cambios en disponibilidad para el día actual
-    if (isSameMonth(day.date, currentMonth) && day.date.getDate() === new Date().getDate()) {
-      console.log('📅 [CalendarGrid] Disponibilidad hoy:', {
-        fecha: day.date.toISOString().split('T')[0],
-        disponible: day.isAvailable,
-        unidadesDisponibles: day.availableUnits,
-        unidadesRequeridas: requiredDomos
-      });
-    }
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    const isPastDate = day.date < today;
+    
+    // Verificar si el día está seleccionado
+    const isStartDate = selectedStartDate && isSameDay(day.date, selectedStartDate);
+    const isEndDate = selectedEndDate && isSameDay(day.date, selectedEndDate);
+    const isSelected = isStartDate || isEndDate;
 
-    // Usar la propiedad isSelected del día para determinar las clases
-    if (day.isSelected) {
-      classes += " text-white bg-blue-500 hover:bg-blue-600";
+    // Si está seleccionado, usar colores de selección
+    if (isSelected) {
+      classes += " text-white bg-blue-500 hover:bg-blue-600 font-semibold";
     } else {
-      // Si no está seleccionado, aplicar clases de texto según el mes
+      // Aplicar clases de texto según el mes
       if (!isSameMonth(day.date, currentMonth)) {
-        classes += " text-gray-400";
+        classes += " text-gray-300";
       } else {
         classes += " text-gray-900";
       }
 
-      // Aplicar clases de disponibilidad si no está seleccionado
-      if (!day.isAvailable) {
-        classes += " bg-red-100 hover:bg-red-200";
+      // Aplicar clases de disponibilidad
+      if (isPastDate) {
+        classes += " bg-gray-50 text-gray-300 cursor-not-allowed";
+      } else if (!day.isAvailable) {
+        classes += " bg-red-100 text-red-600 cursor-not-allowed";
       } else if (day.availableUnits !== undefined && requiredDomos !== undefined) {
         if (day.availableUnits < requiredDomos) {
-          classes += " bg-yellow-100 hover:bg-yellow-200"; // Disponibilidad parcial
+          classes += " bg-yellow-100 text-yellow-700 hover:bg-yellow-200"; // Disponibilidad parcial
         } else {
-          classes += " bg-green-100 hover:bg-green-200"; // Completamente disponible
+          classes += " bg-green-100 text-green-700 hover:bg-green-200"; // Completamente disponible
         }
+      } else {
+        classes += " hover:bg-gray-100";
       }
-      // Aplicar clase de hover si no está seleccionado
-      classes += " hover:bg-gray-100";
     }
     
     // Clases para días en el rango seleccionado (si selectedEndDate existe)
     if (selectedStartDate && selectedEndDate && 
-        day.date > selectedStartDate && day.date < selectedEndDate) {
-      // Si ya está seleccionado (inicio/fin), no aplicar clase de rango adicional
-      if (!day.isSelected) {
-        classes += " bg-blue-100 hover:bg-blue-200";
-      }
+        day.date > selectedStartDate && day.date < selectedEndDate && !isSelected) {
+      classes += " bg-blue-100 text-blue-700 hover:bg-blue-200";
+    }
+    
+    // Resaltar el día de hoy
+    if (isSameDay(day.date, today) && !isSelected) {
+      classes += " ring-2 ring-blue-400";
     }
     
     return classes;
@@ -85,15 +89,26 @@ export const CalendarGrid = ({
   return (
     <div className="grid grid-cols-7 gap-2">
       {calendarDays.map((day, index) => {
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+        const isPastDate = day.date < today;
+        const canClick = day.isAvailable && !isPastDate;
+
         const handleClick = (e: React.MouseEvent) => {
           e.preventDefault();
           e.stopPropagation();
-          if (day.isAvailable) {
+          if (canClick) {
             console.log('📅 [CalendarGrid] Click en fecha disponible:', {
               fecha: day.date.toISOString().split('T')[0],
               unidadesDisponibles: day.availableUnits
             });
             onDateClick(day);
+          } else {
+            console.log('📅 [CalendarGrid] Click en fecha no disponible:', {
+              fecha: day.date.toISOString().split('T')[0],
+              disponible: day.isAvailable,
+              esPasado: isPastDate
+            });
           }
         };
 
@@ -101,17 +116,19 @@ export const CalendarGrid = ({
           <div 
             key={index} 
             onClick={handleClick}
-            className={`relative ${day.isAvailable ? 'cursor-pointer' : 'cursor-not-allowed'}`}
+            className={`relative ${canClick ? 'cursor-pointer' : 'cursor-not-allowed'}`}
           >
             <div className={getDateClasses(day)}>
-              <span>{format(day.date, 'd')}</span>
+              <span className="text-sm font-medium">{format(day.date, 'd')}</span>
               
-              {/* Mostrar disponibilidad */}
-              <span className="text-xs mt-0.5">
-                {day.availableUnits !== undefined && day.totalUnits !== undefined && (
-                  `${day.availableUnits}/${day.totalUnits}`
-                )}
-              </span>
+              {/* Mostrar disponibilidad solo para fechas del mes actual y futuras */}
+              {isSameMonth(day.date, currentMonth) && !isPastDate && (
+                <span className="text-xs mt-0.5 opacity-75">
+                  {day.availableUnits !== undefined && day.totalUnits !== undefined && (
+                    `${day.availableUnits}/${day.totalUnits}`
+                  )}
+                </span>
+              )}
             </div>
           </div>
         );
