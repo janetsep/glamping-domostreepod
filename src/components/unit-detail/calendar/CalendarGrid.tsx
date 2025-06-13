@@ -59,13 +59,16 @@ export const CalendarGrid = ({
       // Aplicar clases de disponibilidad
       if (isPastDate) {
         classes += " bg-gray-50 text-gray-300 cursor-not-allowed";
-      } else if (!day.isAvailable) {
+      } else if (!day.isAvailable || day.availableUnits === 0) {
         classes += " bg-red-100 text-red-600 cursor-not-allowed";
-      } else if (day.availableUnits !== undefined && requiredDomos !== undefined) {
-        if (day.availableUnits < requiredDomos) {
-          classes += " bg-yellow-100 text-yellow-700 hover:bg-yellow-200"; // Disponibilidad parcial
+      } else if (day.availableUnits !== undefined && day.availableUnits > 0) {
+        // Si hay al menos 1 domo disponible, mostrar como disponible
+        if (day.availableUnits >= 3) {
+          classes += " bg-green-100 text-green-700 hover:bg-green-200"; // Buena disponibilidad
+        } else if (day.availableUnits >= 2) {
+          classes += " bg-yellow-100 text-yellow-700 hover:bg-yellow-200"; // Disponibilidad moderada
         } else {
-          classes += " bg-green-100 text-green-700 hover:bg-green-200"; // Completamente disponible
+          classes += " bg-orange-100 text-orange-700 hover:bg-orange-200"; // Disponibilidad limitada
         }
       } else {
         classes += " hover:bg-gray-100";
@@ -92,7 +95,7 @@ export const CalendarGrid = ({
         const today = new Date();
         today.setHours(0, 0, 0, 0);
         const isPastDate = day.date < today;
-        const canClick = day.isAvailable && !isPastDate;
+        const canClick = day.isAvailable && !isPastDate && (day.availableUnits || 0) > 0;
 
         const handleClick = (e: React.MouseEvent) => {
           e.preventDefault();
@@ -107,7 +110,8 @@ export const CalendarGrid = ({
             console.log('📅 [CalendarGrid] Click en fecha no disponible:', {
               fecha: day.date.toISOString().split('T')[0],
               disponible: day.isAvailable,
-              esPasado: isPastDate
+              esPasado: isPastDate,
+              unidadesDisponibles: day.availableUnits
             });
           }
         };
