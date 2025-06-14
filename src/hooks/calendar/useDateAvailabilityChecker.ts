@@ -1,45 +1,37 @@
+
 import { format, startOfDay, endOfDay } from "date-fns";
 import { eachDayOfInterval, addDays } from "date-fns";
 import { useEffect, useCallback } from "react";
 
-const TOTAL_UNITS = 4; // Total number of domos available
+const TOTAL_UNITS = 4;
 
 interface Reservation {
   check_in: string;
   check_out: string;
   unit_id: string | null;
+  status?: string;
 }
 
-/**
- * Hook to check availability for specific dates and date ranges
- */
 export const useDateAvailabilityChecker = (reservations: Reservation[]) => {
-  // Solo loggear el número total de reservas al inicializar
   useEffect(() => {
-    console.log('📅 [useDateAvailabilityChecker] Inicializado con', reservations.length, 'reservas');
+    console.log('[useDateAvailabilityChecker] Initialized with', reservations.length, 'reservations');
   }, [reservations.length]);
 
+  // Nuevo: Solo cuenta reservas confirmadas y con unit_id
   const isDateAvailable = useCallback((date: Date, requiredUnits = 1) => {
     const start = startOfDay(date);
-    const end = endOfDay(date);
-    
+
     const overlappingReservations = reservations.filter(reservation => {
+      if (reservation.status !== 'confirmed' || !reservation.unit_id) return false;
       const checkIn = new Date(reservation.check_in);
       const checkOut = new Date(reservation.check_out);
-      return checkIn <= end && checkOut >= start;
+      // Ocupa la noche de 'start' si: checkIn <= dayStart && checkOut > dayStart
+      return checkIn <= start && checkOut > start;
     });
 
-    const reservedUnits = overlappingReservations.filter(r => r.unit_id).length;
+    const reservedUnits = overlappingReservations.length;
     const availableUnits = TOTAL_UNITS - reservedUnits;
     const isAvailable = availableUnits >= requiredUnits;
-
-    console.log('📅 [useDateAvailabilityChecker] Verificación de disponibilidad:', {
-      fecha: date.toISOString().split('T')[0],
-      disponible: isAvailable,
-      unidadesDisponibles: availableUnits,
-      unidadesRequeridas: requiredUnits,
-      reservasSolapadas: overlappingReservations.length
-    });
 
     return {
       isAvailable,
@@ -48,34 +40,23 @@ export const useDateAvailabilityChecker = (reservations: Reservation[]) => {
     };
   }, [reservations]);
 
-  // Check if a range of dates is available
-  const isDateRangeAvailable = async (startDate: Date, endDate: Date, requiredUnits = 1): Promise<{isAvailable: boolean, availableUnits: number}> => {
-    console.log(`🔍 [useDateAvailabilityChecker] isDateRangeAvailable - INICIO`);
-    console.log(`🔍 [useDateAvailabilityChecker] Parámetros recibidos:`, { startDate: startDate.toISOString().split('T')[0], endDate: endDate.toISOString().split('T')[0], requiredUnits });
+  // El rango es disponible SÓLO si todos los días cumplen con requiredUnits
+  const isDateRangeAvailable = async (startDate: Date, endDate: Date, requiredUnits = 1) => {
     try {
-      console.log(`Checking availability for date range: ${format(startDate, 'yyyy-MM-dd')} to ${format(endDate, 'yyyy-MM-dd')}`);
-      
-      // Create an array of days between start and end date (including the start date, excluding the end date)
+      // Chequea por cada noche
       const days = eachDayOfInterval({ start: startDate, end: addDays(endDate, -1) });
-      
-      console.log(`Checking ${days.length} days in the range`);
-      
-      // Check availability for each day in the range
+
       let minAvailableUnits = TOTAL_UNITS;
       let allDaysAvailable = true;
-      
+
       for (const day of days) {
-        const { isAvailable, availableUnits } = await isDateAvailable(day, requiredUnits);
+        const { isAvailable, availableUnits } = isDateAvailable(day, requiredUnits);
         if (!isAvailable) {
-          console.log(`Date ${format(day, 'yyyy-MM-dd')} is not available in the range (needs ${requiredUnits}, has ${availableUnits})`);
           allDaysAvailable = false;
         }
-        // Track the minimum number of available units across all days
         minAvailableUnits = Math.min(minAvailableUnits, availableUnits);
       }
-      
-      console.log(`Range availability result: ${allDaysAvailable ? 'Available' : 'Not available'} (minimum ${minAvailableUnits} units available)`);
-      
+
       return {
         isAvailable: allDaysAvailable,
         availableUnits: minAvailableUnits

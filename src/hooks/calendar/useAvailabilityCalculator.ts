@@ -3,7 +3,7 @@ import { useState, useCallback } from 'react';
 import { AvailabilityCalendarDay } from '@/types';
 import { differenceInDays, addDays, isSameDay, startOfDay, endOfDay } from 'date-fns';
 
-const TOTAL_UNITS = 4; // Total number of domos available
+const TOTAL_UNITS = 4;
 
 interface Reservation {
   check_in: string;
@@ -16,6 +16,7 @@ export const useAvailabilityCalculator = () => {
   const [availabilityDays, setAvailabilityDays] = useState<AvailabilityCalendarDay[]>([]);
   const [isLoading, setIsLoading] = useState(false);
 
+  // Función corregida: cuenta TODOS los domos reservados (por unidad) cada día
   const calculateAvailability = useCallback(async (
     startDate: Date,
     endDate: Date,
@@ -24,39 +25,37 @@ export const useAvailabilityCalculator = () => {
     reservations: Reservation[] = []
   ) => {
     setIsLoading(true);
-    
+
     try {
       const days: AvailabilityCalendarDay[] = [];
       const totalDays = differenceInDays(endDate, startDate) + 1;
       const today = new Date();
       today.setHours(0, 0, 0, 0);
-      
+
       for (let i = 0; i < totalDays; i++) {
         const currentDate = addDays(startDate, i);
         const dayStart = startOfDay(currentDate);
         const dayEnd = endOfDay(currentDate);
-        
-        // Find overlapping reservations for this specific day
-        const overlappingReservations = reservations.filter(reservation => {
-          const checkIn = new Date(reservation.check_in);
-          const checkOut = new Date(reservation.check_out);
-          return checkIn <= dayEnd && checkOut >= dayStart && reservation.status === 'confirmed';
+
+        // ¡OJO! Contamos por cada domo ocupado esa noche
+        // Solo reservas confirmadas y que efectivamente cruzan la noche de currentDate
+        const overlappingReservations = reservations.filter(res => {
+          if (res.status !== 'confirmed' || !res.unit_id) return false;
+          // La reserva bloquea currentDate si entra antes o igual, y sale después (checkout mayor a start)
+          const checkIn = new Date(res.check_in);
+          const checkOut = new Date(res.check_out);
+          return checkIn <= dayStart && checkOut > dayStart;
         });
 
-        // Count reserved units (only those with unit_id assigned)
-        const reservedUnits = overlappingReservations.filter(r => r.unit_id !== null && r.unit_id !== undefined).length;
+        const reservedUnits = overlappingReservations.length;
         const availableUnits = TOTAL_UNITS - reservedUnits;
-        
-        // A date is available if it has at least 1 available unit and it's not in the past
+
         const isAvailable = availableUnits > 0 && currentDate >= today;
-        
-        // Check if this date is selected
         const isSelected = selectedStartDate ? isSameDay(currentDate, selectedStartDate) : false;
         const isEndSelected = selectedEndDate ? isSameDay(currentDate, selectedEndDate) : false;
-        
-        // Check if this date is in the range between selected dates
-        const isInRange = selectedStartDate && selectedEndDate ? 
-          currentDate > selectedStartDate && currentDate < selectedEndDate : false;
+        const isInRange = selectedStartDate && selectedEndDate
+          ? currentDate > selectedStartDate && currentDate < selectedEndDate
+          : false;
 
         days.push({
           date: currentDate,
@@ -68,12 +67,6 @@ export const useAvailabilityCalculator = () => {
           isInRange
         });
       }
-
-      console.log('📅 [useAvailabilityCalculator] Días calculados:', {
-        totalDias: days.length,
-        diasDisponibles: days.filter(d => d.isAvailable).length,
-        totalReservas: reservations.length
-      });
 
       setAvailabilityDays(days);
     } catch (error) {
