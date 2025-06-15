@@ -1,10 +1,11 @@
 
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { TransactionResult } from '@/services/webpay/types';
 import { ReservationDetails } from '@/components/unit-detail/ReservationDetails';
 import { format, differenceInDays } from 'date-fns';
 import { formatReservationId } from '@/lib/utils';
+import { supabase } from '@/lib/supabase';
 
 interface ReservationConfirmedProps {
   transactionResult: TransactionResult;
@@ -21,10 +22,70 @@ const ReservationConfirmed: React.FC<ReservationConfirmedProps> = ({
   emailSent,
   onViewReservation
 }) => {
+  const [allReservations, setAllReservations] = useState<any[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+
+  // Fetch all reservations with the same reservation code
+  useEffect(() => {
+    const fetchAllReservations = async () => {
+      if (!transactionResult?.reservation_id) return;
+
+      try {
+        console.log('🔍 [ReservationConfirmed] Obteniendo reserva principal:', transactionResult.reservation_id);
+        
+        // Get primary reservation to get the reservation code
+        const { data: primaryReservation, error: primaryError } = await supabase
+          .from('reservations')
+          .select('*, reservation_code')
+          .eq('id', transactionResult.reservation_id)
+          .single();
+        
+        if (primaryError || !primaryReservation?.reservation_code) {
+          console.error('❌ [ReservationConfirmed] Error obteniendo reserva principal:', primaryError);
+          setIsLoading(false);
+          return;
+        }
+
+        console.log('📋 [ReservationConfirmed] Código de reserva:', primaryReservation.reservation_code);
+
+        // Get ALL reservations with the same reservation code
+        const { data: allReservations, error: allError } = await supabase
+          .from('reservations')
+          .select('*')
+          .eq('reservation_code', primaryReservation.reservation_code)
+          .eq('status', 'confirmed')
+          .order('unit_id');
+        
+        if (allError || !allReservations) {
+          console.error('❌ [ReservationConfirmed] Error obteniendo todas las reservas:', allError);
+          setIsLoading(false);
+          return;
+        }
+
+        console.log('✅ [ReservationConfirmed] Todas las reservas obtenidas:', {
+          total: allReservations.length,
+          reservas: allReservations.map(r => ({
+            id: r.id,
+            unitId: r.unit_id,
+            huespedes: r.guests,
+            precio: r.total_price
+          }))
+        });
+
+        setAllReservations(allReservations);
+      } catch (error) {
+        console.error('❌ [ReservationConfirmed] Error general:', error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchAllReservations();
+  }, [transactionResult?.reservation_id]);
   
-  // Prepare quote object for ReservationDetails
+  // Prepare quote object for ReservationDetails using all reservations
   const getQuoteFromTransaction = () => {
-    if (!transactionResult) return null;
+    if (!transactionResult || allReservations.length === 0) return null;
     
     const checkIn = transactionResult.reservation_data?.check_in 
       ? new Date(transactionResult.reservation_data.check_in) 
@@ -36,49 +97,47 @@ const ReservationConfirmed: React.FC<ReservationConfirmedProps> = ({
       
     const nights = checkIn && checkOut ? differenceInDays(checkOut, checkIn) : 0;
     
-    const basePrice = transactionResult.amount || 0;
+    // Calculate totals from all reservations
+    const totalGuests = allReservations.reduce((sum, res) => sum + res.guests, 0);
+    const totalPrice = allReservations.reduce((sum, res) => sum + res.total_price, 0);
+    const requiredDomos = allReservations.length;
+
     const activitiesTotal = transactionResult.reservation_data?.activities_total || 0;
     const packagesTotal = transactionResult.reservation_data?.packages_total || 0;
-    const petsPrice = transactionResult.reservation_data?.pets_price || 0;
-    const pets = transactionResult.reservation_data?.pets || 0;
-    const guests = transactionResult.reservation_data?.guests || 4;
+    const totalPets = allReservations.reduce((sum, res) => sum + (res.pets || 0), 0);
+    const petsPrice = totalPets * 25000;
     
-    // Calculate required domos based on guests
-    const requiredDomos = Math.ceil(guests / 4);
-    
-    console.log('🔍 [ReservationConfirmed] Calculando domos requeridos:', {
-      guests,
+    console.log('🔍 [ReservationConfirmed] Calculando quote con todas las reservas:', {
+      totalGuests,
+      totalPrice,
       requiredDomos,
-      basePrice,
       nights
     });
     
-    // Create dome distribution - distribute guests evenly across domos
-    const guestsPerDomo = Math.floor(guests / requiredDomos);
-    const extraGuests = guests % requiredDomos;
-    
-    const domoDistribution = Array.from({ length: requiredDomos }, (_, index) => ({
+    // Create dome distribution using all reservations
+    const domoDistribution = allReservations.map((res, index) => ({
       number: index + 1,
-      guests: guestsPerDomo + (index < extraGuests ? 1 : 0),
-      unitId: (index + 1).toString()
+      guests: res.guests,
+      unitId: res.unit_id
     }));
     
-    // Create breakdown for each dome with correct pricing
-    const accommodationPrice = basePrice - activitiesTotal - packagesTotal - petsPrice;
-    const pricePerDome = accommodationPrice / requiredDomos;
-    
-    const breakdown = domoDistribution.map((domo, index) => ({
-      description: `Domo ${domo.number}: ${domo.guests} ${domo.guests === 1 ? 'persona' : 'personas'}`,
-      amount: Math.round(pricePerDome),
-      guests: domo.guests,
-      domoNumber: domo.number
+    // Create breakdown showing each dome with its individual price
+    const breakdown = allReservations.map((res, index) => ({
+      description: `Domo ${index + 1} (Unidad ${res.unit_id}): ${res.guests} ${res.guests === 1 ? 'persona' : 'personas'}`,
+      amount: res.total_price,
+      guests: res.guests,
+      domoNumber: index + 1
     }));
     
-    console.log('✅ [ReservationConfirmed] Quote generado:', {
+    // Calculate accommodation price (total minus extras)
+    const accommodationPrice = totalPrice - activitiesTotal - packagesTotal - petsPrice;
+    
+    console.log('✅ [ReservationConfirmed] Quote generado con múltiples domos:', {
       requiredDomos,
       domoDistribution,
       breakdown,
-      accommodationPrice
+      accommodationPrice,
+      totalPrice
     });
     
     return {
@@ -87,8 +146,8 @@ const ReservationConfirmed: React.FC<ReservationConfirmedProps> = ({
       activitiesTotal,
       packagesTotal,
       petsPrice,
-      pets,
-      totalPrice: basePrice,
+      pets: totalPets,
+      totalPrice: totalPrice,
       requiredDomos,
       domoDistribution,
       breakdown,
@@ -96,6 +155,19 @@ const ReservationConfirmed: React.FC<ReservationConfirmedProps> = ({
       selectedPackages: transactionResult.reservation_data?.selected_packages || []
     };
   };
+
+  if (isLoading) {
+    return (
+      <div className="space-y-6">
+        <div className="text-center">
+          <p className="text-gray-600">Cargando detalles de la reserva...</p>
+        </div>
+      </div>
+    );
+  }
+
+  const totalGuests = allReservations.reduce((sum, res) => sum + res.guests, 0);
+  const requiredDomos = allReservations.length;
 
   return (
     <div className="space-y-6">
@@ -138,25 +210,30 @@ const ReservationConfirmed: React.FC<ReservationConfirmedProps> = ({
             <p className="text-sm text-blue-600 mt-1">Guarda este código para futuras consultas</p>
           </div>
           
-          {/* Show multiple domos info if applicable */}
-          {transactionResult.reservation_data?.guests && 
-           Math.ceil(transactionResult.reservation_data.guests / 4) > 1 && (
+          {/* Show multiple domos info */}
+          {requiredDomos > 1 && (
             <div className="bg-amber-50 p-4 rounded-md mb-4">
               <p className="text-amber-800 font-medium mb-2">
-                Tu reserva incluye {Math.ceil(transactionResult.reservation_data.guests / 4)} domos:
+                Tu reserva incluye {requiredDomos} domos:
               </p>
-              <p className="text-sm text-amber-700">
-                Para {transactionResult.reservation_data.guests} huéspedes hemos reservado{' '}
-                {Math.ceil(transactionResult.reservation_data.guests / 4)} domos geodésicos.
+              <p className="text-sm text-amber-700 mb-2">
+                Para {totalGuests} huéspedes hemos reservado {requiredDomos} domos geodésicos.
                 Cada domo tiene capacidad para hasta 4 personas.
               </p>
+              <div className="space-y-1">
+                {allReservations.map((res, index) => (
+                  <div key={res.id} className="text-sm text-amber-700">
+                    • Domo {index + 1} (Unidad {res.unit_id}): {res.guests} {res.guests === 1 ? 'persona' : 'personas'}
+                  </div>
+                ))}
+              </div>
             </div>
           )}
           
           <ReservationDetails
             startDate={transactionResult.reservation_data?.check_in ? new Date(transactionResult.reservation_data.check_in) : undefined}
             endDate={transactionResult.reservation_data?.check_out ? new Date(transactionResult.reservation_data.check_out) : undefined}
-            guests={transactionResult.reservation_data?.guests}
+            guests={totalGuests}
             quote={getQuoteFromTransaction()}
             paymentDetails={transactionResult}
           />
