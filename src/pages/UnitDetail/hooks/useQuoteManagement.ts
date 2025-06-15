@@ -46,17 +46,11 @@ export const useQuoteManagement = () => {
     }
   };
 
-  const confirmReservation = () => {
-    console.log('🔍 [useQuoteManagement] confirmReservation - manteniendo estado de cotización para pago');
-    // NO cambiar isReservationConfirmed aquí, eso se hará después del pago exitoso
-  };
-
   return {
     showQuote,
     quote,
     setShowQuote,
     setQuote,
-    generateQuote,
-    confirmReservation
+    generateQuote
   };
 };

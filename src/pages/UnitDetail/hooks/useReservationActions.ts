@@ -24,8 +24,8 @@ export const useReservationActions = (state: any) => {
     setIsLoading: state.setIsProcessingPayment
   });
 
-  const handleReservation = useCallback(async () => {
-    console.log('🔍 [useReservationActions] handleReservation iniciado');
+  const handleConfirmReservation = useCallback(async () => {
+    console.log('🔍 [useReservationActions] handleConfirmReservation - Iniciando pago con WebPay');
     
     if (!state.startDate || !state.endDate || !state.displayUnit) {
       toast.error("Datos incompletos para crear la reserva");
@@ -67,19 +67,13 @@ export const useReservationActions = (state: any) => {
         }
       );
     } catch (error) {
-      console.error('❌ [useReservationActions] Error en handleReservation:', error);
+      console.error('❌ [useReservationActions] Error en handleConfirmReservation:', error);
       state.setIsProcessingPayment(false);
       toast.error("Error al procesar la reserva");
     }
   }, [state, createReservation, redirectToWebpay]);
 
-  const handleConfirmReservation = useCallback(async () => {
-    console.log('🔍 [useReservationActions] handleConfirmReservation - Iniciando pago con WebPay');
-    await handleReservation();
-  }, [handleReservation]);
-
   return {
-    handleReservation,
     handleConfirmReservation
   };
 };

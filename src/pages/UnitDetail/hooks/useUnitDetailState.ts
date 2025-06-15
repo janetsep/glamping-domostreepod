@@ -7,14 +7,11 @@ import { useGuestManagement } from "./useGuestManagement";
 import { useQuoteManagement } from "./useQuoteManagement";
 import { useExtrasState } from "./useExtrasState";
 import { useReservationState } from "./useReservationState";
+import { useReservationActions } from "./useReservationActions";
 
 export const useUnitDetailState = (unitId?: string) => {
   const { data: units = [], isLoading: unitsLoading } = useGlampingUnits();
-  const { 
-    checkAvailability, 
-    createReservation, 
-    redirectToWebpay 
-  } = useReservationFunctions();
+  const { checkAvailability } = useReservationFunctions();
 
   const displayUnit = units.find(unit => unit.id === unitId) || units[0];
   const confirmationRef = useRef(null);
@@ -46,8 +43,7 @@ export const useUnitDetailState = (unitId?: string) => {
     quote,
     setShowQuote,
     setQuote,
-    generateQuote: baseGenerateQuote,
-    confirmReservation
+    generateQuote: baseGenerateQuote
   } = useQuoteManagement();
 
   const {
@@ -72,6 +68,24 @@ export const useUnitDetailState = (unitId?: string) => {
     setCheckedAvailability,
     getCurrentStep: baseGetCurrentStep
   } = useReservationState();
+
+  // Crear el objeto state para las acciones
+  const stateForActions = {
+    startDate,
+    endDate,
+    guests,
+    displayUnit,
+    quote,
+    requiredDomos,
+    activitiesTotal,
+    packagesTotal,
+    selectedActivities,
+    selectedPackages,
+    setIsProcessingPayment
+  };
+
+  // Usar las acciones de reserva
+  const { handleConfirmReservation } = useReservationActions(stateForActions);
 
   // Wrapper para generateQuote que pase los parámetros necesarios
   const generateQuote = () => {
@@ -134,10 +148,8 @@ export const useUnitDetailState = (unitId?: string) => {
     
     // Functions
     checkAvailability,
-    createReservation,
-    redirectToWebpay,
     getCurrentStep,
     generateQuote,
-    confirmReservation
+    confirmReservation: handleConfirmReservation
   };
 };
