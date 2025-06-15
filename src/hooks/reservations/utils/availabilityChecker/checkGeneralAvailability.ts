@@ -34,13 +34,18 @@ export const checkGeneralAvailability = async (
 
     console.log('🔍 [checkGeneralAvailability] Total reservas confirmadas con unit_id:', allReservations?.length || 0);
 
-    // CORRECCIÓN CRÍTICA: Generar las noches correctamente
-    // Para una reserva del 29 al 30, solo verificamos la noche del 29
-    // Para una reserva del 22 al 25, verificamos las noches del 22, 23, 24
+    // CORRECCIÓN CRÍTICA: Para una reserva del 29 al 30, solo verificamos la noche del 29
+    // Esto significa que checkInDate se incluye, pero checkOutDate se excluye
     const nights = eachDayOfInterval({ 
       start: checkInDate, 
       end: addDays(checkOutDate, -1) 
     });
+
+    // Si no hay noches a verificar, no hay disponibilidad
+    if (nights.length === 0) {
+      console.log('⚠️ [checkGeneralAvailability] No hay noches para verificar en el rango');
+      return { isAvailable: false, availableUnits: 0, totalUnits: TOTAL_DOMOS };
+    }
 
     let minAvailableUnits = TOTAL_DOMOS;
 
