@@ -1,8 +1,9 @@
+
 import React from "react";
 import { Button } from "@/components/ui/button";
 import { Activity, ThemedPackage } from "@/types";
 import { ExtrasDetails } from "./ExtrasDetails";
-import { RefreshCcw, Edit } from "lucide-react";
+import { RefreshCcw, CreditCard } from "lucide-react";
 
 interface ReservationSummaryProps {
   quote: {
@@ -169,9 +170,10 @@ export const ReservationSummary: React.FC<ReservationSummaryProps> = ({
         <Button
           onClick={onConfirm}
           disabled={isLoading}
-          className="flex-1"
+          className="flex-1 flex items-center gap-2"
         >
-          {isLoading ? "Procesando..." : buttonText}
+          <CreditCard size={16} />
+          {isLoading ? "Procesando pago..." : "Pagar con WebPay"}
         </Button>
         
         <Button
@@ -179,9 +181,13 @@ export const ReservationSummary: React.FC<ReservationSummaryProps> = ({
           variant="outline"
           className="flex-1 flex items-center gap-2"
         >
-          <Edit size={16} />
+          <RefreshCcw size={16} />
           Modificar cotización
         </Button>
+      </div>
+
+      <div className="text-xs text-gray-500 mt-2 text-center">
+        Serás redirigido a WebPay para completar el pago de forma segura
       </div>
     </div>
   );

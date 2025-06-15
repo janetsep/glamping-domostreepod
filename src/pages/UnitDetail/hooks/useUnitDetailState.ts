@@ -1,4 +1,3 @@
-
 import { useState, useRef, useEffect } from "react";
 import { useGlampingUnits } from "@/hooks/reservations/useGlampingUnits";
 import { useReservationFunctions } from "@/hooks/reservations/useReservations";
@@ -83,12 +82,12 @@ export const useUnitDetailState = (unitId?: string) => {
     }
   };
 
+  // CAMBIO: confirmReservation ahora NO confirma la reserva directamente
+  // sino que mantiene el estado de cotización mostrada para que el usuario
+  // pueda proceder al pago con WebPay
   const confirmReservation = () => {
-    setIsReservationConfirmed(true);
-  };
-
-  const handleCheckAvailability = async (guestsCount: number, startDate: Date, endDate: Date, forceRefresh?: boolean): Promise<AvailabilityResult> => {
-    return await checkAvailability(guestsCount, startDate, endDate, forceRefresh);
+    console.log('🔍 [useUnitDetailState] confirmReservation - manteniendo estado de cotización para pago');
+    // NO cambiar isReservationConfirmed aquí, eso se hará después del pago exitoso
   };
 
   // Efecto para calcular la disponibilidad mínima real para todo el rango de fechas
