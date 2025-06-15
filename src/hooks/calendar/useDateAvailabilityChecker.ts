@@ -17,11 +17,13 @@ export const useDateAvailabilityChecker = (reservations: Reservation[]) => {
     console.log('[useDateAvailabilityChecker] Initialized with', reservations.length, 'reservations');
   }, [reservations.length]);
 
-  // Nuevo: Solo cuenta reservas confirmadas y con unit_id
+  // CRÍTICO: Usar exactamente la misma lógica que checkGeneralAvailability
   const isDateAvailable = useCallback((date: Date, requiredUnits = 1) => {
     const start = startOfDay(date);
 
+    // Solo contar reservas CONFIRMADAS y con unit_id asignado
     const overlappingReservations = reservations.filter(reservation => {
+      // IMPORTANTE: Aplicar exactamente los mismos filtros
       if (reservation.status !== 'confirmed' || !reservation.unit_id) return false;
       const checkIn = new Date(reservation.check_in);
       const checkOut = new Date(reservation.check_out);
@@ -32,6 +34,13 @@ export const useDateAvailabilityChecker = (reservations: Reservation[]) => {
     const reservedUnits = overlappingReservations.length;
     const availableUnits = TOTAL_UNITS - reservedUnits;
     const isAvailable = availableUnits >= requiredUnits;
+
+    console.log(`📅 [useDateAvailabilityChecker] Fecha ${date.toISOString().split('T')[0]}:`, {
+      reservasConUnitId: reservedUnits,
+      disponibles: availableUnits,
+      requeridos: requiredUnits,
+      disponible: isAvailable
+    });
 
     return {
       isAvailable,

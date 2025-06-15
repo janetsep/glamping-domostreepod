@@ -6,14 +6,14 @@ import { checkGeneralAvailability } from "@/hooks/reservations/utils/availabilit
 export const useDateAvailability = (startDate?: Date, endDate?: Date, guests: number = 2) => {
   const [requiredDomos, setRequiredDomos] = useState(1);
   const [isAvailable, setIsAvailable] = useState<boolean | null>(null);
-  const [availableDomos, setAvailableDomos] = useState(0);
+  const [availableDomos, setAvailableDomos] = useState<number | undefined>(undefined);
   const [isPartialAvailability, setIsPartialAvailability] = useState(false);
   const [alternativeDates, setAlternativeDates] = useState<{ startDate: Date; endDate: Date }[]>([]);
 
   // Efecto para calcular la disponibilidad mínima real para todo el rango de fechas
   useEffect(() => {
     if (!startDate || !endDate || guests <= 0) {
-      setAvailableDomos(0);
+      setAvailableDomos(undefined);
       setIsAvailable(null);
       setRequiredDomos(Math.ceil(guests / 4));
       return;
@@ -41,14 +41,19 @@ export const useDateAvailability = (startDate?: Date, endDate?: Date, guests: nu
         let minAvailableDomos = Infinity;
 
         // Verificar disponibilidad para cada noche individualmente
+        // USAR LA MISMA LÓGICA que checkGeneralAvailability
         for (const night of nights) {
           const nextDay = addDays(night, 1);
           
           const result = await checkGeneralAvailability(night, nextDay, domosNecesarios);
           
+          console.log(`🔍 [useDateAvailability] Noche ${night.toISOString().split('T')[0]}:`, {
+            disponibles: result.availableUnits,
+            requeridos: domosNecesarios
+          });
+          
           if (typeof result.availableUnits === 'number') {
             minAvailableDomos = Math.min(minAvailableDomos, result.availableUnits);
-            console.log(`🔍 [useDateAvailability] Noche ${night.toISOString().split('T')[0]}: ${result.availableUnits} domos disponibles`);
           } else {
             // Si alguna noche no tiene datos válidos, no hay disponibilidad
             minAvailableDomos = 0;
@@ -61,7 +66,7 @@ export const useDateAvailability = (startDate?: Date, endDate?: Date, guests: nu
           minAvailableDomos = 0;
         }
 
-        console.log('🔍 [useDateAvailability] Disponibilidad mínima calculada:', {
+        console.log('✅ [useDateAvailability] Disponibilidad mínima final:', {
           nochesVerificadas: nights.length,
           domosMinimosDisponibles: minAvailableDomos,
           domosRequeridos: domosNecesarios,
