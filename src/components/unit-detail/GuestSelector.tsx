@@ -20,7 +20,7 @@ export const GuestSelector = ({
   value,
   onChange,
   maxGuests = 16,
-  availableDomos = 4,
+  availableDomos,
   label = 'Huéspedes',
   required = false,
   adults = 2,
@@ -28,10 +28,21 @@ export const GuestSelector = ({
   onAdultsChange,
   onChildrenChange
 }: GuestSelectorProps) => {
-  // Calcular el máximo de huéspedes basado en los domos disponibles
-  const maxAllowedGuests = Math.min(maxGuests, availableDomos * 4);
+  // IMPORTANTE: Si availableDomos es undefined, no mostrar limitaciones
+  // Solo aplicar limitaciones cuando availableDomos tiene un valor válido
+  const maxAllowedGuests = availableDomos !== undefined ? Math.min(maxGuests, availableDomos * 4) : maxGuests;
+  
   // Calcular domos requeridos según huéspedes seleccionados
   const requiredDomos = Math.ceil(value / 4);
+
+  console.log('🔍 [GuestSelector] Estado actual:', {
+    value,
+    availableDomos,
+    maxAllowedGuests,
+    requiredDomos,
+    adults,
+    children
+  });
 
   const handleAdultsChange = (newAdults: number) => {
     if (newAdults >= 0 && newAdults + children <= maxAllowedGuests) {
@@ -114,14 +125,15 @@ export const GuestSelector = ({
         </div>
       </div>
       
-      {maxAllowedGuests < maxGuests && availableDomos > 0 && (
+      {/* Solo mostrar limitaciones si availableDomos tiene un valor válido */}
+      {availableDomos !== undefined && maxAllowedGuests < maxGuests && availableDomos > 0 && (
         <p className="text-amber-600 text-sm mt-2">
           Solo hay {availableDomos} {availableDomos === 1 ? 'domo disponible' : 'domos disponibles'} 
           (máximo {maxAllowedGuests} huéspedes).
         </p>
       )}
       
-      {maxAllowedGuests === 0 && (
+      {availableDomos !== undefined && availableDomos === 0 && (
         <p className="text-red-600 text-sm mt-2">
           No hay domos disponibles para las fechas seleccionadas.
         </p>

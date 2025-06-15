@@ -14,6 +14,14 @@ export const AvailabilityMessage = ({
 }: AvailabilityMessageProps) => {
   const calculatedRequiredDomos = Math.ceil(guests / 4);
 
+  console.log('🔍 [AvailabilityMessage] Estado actual:', {
+    availableDomos,
+    guests,
+    calculatedRequiredDomos,
+    startDate: startDate?.toISOString(),
+    endDate: endDate?.toISOString()
+  });
+
   let availableMessage = '';
   let messageStyle = '';
 
@@ -36,6 +44,11 @@ export const AvailabilityMessage = ({
     availableMessage = `Tenemos ${availableDomos} domo${availableDomos === 1 ? "" : "s"} disponibles para todas las noches seleccionadas.`;
     messageStyle = 'text-blue-700 bg-blue-50 border border-blue-100';
   }
+
+  console.log('🔍 [AvailabilityMessage] Mensaje generado:', {
+    mensaje: availableMessage,
+    estilo: messageStyle
+  });
 
   return (
     <div className={`text-xs rounded px-2 py-1 mb-2 font-medium ${messageStyle}`}>
