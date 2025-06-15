@@ -1,5 +1,4 @@
-
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { useGlampingUnits } from "@/hooks/reservations/useGlampingUnits";
 import { useReservationFunctions } from "@/hooks/reservations/useReservations";
 import { Activity, ThemedPackage, AvailabilityResult } from "@/types";
@@ -58,6 +57,35 @@ export const useUnitDetailState = (unitId?: string) => {
   const handleCheckAvailability = async (guestsCount: number, startDate: Date, endDate: Date, forceRefresh?: boolean): Promise<AvailabilityResult> => {
     return await checkAvailability(guestsCount, startDate, endDate, forceRefresh);
   };
+
+  // Recalcular siempre la cantidad real de domos disponibles cuando cambian fechas o huéspedes
+  // Este efecto asegura consistencia frente a cambios de fechas o cantidad de huéspedes
+  useEffect(() => {
+    // Asegurada la cantidad de huéspedes y fechas
+    if (startDate && endDate && guests > 0) {
+      // Aquí buscamos la cantidad de domos requeridos para las fechas seleccionadas
+      (async () => {
+        // Buscamos la función actualizada de disponibilidad
+        try {
+          const res = await checkAvailability(guests, startDate, endDate, true); // forzamos refresh de datos
+          setAvailableDomos(res.availableDomes);
+          setIsAvailable(res.isAvailable);
+          setRequiredDomos(res.requiredDomos || 1);
+          // Ayuda clave: log para depurar inconsistencias
+          console.log('[SYNC] checkAvailability:', {
+            guests,
+            startDate,
+            endDate,
+            resultado: res
+          });
+        } catch (err) {
+          setAvailableDomos(0);
+          setIsAvailable(false);
+          setRequiredDomos(Math.ceil(guests / 4));
+        }
+      })();
+    }
+  }, [startDate, endDate, guests, checkAvailability]); // siempre que cambien fechas/huéspedes
 
   return {
     // Unit data

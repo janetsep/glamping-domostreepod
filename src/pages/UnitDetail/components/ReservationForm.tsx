@@ -91,10 +91,20 @@ export const ReservationForm = ({
 
   // Calcular los domos requeridos basado en huéspedes (4 huéspedes por domo)
   const calculatedRequiredDomos = Math.ceil(guests / 4);
-  
+
+  // Si por alguna razón availableDomos no está definido (ej: esperando datos), mostramos un loader o mensaje claro
+  let availableMessage = '';
+  if (availableDomos === undefined) {
+    availableMessage = 'Calculando disponibilidad...';
+  } else if (availableDomos === 0) {
+    availableMessage = 'No hay domos disponibles para las fechas seleccionadas.';
+  } else {
+    availableMessage = `Tenemos ${availableDomos} domos disponibles para las fechas seleccionadas.`;
+  }
+
   // Determinar si hay suficientes domos disponibles
-  const hasSufficientDomos = availableDomos !== undefined ? availableDomos >= calculatedRequiredDomos : true;
-  
+  const hasSufficientDomos = availableDomos !== undefined ? availableDomos >= calculatedRequiredDomos : false;
+
   // Determinar si se puede cotizar
   const canQuote = startDate && endDate && hasSufficientDomos && (isAvailable === true || (isAvailable === null && availableDomos > 0));
 
@@ -123,6 +133,12 @@ export const ReservationForm = ({
 
   return (
     <div className="space-y-6">
+
+      {/* Mensaje de disponibilidad actualizado para depuración */}
+      <div className="text-xs text-blue-700">
+        {availableMessage}
+      </div>
+
       {/* Tabs de reserva */}
       <ReservationTabs 
         tab={reservationTab} 
