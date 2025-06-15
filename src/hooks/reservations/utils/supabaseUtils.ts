@@ -1,3 +1,4 @@
+
 import { supabase } from '@/lib/supabase';
 import { SUPABASE_URL, SUPABASE_ANON_KEY } from '@/lib/constants';
 import { generateReservationCode } from '@/hooks/reservations/utils/reservationUtils';
@@ -95,24 +96,38 @@ export const createReservationEntry = async (
     }
     console.log('✅ [createReservationEntry] Código de reserva generado:', reservationCode);
 
-    // Verificar disponibilidad actual
-    console.log('🔍 [createReservationEntry] Verificando disponibilidad actual...');
-    const { data: currentReservations, error: checkError } = await supabase
+    // NUEVA LÓGICA: Verificar disponibilidad usando la misma lógica que checkGeneralAvailability
+    console.log('🔍 [createReservationEntry] Verificando disponibilidad usando lógica general...');
+    const { data: overlappingReservations, error: checkError } = await supabase
       .from('reservations')
-      .select('unit_id, status')
-      .in('unit_id', unitIdsToAssign)
-      .or(`and(check_in.lte.${checkOut.toISOString()},check_out.gte.${checkIn.toISOString()},status.eq.confirmed)`);
+      .select('id, unit_id, check_in, check_out')
+      .eq('status', 'confirmed')
+      .filter('check_in', 'lt', checkOut.toISOString())
+      .filter('check_out', 'gt', checkIn.toISOString());
 
     if (checkError) {
       throw new Error(`Error al verificar disponibilidad: ${checkError.message}`);
     }
 
-    const reservedUnits = new Set(currentReservations?.map(r => r.unit_id) || []);
-    const availableUnits = unitIdsToAssign.filter(id => !reservedUnits.has(id));
+    // Usar la misma lógica que el calendario: solo contar reservas con unit_id asignado
+    const reservedUnits = (overlappingReservations || [])
+      .filter(r => r.unit_id !== null && r.unit_id !== undefined)
+      .length;
+    
+    const totalDomos = 4; // Total de domos disponibles
+    const availableUnits = totalDomos - reservedUnits;
+    const requiredUnits = unitIdsToAssign.length;
 
-    if (availableUnits.length < unitIdsToAssign.length) {
-      const unavailableUnits = unitIdsToAssign.filter(id => reservedUnits.has(id));
-      throw new Error(`Las siguientes unidades ya no están disponibles: ${unavailableUnits.join(', ')}`);
+    console.log('📊 [createReservationEntry] Análisis de disponibilidad:', {
+      totalDomos,
+      reservasConUnitId: reservedUnits,
+      unidadesDisponibles: availableUnits,
+      unidadesRequeridas: requiredUnits,
+      reservasSolapadas: overlappingReservations?.length || 0
+    });
+
+    if (availableUnits < requiredUnits) {
+      throw new Error(`No hay suficientes domos disponibles. Se necesitan ${requiredUnits} domos, pero solo hay ${availableUnits} disponibles para las fechas seleccionadas.`);
     }
 
     // Obtener capacidades de los domos si no se proporcionan
@@ -235,20 +250,6 @@ export const createReservationEntry = async (
     if (!data || data.length === 0) {
       throw new Error('No se pudieron crear las reservas');
     }
-
-    // Verificar que todas las reservas se crearon con el mismo código
-    // const allSameCode = data.every(r => r.reservation_code === reservationCode);
-    // if (!allSameCode) {
-    //   console.error('❌ [createReservationEntry] Error de verificación: No todas las reservas devueltas tienen el código esperado.', {
-    //     codigoEsperado: reservationCode,
-    //     reservasDevueltas: data.map(r => ({
-    //       id: r.id,
-    //       codigo: r.reservation_code,
-    //       unidad: r.unit_id // Añadir unidad para contexto
-    //     }))
-    //   });
-    //   throw new Error('Error: las reservas no tienen el mismo código');
-    // }
 
     console.log('✅ [createReservationEntry] Reservas creadas exitosamente:', data);
     return data;
