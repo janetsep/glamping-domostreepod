@@ -35,8 +35,7 @@ const ReservationConfirmed: React.FC<ReservationConfirmedProps> = ({
       }
 
       try {
-        console.log('🔍 [ReservationConfirmed] DEBUG: transactionResult completo:', JSON.stringify(transactionResult, null, 2));
-        console.log('🔍 [ReservationConfirmed] Obteniendo reserva principal:', transactionResult.reservation_id);
+        console.log('🔍 [ReservationConfirmed] Buscando TODAS las reservas para reservation_id:', transactionResult.reservation_id);
         
         // Get primary reservation to get the reservation code
         const { data: primaryReservation, error: primaryError } = await supabase
@@ -47,24 +46,6 @@ const ReservationConfirmed: React.FC<ReservationConfirmedProps> = ({
         
         if (primaryError || !primaryReservation) {
           console.error('❌ [ReservationConfirmed] Error obteniendo reserva principal:', primaryError);
-          console.log('🔍 [ReservationConfirmed] Intentando buscar por buy_order:', transactionResult.buy_order);
-          
-          // Fallback: try to find by buy_order pattern
-          const { data: fallbackReservations, error: fallbackError } = await supabase
-            .from('reservations')
-            .select('*, reservation_code')
-            .eq('status', 'confirmed')
-            .order('created_at', { ascending: false })
-            .limit(10);
-            
-          if (fallbackError || !fallbackReservations || fallbackReservations.length === 0) {
-            console.error('❌ [ReservationConfirmed] No se encontraron reservas confirmadas recientes');
-            setIsLoading(false);
-            return;
-          }
-          
-          console.log('🔍 [ReservationConfirmed] Reservas confirmadas recientes:', fallbackReservations);
-          setAllReservations(fallbackReservations);
           setIsLoading(false);
           return;
         }
@@ -78,7 +59,7 @@ const ReservationConfirmed: React.FC<ReservationConfirmedProps> = ({
         });
 
         if (!primaryReservation.reservation_code) {
-          console.error('❌ [ReservationConfirmed] No se encontró código de reserva, usando solo la reserva principal');
+          console.error('❌ [ReservationConfirmed] No se encontró código de reserva');
           setAllReservations([primaryReservation]);
           setIsLoading(false);
           return;
@@ -94,13 +75,12 @@ const ReservationConfirmed: React.FC<ReservationConfirmedProps> = ({
         
         if (allError || !allReservations) {
           console.error('❌ [ReservationConfirmed] Error obteniendo todas las reservas:', allError);
-          // Usar solo la reserva principal como fallback
           setAllReservations([primaryReservation]);
           setIsLoading(false);
           return;
         }
 
-        console.log('✅ [ReservationConfirmed] Todas las reservas obtenidas:', {
+        console.log('✅ [ReservationConfirmed] TODAS las reservas obtenidas:', {
           total: allReservations.length,
           reservas: allReservations.map(r => ({
             id: r.id,
@@ -114,25 +94,14 @@ const ReservationConfirmed: React.FC<ReservationConfirmedProps> = ({
         setAllReservations(allReservations);
       } catch (error) {
         console.error('❌ [ReservationConfirmed] Error general:', error);
-        // Try to use just the transaction result data as fallback
-        if (transactionResult.reservation_data) {
-          console.log('🔄 [ReservationConfirmed] Usando datos del transactionResult como fallback');
-          const fallbackReservation = {
-            id: transactionResult.reservation_id,
-            guests: transactionResult.reservation_data.guests || 4,
-            total_price: transactionResult.amount || 0,
-            unit_id: '1',
-            reservation_code: transactionResult.reservation_data.reservation_code || formatReservationId(transactionResult.reservation_id)
-          };
-          setAllReservations([fallbackReservation]);
-        }
+        setAllReservations([]);
       } finally {
         setIsLoading(false);
       }
     };
 
     fetchAllReservations();
-  }, [transactionResult?.reservation_id, transactionResult?.buy_order]);
+  }, [transactionResult?.reservation_id]);
   
   // Prepare quote object for ReservationDetails using all reservations
   const getQuoteFromTransaction = () => {
@@ -151,12 +120,12 @@ const ReservationConfirmed: React.FC<ReservationConfirmedProps> = ({
       
     const nights = checkIn && checkOut ? differenceInDays(checkOut, checkIn) : 0;
     
-    // Calculate totals from all reservations
+    // Calculate totals from ALL reservations (not just transaction data)
     const totalGuests = allReservations.reduce((sum, res) => sum + res.guests, 0);
     const totalPrice = allReservations.reduce((sum, res) => sum + res.total_price, 0);
     const requiredDomos = allReservations.length;
 
-    console.log('🔍 [ReservationConfirmed] Calculando quote:', {
+    console.log('🔍 [ReservationConfirmed] Calculando quote con TODAS las reservas:', {
       totalGuests,
       totalPrice,
       requiredDomos,
@@ -187,12 +156,13 @@ const ReservationConfirmed: React.FC<ReservationConfirmedProps> = ({
     // Calculate accommodation price (total minus extras)
     const accommodationPrice = totalPrice - activitiesTotal - packagesTotal - petsPrice;
     
-    console.log('✅ [ReservationConfirmed] Quote generado:', {
+    console.log('✅ [ReservationConfirmed] Quote generado con MÚLTIPLES domos:', {
       requiredDomos,
+      totalGuests,
+      totalPrice,
       domoDistribution,
       breakdown,
-      accommodationPrice,
-      totalPrice
+      accommodationPrice
     });
     
     return {
@@ -263,17 +233,6 @@ const ReservationConfirmed: React.FC<ReservationConfirmedProps> = ({
       {transactionResult.reservation_id && (
         <div className="mt-8 border-t pt-6">
           <h3 className="text-xl font-semibold mb-4">Detalles completos de tu reserva</h3>
-          
-          {/* DEBUG INFO - mostrar temporalmente */}
-          <div className="bg-yellow-50 p-4 rounded-md mb-4 text-sm">
-            <p><strong>DEBUG INFO:</strong></p>
-            <p>Reservas encontradas: {allReservations.length}</p>
-            <p>Total huéspedes: {totalGuests}</p>
-            <p>Domos requeridos: {requiredDomos}</p>
-            {allReservations.map((res, idx) => (
-              <p key={idx}>Domo {idx + 1}: {res.guests} huéspedes, Unit {res.unit_id}</p>
-            ))}
-          </div>
           
           <div className="bg-blue-50 p-4 rounded-md mb-4 text-center">
             <p className="text-blue-700 font-medium mb-1">Tu código de reserva es:</p>
