@@ -1,208 +1,87 @@
 
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef } from "react";
 import { useGlampingUnits } from "@/hooks/reservations/useGlampingUnits";
 import { useReservationFunctions } from "@/hooks/reservations/useReservations";
-import { usePricing } from "@/hooks/reservations/usePricing";
-import { Activity, ThemedPackage, AvailabilityResult } from "@/types";
-import { eachDayOfInterval, addDays } from "date-fns";
-import { checkGeneralAvailability } from "@/hooks/reservations/utils/availabilityChecker/checkGeneralAvailability";
+import { useDateAvailability } from "./useDateAvailability";
+import { useGuestManagement } from "./useGuestManagement";
+import { useQuoteManagement } from "./useQuoteManagement";
+import { useExtrasState } from "./useExtrasState";
+import { useReservationState } from "./useReservationState";
 
 export const useUnitDetailState = (unitId?: string) => {
   const { data: units = [], isLoading: unitsLoading } = useGlampingUnits();
   const { 
-    fetchGlampingUnits, 
     checkAvailability, 
     createReservation, 
     redirectToWebpay 
   } = useReservationFunctions();
-  
-  const { calculateQuote } = usePricing();
 
   const displayUnit = units.find(unit => unit.id === unitId) || units[0];
   const confirmationRef = useRef(null);
 
   const [startDate, setStartDate] = useState<Date | undefined>();
   const [endDate, setEndDate] = useState<Date | undefined>();
-  const [guests, setGuests] = useState(2);
-  const [adults, setAdults] = useState(2);
-  const [children, setChildren] = useState(0);
-  const [requiredDomos, setRequiredDomos] = useState(1);
-  const [isAvailable, setIsAvailable] = useState<boolean | null>(null);
-  const [availableDomos, setAvailableDomos] = useState(0);
-  const [isPartialAvailability, setIsPartialAvailability] = useState(false);
-  const [alternativeDates, setAlternativeDates] = useState<{ startDate: Date; endDate: Date }[]>([]);
-  const [showQuote, setShowQuote] = useState(false);
-  const [quote, setQuote] = useState<any>(null);
-  const [isProcessingPayment, setIsProcessingPayment] = useState(false);
-  const [isReservationConfirmed, setIsReservationConfirmed] = useState(false);
-  const [confirmedReservationId, setConfirmedReservationId] = useState<string | null>(null);
-  const [paymentDetails, setPaymentDetails] = useState<any>(null);
-  const [selectedActivities, setSelectedActivities] = useState<Activity[]>([]);
-  const [selectedPackages, setSelectedPackages] = useState<ThemedPackage[]>([]);
-  const [activitiesTotal, setActivitiesTotal] = useState(0);
-  const [packagesTotal, setPackagesTotal] = useState(0);
-  const [reservationTab, setReservationTab] = useState("dates");
-  const [checkedAvailability, setCheckedAvailability] = useState(false);
 
-  const getCurrentStep = (): number => {
-    if (isReservationConfirmed) return 4;
-    if (showQuote) return 3;
-    if (checkedAvailability && isAvailable) return 2;
-    return 1;
-  };
+  // Usar los hooks especializados
+  const {
+    requiredDomos,
+    isAvailable,
+    availableDomos,
+    isPartialAvailability,
+    alternativeDates,
+    setIsAvailable
+  } = useDateAvailability(startDate, endDate, 2);
 
+  const {
+    guests,
+    adults,
+    children,
+    setGuests,
+    setAdults,
+    setChildren
+  } = useGuestManagement(availableDomos);
+
+  const {
+    showQuote,
+    quote,
+    setShowQuote,
+    setQuote,
+    generateQuote: baseGenerateQuote,
+    confirmReservation
+  } = useQuoteManagement();
+
+  const {
+    selectedActivities,
+    selectedPackages,
+    activitiesTotal,
+    packagesTotal,
+    setSelectedActivities,
+    setSelectedPackages
+  } = useExtrasState();
+
+  const {
+    isProcessingPayment,
+    isReservationConfirmed,
+    confirmedReservationId,
+    paymentDetails,
+    reservationTab,
+    checkedAvailability,
+    setIsProcessingPayment,
+    setIsReservationConfirmed,
+    setReservationTab,
+    setCheckedAvailability,
+    getCurrentStep: baseGetCurrentStep
+  } = useReservationState();
+
+  // Wrapper para generateQuote que pase los parámetros necesarios
   const generateQuote = () => {
-    console.log('🔍 [useUnitDetailState] generateQuote llamado:', {
-      startDate: startDate?.toISOString(),
-      endDate: endDate?.toISOString(),
-      guests,
-      requiredDomos,
-      displayUnit: !!displayUnit
-    });
-
-    if (!startDate || !endDate || !displayUnit) {
-      console.error('❌ [useUnitDetailState] Faltan datos para generar cotización');
-      return;
-    }
-
-    try {
-      const quoteDetails = calculateQuote(
-        displayUnit.prices,
-        startDate,
-        endDate,
-        guests,
-        requiredDomos
-      );
-      
-      console.log('🔍 [useUnitDetailState] Cotización generada:', quoteDetails);
-      
-      setQuote(quoteDetails);
-      setShowQuote(true);
-    } catch (error) {
-      console.error('❌ [useUnitDetailState] Error generando cotización:', error);
-    }
+    baseGenerateQuote(displayUnit, startDate, endDate, guests, requiredDomos);
   };
 
-  // CAMBIO: confirmReservation ahora NO confirma la reserva directamente
-  // sino que mantiene el estado de cotización mostrada para que el usuario
-  // pueda proceder al pago con WebPay
-  const confirmReservation = () => {
-    console.log('🔍 [useUnitDetailState] confirmReservation - manteniendo estado de cotización para pago');
-    // NO cambiar isReservationConfirmed aquí, eso se hará después del pago exitoso
+  // Wrapper para getCurrentStep que pase showQuote
+  const getCurrentStep = () => {
+    return baseGetCurrentStep(showQuote);
   };
-
-  // Efecto para calcular la disponibilidad mínima real para todo el rango de fechas
-  useEffect(() => {
-    if (!startDate || !endDate || guests <= 0) {
-      setAvailableDomos(0);
-      setIsAvailable(null);
-      setRequiredDomos(Math.ceil(guests / 4));
-      return;
-    }
-
-    const domosNecesarios = Math.ceil(guests / 4);
-    setRequiredDomos(domosNecesarios);
-
-    // Calcular la disponibilidad mínima para todo el rango
-    (async () => {
-      try {
-        console.log('🔍 [useUnitDetailState] Calculando disponibilidad mínima para rango:', {
-          inicio: startDate.toISOString().split('T')[0],
-          fin: endDate.toISOString().split('T')[0],
-          huéspedes: guests,
-          domosRequeridos: domosNecesarios
-        });
-
-        // Obtener todas las noches del rango (excluyendo la fecha de checkout)
-        const nights = eachDayOfInterval({ 
-          start: startDate, 
-          end: addDays(endDate, -1) 
-        });
-
-        let minAvailableDomos = Infinity;
-
-        // Verificar disponibilidad para cada noche individualmente
-        for (const night of nights) {
-          const nextDay = addDays(night, 1);
-          
-          const result = await checkGeneralAvailability(night, nextDay, domosNecesarios);
-          
-          if (typeof result.availableUnits === 'number') {
-            minAvailableDomos = Math.min(minAvailableDomos, result.availableUnits);
-            console.log(`🔍 [useUnitDetailState] Noche ${night.toISOString().split('T')[0]}: ${result.availableUnits} domos disponibles`);
-          } else {
-            // Si alguna noche no tiene datos válidos, no hay disponibilidad
-            minAvailableDomos = 0;
-            break;
-          }
-        }
-
-        // Si no se encontraron datos válidos, establecer en 0
-        if (minAvailableDomos === Infinity) {
-          minAvailableDomos = 0;
-        }
-
-        console.log('🔍 [useUnitDetailState] Disponibilidad mínima calculada:', {
-          nochesVerificadas: nights.length,
-          domosMinimosDisponibles: minAvailableDomos,
-          domosRequeridos: domosNecesarios,
-          disponible: minAvailableDomos >= domosNecesarios
-        });
-
-        setAvailableDomos(minAvailableDomos);
-        setIsAvailable(minAvailableDomos >= domosNecesarios);
-
-      } catch (error) {
-        console.error('❌ [useUnitDetailState] Error calculando disponibilidad:', error);
-        setAvailableDomos(0);
-        setIsAvailable(false);
-      }
-    })();
-  }, [startDate, endDate, guests]);
-
-  // Efecto separado para ajustar automáticamente los huéspedes cuando cambie availableDomos
-  // SOLO cuando los huéspedes actuales excedan la capacidad y tengamos fechas seleccionadas
-  useEffect(() => {
-    // Solo ejecutar si tenemos fechas seleccionadas, availableDomos definido y huéspedes > 0
-    if (!startDate || !endDate || availableDomos === undefined || guests === 0) {
-      return;
-    }
-
-    const maxGuestsAllowed = availableDomos * 4;
-    
-    console.log('🔄 [useUnitDetailState] Verificando necesidad de ajuste de huéspedes:', {
-      domosDisponibles: availableDomos,
-      máximoHuéspedes: maxGuestsAllowed,
-      huéspedesActuales: guests,
-      necesitaAjuste: guests > maxGuestsAllowed
-    });
-    
-    // SOLO ajustar si los huéspedes actuales EXCEDEN la capacidad máxima
-    if (guests > maxGuestsAllowed) {
-      console.log('🔄 [useUnitDetailState] Ajustando huéspedes porque exceden capacidad:', {
-        huéspedesAntes: guests,
-        máximoPermitido: maxGuestsAllowed,
-        domosDisponibles: availableDomos
-      });
-      
-      if (availableDomos === 0) {
-        // Solo si no hay domos disponibles, resetear
-        setGuests(0);
-        setAdults(0);
-        setChildren(0);
-      } else {
-        // Ajustar al máximo permitido
-        setGuests(maxGuestsAllowed);
-        
-        // Distribuir proporcionalmente pero asegurar al menos 1 adulto
-        const newAdults = Math.max(1, Math.min(adults, maxGuestsAllowed));
-        const newChildren = Math.max(0, maxGuestsAllowed - newAdults);
-        
-        setAdults(newAdults);
-        setChildren(newChildren);
-      }
-    }
-  }, [availableDomos]); // Solo depende de availableDomos
 
   return {
     // Unit data
@@ -255,7 +134,6 @@ export const useUnitDetailState = (unitId?: string) => {
     
     // Functions
     checkAvailability,
-    calculateQuote,
     createReservation,
     redirectToWebpay,
     getCurrentStep,
