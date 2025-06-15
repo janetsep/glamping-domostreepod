@@ -46,23 +46,38 @@ const ReservationConfirmed: React.FC<ReservationConfirmedProps> = ({
     // Calculate required domos based on guests
     const requiredDomos = Math.ceil(guests / 4);
     
-    // Create dome distribution - assuming equal distribution
+    console.log('🔍 [ReservationConfirmed] Calculando domos requeridos:', {
+      guests,
+      requiredDomos,
+      basePrice,
+      nights
+    });
+    
+    // Create dome distribution - distribute guests evenly across domos
     const guestsPerDomo = Math.floor(guests / requiredDomos);
     const extraGuests = guests % requiredDomos;
     
     const domoDistribution = Array.from({ length: requiredDomos }, (_, index) => ({
       number: index + 1,
-      guests: guestsPerDomo + (index < extraGuests ? 1 : 0)
+      guests: guestsPerDomo + (index < extraGuests ? 1 : 0),
+      unitId: (index + 1).toString()
     }));
     
-    // Create breakdown for each dome
-    const pricePerDome = basePrice / requiredDomos;
+    // Create breakdown for each dome with correct pricing
+    const pricePerDome = (basePrice - activitiesTotal - packagesTotal - petsPrice) / requiredDomos;
     const breakdown = domoDistribution.map((domo, index) => ({
       description: `Domo ${domo.number}: ${domo.guests} ${domo.guests === 1 ? 'persona' : 'personas'}`,
       amount: Math.round(pricePerDome),
       guests: domo.guests,
       domoNumber: domo.number
     }));
+    
+    console.log('✅ [ReservationConfirmed] Quote generado:', {
+      requiredDomos,
+      domoDistribution,
+      breakdown,
+      pricePerDome
+    });
     
     return {
       nights,
@@ -120,6 +135,22 @@ const ReservationConfirmed: React.FC<ReservationConfirmedProps> = ({
             </p>
             <p className="text-sm text-blue-600 mt-1">Guarda este código para futuras consultas</p>
           </div>
+          
+          {/* Show multiple domos info if applicable */}
+          {transactionResult.reservation_data?.guests && 
+           Math.ceil(transactionResult.reservation_data.guests / 4) > 1 && (
+            <div className="bg-amber-50 p-4 rounded-md mb-4">
+              <p className="text-amber-800 font-medium mb-2">
+                Tu reserva incluye {Math.ceil(transactionResult.reservation_data.guests / 4)} domos:
+              </p>
+              <p className="text-sm text-amber-700">
+                Para {transactionResult.reservation_data.guests} huéspedes hemos reservado{' '}
+                {Math.ceil(transactionResult.reservation_data.guests / 4)} domos geodésicos.
+                Cada domo tiene capacidad para hasta 4 personas.
+              </p>
+            </div>
+          )}
+          
           <ReservationDetails
             startDate={transactionResult.reservation_data?.check_in ? new Date(transactionResult.reservation_data.check_in) : undefined}
             endDate={transactionResult.reservation_data?.check_out ? new Date(transactionResult.reservation_data.check_out) : undefined}
