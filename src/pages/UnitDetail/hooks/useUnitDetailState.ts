@@ -1,4 +1,3 @@
-
 import { useState, useRef, useEffect } from "react";
 import { useGlampingUnits } from "@/hooks/reservations/useGlampingUnits";
 import { useReservationFunctions } from "@/hooks/reservations/useReservations";
@@ -132,7 +131,7 @@ export const useUnitDetailState = (unitId?: string) => {
 
   // Efecto para ajustar automáticamente los huéspedes cuando la disponibilidad cambie
   useEffect(() => {
-    if (availableDomos > 0) {
+    if (availableDomos !== undefined && availableDomos > 0) {
       const maxGuestsAllowed = availableDomos * 4;
       
       // Si los huéspedes actuales exceden la capacidad máxima, ajustar automáticamente
@@ -154,7 +153,7 @@ export const useUnitDetailState = (unitId?: string) => {
         setChildren(newChildren);
       }
     }
-  }, [availableDomos]);
+  }, [availableDomos, guests, adults, children]);
 
   return {
     // Unit data

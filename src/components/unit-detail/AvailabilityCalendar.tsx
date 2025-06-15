@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { addMonths, subMonths, isToday, isBefore, isSameDay, isSameMonth } from "date-fns";
 import { useCalendarAvailability } from "@/hooks/useCalendarAvailability";
@@ -84,13 +85,11 @@ export const AvailabilityCalendar = ({
       isBeforeToday: isBefore(day.date, new Date())
     });
 
-    // Validar que la fecha sea válida y tenga suficientes domos disponibles
-    if (!day.isAvailable || (day.availableUnits !== undefined && day.availableUnits < requiredDomos)) {
+    // Solo validar que la fecha esté disponible (al menos 1 domo) y no sea pasada
+    if (!day.isAvailable || (day.availableUnits !== undefined && day.availableUnits === 0)) {
       toast({
         title: "Fecha no disponible",
-        description: day.availableUnits !== undefined 
-          ? `Se necesitan ${requiredDomos} domos, pero solo hay ${day.availableUnits} disponibles.`
-          : "Esta fecha no está disponible para reserva.",
+        description: "Esta fecha no tiene domos disponibles para reserva.",
         variant: "destructive"
       });
       return;
