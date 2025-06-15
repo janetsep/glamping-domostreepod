@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { DateSelector } from "@/components/unit-detail/DateSelector";
@@ -92,14 +91,22 @@ export const ReservationForm = ({
   // Calcular los domos requeridos basado en huéspedes (4 huéspedes por domo)
   const calculatedRequiredDomos = Math.ceil(guests / 4);
 
-  // Si por alguna razón availableDomos no está definido (ej: esperando datos), mostramos un loader o mensaje claro
-  let availableMessage = '';
+  // Nuevo mensaje azul mucho más claro y fiel a la lógica real
+  let availableMessage = "";
   if (availableDomos === undefined) {
-    availableMessage = 'Calculando disponibilidad...';
+    availableMessage = "Calculando disponibilidad...";
+  } else if (!startDate || !endDate) {
+    availableMessage = "Selecciona fechas para ver la disponibilidad.";
   } else if (availableDomos === 0) {
-    availableMessage = 'No hay domos disponibles para las fechas seleccionadas.';
+    availableMessage = "No hay domos disponibles para todas las noches seleccionadas.";
+  } else if (availableDomos < calculatedRequiredDomos) {
+    // Si hay menos domos de los requeridos, advertir al usuario (pero ser claros con la cifra)
+    availableMessage = `Solo hay ${availableDomos} domo${availableDomos === 1 ? "" : "s"} disponible${availableDomos === 1 ? "" : "s"} para todas las noches seleccionadas. Para ${guests} huéspedes necesitas ${calculatedRequiredDomos}.`;
+  } else if (availableDomos === 1) {
+    // Solo queda uno, enfatizar urgencia (pero aún suficiente)
+    availableMessage = "¡Solo queda 1 domo disponible para todas las noches seleccionadas 🔥!";
   } else {
-    availableMessage = `Tenemos ${availableDomos} domos disponibles para las fechas seleccionadas.`;
+    availableMessage = `Tenemos ${availableDomos} domo${availableDomos === 1 ? "" : "s"} disponibles para todas las noches seleccionadas.`;
   }
 
   // Determinar si hay suficientes domos disponibles
@@ -134,8 +141,21 @@ export const ReservationForm = ({
   return (
     <div className="space-y-6">
 
-      {/* Mensaje de disponibilidad actualizado para depuración */}
-      <div className="text-xs text-blue-700">
+      {/* Mensaje de disponibilidad siempre sincronizado con mínimo real para el rango */}
+      <div
+        className={`text-xs rounded px-2 py-1 mb-2 font-medium
+          ${availableDomos === undefined
+            ? 'text-blue-700'
+            : availableDomos === 0
+            ? 'text-red-600 bg-red-50 border border-red-200'
+            : availableDomos < calculatedRequiredDomos
+            ? 'text-amber-700 bg-amber-50 border border-amber-100'
+            : availableDomos === 1
+            ? 'text-orange-700 bg-orange-50 border border-orange-100'
+            : 'text-blue-700 bg-blue-50 border border-blue-100'
+          }
+        `}
+      >
         {availableMessage}
       </div>
 
