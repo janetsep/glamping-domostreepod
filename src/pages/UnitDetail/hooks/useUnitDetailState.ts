@@ -87,6 +87,61 @@ export const useUnitDetailState = (unitId?: string) => {
     }
   }, [startDate, endDate, guests, checkAvailability]); // siempre que cambien fechas/huéspedes
 
+  // Nuevo: Calcula la disponibilidad mínima de domos para todo el rango seleccionado
+  useEffect(() => {
+    // Si no hay fechas o huéspedes, no calculamos
+    if (!startDate || !endDate || guests <= 0) {
+      setAvailableDomos(0);
+      setIsAvailable(null);
+      setRequiredDomos(Math.ceil(guests / 4));
+      return;
+    }
+
+    // Función utilitaria para obtener el número de noches entre fechas
+    const getNightsInRange = (start: Date, end: Date) => {
+      const nights: Date[] = [];
+      let current = new Date(start);
+      const endDay = new Date(end);
+      while (current < endDay) {
+        nights.push(new Date(current));
+        current.setDate(current.getDate() + 1);
+      }
+      return nights;
+    };
+
+    (async () => {
+      try {
+        const nights = getNightsInRange(startDate, endDate);
+        let minAvailableDomes = Infinity;
+        let foundError = false;
+        for (const day of nights) {
+          // Consulta la disponibilidad para ese día
+          const res = await checkAvailability(guests, day, new Date(day.getTime() + 24 * 60 * 60 * 1000), true);
+          if (typeof res.availableDomes === 'number') {
+            minAvailableDomes = Math.min(minAvailableDomes, res.availableDomes);
+          } else {
+            foundError = true;
+          }
+        }
+        if (foundError || minAvailableDomes === Infinity) {
+          setAvailableDomos(0);
+          setIsAvailable(false);
+          setRequiredDomos(Math.ceil(guests / 4));
+        } else {
+          setAvailableDomos(minAvailableDomes);
+          setIsAvailable(minAvailableDomes >= Math.ceil(guests / 4));
+          setRequiredDomos(Math.ceil(guests / 4));
+          // Log de depuración
+          console.log('[SYNC][Rango completo] nights:', nights.length, 'minAvailableDomes:', minAvailableDomes, 'required:', Math.ceil(guests / 4));
+        }
+      } catch (err) {
+        setAvailableDomos(0);
+        setIsAvailable(false);
+        setRequiredDomos(Math.ceil(guests / 4));
+      }
+    })();
+  }, [startDate, endDate, guests, checkAvailability]);
+
   return {
     // Unit data
     displayUnit,
