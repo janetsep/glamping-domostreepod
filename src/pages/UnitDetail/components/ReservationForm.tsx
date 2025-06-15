@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { DateSelector } from "@/components/unit-detail/DateSelector";
@@ -68,7 +69,6 @@ export const ReservationForm = ({
   alternativeDates = [],
   handleAlternativeDateSelect
 }: ReservationFormProps) => {
-  // Campo para controlar si hay que mostrar o no las fechas alternativas
   const [showAlternatives, setShowAlternatives] = useState(false);
 
   // Efecto para mostrar las fechas alternativas cuando no hay disponibilidad completa
@@ -80,77 +80,54 @@ export const ReservationForm = ({
     }
   }, [isAvailable, availableDomos, requiredDomos, alternativeDates]);
 
-  // Efecto para depurar cambios en las fechas
-  useEffect(() => {
-    console.log('🔍 [ReservationForm] Fechas actualizadas:', {
-      startDate: startDate?.toISOString(),
-      endDate: endDate?.toISOString()
-    });
-  }, [startDate, endDate]);
-
-  // Calcular domos requeridos por huéspedes (4 huéspedes por domo, como antes).
+  // Calcular domos requeridos por huéspedes
   const calculatedRequiredDomos = Math.ceil(guests / 4);
 
-  // El valor de availableDomos ya es el mínimo de todas las noches (según hook), pero aclaro variable para claridad.
-  const minDomosDisponiblesEnTodasLasNoches = availableDomos;
-
-  // Mensaje de disponibilidad (azul o contextual)
+  // Mensaje de disponibilidad usando el valor correcto de availableDomos (ya es el mínimo)
   let availableMessage = '';
-  if (minDomosDisponiblesEnTodasLasNoches === undefined) {
+  if (availableDomos === undefined) {
     availableMessage = "Calculando disponibilidad...";
   } else if (!startDate || !endDate) {
     availableMessage = "Selecciona fechas para ver la disponibilidad.";
-  } else if (minDomosDisponiblesEnTodasLasNoches === 0) {
+  } else if (availableDomos === 0) {
     availableMessage = "No hay domos disponibles para todas las noches del período seleccionado.";
-  } else if (minDomosDisponiblesEnTodasLasNoches < calculatedRequiredDomos) {
-    availableMessage = `Solo hay ${minDomosDisponiblesEnTodasLasNoches} domo${minDomosDisponiblesEnTodasLasNoches === 1 ? "" : "s"} disponible${minDomosDisponiblesEnTodasLasNoches === 1 ? "" : "s"} para todas las noches seleccionadas. Se requieren ${calculatedRequiredDomos} domos para alojar a ${guests} huésped${guests > 1 ? "es" : ""}.`;
-  } else if (minDomosDisponiblesEnTodasLasNoches === 1) {
+  } else if (availableDomos < calculatedRequiredDomos) {
+    availableMessage = `Solo hay ${availableDomos} domo${availableDomos === 1 ? "" : "s"} disponible${availableDomos === 1 ? "" : "s"} para todas las noches seleccionadas. Se requieren ${calculatedRequiredDomos} domos para alojar a ${guests} huésped${guests > 1 ? "es" : ""}.`;
+  } else if (availableDomos === 1) {
     availableMessage = "¡Solo queda 1 domo disponible para todas las noches seleccionadas 🔥!";
   } else {
-    availableMessage = `Tenemos ${minDomosDisponiblesEnTodasLasNoches} domo${minDomosDisponiblesEnTodasLasNoches === 1 ? "" : "s"} disponibles para todas las noches seleccionadas.`;
+    availableMessage = `Tenemos ${availableDomos} domo${availableDomos === 1 ? "" : "s"} disponibles para todas las noches seleccionadas.`;
   }
 
   // ¿Hay suficientes domos para el grupo?
-  const hasSufficientDomos = minDomosDisponiblesEnTodasLasNoches !== undefined ? minDomosDisponiblesEnTodasLasNoches >= calculatedRequiredDomos : false;
-  // Se puede cotizar solo si cumple condiciones...
-  const canQuote = startDate && endDate && hasSufficientDomos && (isAvailable === true || (isAvailable === null && minDomosDisponiblesEnTodasLasNoches > 0));
+  const hasSufficientDomos = availableDomos !== undefined ? availableDomos >= calculatedRequiredDomos : false;
+  // Se puede cotizar solo si cumple condiciones
+  const canQuote = startDate && endDate && hasSufficientDomos && (isAvailable === true || (isAvailable === null && availableDomos > 0));
 
-  console.log('🔍 [ReservationForm] Estado de cotización:', {
+  console.log('🔍 [ReservationForm] Estado final de cotización:', {
     startDate: startDate?.toISOString(),
     endDate: endDate?.toISOString(),
     guests,
     calculatedRequiredDomos,
-    availableDomos,
+    availableDomos, // Este ya es el mínimo calculado correctamente
     hasSufficientDomos,
     isAvailable,
     canQuote
   });
 
-  // Manejador para la selección de fechas desde el calendario expandible
-  const handleCalendarRangeSelect = (range: { startDate: Date | undefined, endDate: Date | undefined }) => {
-    console.log('🔍 [ReservationForm] handleCalendarRangeSelect llamado con:', {
-      startDate: range.startDate?.toISOString(),
-      endDate: range.endDate?.toISOString()
-    });
-
-    // Actualizar las fechas directamente, ya que vienen validadas del calendario
-    setStartDate(range.startDate);
-    setEndDate(range.endDate);
-  };
-
   return (
     <div className="space-y-6">
 
-      {/* Mensaje de disponibilidad principal (azul/ámbar/rojo según escenarios), usando el mínimo REAL */}
+      {/* Mensaje de disponibilidad principal */}
       <div
         className={`text-xs rounded px-2 py-1 mb-2 font-medium
-          ${minDomosDisponiblesEnTodasLasNoches === undefined
+          ${availableDomos === undefined
             ? 'text-blue-700'
-            : minDomosDisponiblesEnTodasLasNoches === 0
+            : availableDomos === 0
               ? 'text-red-600 bg-red-50 border border-red-200'
-            : minDomosDisponiblesEnTodasLasNoches < calculatedRequiredDomos
+            : availableDomos < calculatedRequiredDomos
               ? 'text-amber-700 bg-amber-50 border border-amber-100'
-            : minDomosDisponiblesEnTodasLasNoches === 1
+            : availableDomos === 1
               ? 'text-orange-700 bg-orange-50 border border-orange-100'
               : 'text-blue-700 bg-blue-50 border border-blue-100'
           }
@@ -183,26 +160,26 @@ export const ReservationForm = ({
         onPackageToggle={onPackageToggle} 
         packagesTotal={packagesTotal} 
         unitId={unitId} 
-        availableDomos={minDomosDisponiblesEnTodasLasNoches} 
+        availableDomos={availableDomos} 
       />
 
       {/* Alertas de disponibilidad */}
-      {(minDomosDisponiblesEnTodasLasNoches !== undefined && calculatedRequiredDomos > 0) && (
+      {(availableDomos !== undefined && calculatedRequiredDomos > 0) && (
         <>
-          {minDomosDisponiblesEnTodasLasNoches >= calculatedRequiredDomos ? (
+          {availableDomos >= calculatedRequiredDomos ? (
             <Alert className="bg-green-50 border-green-200">
               <Check className="h-4 w-4 text-green-600" />
               <AlertTitle className="text-green-800">Disponible</AlertTitle>
               <AlertDescription className="text-green-700">
-                Tenemos {minDomosDisponiblesEnTodasLasNoches} domo{minDomosDisponiblesEnTodasLasNoches === 1 ? "" : "s"} disponibles para {guests} huésped{guests > 1 ? "es" : ""} ({calculatedRequiredDomos} domo{calculatedRequiredDomos === 1 ? "" : "s"} necesarios).
+                Tenemos {availableDomos} domo{availableDomos === 1 ? "" : "s"} disponibles para {guests} huésped{guests > 1 ? "es" : ""} ({calculatedRequiredDomos} domo{calculatedRequiredDomos === 1 ? "" : "s"} necesarios).
               </AlertDescription>
             </Alert>
-          ) : minDomosDisponiblesEnTodasLasNoches > 0 ? (
+          ) : availableDomos > 0 ? (
             <Alert className="bg-amber-50 border-amber-200">
               <AlertTriangle className="h-4 w-4 text-amber-600" />
               <AlertTitle className="text-amber-800">Disponibilidad limitada</AlertTitle>
               <AlertDescription className="text-amber-700">
-                Solo hay {minDomosDisponiblesEnTodasLasNoches} domo{minDomosDisponiblesEnTodasLasNoches === 1 ? "" : "s"} para el rango completo. Necesitas {calculatedRequiredDomos} domos para {guests} huésped{guests > 1 ? "es" : ""}. Te sugerimos reducir huéspedes o modificar fechas.
+                Solo hay {availableDomos} domo{availableDomos === 1 ? "" : "s"} para el rango completo. Necesitas {calculatedRequiredDomos} domos para {guests} huésped{guests > 1 ? "es" : ""}. Te sugerimos reducir huéspedes o modificar fechas.
               </AlertDescription>
             </Alert>
           ) : (
@@ -235,7 +212,7 @@ export const ReservationForm = ({
         disabled={!canQuote}
       >
         {!startDate || !endDate ? "Selecciona fechas para cotizar" :
-         !hasSufficientDomos ? `Necesitas reducir huéspedes (${calculatedRequiredDomos} domo${calculatedRequiredDomos === 1 ? "" : "s"} requeridos, ${minDomosDisponiblesEnTodasLasNoches} disponible${minDomosDisponiblesEnTodasLasNoches === 1 ? "" : "s"})` :
+         !hasSufficientDomos ? `Necesitas reducir huéspedes (${calculatedRequiredDomos} domo${calculatedRequiredDomos === 1 ? "" : "s"} requeridos, ${availableDomos} disponible${availableDomos === 1 ? "" : "s"})` :
          "Cotizar"}
       </Button>
     </div>
