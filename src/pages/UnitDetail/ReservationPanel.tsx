@@ -1,4 +1,3 @@
-
 import { GlampingUnit } from "@/lib/supabase";
 import { Activity, ThemedPackage } from "@/types";
 import { ReservationForm } from "./components/ReservationForm";
@@ -75,7 +74,7 @@ export const ReservationPanel = ({
   reservationTab,
   setReservationTab,
   isPartialAvailability = false,
-  availableDomos = 0,
+  availableDomos,
   alternativeDates = [],
   getCurrentStep,
   isReservationConfirmed = false

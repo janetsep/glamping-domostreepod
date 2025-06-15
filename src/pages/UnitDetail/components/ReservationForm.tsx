@@ -63,7 +63,7 @@ export const ReservationForm = ({
   reservationTab,
   setReservationTab,
   isPartialAvailability = false,
-  availableDomos = 0,
+  availableDomos,
   alternativeDates = [],
   handleAlternativeDateSelect
 }: ReservationFormProps) => {
@@ -77,7 +77,7 @@ export const ReservationForm = ({
 
   // Efecto para mostrar las fechas alternativas cuando no hay disponibilidad completa
   useEffect(() => {
-    if ((isAvailable === false || isAvailable && availableDomos < calculatedRequiredDomos) && alternativeDates.length > 0) {
+    if ((isAvailable === false || isAvailable && availableDomos !== undefined && availableDomos < calculatedRequiredDomos) && alternativeDates.length > 0) {
       setShowAlternatives(true);
     } else {
       setShowAlternatives(false);
