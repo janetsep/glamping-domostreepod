@@ -51,37 +51,37 @@ export const useDateAvailabilityChecker = (reservations: Reservation[]) => {
     };
   }, [reservations]);
 
-  // El rango es disponible SÓLO si todos los días cumplen con requiredUnits
+  // IMPORTANTE: Para rangos, usar la misma lógica que checkGeneralAvailability
   const isDateRangeAvailable = async (startDate: Date, endDate: Date, requiredUnits = 1) => {
     try {
-      // IMPORTANTE: Para rangos, verificar cada noche individual
-      const days = eachDayOfInterval({ start: startDate, end: addDays(endDate, -1) });
+      // Verificar cada noche individual del rango
+      const nights = eachDayOfInterval({ start: startDate, end: addDays(endDate, -1) });
 
       let minAvailableUnits = TOTAL_UNITS;
-      let allDaysAvailable = true;
+      let allNightsAvailable = true;
 
       console.log('🔍 [useDateAvailabilityChecker] Verificando rango:', {
         inicio: startDate.toISOString().split('T')[0],
         fin: endDate.toISOString().split('T')[0],
-        noches: days.length,
+        noches: nights.length,
         requiredUnits
       });
 
-      for (const day of days) {
-        const { isAvailable, availableUnits } = isDateAvailable(day, requiredUnits);
+      for (const night of nights) {
+        const { isAvailable, availableUnits } = isDateAvailable(night, requiredUnits);
         if (!isAvailable) {
-          allDaysAvailable = false;
+          allNightsAvailable = false;
         }
         minAvailableUnits = Math.min(minAvailableUnits, availableUnits);
       }
 
       console.log('✅ [useDateAvailabilityChecker] Resultado del rango:', {
-        todasLasNochesDisponibles: allDaysAvailable,
+        todasLasNochesDisponibles: allNightsAvailable,
         minimoDomos: minAvailableUnits
       });
 
       return {
-        isAvailable: allDaysAvailable,
+        isAvailable: allNightsAvailable,
         availableUnits: minAvailableUnits
       };
     } catch (error) {

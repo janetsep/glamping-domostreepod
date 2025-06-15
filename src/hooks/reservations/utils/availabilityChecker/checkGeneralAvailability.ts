@@ -1,5 +1,6 @@
 
 import { supabase } from '@/lib/supabase';
+import { eachDayOfInterval, addDays } from 'date-fns';
 
 const TOTAL_DOMOS = 4;
 
@@ -19,50 +20,77 @@ export const checkGeneralAvailability = async (
       domosRequeridos: requiredDomos
     });
 
-    // IMPORTANTE: Usar la misma query que el calendario
-    // Solo contar reservas CONFIRMADAS y con unit_id asignado que se superponen con el rango
-    const { data: overlappingReservations, error } = await supabase
+    // Obtener todas las reservas confirmadas para el análisis
+    const { data: allReservations, error } = await supabase
       .from('reservations')
       .select('id, unit_id, check_in, check_out, status')
       .eq('status', 'confirmed')
-      .filter('check_in', 'lt', checkOutDate.toISOString())
-      .filter('check_out', 'gt', checkInDate.toISOString());
+      .not('unit_id', 'is', null);
 
     if (error) {
       console.error('❌ [checkGeneralAvailability] Error al obtener reservas:', error);
       return { isAvailable: false, availableUnits: 0, error: error.message };
     }
 
-    console.log('🔍 [checkGeneralAvailability] Reservas solapadas encontradas:', {
-      totalReservas: overlappingReservations?.length || 0,
-      reservas: overlappingReservations?.map(r => ({
-        id: r.id,
-        unit_id: r.unit_id,
-        status: r.status,
-        check_in: r.check_in,
-        check_out: r.check_out
-      })) || []
+    console.log('🔍 [checkGeneralAvailability] Total reservas confirmadas con unit_id:', allReservations?.length || 0);
+
+    // CRÍTICO: Verificar cada noche del rango individualmente
+    // Una reserva de check-in 22 a check-out 25 ocupa las noches: 22, 23, 24
+    const nights = eachDayOfInterval({ 
+      start: checkInDate, 
+      end: addDays(checkOutDate, -1) 
     });
 
-    // CRÍTICO: Solo contar reservas que tienen unit_id asignado
-    const reservedUnits = (overlappingReservations || [])
-      .filter(r => r.unit_id !== null && r.unit_id !== undefined)
-      .length;
-    
-    const availableUnits = TOTAL_DOMOS - reservedUnits;
-    const isAvailable = availableUnits >= requiredDomos;
+    let minAvailableUnits = TOTAL_DOMOS;
+
+    console.log('🔍 [checkGeneralAvailability] Verificando noches:', {
+      totalNoches: nights.length,
+      noches: nights.map(night => night.toISOString().split('T')[0])
+    });
+
+    // Para cada noche, contar cuántos domos están ocupados
+    for (const night of nights) {
+      const nightEnd = addDays(night, 1);
+      
+      // Una reserva ocupa esta noche si: checkIn < nightEnd && checkOut > night
+      const overlappingReservations = (allReservations || []).filter(reservation => {
+        const checkIn = new Date(reservation.check_in);
+        const checkOut = new Date(reservation.check_out);
+        
+        return checkIn < nightEnd && checkOut > night;
+      });
+
+      const occupiedUnits = overlappingReservations.length;
+      const availableForThisNight = TOTAL_DOMOS - occupiedUnits;
+      
+      console.log(`📅 [checkGeneralAvailability] Noche ${night.toISOString().split('T')[0]}:`, {
+        reservasSuperpuestas: overlappingReservations.length,
+        unidadesOcupadas: occupiedUnits,
+        disponiblesEstaNoche: availableForThisNight,
+        reservas: overlappingReservations.map(r => ({
+          id: r.id,
+          unit_id: r.unit_id,
+          check_in: r.check_in,
+          check_out: r.check_out
+        }))
+      });
+
+      // El mínimo disponible en cualquier noche determina la disponibilidad del rango
+      minAvailableUnits = Math.min(minAvailableUnits, availableForThisNight);
+    }
+
+    const isAvailable = minAvailableUnits >= requiredDomos;
     
     console.log('✅ [checkGeneralAvailability] Resultado final:', {
       totalDomos: TOTAL_DOMOS,
-      reservasConUnitId: reservedUnits,
-      unidadesDisponibles: availableUnits,
+      minimoDisponibleEnElRango: minAvailableUnits,
       unidadesRequeridas: requiredDomos,
       disponible: isAvailable
     });
 
     return {
       isAvailable,
-      availableUnits,
+      availableUnits: minAvailableUnits,
       totalUnits: TOTAL_DOMOS
     };
   } catch (error) {
