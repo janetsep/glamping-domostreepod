@@ -1,5 +1,5 @@
 
-import { useState, useRef } from "react";
+import { useState, useRef, useMemo } from "react";
 import { useGlampingUnits } from "@/hooks/reservations/useGlampingUnits";
 import { useReservationFunctions } from "@/hooks/reservations/useReservations";
 import { useDateAvailability } from "./useDateAvailability";
@@ -19,16 +19,12 @@ export const useUnitDetailState = (unitId?: string) => {
   const [startDate, setStartDate] = useState<Date | undefined>();
   const [endDate, setEndDate] = useState<Date | undefined>();
 
-  // Usar los hooks especializados
-  const {
-    requiredDomos,
-    isAvailable,
-    availableDomos,
-    isPartialAvailability,
-    alternativeDates,
-    setIsAvailable
-  } = useDateAvailability(startDate, endDate, 2);
+  // --- REFACTORED DATA FLOW ---
 
+  // 1. Get number of available domos for the selected date range.
+  const { availableDomos, isLoadingAvailability } = useDateAvailability(startDate, endDate);
+
+  // 2. Manage guests, now with knowledge of `availableDomos`.
   const {
     guests,
     adults,
@@ -37,6 +33,28 @@ export const useUnitDetailState = (unitId?: string) => {
     setAdults,
     setChildren
   } = useGuestManagement(availableDomos);
+    
+  // 3. Derive required domos and availability status from the single sources of truth.
+  const requiredDomos = useMemo(() => Math.max(1, Math.ceil(guests / 4)), [guests]);
+
+  const isAvailable = useMemo(() => {
+    if (isLoadingAvailability || availableDomos === undefined) {
+      return null; // While loading, availability is undetermined.
+    }
+    return availableDomos >= requiredDomos;
+  }, [availableDomos, requiredDomos, isLoadingAvailability]);
+  
+  const isPartialAvailability = useMemo(() => {
+    if (isLoadingAvailability || availableDomos === undefined) {
+        return false;
+    }
+    return availableDomos > 0 && availableDomos < requiredDomos;
+  }, [availableDomos, requiredDomos, isLoadingAvailability]);
+  
+  // Placeholder for alternative dates. The logic to find them should be triggered here if needed.
+  const [alternativeDates] = useState<{ startDate: Date, endDate: Date }[]>([]);
+
+  // --- END REFACTORED DATA FLOW ---
 
   const {
     showQuote,
@@ -69,15 +87,6 @@ export const useUnitDetailState = (unitId?: string) => {
     getCurrentStep: baseGetCurrentStep
   } = useReservationState();
 
-  // Calcular el número correcto de domos requeridos basado en los huéspedes
-  const actualRequiredDomos = Math.ceil(guests / 4);
-
-  console.log('🔍 [useUnitDetailState] Calculando domos:', {
-    guests,
-    actualRequiredDomos,
-    quoteRequiredDomos: quote?.requiredDomos
-  });
-
   // Crear el objeto state para las acciones
   const stateForActions = {
     startDate,
@@ -85,7 +94,8 @@ export const useUnitDetailState = (unitId?: string) => {
     guests,
     displayUnit,
     quote,
-    requiredDomos: actualRequiredDomos, // Usar el cálculo correcto
+    requiredDomos,
+    availableDomos, // Pass this down for verifications
     activitiesTotal,
     packagesTotal,
     selectedActivities,
@@ -98,7 +108,7 @@ export const useUnitDetailState = (unitId?: string) => {
 
   // Wrapper para generateQuote que pase los parámetros correctos
   const generateQuote = () => {
-    baseGenerateQuote(displayUnit, startDate, endDate, guests, actualRequiredDomos);
+    baseGenerateQuote(displayUnit, startDate, endDate, guests, requiredDomos);
   };
 
   // Wrapper para getCurrentStep que pase showQuote
@@ -118,7 +128,7 @@ export const useUnitDetailState = (unitId?: string) => {
     guests,
     adults,
     children,
-    requiredDomos: actualRequiredDomos, // Usar el cálculo correcto
+    requiredDomos,
     isAvailable,
     availableDomos,
     isPartialAvailability,
@@ -145,7 +155,6 @@ export const useUnitDetailState = (unitId?: string) => {
     setGuests,
     setAdults,
     setChildren,
-    setIsAvailable,
     setShowQuote,
     setQuote,
     setIsProcessingPayment,
