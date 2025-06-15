@@ -1,3 +1,4 @@
+
 import { useState, useRef, useEffect } from "react";
 import { useGlampingUnits } from "@/hooks/reservations/useGlampingUnits";
 import { useReservationFunctions } from "@/hooks/reservations/useReservations";
@@ -129,10 +130,17 @@ export const useUnitDetailState = (unitId?: string) => {
     })();
   }, [startDate, endDate, guests]);
 
-  // Efecto para ajustar automáticamente los huéspedes cuando la disponibilidad cambie
+  // Efecto separado para ajustar automáticamente los huéspedes cuando cambie availableDomos
+  // Solo se ejecuta cuando availableDomos cambia, no cuando cambian guests, adults o children
   useEffect(() => {
-    if (availableDomos !== undefined && availableDomos > 0) {
+    if (availableDomos !== undefined && availableDomos >= 0) {
       const maxGuestsAllowed = availableDomos * 4;
+      
+      console.log('🔄 [useUnitDetailState] Verificando ajuste de huéspedes:', {
+        domosDisponibles: availableDomos,
+        máximoHuéspedes: maxGuestsAllowed,
+        huéspedesActuales: guests
+      });
       
       // Si los huéspedes actuales exceden la capacidad máxima, ajustar automáticamente
       if (guests > maxGuestsAllowed) {
@@ -142,18 +150,27 @@ export const useUnitDetailState = (unitId?: string) => {
           domosDisponibles: availableDomos
         });
         
-        setGuests(maxGuestsAllowed);
-        
-        // También ajustar adults y children proporcionalmente
-        const ratio = maxGuestsAllowed / guests;
-        const newAdults = Math.max(1, Math.floor(adults * ratio));
-        const newChildren = Math.max(0, maxGuestsAllowed - newAdults);
-        
-        setAdults(newAdults);
-        setChildren(newChildren);
+        // Si no hay domos disponibles, resetear a valores mínimos
+        if (availableDomos === 0) {
+          setGuests(0);
+          setAdults(0);
+          setChildren(0);
+        } else {
+          // Ajustar al máximo permitido
+          setGuests(maxGuestsAllowed);
+          
+          // Distribuir proporcionalmente pero asegurar al menos 1 adulto si hay capacidad
+          if (maxGuestsAllowed > 0) {
+            const newAdults = Math.max(1, Math.min(adults, maxGuestsAllowed));
+            const newChildren = Math.max(0, maxGuestsAllowed - newAdults);
+            
+            setAdults(newAdults);
+            setChildren(newChildren);
+          }
+        }
       }
     }
-  }, [availableDomos, guests, adults, children]);
+  }, [availableDomos]); // Solo depende de availableDomos, no de guests, adults, children
 
   return {
     // Unit data
