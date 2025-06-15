@@ -108,28 +108,30 @@ export const createReservationEntry = async (
       }
 
       if (!units || units.length === 0) {
-        throw new Error('No se encontraron las unidades especificadas');
+        console.log('⚠️ [createReservationEntry] No se encontraron unidades en BD, usando capacidad por defecto');
+        // Crear capacidades por defecto para las unidades solicitadas
+        unitCapacities = unitIdsToAssign.map(unitId => ({
+          unitId,
+          capacity: 4
+        }));
+      } else {
+        unitCapacities = units.map(unit => ({
+          unitId: unit.id,
+          capacity: unit.max_guests
+        }));
       }
-
-      unitCapacities = units.map(unit => ({
-        unitId: unit.id,
-        capacity: unit.max_guests
-      }));
+      
       console.log('📊 [createReservationEntry] Capacidades obtenidas:', unitCapacities);
     }
 
-    // Ordenar unidades por capacidad (de mayor a menor)
-    unitCapacities.sort((a, b) => b.capacity - a.capacity);
-    console.log('📊 [createReservationEntry] Unidades ordenadas por capacidad:', unitCapacities);
-
-    // Distribuir huéspedes
+    // Distribuir huéspedes entre los domos
     let remainingGuests = totalGuests;
     let remainingPrice = totalPrice;
     const reservationsToCreate = [];
 
-    console.log('🔄 [createReservationEntry] Distribuyendo huéspedes...');
+    console.log('🔄 [createReservationEntry] Distribuyendo huéspedes entre domos...');
     
-    // Asegurarse de que se creen reservas para todas las unidades asignadas
+    // Crear una reserva por cada domo solicitado
     for (let i = 0; i < unitIdsToAssign.length; i++) {
       const unitId = unitIdsToAssign[i];
       const unitCapacity = unitCapacities.find(uc => uc.unitId === unitId) || { unitId, capacity: 4 };
@@ -139,26 +141,30 @@ export const createReservationEntry = async (
       // Calcular huéspedes para esta unidad
       let unitGuests: number;
       if (isLastUnit) {
+        // La última unidad recibe todos los huéspedes restantes
         unitGuests = remainingGuests;
         console.log(`📊 [createReservationEntry] Última unidad (${unitId}): asignando ${unitGuests} huéspedes restantes`);
       } else {
+        // Distribuir huéspedes de manera equilibrada
         unitGuests = Math.min(unitCapacity.capacity, Math.ceil(remainingGuests / (unitIdsToAssign.length - i)));
         console.log(`📊 [createReservationEntry] Unidad ${unitId}: asignando ${unitGuests} huéspedes (capacidad: ${unitCapacity.capacity})`);
       }
 
-      if (unitGuests <= 0) {
-        console.log(`⚠️ [createReservationEntry] No hay más huéspedes para asignar a la unidad ${unitId}`);
-        continue;
+      // Calcular precio proporcional para esta unidad
+      let unitPrice: number;
+      if (isLastUnit) {
+        // La última unidad recibe todo el precio restante
+        unitPrice = remainingPrice;
+      } else {
+        unitPrice = Math.round((unitGuests / totalGuests) * totalPrice);
+        remainingPrice -= unitPrice;
       }
-
-      // Calcular precio proporcional
-      const unitPrice = Math.round((unitGuests / totalGuests) * totalPrice);
-      remainingPrice -= unitPrice;
+      
       remainingGuests -= unitGuests;
 
       console.log(`💰 [createReservationEntry] Unidad ${unitId}: precio asignado $${unitPrice}`);
 
-      // Crear la reserva con el mismo código para todas las unidades
+      // Crear la reserva para esta unidad
       reservationsToCreate.push({
         unit_id: unitId,
         check_in: checkIn.toISOString(),
@@ -179,22 +185,6 @@ export const createReservationEntry = async (
       });
     }
 
-    // Ajustar precio de la última unidad
-    if (reservationsToCreate.length > 0) {
-      const lastReservation = reservationsToCreate[reservationsToCreate.length - 1];
-      lastReservation.total_price += remainingPrice;
-      console.log(`💰 [createReservationEntry] Ajustando precio de última unidad (${lastReservation.unit_id}): +$${remainingPrice}`);
-    }
-
-    // Verificar que se crearon todas las reservas necesarias
-    if (reservationsToCreate.length !== unitIdsToAssign.length) {
-      console.error('❌ [createReservationEntry] No se crearon todas las reservas necesarias:', {
-        reservasCreadas: reservationsToCreate.length,
-        unidadesAsignadas: unitIdsToAssign.length
-      });
-      throw new Error('No se pudieron crear todas las reservas necesarias');
-    }
-
     console.log('📋 [createReservationEntry] Reservas a crear:', JSON.stringify(reservationsToCreate, null, 2));
 
     // Insertar todas las reservas en una sola operación atómica
@@ -211,7 +201,17 @@ export const createReservationEntry = async (
       throw new Error('No se pudieron crear las reservas');
     }
 
-    console.log('✅ [createReservationEntry] Reservas creadas exitosamente:', data);
+    console.log('✅ [createReservationEntry] Reservas creadas exitosamente:', {
+      totalReservas: data.length,
+      codigoReserva: reservationCode,
+      detalles: data.map(r => ({
+        id: r.id,
+        unitId: r.unit_id,
+        huéspedes: r.guests,
+        precio: r.total_price
+      }))
+    });
+    
     return data;
 
   } catch (error) {

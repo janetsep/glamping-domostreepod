@@ -73,13 +73,12 @@ export const useReservationCreation = ({
         domosFinales: finalRequiredDomos
       });
 
-      // Para crear las reservas, necesitamos generar IDs de unidades suficientes
-      // En lugar de verificar disponibilidad aquí (que ya se hizo en la UI), 
-      // simplemente asignamos los domos necesarios
+      // Crear array de IDs de unidades diferentes para cada domo
       const unitsToCreate = [];
       for (let i = 0; i < finalRequiredDomos; i++) {
-        // Usar el ID de la unidad base para todos los domos
-        unitsToCreate.push(unitIdsToAssign[0] || '1');
+        // Usar diferentes IDs de unidades (1, 2, 3, 4) para cada domo
+        const unitId = String(i + 1);
+        unitsToCreate.push(unitId);
       }
 
       console.log('✅ [useReservationCreation] Unidades para crear reservas:', unitsToCreate);
