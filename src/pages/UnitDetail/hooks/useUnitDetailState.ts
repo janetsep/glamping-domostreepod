@@ -130,6 +130,32 @@ export const useUnitDetailState = (unitId?: string) => {
     })();
   }, [startDate, endDate, guests]);
 
+  // Efecto para ajustar automáticamente los huéspedes cuando la disponibilidad cambie
+  useEffect(() => {
+    if (availableDomos > 0) {
+      const maxGuestsAllowed = availableDomos * 4;
+      
+      // Si los huéspedes actuales exceden la capacidad máxima, ajustar automáticamente
+      if (guests > maxGuestsAllowed) {
+        console.log('🔄 [useUnitDetailState] Ajustando huéspedes automáticamente:', {
+          huéspedesAntes: guests,
+          máximoPermitido: maxGuestsAllowed,
+          domosDisponibles: availableDomos
+        });
+        
+        setGuests(maxGuestsAllowed);
+        
+        // También ajustar adults y children proporcionalmente
+        const ratio = maxGuestsAllowed / guests;
+        const newAdults = Math.max(1, Math.floor(adults * ratio));
+        const newChildren = Math.max(0, maxGuestsAllowed - newAdults);
+        
+        setAdults(newAdults);
+        setChildren(newChildren);
+      }
+    }
+  }, [availableDomos]);
+
   return {
     // Unit data
     displayUnit,
