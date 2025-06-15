@@ -1,4 +1,3 @@
-
 import { useState, useCallback } from 'react';
 import { packageData } from '@/components/packages/packageData';
 import { supabase } from '@/lib/supabase';
@@ -96,13 +95,14 @@ export const useReservationCreation = ({
           throw new Error('No se encontraron unidades disponibles');
         }
 
-        // Verificar disponibilidad
+        // Verificar disponibilidad contra reservas confirmadas Y pendientes recientes
+        const fifteenMinutesAgo = new Date(Date.now() - 15 * 60 * 1000).toISOString();
         const { data: conflictingReservations, error: reservationsError } = await supabase
           .from('reservations')
           .select('unit_id')
           .in('unit_id', allUnits.map(u => u.id))
           .or(`and(check_in.lt.${checkOut.toISOString()},check_out.gt.${checkIn.toISOString()})`)
-          .eq('status', 'confirmed');
+          .or(`status.eq.confirmed,and(status.eq.pending,created_at.gte.${fifteenMinutesAgo})`);
 
         if (reservationsError) {
           console.error('❌ [useReservationCreation] Error al verificar disponibilidad:', reservationsError);
