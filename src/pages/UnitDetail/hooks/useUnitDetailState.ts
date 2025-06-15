@@ -131,50 +131,48 @@ export const useUnitDetailState = (unitId?: string) => {
   }, [startDate, endDate, guests]);
 
   // Efecto separado para ajustar automáticamente los huéspedes cuando cambie availableDomos
-  // Solo se ejecuta cuando availableDomos cambia, no cuando cambian guests, adults o children
+  // SOLO cuando los huéspedes actuales excedan la capacidad y tengamos fechas seleccionadas
   useEffect(() => {
-    // Solo ejecutar este efecto si tenemos fechas seleccionadas y availableDomos está definido
-    if (!startDate || !endDate || availableDomos === undefined) {
+    // Solo ejecutar si tenemos fechas seleccionadas, availableDomos definido y huéspedes > 0
+    if (!startDate || !endDate || availableDomos === undefined || guests === 0) {
       return;
     }
 
     const maxGuestsAllowed = availableDomos * 4;
     
-    console.log('🔄 [useUnitDetailState] Verificando ajuste de huéspedes:', {
+    console.log('🔄 [useUnitDetailState] Verificando necesidad de ajuste de huéspedes:', {
       domosDisponibles: availableDomos,
       máximoHuéspedes: maxGuestsAllowed,
       huéspedesActuales: guests,
-      tieneFechas: !!(startDate && endDate)
+      necesitaAjuste: guests > maxGuestsAllowed
     });
     
-    // Solo ajustar si los huéspedes actuales exceden la capacidad máxima
+    // SOLO ajustar si los huéspedes actuales EXCEDEN la capacidad máxima
     if (guests > maxGuestsAllowed) {
-      console.log('🔄 [useUnitDetailState] Ajustando huéspedes automáticamente:', {
+      console.log('🔄 [useUnitDetailState] Ajustando huéspedes porque exceden capacidad:', {
         huéspedesAntes: guests,
         máximoPermitido: maxGuestsAllowed,
         domosDisponibles: availableDomos
       });
       
-      // Si no hay domos disponibles, resetear a valores mínimos
       if (availableDomos === 0) {
+        // Solo si no hay domos disponibles, resetear
         setGuests(0);
         setAdults(0);
         setChildren(0);
       } else {
-        // Ajustar al máximo permitido manteniendo proporción si es posible
+        // Ajustar al máximo permitido
         setGuests(maxGuestsAllowed);
         
-        // Distribuir proporcionalmente pero asegurar al menos 1 adulto si hay capacidad
-        if (maxGuestsAllowed > 0) {
-          const newAdults = Math.max(1, Math.min(adults, maxGuestsAllowed));
-          const newChildren = Math.max(0, maxGuestsAllowed - newAdults);
-          
-          setAdults(newAdults);
-          setChildren(newChildren);
-        }
+        // Distribuir proporcionalmente pero asegurar al menos 1 adulto
+        const newAdults = Math.max(1, Math.min(adults, maxGuestsAllowed));
+        const newChildren = Math.max(0, maxGuestsAllowed - newAdults);
+        
+        setAdults(newAdults);
+        setChildren(newChildren);
       }
     }
-  }, [availableDomos, startDate, endDate]); // Incluir startDate y endDate para que solo se ejecute cuando hay fechas
+  }, [availableDomos]); // Solo depende de availableDomos
 
   return {
     // Unit data
