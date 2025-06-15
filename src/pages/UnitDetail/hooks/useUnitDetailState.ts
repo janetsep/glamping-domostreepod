@@ -2,6 +2,7 @@
 import { useState, useRef, useEffect } from "react";
 import { useGlampingUnits } from "@/hooks/reservations/useGlampingUnits";
 import { useReservationFunctions } from "@/hooks/reservations/useReservations";
+import { usePricing } from "@/hooks/reservations/usePricing";
 import { Activity, ThemedPackage, AvailabilityResult } from "@/types";
 import { eachDayOfInterval, addDays } from "date-fns";
 import { checkGeneralAvailability } from "@/hooks/reservations/utils/availabilityChecker/checkGeneralAvailability";
@@ -11,10 +12,11 @@ export const useUnitDetailState = (unitId?: string) => {
   const { 
     fetchGlampingUnits, 
     checkAvailability, 
-    calculateQuote, 
     createReservation, 
     redirectToWebpay 
   } = useReservationFunctions();
+  
+  const { calculateQuote } = usePricing();
 
   const displayUnit = units.find(unit => unit.id === unitId) || units[0];
   const confirmationRef = useRef(null);
@@ -50,7 +52,35 @@ export const useUnitDetailState = (unitId?: string) => {
   };
 
   const generateQuote = () => {
-    setShowQuote(true);
+    console.log('🔍 [useUnitDetailState] generateQuote llamado:', {
+      startDate: startDate?.toISOString(),
+      endDate: endDate?.toISOString(),
+      guests,
+      requiredDomos,
+      displayUnit: !!displayUnit
+    });
+
+    if (!startDate || !endDate || !displayUnit) {
+      console.error('❌ [useUnitDetailState] Faltan datos para generar cotización');
+      return;
+    }
+
+    try {
+      const quoteDetails = calculateQuote(
+        displayUnit.prices,
+        startDate,
+        endDate,
+        guests,
+        requiredDomos
+      );
+      
+      console.log('🔍 [useUnitDetailState] Cotización generada:', quoteDetails);
+      
+      setQuote(quoteDetails);
+      setShowQuote(true);
+    } catch (error) {
+      console.error('❌ [useUnitDetailState] Error generando cotización:', error);
+    }
   };
 
   const confirmReservation = () => {
