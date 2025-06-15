@@ -35,7 +35,7 @@ export const ReservationDetails: React.FC<ReservationDetailsProps> = ({
   };
 
   const nights = quote?.nights || calculateNights();
-  const requiredDomos = quote?.requiredDomos || 1;
+  const requiredDomos = quote?.requiredDomos || Math.ceil((guests || 4) / 4);
 
   return (
     <Card className="p-6 bg-white">
@@ -75,16 +75,33 @@ export const ReservationDetails: React.FC<ReservationDetailsProps> = ({
           <span>{nights}</span>
         </div>
         
-        {quote?.basePrice !== undefined && (
+        {quote?.basePrice !== undefined && requiredDomos > 1 && (
           <div className="flex justify-between items-center">
             <span className="font-medium">Precio por noche (por domo):</span>
             <span>{formatCurrency(quote.basePrice / nights / requiredDomos)}</span>
           </div>
         )}
         
+        {/* Mostrar distribución de domos si hay múltiples */}
+        {quote?.domoDistribution && quote.domoDistribution.length > 1 && (
+          <div className="mt-4 p-4 bg-blue-50 rounded-md">
+            <p className="font-medium mb-2 text-blue-800">Distribución por domo:</p>
+            <div className="space-y-2">
+              {quote.domoDistribution.map((domo: any, index: number) => (
+                <div key={index} className="flex justify-between items-center text-sm">
+                  <span>Domo {domo.number}: {domo.guests} {domo.guests === 1 ? 'persona' : 'personas'}</span>
+                  {quote.breakdown && quote.breakdown[index] && (
+                    <span className="font-medium">{formatCurrency(quote.breakdown[index].amount)}</span>
+                  )}
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+        
         {quote?.basePrice !== undefined && (
           <div className="flex justify-between items-center">
-            <span className="font-medium">Subtotal alojamiento ({requiredDomos} domos):</span>
+            <span className="font-medium">Subtotal alojamiento ({requiredDomos} {requiredDomos === 1 ? 'domo' : 'domos'}):</span>
             <span>{formatCurrency(quote.basePrice)}</span>
           </div>
         )}
@@ -131,6 +148,7 @@ export const ReservationDetails: React.FC<ReservationDetailsProps> = ({
             <li>Check-out: hasta las 12:00 hrs.</li>
             <li>Llevar toallas y artículos de aseo personal.</li>
             <li>Máximo 2 mascotas pequeñas por domo.</li>
+            <li>Cada domo tiene capacidad para 4 personas.</li>
             <li>Contacto de emergencia: +56 9 1234 5678</li>
           </ul>
         </div>

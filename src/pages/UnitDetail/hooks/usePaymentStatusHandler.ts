@@ -12,51 +12,96 @@ export const usePaymentStatusHandler = (state: any, searchParams: URLSearchParam
     if (paymentStatus === 'success' && reservationId) {
       // First check if we haven't already processed this reservation
       if (!state.isReservationConfirmed) {
-        // Fetch reservation details
+        // Fetch all reservations with the same reservation_code
         try {
-          const { data: reservation, error } = await supabase
+          const { data: primaryReservation, error: primaryError } = await supabase
             .from('reservations')
-            .select('*, payment_details')
+            .select('*, payment_details, reservation_code')
             .eq('id', reservationId)
             .single();
           
-          if (error) throw error;
+          if (primaryError) throw primaryError;
           
-          if (reservation) {
-            // Set reservation details in state
-            state.setIsReservationConfirmed(true);
-            state.setConfirmedReservationId(reservationId);
-            state.setPaymentDetails(reservation.payment_details);
+          if (primaryReservation && primaryReservation.reservation_code) {
+            // Get all reservations with the same code
+            const { data: allReservations, error: allError } = await supabase
+              .from('reservations')
+              .select('*')
+              .eq('reservation_code', primaryReservation.reservation_code);
             
-            // Set dates
-            if (reservation.check_in) {
-              state.setStartDate(new Date(reservation.check_in));
+            if (allError) throw allError;
+            
+            if (allReservations) {
+              // Calculate total values from all reservations
+              const totalGuests = allReservations.reduce((sum, res) => sum + res.guests, 0);
+              const totalPrice = allReservations.reduce((sum, res) => sum + res.total_price, 0);
+              const requiredDomos = allReservations.length;
+              
+              // Set reservation details in state
+              state.setIsReservationConfirmed(true);
+              state.setConfirmedReservationId(reservationId);
+              state.setPaymentDetails(primaryReservation.payment_details);
+              
+              // Set dates
+              if (primaryReservation.check_in) {
+                state.setStartDate(new Date(primaryReservation.check_in));
+              }
+              
+              if (primaryReservation.check_out) {
+                state.setEndDate(new Date(primaryReservation.check_out));
+              }
+              
+              state.setGuests(totalGuests);
+              
+              // Create a quote object with correct dome distribution
+              const quoteDays = Math.round(
+                (new Date(primaryReservation.check_out).getTime() - new Date(primaryReservation.check_in).getTime()) / 
+                (1000 * 60 * 60 * 24)
+              );
+              
+              // Calculate price per night per dome
+              const pricePerNightPerDome = totalPrice / quoteDays / requiredDomos;
+              
+              // Create dome distribution for display
+              const domoDistribution = allReservations.map((res, index) => ({
+                number: index + 1,
+                guests: res.guests,
+                unitId: res.unit_id
+              }));
+              
+              // Create breakdown for display
+              const breakdown = allReservations.map((res, index) => ({
+                description: `Domo ${index + 1}: ${res.guests} ${res.guests === 1 ? 'persona' : 'personas'}`,
+                amount: res.total_price,
+                guests: res.guests,
+                domoNumber: index + 1
+              }));
+              
+              state.setQuote({
+                nights: quoteDays,
+                basePrice: totalPrice,
+                totalPrice: totalPrice,
+                requiredDomos: requiredDomos,
+                domoDistribution: domoDistribution,
+                breakdown: breakdown,
+                pricePerNight: pricePerNightPerDome,
+                selectedActivities: primaryReservation.selected_activities || [],
+                selectedPackages: primaryReservation.selected_packages || []
+              });
+              
+              console.log('🔍 [usePaymentStatusHandler] Quote con múltiples domos:', {
+                totalGuests,
+                totalPrice,
+                requiredDomos,
+                domoDistribution,
+                breakdown
+              });
+              
+              toast({
+                title: "Reserva confirmada",
+                description: `Tu reserva ha sido confirmada exitosamente para ${requiredDomos} domos`,
+              });
             }
-            
-            if (reservation.check_out) {
-              state.setEndDate(new Date(reservation.check_out));
-            }
-            
-            state.setGuests(reservation.guests);
-            
-            // Create a quote object
-            const quoteDays = Math.round(
-              (new Date(reservation.check_out).getTime() - new Date(reservation.check_in).getTime()) / 
-              (1000 * 60 * 60 * 24)
-            );
-            
-            state.setQuote({
-              nights: quoteDays,
-              basePrice: reservation.total_price,
-              totalPrice: reservation.total_price,
-              selectedActivities: [],
-              selectedPackages: []
-            });
-            
-            toast({
-              title: "Reserva confirmada",
-              description: "Tu reserva ha sido confirmada exitosamente",
-            });
           }
         } catch (error) {
           console.error("Error fetching reservation details:", error);

@@ -41,6 +41,28 @@ const ReservationConfirmed: React.FC<ReservationConfirmedProps> = ({
     const packagesTotal = transactionResult.reservation_data?.packages_total || 0;
     const petsPrice = transactionResult.reservation_data?.pets_price || 0;
     const pets = transactionResult.reservation_data?.pets || 0;
+    const guests = transactionResult.reservation_data?.guests || 4;
+    
+    // Calculate required domos based on guests
+    const requiredDomos = Math.ceil(guests / 4);
+    
+    // Create dome distribution - assuming equal distribution
+    const guestsPerDomo = Math.floor(guests / requiredDomos);
+    const extraGuests = guests % requiredDomos;
+    
+    const domoDistribution = Array.from({ length: requiredDomos }, (_, index) => ({
+      number: index + 1,
+      guests: guestsPerDomo + (index < extraGuests ? 1 : 0)
+    }));
+    
+    // Create breakdown for each dome
+    const pricePerDome = basePrice / requiredDomos;
+    const breakdown = domoDistribution.map((domo, index) => ({
+      description: `Domo ${domo.number}: ${domo.guests} ${domo.guests === 1 ? 'persona' : 'personas'}`,
+      amount: Math.round(pricePerDome),
+      guests: domo.guests,
+      domoNumber: domo.number
+    }));
     
     return {
       nights,
@@ -50,6 +72,9 @@ const ReservationConfirmed: React.FC<ReservationConfirmedProps> = ({
       petsPrice,
       pets,
       totalPrice: basePrice,
+      requiredDomos,
+      domoDistribution,
+      breakdown,
       selectedActivities: transactionResult.reservation_data?.selected_activities || [],
       selectedPackages: transactionResult.reservation_data?.selected_packages || []
     };
