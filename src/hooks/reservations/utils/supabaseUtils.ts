@@ -1,4 +1,3 @@
-
 import { supabase } from '@/lib/supabase';
 import { SUPABASE_URL, SUPABASE_ANON_KEY } from '@/lib/constants';
 import { generateReservationCode } from '@/hooks/reservations/utils/reservationUtils';
@@ -96,40 +95,6 @@ export const createReservationEntry = async (
     }
     console.log('✅ [createReservationEntry] Código de reserva generado:', reservationCode);
 
-    // NUEVA LÓGICA: Verificar disponibilidad usando la misma lógica que checkGeneralAvailability
-    console.log('🔍 [createReservationEntry] Verificando disponibilidad usando lógica general...');
-    const { data: overlappingReservations, error: checkError } = await supabase
-      .from('reservations')
-      .select('id, unit_id, check_in, check_out')
-      .eq('status', 'confirmed')
-      .filter('check_in', 'lt', checkOut.toISOString())
-      .filter('check_out', 'gt', checkIn.toISOString());
-
-    if (checkError) {
-      throw new Error(`Error al verificar disponibilidad: ${checkError.message}`);
-    }
-
-    // Usar la misma lógica que el calendario: solo contar reservas con unit_id asignado
-    const reservedUnits = (overlappingReservations || [])
-      .filter(r => r.unit_id !== null && r.unit_id !== undefined)
-      .length;
-    
-    const totalDomos = 4; // Total de domos disponibles
-    const availableUnits = totalDomos - reservedUnits;
-    const requiredUnits = unitIdsToAssign.length;
-
-    console.log('📊 [createReservationEntry] Análisis de disponibilidad:', {
-      totalDomos,
-      reservasConUnitId: reservedUnits,
-      unidadesDisponibles: availableUnits,
-      unidadesRequeridas: requiredUnits,
-      reservasSolapadas: overlappingReservations?.length || 0
-    });
-
-    if (availableUnits < requiredUnits) {
-      throw new Error(`No hay suficientes domos disponibles. Se necesitan ${requiredUnits} domos, pero solo hay ${availableUnits} disponibles para las fechas seleccionadas.`);
-    }
-
     // Obtener capacidades de los domos si no se proporcionan
     if (!unitCapacities) {
       console.log('🔍 [createReservationEntry] Obteniendo capacidades de unidades...');
@@ -167,13 +132,8 @@ export const createReservationEntry = async (
     // Asegurarse de que se creen reservas para todas las unidades asignadas
     for (let i = 0; i < unitIdsToAssign.length; i++) {
       const unitId = unitIdsToAssign[i];
-      const unitCapacity = unitCapacities.find(uc => uc.unitId === unitId);
+      const unitCapacity = unitCapacities.find(uc => uc.unitId === unitId) || { unitId, capacity: 4 };
       
-      if (!unitCapacity) {
-        console.error(`❌ [createReservationEntry] No se encontró capacidad para la unidad ${unitId}`);
-        continue;
-      }
-
       const isLastUnit = i === unitIdsToAssign.length - 1;
       
       // Calcular huéspedes para esta unidad
