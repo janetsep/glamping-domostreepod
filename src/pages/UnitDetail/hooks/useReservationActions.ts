@@ -36,10 +36,16 @@ export const useReservationActions = (state: any) => {
   });
 
   const handleConfirmReservation = useCallback(async () => {
-    console.log('🔍 [useReservationActions] handleConfirmReservation - Iniciando pago con WebPay');
+    console.log('🔍 [useReservationActions] handleConfirmReservation - Iniciando reserva múltiple');
     
     if (!state.startDate || !state.endDate || !state.displayUnit) {
       toast.error("Datos incompletos para crear la reserva");
+      return;
+    }
+
+    // Verificar disponibilidad antes de proceder
+    if (state.availableDomos !== undefined && state.requiredDomos > state.availableDomos) {
+      toast.error(`No hay suficientes domos disponibles. Se necesitan ${state.requiredDomos} domos, pero solo hay ${state.availableDomos} disponibles.`);
       return;
     }
 
@@ -50,18 +56,20 @@ export const useReservationActions = (state: any) => {
       const baseTotal = state.quote?.totalPrice || 0;
       const finalTotal = baseTotal + state.activitiesTotal + state.packagesTotal;
 
-      console.log('🔍 [useReservationActions] Creando reserva con datos:', {
-        unitId: state.displayUnit.id,
+      console.log('🔍 [useReservationActions] Creando reserva múltiple con datos:', {
+        requiredDomos: state.requiredDomos,
+        availableDomos: state.availableDomos,
         checkIn: state.startDate.toISOString(),
         checkOut: state.endDate.toISOString(),
         guests: state.guests,
-        finalTotal,
-        requiredDomos: state.requiredDomos
+        finalTotal
       });
 
-      // Crear la reserva - el callback onSuccess manejará la redirección
+      // CAMBIO IMPORTANTE: En lugar de pasar solo displayUnit.id, 
+      // pasamos un array vacío para que el sistema seleccione automáticamente
+      // las unidades disponibles según requiredDomos
       await createReservation(
-        [state.displayUnit.id],
+        [], // Array vacío para que el sistema seleccione automáticamente
         state.startDate,
         state.endDate,
         state.guests,
@@ -69,8 +77,8 @@ export const useReservationActions = (state: any) => {
         'webpay',
         state.selectedActivities.map(a => a.id),
         state.selectedPackages.map(p => p.id),
-        state.requiredDomos,
-        [state.displayUnit.id],
+        state.requiredDomos, // Pasar el número correcto de domos requeridos
+        undefined, // No pre-especificar unidades disponibles
         {
           name: localStorage.getItem('client_name') || '',
           email: localStorage.getItem('client_email') || '',

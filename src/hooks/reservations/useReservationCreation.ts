@@ -64,28 +64,27 @@ export const useReservationCreation = ({
 
       // Calcular el número correcto de domos necesarios
       const calculatedRequiredDomos = Math.ceil(guests / 4);
-      const finalRequiredDomos = Math.max(calculatedRequiredDomos, 1);
+      const finalRequiredDomos = requiredDomos || Math.max(calculatedRequiredDomos, 1);
 
       console.log('📊 [useReservationCreation] Domos requeridos calculados:', {
         huéspedes: guests,
         domosCalculados: calculatedRequiredDomos,
-        domosFinales: finalRequiredDomos
+        domosFinales: finalRequiredDomos,
+        domosProporcionados: requiredDomos
       });
 
-      // Si se proporcionaron unidades disponibles, usarlas directamente (más eficiente)
+      // IMPORTANTE: Si unitIds está vacío o es un array vacío, 
+      // realizar búsqueda completa de disponibilidad
       let unitsToCreate: string[];
       
-      if (availableUnitIds && availableUnitIds.length >= finalRequiredDomos) {
-        unitsToCreate = availableUnitIds.slice(0, finalRequiredDomos);
-        console.log('✅ [useReservationCreation] Usando unidades pre-verificadas:', unitsToCreate);
-      } else {
-        // Solo hacer verificación completa si no se proporcionaron unidades disponibles
-        console.log('🔍 [useReservationCreation] Verificando disponibilidad desde cero...');
+      if (Array.isArray(unitIds) && unitIds.length === 0) {
+        console.log('🔍 [useReservationCreation] Array de unidades vacío, buscando unidades disponibles...');
         
+        // Obtener todas las unidades disponibles
         const { data: allUnits, error: unitsError } = await supabase
           .from('glamping_units')
           .select('id')
-          .order('id', { ascending: true }); // Orden consistente
+          .order('id', { ascending: true });
 
         if (unitsError) {
           console.error('❌ [useReservationCreation] Error al obtener unidades:', unitsError);
@@ -97,7 +96,7 @@ export const useReservationCreation = ({
           throw new Error('No se encontraron unidades disponibles');
         }
 
-        // Verificar disponibilidad usando la misma lógica que en otros lugares
+        // Verificar disponibilidad
         const { data: conflictingReservations, error: reservationsError } = await supabase
           .from('reservations')
           .select('unit_id')
@@ -110,7 +109,7 @@ export const useReservationCreation = ({
           throw new Error(`Error al verificar disponibilidad: ${reservationsError.message}`);
         }
 
-        // Filtrar unidades disponibles con la misma lógica
+        // Filtrar unidades disponibles
         const reservedUnitIds = new Set(
           conflictingReservations?.filter(r => r.unit_id !== null && r.unit_id !== undefined)
             .map(r => String(r.unit_id)) || []
@@ -118,11 +117,12 @@ export const useReservationCreation = ({
 
         const availableUnits = allUnits.filter(unit => !reservedUnitIds.has(String(unit.id)));
 
-        console.log('📊 [useReservationCreation] Análisis de disponibilidad:', {
+        console.log('📊 [useReservationCreation] Análisis de disponibilidad completo:', {
           totalUnidades: allUnits.length,
           unidadesReservadas: reservedUnitIds.size,
           unidadesDisponibles: availableUnits.length,
-          unidadesDisponiblesIds: availableUnits.map(u => u.id)
+          unidadesDisponiblesIds: availableUnits.map(u => u.id),
+          requiredDomos: finalRequiredDomos
         });
 
         if (availableUnits.length < finalRequiredDomos) {
@@ -133,10 +133,30 @@ export const useReservationCreation = ({
           throw new Error(`No hay suficientes domos disponibles. Se necesitan ${finalRequiredDomos} domos, pero solo hay ${availableUnits.length} disponibles.`);
         }
 
+        // Seleccionar las primeras unidades disponibles
         unitsToCreate = availableUnits.slice(0, finalRequiredDomos).map(unit => unit.id);
+        console.log('✅ [useReservationCreation] Unidades seleccionadas automáticamente:', unitsToCreate);
+      } else if (availableUnitIds && availableUnitIds.length >= finalRequiredDomos) {
+        // Usar unidades pre-verificadas
+        unitsToCreate = availableUnitIds.slice(0, finalRequiredDomos);
+        console.log('✅ [useReservationCreation] Usando unidades pre-verificadas:', unitsToCreate);
+      } else {
+        // Fallback: usar las unidades proporcionadas si es un string o array válido
+        if (typeof unitIds === 'string') {
+          unitsToCreate = [unitIds];
+        } else if (Array.isArray(unitIds) && unitIds.length > 0) {
+          unitsToCreate = unitIds.slice(0, finalRequiredDomos);
+        } else {
+          throw new Error('No se proporcionaron unidades válidas para la reserva');
+        }
+        console.log('✅ [useReservationCreation] Usando unidades proporcionadas:', unitsToCreate);
       }
 
-      console.log('✅ [useReservationCreation] Unidades finales para crear reservas:', unitsToCreate);
+      console.log('✅ [useReservationCreation] Unidades finales para crear reservas:', {
+        unidades: unitsToCreate,
+        totalUnidades: unitsToCreate.length,
+        requiredDomos: finalRequiredDomos
+      });
 
       const reservation = await createReservationEntry(
         unitsToCreate,
@@ -158,8 +178,11 @@ export const useReservationCreation = ({
           reservationCode: reservation[0].reservation_code 
         };
         
-        console.log('✅ [useReservationCreation] Reserva principal creada con ID:', primaryReservationId);
-        console.log('🔄 [useReservationCreation] Ejecutando callback onSuccess...');
+        console.log('✅ [useReservationCreation] Reservas múltiples creadas:', {
+          reservaPrincipalId: primaryReservationId,
+          totalReservas: reservation.length,
+          unidades: reservation.map(r => ({ id: r.id, unitId: r.unit_id, guests: r.guests }))
+        });
         
         // Ejecutar el callback de éxito ANTES de mostrar el toast
         if (onSuccess) {
@@ -174,7 +197,7 @@ export const useReservationCreation = ({
         
         toast({
           title: "Reserva iniciada",
-          description: "Tu reserva se ha creado y ahora serás redirigido a Webpay para completar el pago",
+          description: `Tu reserva de ${reservation.length} domo(s) se ha creado y ahora serás redirigido a Webpay para completar el pago`,
         });
         
         return resultData;
