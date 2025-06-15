@@ -1,3 +1,4 @@
+
 import { useState, useRef, useEffect } from "react";
 import { useGlampingUnits } from "@/hooks/reservations/useGlampingUnits";
 import { useReservationFunctions } from "@/hooks/reservations/useReservations";
@@ -253,7 +254,7 @@ export const useUnitDetailState = (unitId?: string) => {
     setCheckedAvailability,
     
     // Functions
-    checkAvailability: handleCheckAvailability,
+    checkAvailability,
     calculateQuote,
     createReservation,
     redirectToWebpay,
