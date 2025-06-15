@@ -20,15 +20,17 @@ export const useDateAvailabilityChecker = (reservations: Reservation[]) => {
   // CRÍTICO: Usar exactamente la misma lógica que checkGeneralAvailability
   const isDateAvailable = useCallback((date: Date, requiredUnits = 1) => {
     const start = startOfDay(date);
+    const end = addDays(start, 1); // Para verificar ocupación de esa noche específica
 
-    // Solo contar reservas CONFIRMADAS y con unit_id asignado
+    // Solo contar reservas CONFIRMADAS y con unit_id asignado que se superponen con esta noche
     const overlappingReservations = reservations.filter(reservation => {
-      // IMPORTANTE: Aplicar exactamente los mismos filtros
       if (reservation.status !== 'confirmed' || !reservation.unit_id) return false;
+      
       const checkIn = new Date(reservation.check_in);
       const checkOut = new Date(reservation.check_out);
-      // Ocupa la noche de 'start' si: checkIn <= dayStart && checkOut > dayStart
-      return checkIn <= start && checkOut > start;
+      
+      // Una reserva ocupa esta noche si: checkIn < end && checkOut > start
+      return checkIn < end && checkOut > start;
     });
 
     const reservedUnits = overlappingReservations.length;
@@ -36,7 +38,7 @@ export const useDateAvailabilityChecker = (reservations: Reservation[]) => {
     const isAvailable = availableUnits >= requiredUnits;
 
     console.log(`📅 [useDateAvailabilityChecker] Fecha ${date.toISOString().split('T')[0]}:`, {
-      reservasConUnitId: reservedUnits,
+      reservasSuperpuestas: overlappingReservations.length,
       disponibles: availableUnits,
       requeridos: requiredUnits,
       disponible: isAvailable
@@ -52,11 +54,18 @@ export const useDateAvailabilityChecker = (reservations: Reservation[]) => {
   // El rango es disponible SÓLO si todos los días cumplen con requiredUnits
   const isDateRangeAvailable = async (startDate: Date, endDate: Date, requiredUnits = 1) => {
     try {
-      // Chequea por cada noche
+      // IMPORTANTE: Para rangos, verificar cada noche individual
       const days = eachDayOfInterval({ start: startDate, end: addDays(endDate, -1) });
 
       let minAvailableUnits = TOTAL_UNITS;
       let allDaysAvailable = true;
+
+      console.log('🔍 [useDateAvailabilityChecker] Verificando rango:', {
+        inicio: startDate.toISOString().split('T')[0],
+        fin: endDate.toISOString().split('T')[0],
+        noches: days.length,
+        requiredUnits
+      });
 
       for (const day of days) {
         const { isAvailable, availableUnits } = isDateAvailable(day, requiredUnits);
@@ -65,6 +74,11 @@ export const useDateAvailabilityChecker = (reservations: Reservation[]) => {
         }
         minAvailableUnits = Math.min(minAvailableUnits, availableUnits);
       }
+
+      console.log('✅ [useDateAvailabilityChecker] Resultado del rango:', {
+        todasLasNochesDisponibles: allDaysAvailable,
+        minimoDomos: minAvailableUnits
+      });
 
       return {
         isAvailable: allDaysAvailable,

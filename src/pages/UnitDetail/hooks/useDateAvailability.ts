@@ -25,56 +25,25 @@ export const useDateAvailability = (startDate?: Date, endDate?: Date, guests: nu
     // Calcular la disponibilidad mínima para todo el rango
     (async () => {
       try {
-        console.log('🔍 [useDateAvailability] Calculando disponibilidad mínima para rango:', {
+        console.log('🔍 [useDateAvailability] Calculando disponibilidad para rango:', {
           inicio: startDate.toISOString().split('T')[0],
           fin: endDate.toISOString().split('T')[0],
           huéspedes: guests,
           domosRequeridos: domosNecesarios
         });
 
-        // Obtener todas las noches del rango (excluyendo la fecha de checkout)
-        const nights = eachDayOfInterval({ 
-          start: startDate, 
-          end: addDays(endDate, -1) 
+        // IMPORTANTE: Usar checkGeneralAvailability directamente para el rango completo
+        // Esta función ya maneja correctamente la lógica de superposición de reservas
+        const result = await checkGeneralAvailability(startDate, endDate, domosNecesarios);
+        
+        console.log('✅ [useDateAvailability] Resultado de checkGeneralAvailability:', {
+          disponible: result.isAvailable,
+          unidadesDisponibles: result.availableUnits,
+          domosRequeridos: domosNecesarios
         });
 
-        let minAvailableDomos = Infinity;
-
-        // Verificar disponibilidad para cada noche individualmente
-        // USAR LA MISMA LÓGICA que checkGeneralAvailability
-        for (const night of nights) {
-          const nextDay = addDays(night, 1);
-          
-          const result = await checkGeneralAvailability(night, nextDay, domosNecesarios);
-          
-          console.log(`🔍 [useDateAvailability] Noche ${night.toISOString().split('T')[0]}:`, {
-            disponibles: result.availableUnits,
-            requeridos: domosNecesarios
-          });
-          
-          if (typeof result.availableUnits === 'number') {
-            minAvailableDomos = Math.min(minAvailableDomos, result.availableUnits);
-          } else {
-            // Si alguna noche no tiene datos válidos, no hay disponibilidad
-            minAvailableDomos = 0;
-            break;
-          }
-        }
-
-        // Si no se encontraron datos válidos, establecer en 0
-        if (minAvailableDomos === Infinity) {
-          minAvailableDomos = 0;
-        }
-
-        console.log('✅ [useDateAvailability] Disponibilidad mínima final:', {
-          nochesVerificadas: nights.length,
-          domosMinimosDisponibles: minAvailableDomos,
-          domosRequeridos: domosNecesarios,
-          disponible: minAvailableDomos >= domosNecesarios
-        });
-
-        setAvailableDomos(minAvailableDomos);
-        setIsAvailable(minAvailableDomos >= domosNecesarios);
+        setAvailableDomos(result.availableUnits);
+        setIsAvailable(result.availableUnits >= domosNecesarios);
 
       } catch (error) {
         console.error('❌ [useDateAvailability] Error calculando disponibilidad:', error);

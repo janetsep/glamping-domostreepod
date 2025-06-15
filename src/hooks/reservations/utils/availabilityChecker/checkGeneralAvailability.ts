@@ -20,7 +20,7 @@ export const checkGeneralAvailability = async (
     });
 
     // IMPORTANTE: Usar la misma query que el calendario
-    // Solo contar reservas CONFIRMADAS y con unit_id asignado
+    // Solo contar reservas CONFIRMADAS y con unit_id asignado que se superponen con el rango
     const { data: overlappingReservations, error } = await supabase
       .from('reservations')
       .select('id, unit_id, check_in, check_out, status')
@@ -45,7 +45,6 @@ export const checkGeneralAvailability = async (
     });
 
     // CRÍTICO: Solo contar reservas que tienen unit_id asignado
-    // Esta es la misma lógica que usa el calendario
     const reservedUnits = (overlappingReservations || [])
       .filter(r => r.unit_id !== null && r.unit_id !== undefined)
       .length;
