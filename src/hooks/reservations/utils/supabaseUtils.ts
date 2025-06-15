@@ -88,6 +88,23 @@ export const createReservationEntry = async (
       clientInfo
     });
 
+    // Verificar que todas las unidades existen en la base de datos
+    const { data: validUnits, error: validationError } = await supabase
+      .from('glamping_units')
+      .select('id, max_guests')
+      .in('id', unitIdsToAssign);
+
+    if (validationError) {
+      throw new Error(`Error al validar unidades: ${validationError.message}`);
+    }
+
+    if (!validUnits || validUnits.length !== unitIdsToAssign.length) {
+      const invalidIds = unitIdsToAssign.filter(id => !validUnits?.some(u => u.id === id));
+      throw new Error(`Las siguientes unidades no existen: ${invalidIds.join(', ')}`);
+    }
+
+    console.log('✅ [createReservationEntry] Unidades validadas:', validUnits);
+
     // Generar código de reserva único
     const reservationCode = await generateReservationCode();
     if (!reservationCode) {
@@ -95,32 +112,12 @@ export const createReservationEntry = async (
     }
     console.log('✅ [createReservationEntry] Código de reserva generado:', reservationCode);
 
-    // Obtener capacidades de los domos si no se proporcionan
+    // Obtener capacidades de los domos
     if (!unitCapacities) {
-      console.log('🔍 [createReservationEntry] Obteniendo capacidades de unidades...');
-      const { data: units, error: unitsError } = await supabase
-        .from('glamping_units')
-        .select('id, max_guests')
-        .in('id', unitIdsToAssign);
-
-      if (unitsError) {
-        throw new Error(`Error al obtener capacidades: ${unitsError.message}`);
-      }
-
-      if (!units || units.length === 0) {
-        console.log('⚠️ [createReservationEntry] No se encontraron unidades en BD, usando capacidad por defecto');
-        // Crear capacidades por defecto para las unidades solicitadas
-        unitCapacities = unitIdsToAssign.map(unitId => ({
-          unitId,
-          capacity: 4
-        }));
-      } else {
-        unitCapacities = units.map(unit => ({
-          unitId: unit.id,
-          capacity: unit.max_guests
-        }));
-      }
-      
+      unitCapacities = validUnits.map(unit => ({
+        unitId: unit.id,
+        capacity: unit.max_guests
+      }));
       console.log('📊 [createReservationEntry] Capacidades obtenidas:', unitCapacities);
     }
 
