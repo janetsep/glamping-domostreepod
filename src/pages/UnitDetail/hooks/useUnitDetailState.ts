@@ -69,8 +69,14 @@ export const useUnitDetailState = (unitId?: string) => {
     getCurrentStep: baseGetCurrentStep
   } = useReservationState();
 
-  // Calcular el número correcto de domos requeridos
+  // Calcular el número correcto de domos requeridos basado en los huéspedes
   const actualRequiredDomos = Math.ceil(guests / 4);
+
+  console.log('🔍 [useUnitDetailState] Calculando domos:', {
+    guests,
+    actualRequiredDomos,
+    quoteRequiredDomos: quote?.requiredDomos
+  });
 
   // Crear el objeto state para las acciones
   const stateForActions = {

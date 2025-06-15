@@ -64,7 +64,9 @@ const ReservationConfirmed: React.FC<ReservationConfirmedProps> = ({
     }));
     
     // Create breakdown for each dome with correct pricing
-    const pricePerDome = (basePrice - activitiesTotal - packagesTotal - petsPrice) / requiredDomos;
+    const accommodationPrice = basePrice - activitiesTotal - packagesTotal - petsPrice;
+    const pricePerDome = accommodationPrice / requiredDomos;
+    
     const breakdown = domoDistribution.map((domo, index) => ({
       description: `Domo ${domo.number}: ${domo.guests} ${domo.guests === 1 ? 'persona' : 'personas'}`,
       amount: Math.round(pricePerDome),
@@ -76,12 +78,12 @@ const ReservationConfirmed: React.FC<ReservationConfirmedProps> = ({
       requiredDomos,
       domoDistribution,
       breakdown,
-      pricePerDome
+      accommodationPrice
     });
     
     return {
       nights,
-      basePrice: basePrice - activitiesTotal - packagesTotal - petsPrice,
+      basePrice: accommodationPrice,
       activitiesTotal,
       packagesTotal,
       petsPrice,

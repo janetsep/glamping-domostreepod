@@ -118,20 +118,13 @@ export const usePaymentStatusHandler = (state: any, searchParams: URLSearchParam
           
           // Calculate base price (excluding activities, packages, pets)
           const activitiesTotal = primaryReservation.selected_activities?.length > 0 ? 
-            allReservations.reduce((sum, res) => {
-              // Assuming activities are distributed equally or stored in primary
-              return sum + (res.id === reservationId ? (primaryReservation.payment_details?.reservation_data?.activities_total || 0) : 0);
-            }, 0) : 0;
+            (primaryReservation.payment_details?.reservation_data?.activities_total || 0) : 0;
             
           const packagesTotal = primaryReservation.selected_packages?.length > 0 ?
-            allReservations.reduce((sum, res) => {
-              // Assuming packages are distributed equally or stored in primary
-              return sum + (res.id === reservationId ? (primaryReservation.payment_details?.reservation_data?.packages_total || 0) : 0);
-            }, 0) : 0;
+            (primaryReservation.payment_details?.reservation_data?.packages_total || 0) : 0;
             
-          const petsPrice = allReservations.reduce((sum, res) => {
-            return sum + ((res.pets || 0) * 25000); // Assuming pet price is 25000 per pet
-          }, 0);
+          const totalPets = allReservations.reduce((sum, res) => sum + (res.pets || 0), 0);
+          const petsPrice = totalPets * 25000; // Assuming pet price is 25000 per pet
           
           const basePrice = totalPrice - activitiesTotal - packagesTotal - petsPrice;
           
@@ -146,7 +139,7 @@ export const usePaymentStatusHandler = (state: any, searchParams: URLSearchParam
             activitiesTotal: activitiesTotal,
             packagesTotal: packagesTotal,
             petsPrice: petsPrice,
-            pets: allReservations.reduce((sum, res) => sum + (res.pets || 0), 0),
+            pets: totalPets,
             selectedActivities: primaryReservation.selected_activities || [],
             selectedPackages: primaryReservation.selected_packages || []
           });
