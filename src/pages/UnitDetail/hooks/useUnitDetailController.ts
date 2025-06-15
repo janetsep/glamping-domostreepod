@@ -1,4 +1,3 @@
-
 // Agregamos importaciones necesarias
 import { useState, useEffect, useCallback } from "react";
 import { useSearchParams } from "react-router-dom";
@@ -48,7 +47,7 @@ export const useUnitDetailController = (unitId: string | undefined, searchParams
     }
     
     // Continuar con la reserva
-    actions.handleReservation();
+    actions.handleConfirmReservation();
   };
 
   // Función para confirmar la reserva con validación adicional
@@ -65,9 +64,9 @@ export const useUnitDetailController = (unitId: string | undefined, searchParams
   // Sobreescribir las acciones con nuestra lógica personalizada
   const extendedActions = {
     ...actions,
-    handleReservation,
     handleConfirmReservation
   };
+
 // AÑADIR AL FINAL del useUnitDetailController, antes del return:
 
 // Función específica para manejar cambios de huéspedes
@@ -88,9 +87,4 @@ return {
   availableDomos: state.availableDomos,
   requiredDomos: state.requiredDomos
 };
-  
-  return {
-    state,
-    actions: extendedActions
-  };
 };
