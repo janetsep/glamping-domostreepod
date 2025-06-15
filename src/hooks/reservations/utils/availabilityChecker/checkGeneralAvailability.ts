@@ -34,8 +34,9 @@ export const checkGeneralAvailability = async (
 
     console.log('🔍 [checkGeneralAvailability] Total reservas confirmadas con unit_id:', allReservations?.length || 0);
 
-    // CRÍTICO: Verificar cada noche del rango individualmente
-    // Una reserva de check-in 22 a check-out 25 ocupa las noches: 22, 23, 24
+    // CORRECCIÓN CRÍTICA: Generar las noches correctamente
+    // Para una reserva del 29 al 30, solo verificamos la noche del 29
+    // Para una reserva del 22 al 25, verificamos las noches del 22, 23, 24
     const nights = eachDayOfInterval({ 
       start: checkInDate, 
       end: addDays(checkOutDate, -1) 

@@ -51,11 +51,15 @@ export const useDateAvailabilityChecker = (reservations: Reservation[]) => {
     };
   }, [reservations]);
 
-  // IMPORTANTE: Para rangos, usar la misma lógica que checkGeneralAvailability
+  // IMPORTANTE: Para rangos, usar exactamente la misma lógica que checkGeneralAvailability
   const isDateRangeAvailable = async (startDate: Date, endDate: Date, requiredUnits = 1) => {
     try {
-      // Verificar cada noche individual del rango
-      const nights = eachDayOfInterval({ start: startDate, end: addDays(endDate, -1) });
+      // CORRECCIÓN CRÍTICA: Usar la misma lógica de generación de noches
+      // Para checkIn 29 y checkOut 30, solo verificamos la noche del 29
+      const nights = eachDayOfInterval({ 
+        start: startDate, 
+        end: addDays(endDate, -1) 
+      });
 
       let minAvailableUnits = TOTAL_UNITS;
       let allNightsAvailable = true;
@@ -64,6 +68,7 @@ export const useDateAvailabilityChecker = (reservations: Reservation[]) => {
         inicio: startDate.toISOString().split('T')[0],
         fin: endDate.toISOString().split('T')[0],
         noches: nights.length,
+        nochesList: nights.map(night => night.toISOString().split('T')[0]),
         requiredUnits
       });
 
