@@ -1,3 +1,4 @@
+
 import { useState } from 'react';
 import { toast } from "sonner";
 import { supabase } from '@/lib/supabase';
@@ -13,29 +14,39 @@ export const useReservationCreation = (state: ReservationState) => {
     try {
       console.log('🔍 [handleConfirmReservation] Iniciando proceso de reserva');
       
-      // Verificar disponibilidad actual
       const requiredDomos = Math.ceil(state.guests / 4);
-      console.log('📊 [handleConfirmReservation] Verificando disponibilidad:', {
+      console.log('📊 [handleConfirmReservation] Usando disponibilidad ya verificada:', {
         huéspedes: state.guests,
         domosRequeridos: requiredDomos,
+        domosDisponibles: state.availableDomos,
         fechas: {
           checkIn: state.startDate.toISOString(),
           checkOut: state.endDate.toISOString()
         }
       });
 
-      // Obtener unidades disponibles
+      // En lugar de verificar disponibilidad nuevamente, usar los datos ya validados
+      if (state.availableDomos !== undefined && state.availableDomos < requiredDomos) {
+        console.error('❌ [handleConfirmReservation] No hay suficientes domos según verificación previa:', {
+          disponibles: state.availableDomos,
+          requeridos: requiredDomos
+        });
+        toast.error(`No hay suficientes domos disponibles. Se necesitan ${requiredDomos} domos, pero solo hay ${state.availableDomos} disponibles.`);
+        return;
+      }
+
+      // Obtener unidades disponibles usando la misma lógica que se usó para la verificación inicial
       const { data: units, error: unitsError } = await supabase
         .from('glamping_units')
         .select('id, max_guests')
-        .order('max_guests', { ascending: false });
+        .order('id', { ascending: true }); // Orden consistente
 
       if (unitsError) {
         console.error('❌ [handleConfirmReservation] Error al obtener unidades:', unitsError);
         throw unitsError;
       }
 
-      // Obtener reservas solapadas
+      // Obtener reservas solapadas con la misma lógica que la verificación inicial
       const { data: reservations, error: reservationsError } = await supabase
         .from('reservations')
         .select('unit_id, check_in, check_out, status')
@@ -48,7 +59,7 @@ export const useReservationCreation = (state: ReservationState) => {
         throw reservationsError;
       }
 
-      // Filtrar unidades disponibles
+      // Usar la misma lógica de filtrado que en la verificación inicial
       const reservedUnitIds = new Set(
         reservations
           ?.filter(r => r.unit_id !== null && r.unit_id !== undefined)
@@ -59,28 +70,27 @@ export const useReservationCreation = (state: ReservationState) => {
         .map(u => u.id)
         .filter(id => !reservedUnitIds.has(String(id)));
 
-      console.log('📊 [handleConfirmReservation] Análisis de disponibilidad:', {
+      console.log('📊 [handleConfirmReservation] Verificación final de disponibilidad:', {
         totalUnidades: units.length,
         unidadesReservadas: reservedUnitIds.size,
         unidadesDisponibles: availableUnitIds.length,
         unidadesReservadasIds: Array.from(reservedUnitIds),
-        unidadesDisponiblesIds: availableUnitIds
+        unidadesDisponiblesIds: availableUnitIds,
+        requiredDomos
       });
 
+      // Verificación adicional por seguridad
       if (availableUnitIds.length < requiredDomos) {
-        console.error('❌ [handleConfirmReservation] No hay suficientes domos:', {
-          disponibles: availableUnitIds.length,
-          requeridos: requiredDomos,
-          fechas: {
-            checkIn: state.startDate.toISOString(),
-            checkOut: state.endDate.toISOString()
-          }
+        console.error('❌ [handleConfirmReservation] Discrepancia en disponibilidad final:', {
+          disponiblesAhora: availableUnitIds.length,
+          disponiblesAntes: state.availableDomos,
+          requeridos: requiredDomos
         });
-        toast.error(`No hay suficientes domos disponibles para las fechas seleccionadas. Se necesitan ${requiredDomos} domos, pero solo hay ${availableUnitIds.length} disponibles.`);
+        toast.error(`Error de sincronización. Por favor, verifica nuevamente la disponibilidad. Disponibles ahora: ${availableUnitIds.length}, requeridos: ${requiredDomos}`);
         return;
       }
 
-      // Seleccionar solo los domos necesarios
+      // Seleccionar las unidades necesarias en orden consistente
       const selectedUnitIds = availableUnitIds.slice(0, requiredDomos);
       console.log('✅ [handleConfirmReservation] Unidades seleccionadas para reserva:', {
         unidades: selectedUnitIds,

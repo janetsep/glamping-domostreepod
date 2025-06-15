@@ -72,64 +72,71 @@ export const useReservationCreation = ({
         domosFinales: finalRequiredDomos
       });
 
-      // Obtener todas las unidades disponibles de la base de datos
-      const { data: allUnits, error: unitsError } = await supabase
-        .from('glamping_units')
-        .select('id')
-        .order('id');
+      // Si se proporcionaron unidades disponibles, usarlas directamente (más eficiente)
+      let unitsToCreate: string[];
+      
+      if (availableUnitIds && availableUnitIds.length >= finalRequiredDomos) {
+        unitsToCreate = availableUnitIds.slice(0, finalRequiredDomos);
+        console.log('✅ [useReservationCreation] Usando unidades pre-verificadas:', unitsToCreate);
+      } else {
+        // Solo hacer verificación completa si no se proporcionaron unidades disponibles
+        console.log('🔍 [useReservationCreation] Verificando disponibilidad desde cero...');
+        
+        const { data: allUnits, error: unitsError } = await supabase
+          .from('glamping_units')
+          .select('id')
+          .order('id', { ascending: true }); // Orden consistente
 
-      if (unitsError) {
-        console.error('❌ [useReservationCreation] Error al obtener unidades:', unitsError);
-        throw new Error(`Error al obtener unidades: ${unitsError.message}`);
-      }
+        if (unitsError) {
+          console.error('❌ [useReservationCreation] Error al obtener unidades:', unitsError);
+          throw new Error(`Error al obtener unidades: ${unitsError.message}`);
+        }
 
-      if (!allUnits || allUnits.length === 0) {
-        console.error('❌ [useReservationCreation] No se encontraron unidades en la base de datos');
-        throw new Error('No se encontraron unidades disponibles');
-      }
+        if (!allUnits || allUnits.length === 0) {
+          console.error('❌ [useReservationCreation] No se encontraron unidades en la base de datos');
+          throw new Error('No se encontraron unidades disponibles');
+        }
 
-      console.log('📊 [useReservationCreation] Unidades encontradas en BD:', allUnits);
+        // Verificar disponibilidad usando la misma lógica que en otros lugares
+        const { data: conflictingReservations, error: reservationsError } = await supabase
+          .from('reservations')
+          .select('unit_id')
+          .in('unit_id', allUnits.map(u => u.id))
+          .or(`and(check_in.lt.${checkOut.toISOString()},check_out.gt.${checkIn.toISOString()})`)
+          .eq('status', 'confirmed');
 
-      // Verificar disponibilidad de cada unidad para las fechas solicitadas
-      const { data: conflictingReservations, error: reservationsError } = await supabase
-        .from('reservations')
-        .select('unit_id')
-        .in('unit_id', allUnits.map(u => u.id))
-        .or(`and(check_in.lt.${checkOut.toISOString()},check_out.gt.${checkIn.toISOString()})`)
-        .eq('status', 'confirmed');
+        if (reservationsError) {
+          console.error('❌ [useReservationCreation] Error al verificar disponibilidad:', reservationsError);
+          throw new Error(`Error al verificar disponibilidad: ${reservationsError.message}`);
+        }
 
-      if (reservationsError) {
-        console.error('❌ [useReservationCreation] Error al verificar disponibilidad:', reservationsError);
-        throw new Error(`Error al verificar disponibilidad: ${reservationsError.message}`);
-      }
+        // Filtrar unidades disponibles con la misma lógica
+        const reservedUnitIds = new Set(
+          conflictingReservations?.filter(r => r.unit_id !== null && r.unit_id !== undefined)
+            .map(r => String(r.unit_id)) || []
+        );
 
-      // Filtrar unidades disponibles
-      const reservedUnitIds = new Set(
-        conflictingReservations?.map(r => r.unit_id).filter(Boolean) || []
-      );
+        const availableUnits = allUnits.filter(unit => !reservedUnitIds.has(String(unit.id)));
 
-      const availableUnits = allUnits.filter(unit => !reservedUnitIds.has(unit.id));
-
-      console.log('📊 [useReservationCreation] Análisis de disponibilidad:', {
-        totalUnidades: allUnits.length,
-        unidadesReservadas: reservedUnitIds.size,
-        unidadesDisponibles: availableUnits.length,
-        unidadesDisponiblesIds: availableUnits.map(u => u.id)
-      });
-
-      if (availableUnits.length < finalRequiredDomos) {
-        console.error('❌ [useReservationCreation] No hay suficientes domos:', {
-          disponibles: availableUnits.length,
-          requeridos: finalRequiredDomos
+        console.log('📊 [useReservationCreation] Análisis de disponibilidad:', {
+          totalUnidades: allUnits.length,
+          unidadesReservadas: reservedUnitIds.size,
+          unidadesDisponibles: availableUnits.length,
+          unidadesDisponiblesIds: availableUnits.map(u => u.id)
         });
-        throw new Error(`No hay suficientes domos disponibles. Se necesitan ${finalRequiredDomos} domos, pero solo hay ${availableUnits.length} disponibles.`);
+
+        if (availableUnits.length < finalRequiredDomos) {
+          console.error('❌ [useReservationCreation] No hay suficientes domos:', {
+            disponibles: availableUnits.length,
+            requeridos: finalRequiredDomos
+          });
+          throw new Error(`No hay suficientes domos disponibles. Se necesitan ${finalRequiredDomos} domos, pero solo hay ${availableUnits.length} disponibles.`);
+        }
+
+        unitsToCreate = availableUnits.slice(0, finalRequiredDomos).map(unit => unit.id);
       }
 
-      // Seleccionar las unidades necesarias usando los IDs reales
-      const selectedUnits = availableUnits.slice(0, finalRequiredDomos);
-      const unitsToCreate = selectedUnits.map(unit => unit.id);
-
-      console.log('✅ [useReservationCreation] Unidades seleccionadas para crear reservas:', unitsToCreate);
+      console.log('✅ [useReservationCreation] Unidades finales para crear reservas:', unitsToCreate);
 
       const reservation = await createReservationEntry(
         unitsToCreate,
