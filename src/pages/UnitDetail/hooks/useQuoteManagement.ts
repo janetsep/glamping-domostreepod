@@ -28,13 +28,24 @@ export const useQuoteManagement = () => {
       return;
     }
 
+    // Calcular el número correcto de domos basado en huéspedes
+    const calculatedRequiredDomos = Math.ceil(guests / 4);
+    const finalRequiredDomos = Math.max(calculatedRequiredDomos, 1);
+
+    console.log('🔍 [useQuoteManagement] Calculando domos requeridos:', {
+      huéspedes: guests,
+      domosCalculados: calculatedRequiredDomos,
+      domosFinales: finalRequiredDomos,
+      domosParametro: requiredDomos
+    });
+
     try {
       const quoteDetails = calculateQuote(
         displayUnit.prices,
         startDate,
         endDate,
         guests,
-        requiredDomos
+        finalRequiredDomos // Usar el cálculo correcto
       );
       
       console.log('🔍 [useQuoteManagement] Cotización generada:', quoteDetails);

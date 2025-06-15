@@ -21,7 +21,26 @@ export const useQuoteCalculation = (state: QuoteState) => {
       return;
     }
 
-    const requiredDomos = state.requiredDomos || 1;
+    // Calcular el número correcto de domos requeridos basado en huéspedes
+    const calculatedRequiredDomos = Math.ceil(state.guests / 4);
+    const finalRequiredDomos = Math.max(calculatedRequiredDomos, 1);
+
+    console.log('🔍 [useQuoteCalculation] Cálculo de domos requeridos:', {
+      huéspedes: state.guests,
+      domosCalculados: calculatedRequiredDomos,
+      domosFinales: finalRequiredDomos,
+      domosDisponibles: state.availableDomos
+    });
+
+    // Verificar que tengamos suficientes domos disponibles
+    if (state.availableDomos && state.availableDomos < finalRequiredDomos) {
+      console.error('❌ [useQuoteCalculation] No hay suficientes domos disponibles:', {
+        requeridos: finalRequiredDomos,
+        disponibles: state.availableDomos
+      });
+      toast.error(`No hay suficientes domos disponibles. Se necesitan ${finalRequiredDomos} domos, pero solo hay ${state.availableDomos} disponibles.`);
+      return;
+    }
 
     try {
       let quoteDetails = calculateQuote(
@@ -29,13 +48,13 @@ export const useQuoteCalculation = (state: QuoteState) => {
         state.startDate,
         state.endDate,
         state.guests,
-        requiredDomos
+        finalRequiredDomos // Usar el número correcto de domos
       );
       
       console.log('🔍 [useQuoteCalculation] Cotización base calculada:', quoteDetails);
       
       // Agregar los domos requeridos al detalle de la cotización
-      quoteDetails.requiredDomos = requiredDomos;
+      quoteDetails.requiredDomos = finalRequiredDomos;
       
       // Agregar extras si están seleccionados
       if (state.selectedActivities.length > 0 || state.selectedPackages.length > 0) {

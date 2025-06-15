@@ -69,6 +69,9 @@ export const useUnitDetailState = (unitId?: string) => {
     getCurrentStep: baseGetCurrentStep
   } = useReservationState();
 
+  // Calcular el número correcto de domos requeridos
+  const actualRequiredDomos = Math.ceil(guests / 4);
+
   // Crear el objeto state para las acciones
   const stateForActions = {
     startDate,
@@ -76,7 +79,7 @@ export const useUnitDetailState = (unitId?: string) => {
     guests,
     displayUnit,
     quote,
-    requiredDomos,
+    requiredDomos: actualRequiredDomos, // Usar el cálculo correcto
     activitiesTotal,
     packagesTotal,
     selectedActivities,
@@ -87,9 +90,9 @@ export const useUnitDetailState = (unitId?: string) => {
   // Usar las acciones de reserva
   const { handleConfirmReservation } = useReservationActions(stateForActions);
 
-  // Wrapper para generateQuote que pase los parámetros necesarios
+  // Wrapper para generateQuote que pase los parámetros correctos
   const generateQuote = () => {
-    baseGenerateQuote(displayUnit, startDate, endDate, guests, requiredDomos);
+    baseGenerateQuote(displayUnit, startDate, endDate, guests, actualRequiredDomos);
   };
 
   // Wrapper para getCurrentStep que pase showQuote
@@ -109,7 +112,7 @@ export const useUnitDetailState = (unitId?: string) => {
     guests,
     adults,
     children,
-    requiredDomos,
+    requiredDomos: actualRequiredDomos, // Usar el cálculo correcto
     isAvailable,
     availableDomos,
     isPartialAvailability,
