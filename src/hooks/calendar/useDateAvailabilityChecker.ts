@@ -2,6 +2,8 @@
 import { format, startOfDay, endOfDay } from "date-fns";
 import { eachDayOfInterval, addDays } from "date-fns";
 import { useEffect, useCallback } from "react";
+// Importar la función centralizada para asegurar consistencia
+import { checkGeneralAvailability } from "@/hooks/reservations/utils/availabilityChecker/checkGeneralAvailability";
 
 const TOTAL_UNITS = 4;
 
@@ -14,10 +16,11 @@ interface Reservation {
 
 export const useDateAvailabilityChecker = (reservations: Reservation[]) => {
   useEffect(() => {
-    console.log('[useDateAvailabilityChecker] Initialized with', reservations.length, 'reservations');
+    // Este log es para el pintado inicial del calendario
+    console.log('[useDateAvailabilityChecker] Inicializado con', reservations.length, 'reservas para la vista del calendario.');
   }, [reservations.length]);
 
-  // CRÍTICO: Usar exactamente la misma lógica que checkGeneralAvailability
+  // Esta función es para el pintado de días individuales. Usa los datos parciales del mes por rendimiento.
   const isDateAvailable = useCallback((date: Date, requiredUnits = 1) => {
     const start = startOfDay(date);
     const end = addDays(start, 1); // Para verificar ocupación de esa noche específica
@@ -37,12 +40,8 @@ export const useDateAvailabilityChecker = (reservations: Reservation[]) => {
     const availableUnits = TOTAL_UNITS - reservedUnits;
     const isAvailable = availableUnits >= requiredUnits;
 
-    console.log(`📅 [useDateAvailabilityChecker] Fecha ${date.toISOString().split('T')[0]}:`, {
-      reservasSuperpuestas: overlappingReservations.length,
-      disponibles: availableUnits,
-      requeridos: requiredUnits,
-      disponible: isAvailable
-    });
+    // Se reduce el log para no saturar la consola en cada renderizado de día
+    // console.log(`...`);
 
     return {
       isAvailable,
@@ -51,46 +50,26 @@ export const useDateAvailabilityChecker = (reservations: Reservation[]) => {
     };
   }, [reservations]);
 
-  // IMPORTANTE: Para rangos, usar exactamente la misma lógica que checkGeneralAvailability
+  // IMPORTANTE: Esta función se usa al SELECCIONAR un rango de fechas.
+  // Debe ser 100% precisa y consistente con el resto de la aplicación.
+  // Por eso, delega la lógica a `checkGeneralAvailability`.
   const isDateRangeAvailable = async (startDate: Date, endDate: Date, requiredUnits = 1) => {
     try {
-      // CORRECCIÓN CRÍTICA: Usar la misma lógica de generación de noches
-      // Para checkIn 29 y checkOut 30, solo verificamos la noche del 29
-      const nights = eachDayOfInterval({ 
-        start: startDate, 
-        end: addDays(endDate, -1) 
-      });
-
-      let minAvailableUnits = TOTAL_UNITS;
-      let allNightsAvailable = true;
-
-      console.log('🔍 [useDateAvailabilityChecker] Verificando rango:', {
-        inicio: startDate.toISOString().split('T')[0],
-        fin: endDate.toISOString().split('T')[0],
-        noches: nights.length,
-        nochesList: nights.map(night => night.toISOString().split('T')[0]),
-        requiredUnits
-      });
-
-      for (const night of nights) {
-        const { isAvailable, availableUnits } = isDateAvailable(night, requiredUnits);
-        if (!isAvailable) {
-          allNightsAvailable = false;
-        }
-        minAvailableUnits = Math.min(minAvailableUnits, availableUnits);
-      }
-
-      console.log('✅ [useDateAvailabilityChecker] Resultado del rango:', {
-        todasLasNochesDisponibles: allNightsAvailable,
-        minimoDomos: minAvailableUnits
+      console.log('🔍 [useDateAvailabilityChecker] Verificando rango con la función central `checkGeneralAvailability` para consistencia.');
+      
+      const result = await checkGeneralAvailability(startDate, endDate, requiredUnits);
+      
+      console.log('✅ [useDateAvailabilityChecker] Resultado del rango desde `checkGeneralAvailability`:', {
+        disponible: result.isAvailable,
+        unidadesDisponibles: result.availableUnits
       });
 
       return {
-        isAvailable: allNightsAvailable,
-        availableUnits: minAvailableUnits
+        isAvailable: result.isAvailable,
+        availableUnits: result.availableUnits
       };
     } catch (error) {
-      console.error("Error checking date range availability:", error);
+      console.error("Error en isDateRangeAvailable al llamar a checkGeneralAvailability:", error);
       return { isAvailable: false, availableUnits: 0 };
     }
   };
