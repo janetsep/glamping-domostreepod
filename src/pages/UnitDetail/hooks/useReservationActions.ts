@@ -5,11 +5,26 @@ import { useReservationCreation } from "@/hooks/reservations/useReservationCreat
 import { usePayment } from "@/hooks/reservations/usePayment";
 
 export const useReservationActions = (state: any) => {
+  const { redirectToWebpay } = usePayment({
+    setIsLoading: state.setIsProcessingPayment
+  });
+
   const { createReservation } = useReservationCreation({
     onSuccess: (data) => {
       console.log('✅ [useReservationActions] Reserva creada exitosamente:', data);
-      // Redirigir a WebPay con el ID y monto de la reserva
-      redirectToWebpay(data.reservationId, data.amount, false, state.displayUnit?.id || '');
+      console.log('🔄 [useReservationActions] Iniciando redirección a WebPay...');
+      
+      // Redirigir a WebPay inmediatamente después de crear la reserva
+      try {
+        redirectToWebpay(data.reservationId, data.amount, false, state.displayUnit?.id || '');
+        console.log('✅ [useReservationActions] Redirección a WebPay iniciada');
+      } catch (redirectError) {
+        console.error('❌ [useReservationActions] Error en redirección a WebPay:', redirectError);
+        state.setIsProcessingPayment(false);
+        toast.error("Error al iniciar el pago", {
+          description: "No se pudo redirigir a WebPay. Por favor, inténtalo de nuevo."
+        });
+      }
     },
     onError: (error) => {
       console.error('❌ [useReservationActions] Error creando reserva:', error);
@@ -18,10 +33,6 @@ export const useReservationActions = (state: any) => {
         description: error.message
       });
     }
-  });
-
-  const { redirectToWebpay } = usePayment({
-    setIsLoading: state.setIsProcessingPayment
   });
 
   const handleConfirmReservation = useCallback(async () => {
@@ -48,7 +59,7 @@ export const useReservationActions = (state: any) => {
         requiredDomos: state.requiredDomos
       });
 
-      // Crear la reserva primero
+      // Crear la reserva - el callback onSuccess manejará la redirección
       await createReservation(
         [state.displayUnit.id],
         state.startDate,
@@ -69,9 +80,11 @@ export const useReservationActions = (state: any) => {
     } catch (error) {
       console.error('❌ [useReservationActions] Error en handleConfirmReservation:', error);
       state.setIsProcessingPayment(false);
-      toast.error("Error al procesar la reserva");
+      toast.error("Error al procesar la reserva", {
+        description: error instanceof Error ? error.message : "Error desconocido"
+      });
     }
-  }, [state, createReservation, redirectToWebpay]);
+  }, [state, createReservation]);
 
   return {
     handleConfirmReservation

@@ -1,3 +1,4 @@
+
 import { useState, useCallback } from 'react';
 import { packageData } from '@/components/packages/packageData';
 import { supabase } from '@/lib/supabase';
@@ -85,22 +86,34 @@ export const useReservationCreation = ({
         clientInfo
       );
       
-      if (reservation) {
-        console.log('✅ [useReservationCreation] Reservas creadas:', reservation);
-        toast({
-          title: "Reserva iniciada",
-          description: "Tu reserva se ha creado y ahora serás redirigido a Webpay para completar el pago",
-        });
-      }
-
       if (reservation && Array.isArray(reservation) && reservation.length > 0) {
         const primaryReservationId = reservation[0].id;
-        console.log('✅ [useReservationCreation] Reserva principal creada con ID:', primaryReservationId);
-        return { 
+        const resultData = { 
           reservationId: primaryReservationId, 
           amount: totalPrice,
           reservationCode: reservation[0].reservation_code 
         };
+        
+        console.log('✅ [useReservationCreation] Reserva principal creada con ID:', primaryReservationId);
+        console.log('🔄 [useReservationCreation] Ejecutando callback onSuccess...');
+        
+        // Ejecutar el callback de éxito ANTES de mostrar el toast
+        if (onSuccess) {
+          try {
+            onSuccess(resultData);
+            console.log('✅ [useReservationCreation] Callback onSuccess ejecutado exitosamente');
+          } catch (callbackError) {
+            console.error('❌ [useReservationCreation] Error en callback onSuccess:', callbackError);
+            throw callbackError;
+          }
+        }
+        
+        toast({
+          title: "Reserva iniciada",
+          description: "Tu reserva se ha creado y ahora serás redirigido a Webpay para completar el pago",
+        });
+        
+        return resultData;
       } else {
         console.error('❌ [useReservationCreation] createReservationEntry no retornó un array válido de reservas.', reservation);
         throw new Error('Error al obtener ID de reserva después de la creación.');
@@ -117,7 +130,7 @@ export const useReservationCreation = ({
     } finally {
       setIsLoading(false);
     }
-  }, [toast, onError]);
+  }, [toast, onSuccess, onError]);
 
   return {
     createReservation,
