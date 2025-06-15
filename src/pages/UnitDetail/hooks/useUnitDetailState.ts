@@ -3,6 +3,8 @@ import { useState, useRef, useEffect } from "react";
 import { useGlampingUnits } from "@/hooks/reservations/useGlampingUnits";
 import { useReservationFunctions } from "@/hooks/reservations/useReservations";
 import { Activity, ThemedPackage, AvailabilityResult } from "@/types";
+import { eachDayOfInterval, addDays } from "date-fns";
+import { checkGeneralAvailability } from "@/hooks/reservations/utils/availabilityChecker/checkGeneralAvailability";
 
 export const useUnitDetailState = (unitId?: string) => {
   const { data: units = [], isLoading: unitsLoading } = useGlampingUnits();
@@ -59,7 +61,7 @@ export const useUnitDetailState = (unitId?: string) => {
     return await checkAvailability(guestsCount, startDate, endDate, forceRefresh);
   };
 
-  // Efecto unificado para calcular disponibilidad usando la misma lógica que el calendario
+  // Efecto para calcular la disponibilidad mínima real para todo el rango de fechas
   useEffect(() => {
     if (!startDate || !endDate || guests <= 0) {
       setAvailableDomos(0);
@@ -71,43 +73,62 @@ export const useUnitDetailState = (unitId?: string) => {
     const domosNecesarios = Math.ceil(guests / 4);
     setRequiredDomos(domosNecesarios);
 
-    // Usar la misma lógica que el calendario: verificar disponibilidad para el rango completo
+    // Calcular la disponibilidad mínima para todo el rango
     (async () => {
       try {
-        console.log('🔍 [useUnitDetailState] Verificando disponibilidad para rango completo:', {
+        console.log('🔍 [useUnitDetailState] Calculando disponibilidad mínima para rango:', {
           inicio: startDate.toISOString().split('T')[0],
           fin: endDate.toISOString().split('T')[0],
           huéspedes: guests,
           domosRequeridos: domosNecesarios
         });
 
-        // Usar checkAvailability que ya implementa la lógica correcta de rango completo
-        const result = await checkAvailability(guests, startDate, endDate, true);
-        
-        console.log('🔍 [useUnitDetailState] Resultado de verificación:', result);
+        // Obtener todas las noches del rango (excluyendo la fecha de checkout)
+        const nights = eachDayOfInterval({ 
+          start: startDate, 
+          end: addDays(endDate, -1) 
+        });
 
-        if (typeof result.availableDomes === 'number') {
-          setAvailableDomos(result.availableDomes);
-          setIsAvailable(result.availableDomes >= domosNecesarios);
+        let minAvailableDomos = Infinity;
+
+        // Verificar disponibilidad para cada noche individualmente
+        for (const night of nights) {
+          const nextDay = addDays(night, 1);
           
-          console.log('✅ [useUnitDetailState] Estado actualizado:', {
-            domosDisponibles: result.availableDomes,
-            domosRequeridos: domosNecesarios,
-            disponible: result.availableDomes >= domosNecesarios
-          });
-        } else {
-          console.log('❌ [useUnitDetailState] Resultado inválido:', result);
-          setAvailableDomos(0);
-          setIsAvailable(false);
+          const result = await checkGeneralAvailability(night, nextDay, domosNecesarios);
+          
+          if (typeof result.availableUnits === 'number') {
+            minAvailableDomos = Math.min(minAvailableDomos, result.availableUnits);
+            console.log(`🔍 [useUnitDetailState] Noche ${night.toISOString().split('T')[0]}: ${result.availableUnits} domos disponibles`);
+          } else {
+            // Si alguna noche no tiene datos válidos, no hay disponibilidad
+            minAvailableDomos = 0;
+            break;
+          }
         }
 
+        // Si no se encontraron datos válidos, establecer en 0
+        if (minAvailableDomos === Infinity) {
+          minAvailableDomos = 0;
+        }
+
+        console.log('🔍 [useUnitDetailState] Disponibilidad mínima calculada:', {
+          nochesVerificadas: nights.length,
+          domosMinimosDisponibles: minAvailableDomos,
+          domosRequeridos: domosNecesarios,
+          disponible: minAvailableDomos >= domosNecesarios
+        });
+
+        setAvailableDomos(minAvailableDomos);
+        setIsAvailable(minAvailableDomos >= domosNecesarios);
+
       } catch (error) {
-        console.error('❌ [useUnitDetailState] Error verificando disponibilidad:', error);
+        console.error('❌ [useUnitDetailState] Error calculando disponibilidad:', error);
         setAvailableDomos(0);
         setIsAvailable(false);
       }
     })();
-  }, [startDate, endDate, guests, checkAvailability]);
+  }, [startDate, endDate, guests]);
 
   return {
     // Unit data
