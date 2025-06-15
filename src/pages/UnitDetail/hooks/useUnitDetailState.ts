@@ -59,7 +59,7 @@ export const useUnitDetailState = (unitId?: string) => {
     return await checkAvailability(guestsCount, startDate, endDate, forceRefresh);
   };
 
-  // ÚNICO efecto para calcular disponibilidad - corregido para obtener el mínimo real
+  // Efecto unificado para calcular disponibilidad usando la misma lógica que el calendario
   useEffect(() => {
     if (!startDate || !endDate || guests <= 0) {
       setAvailableDomos(0);
@@ -71,54 +71,38 @@ export const useUnitDetailState = (unitId?: string) => {
     const domosNecesarios = Math.ceil(guests / 4);
     setRequiredDomos(domosNecesarios);
 
-    // Función para obtener todas las noches del rango (sin incluir la fecha de checkout)
-    const getNightsInRange = (start: Date, end: Date) => {
-      const nights: Date[] = [];
-      let current = new Date(start);
-      const endDay = new Date(end);
-      
-      while (current < endDay) {
-        nights.push(new Date(current));
-        current.setDate(current.getDate() + 1);
-      }
-      return nights;
-    };
-
+    // Usar la misma lógica que el calendario: verificar disponibilidad para el rango completo
     (async () => {
       try {
-        const nights = getNightsInRange(startDate, endDate);
-        let minAvailableForAllNights = Infinity;
+        console.log('🔍 [useUnitDetailState] Verificando disponibilidad para rango completo:', {
+          inicio: startDate.toISOString().split('T')[0],
+          fin: endDate.toISOString().split('T')[0],
+          huéspedes: guests,
+          domosRequeridos: domosNecesarios
+        });
+
+        // Usar checkAvailability que ya implementa la lógica correcta de rango completo
+        const result = await checkAvailability(guests, startDate, endDate, true);
         
-        // Verificar disponibilidad para cada noche individualmente
-        for (const nightDate of nights) {
-          const nextDay = new Date(nightDate);
-          nextDay.setDate(nextDay.getDate() + 1);
+        console.log('🔍 [useUnitDetailState] Resultado de verificación:', result);
+
+        if (typeof result.availableDomes === 'number') {
+          setAvailableDomos(result.availableDomes);
+          setIsAvailable(result.availableDomes >= domosNecesarios);
           
-          // Verificar disponibilidad para esta noche específica
-          const result = await checkAvailability(guests, nightDate, nextDay, true);
-          
-          if (typeof result.availableDomes === 'number') {
-            minAvailableForAllNights = Math.min(minAvailableForAllNights, result.availableDomes);
-            console.log(`🔍 [AVAILABILITY] Noche ${nightDate.toISOString().split('T')[0]}: ${result.availableDomes} domos disponibles`);
-          } else {
-            // Si alguna noche no tiene datos válidos, no hay disponibilidad
-            minAvailableForAllNights = 0;
-            break;
-          }
+          console.log('✅ [useUnitDetailState] Estado actualizado:', {
+            domosDisponibles: result.availableDomes,
+            domosRequeridos: domosNecesarios,
+            disponible: result.availableDomes >= domosNecesarios
+          });
+        } else {
+          console.log('❌ [useUnitDetailState] Resultado inválido:', result);
+          setAvailableDomos(0);
+          setIsAvailable(false);
         }
-
-        // Si no se encontraron datos válidos, establecer en 0
-        if (minAvailableForAllNights === Infinity) {
-          minAvailableForAllNights = 0;
-        }
-
-        console.log(`🔍 [AVAILABILITY FINAL] Rango ${startDate.toISOString().split('T')[0]} - ${endDate.toISOString().split('T')[0]}: ${minAvailableForAllNights} domos mínimos disponibles para ${nights.length} noches`);
-
-        setAvailableDomos(minAvailableForAllNights);
-        setIsAvailable(minAvailableForAllNights >= domosNecesarios);
 
       } catch (error) {
-        console.error('Error calculando disponibilidad:', error);
+        console.error('❌ [useUnitDetailState] Error verificando disponibilidad:', error);
         setAvailableDomos(0);
         setIsAvailable(false);
       }
