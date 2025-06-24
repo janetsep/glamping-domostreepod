@@ -1,6 +1,7 @@
+
 import { useState, useEffect, useCallback } from "react";
 import { format } from "date-fns";
-import { supabase } from "@/lib/supabase";
+import { supabase } from "@/integrations/supabase/client";
 
 /**
  * Hook to fetch reservations for a given date range
@@ -23,7 +24,7 @@ export const useReservationsFetcher = (currentMonth: Date) => {
     end.setDate(0); // Last day of month
     
     try {
-      console.log(`Fetching reservations from ${format(start, 'yyyy-MM-dd')} to ${format(end, 'yyyy-MM-dd')}`);
+      console.log(`🔍 [useReservationsFetcher] Obteniendo reservas desde ${format(start, 'yyyy-MM-dd')} hasta ${format(end, 'yyyy-MM-dd')}`);
       
       // Extend the date range a bit to capture reservations that might overlap with the month
       const extendedStart = new Date(start);
@@ -32,6 +33,18 @@ export const useReservationsFetcher = (currentMonth: Date) => {
       const extendedEnd = new Date(end);
       extendedEnd.setDate(extendedEnd.getDate() + 7);
       
+      // Test connection first
+      const { data: testData, error: testError } = await supabase
+        .from('reservations')
+        .select('count', { count: 'exact', head: true });
+      
+      if (testError) {
+        console.error('❌ [useReservationsFetcher] Error de conexión con Supabase:', testError);
+        throw new Error(`Error de conexión: ${testError.message}`);
+      }
+      
+      console.log('✅ [useReservationsFetcher] Conexión con Supabase exitosa');
+      
       const { data, error: supabaseError } = await supabase
         .from('reservations')
         .select('*')
@@ -39,46 +52,51 @@ export const useReservationsFetcher = (currentMonth: Date) => {
         .or(`check_in.lte.${extendedEnd.toISOString()},check_out.gte.${extendedStart.toISOString()}`);
       
       if (supabaseError) {
-        console.error("Error fetching reservations:", supabaseError);
-        setError(supabaseError.message);
-        return [];
+        console.error("❌ [useReservationsFetcher] Error obteniendo reservas:", supabaseError);
+        throw new Error(`Error obteniendo reservas: ${supabaseError.message}`);
       }
       
-      console.log(`Found ${data?.length || 0} confirmed reservations for the selected month`);
-      console.log('Reservations data:', data);
+      console.log(`✅ [useReservationsFetcher] Se encontraron ${data?.length || 0} reservas confirmadas`);
+      
+      if (data && data.length > 0) {
+        console.log('📊 [useReservationsFetcher] Detalles de reservas:');
+        data.forEach(reservation => {
+          console.log(`- ID: ${reservation.id}, Unidad: ${reservation.unit_id || 'No asignada'}, Check-in: ${new Date(reservation.check_in).toLocaleDateString()}`);
+        });
+      }
       
       // Verifica y registra las reservas sin unit_id para depuración
       const reservationsWithoutUnitId = (data || []).filter(r => !r.unit_id);
       if (reservationsWithoutUnitId.length > 0) {
-        console.log(`Warning: Found ${reservationsWithoutUnitId.length} reservations without unit_id`);
+        console.log(`⚠️ [useReservationsFetcher] Se encontraron ${reservationsWithoutUnitId.length} reservas sin unit_id`);
       }
       
       setReservations(data || []);
       return data; // Retornar los datos obtenidos
     } catch (error: any) {
-      console.error("Error in fetchReservations:", error);
+      console.error("❌ [useReservationsFetcher] Error general:", error);
       setError(error.message || "Error desconocido al obtener reservaciones");
-      // Return empty array or handle error as appropriate
+      setReservations([]);
       return [];
     } finally {
       setIsLoading(false);
     }
-  }, [currentMonth, setIsLoading, setError, setReservations]); // Dependencias del useCallback
+  }, [currentMonth]);
 
   // useEffect para llamar a fetchReservations cuando cambie currentMonth
   useEffect(() => {
     fetchReservations();
-  }, [currentMonth]);
+  }, [fetchReservations]);
 
   // Exponer una función refetch que llama a fetchReservations
   const refetch = useCallback(() => {
     fetchReservations();
-  }, [fetchReservations]); // Dependencia de refetch es fetchReservations
+  }, [fetchReservations]);
 
   return { 
     reservations, 
     isLoading,
     error,
-    refetch // Exponer la función refetch
+    refetch
   };
 };

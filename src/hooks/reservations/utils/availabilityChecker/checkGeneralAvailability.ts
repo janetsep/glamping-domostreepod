@@ -1,106 +1,112 @@
 
-import { supabase } from '@/lib/supabase';
-import { eachDayOfInterval, addDays } from 'date-fns';
+import { supabase } from "@/integrations/supabase/client";
 
-const TOTAL_DOMOS = 4;
+interface AvailabilityResult {
+  isAvailable: boolean;
+  availableUnits: number;
+  totalUnits: number;
+}
 
 /**
- * Verifica la disponibilidad general para un rango de fechas
- * IMPORTANTE: Esta función debe usar la misma lógica que el calendario
+ * Verifica la disponibilidad general de unidades para un rango de fechas
  */
-export const checkGeneralAvailability = async (
-  checkInDate: Date,
-  checkOutDate: Date,
-  requiredDomos: number = 1
-) => {
+export async function checkGeneralAvailability(
+  startDate: Date,
+  endDate: Date,
+  requiredUnits: number = 1
+): Promise<AvailabilityResult> {
   try {
     console.log('🔍 [checkGeneralAvailability] Verificando disponibilidad:', {
-      fechaInicio: checkInDate.toISOString().split('T')[0],
-      fechaFin: checkOutDate.toISOString().split('T')[0],
-      domosRequeridos: requiredDomos
+      inicio: startDate.toISOString().split('T')[0],
+      fin: endDate.toISOString().split('T')[0],
+      unidadesRequeridas: requiredUnits
     });
 
-    // Obtener todas las reservas confirmadas para el análisis
-    const { data: allReservations, error } = await supabase
-      .from('reservations')
-      .select('id, unit_id, check_in, check_out, status')
-      .eq('status', 'confirmed')
-      .not('unit_id', 'is', null);
-
-    if (error) {
-      console.error('❌ [checkGeneralAvailability] Error al obtener reservas:', error);
-      return { isAvailable: false, availableUnits: 0, error: error.message };
-    }
-
-    console.log('🔍 [checkGeneralAvailability] Total reservas confirmadas con unit_id:', allReservations?.length || 0);
-
-    // CORRECCIÓN CRÍTICA: Para una reserva del 29 al 30, solo verificamos la noche del 29
-    // Esto significa que checkInDate se incluye, pero checkOutDate se excluye
-    const nights = eachDayOfInterval({ 
-      start: checkInDate, 
-      end: addDays(checkOutDate, -1) 
-    });
-
-    // Si no hay noches a verificar, no hay disponibilidad
-    if (nights.length === 0) {
-      console.log('⚠️ [checkGeneralAvailability] No hay noches para verificar en el rango');
-      return { isAvailable: false, availableUnits: 0, totalUnits: TOTAL_DOMOS };
-    }
-
-    let minAvailableUnits = TOTAL_DOMOS;
-
-    console.log('🔍 [checkGeneralAvailability] Verificando noches:', {
-      totalNoches: nights.length,
-      noches: nights.map(night => night.toISOString().split('T')[0])
-    });
-
-    // Para cada noche, contar cuántos domos están ocupados
-    for (const night of nights) {
-      const nightEnd = addDays(night, 1);
-      
-      // Una reserva ocupa esta noche si: checkIn < nightEnd && checkOut > night
-      const overlappingReservations = (allReservations || []).filter(reservation => {
-        const checkIn = new Date(reservation.check_in);
-        const checkOut = new Date(reservation.check_out);
-        
-        return checkIn < nightEnd && checkOut > night;
-      });
-
-      const occupiedUnits = overlappingReservations.length;
-      const availableForThisNight = TOTAL_DOMOS - occupiedUnits;
-      
-      console.log(`📅 [checkGeneralAvailability] Noche ${night.toISOString().split('T')[0]}:`, {
-        reservasSuperpuestas: overlappingReservations.length,
-        unidadesOcupadas: occupiedUnits,
-        disponiblesEstaNoche: availableForThisNight,
-        reservas: overlappingReservations.map(r => ({
-          id: r.id,
-          unit_id: r.unit_id,
-          check_in: r.check_in,
-          check_out: r.check_out
-        }))
-      });
-
-      // El mínimo disponible en cualquier noche determina la disponibilidad del rango
-      minAvailableUnits = Math.min(minAvailableUnits, availableForThisNight);
-    }
-
-    const isAvailable = minAvailableUnits >= requiredDomos;
+    // Test connection
+    const { data: testData, error: testError } = await supabase
+      .from('glamping_units')
+      .select('count', { count: 'exact', head: true });
     
-    console.log('✅ [checkGeneralAvailability] Resultado final:', {
-      totalDomos: TOTAL_DOMOS,
-      minimoDisponibleEnElRango: minAvailableUnits,
-      unidadesRequeridas: requiredDomos,
-      disponible: isAvailable
+    if (testError) {
+      console.error('❌ [checkGeneralAvailability] Error de conexión:', testError);
+      throw new Error(`Error de conexión: ${testError.message}`);
+    }
+
+    // Obtener todas las unidades disponibles
+    const { data: allUnits, error: unitsError } = await supabase
+      .from('glamping_units')
+      .select('id')
+      .order('id', { ascending: true });
+
+    if (unitsError) {
+      console.error('❌ [checkGeneralAvailability] Error obteniendo unidades:', unitsError);
+      throw new Error(`Error obteniendo unidades: ${unitsError.message}`);
+    }
+
+    if (!allUnits || allUnits.length === 0) {
+      console.log('⚠️ [checkGeneralAvailability] No se encontraron unidades');
+      return {
+        isAvailable: false,
+        availableUnits: 0,
+        totalUnits: 0
+      };
+    }
+
+    const totalUnits = allUnits.length;
+    console.log(`📊 [checkGeneralAvailability] Total de unidades: ${totalUnits}`);
+
+    // Verificar reservas que se solapan con el rango de fechas
+    const fifteenMinutesAgo = new Date(Date.now() - 15 * 60 * 1000).toISOString();
+    
+    const { data: conflictingReservations, error: reservationsError } = await supabase
+      .from('reservations')
+      .select('unit_id, check_in, check_out, status, created_at')
+      .in('unit_id', allUnits.map(u => u.id))
+      .or(`and(check_in.lt.${endDate.toISOString()},check_out.gt.${startDate.toISOString()})`)
+      .or(`status.eq.confirmed,and(status.eq.pending,created_at.gte.${fifteenMinutesAgo})`);
+
+    if (reservationsError) {
+      console.error('❌ [checkGeneralAvailability] Error verificando reservas:', reservationsError);
+      throw new Error(`Error verificando reservas: ${reservationsError.message}`);
+    }
+
+    console.log(`📋 [checkGeneralAvailability] Reservas conflictivas encontradas: ${conflictingReservations?.length || 0}`);
+    
+    if (conflictingReservations && conflictingReservations.length > 0) {
+      conflictingReservations.forEach(reservation => {
+        console.log(`- Unidad ${reservation.unit_id}: ${reservation.check_in} - ${reservation.check_out} (${reservation.status})`);
+      });
+    }
+
+    // Crear set de unidades reservadas
+    const reservedUnitIds = new Set(
+      conflictingReservations?.filter(r => r.unit_id !== null && r.unit_id !== undefined)
+        .map(r => String(r.unit_id)) || []
+    );
+
+    // Calcular unidades disponibles
+    const availableUnits = allUnits.filter(unit => !reservedUnitIds.has(String(unit.id)));
+    const availableCount = availableUnits.length;
+
+    console.log(`✅ [checkGeneralAvailability] Resultado:`, {
+      totalUnidades: totalUnits,
+      unidadesReservadas: reservedUnitIds.size,
+      unidadesDisponibles: availableCount,
+      suficientesUnidades: availableCount >= requiredUnits
     });
 
     return {
-      isAvailable,
-      availableUnits: minAvailableUnits,
-      totalUnits: TOTAL_DOMOS
+      isAvailable: availableCount >= requiredUnits,
+      availableUnits: availableCount,
+      totalUnits: totalUnits
     };
+
   } catch (error) {
     console.error('❌ [checkGeneralAvailability] Error general:', error);
-    return { isAvailable: false, availableUnits: 0, totalUnits: TOTAL_DOMOS };
+    return {
+      isAvailable: false,
+      availableUnits: 0,
+      totalUnits: 0
+    };
   }
-};
+}

@@ -16,7 +16,14 @@ export const useCalendarAvailability = (unitId: string, currentMonth: Date, sele
   }, [selectedDate, currentMonth]);
   
   // Obtener reservas y la función refetch del fetcher
-  const { reservations, isLoading: isLoadingReservations, refetch } = useReservationsFetcher(currentMonth);
+  const { reservations, isLoading: isLoadingReservations, error, refetch } = useReservationsFetcher(currentMonth);
+  
+  // Log de errores de conexión
+  useEffect(() => {
+    if (error) {
+      console.error('❌ [useCalendarAvailability] Error de conexión:', error);
+    }
+  }, [error]);
   
   // Calculate availability for the calendar view
   const { availabilityDays, isLoading: isCalculating, calculateAvailability } = useAvailabilityCalculator();
@@ -26,14 +33,15 @@ export const useCalendarAvailability = (unitId: string, currentMonth: Date, sele
 
   // Calculate availability based on current month and selected date
   useEffect(() => {
-    if (calculateAvailability) {
+    if (calculateAvailability && !error) {
       const startOfMonth = new Date(currentMonth.getFullYear(), currentMonth.getMonth(), 1);
       const endOfMonth = new Date(currentMonth.getFullYear(), currentMonth.getMonth() + 1, 0);
       
       console.log('📅 [useCalendarAvailability] Calculando disponibilidad:', {
         mes: currentMonth.toISOString().split('T')[0],
         totalReservas: reservations.length,
-        fechaSeleccionada: selectedDate?.toISOString().split('T')[0]
+        fechaSeleccionada: selectedDate?.toISOString().split('T')[0],
+        hayError: !!error
       });
       
       calculateAvailability(
@@ -44,7 +52,7 @@ export const useCalendarAvailability = (unitId: string, currentMonth: Date, sele
         reservations
       );
     }
-  }, [currentMonth, selectedDate, reservations, calculateAvailability]);
+  }, [currentMonth, selectedDate, reservations, calculateAvailability, error]);
 
   // Wrap isDateAvailable to use the same logic as the calendar
   const isDateAvailable = useCallback(async (date: Date, requiredUnits = 1) => {
@@ -76,6 +84,7 @@ export const useCalendarAvailability = (unitId: string, currentMonth: Date, sele
   return { 
     calendarDays: availabilityDays, 
     isLoading,
+    error,
     isDateAvailable,
     isDateRangeAvailable,
     refetch
