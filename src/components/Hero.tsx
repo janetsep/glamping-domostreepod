@@ -23,9 +23,6 @@ const Hero = () => {
 
   // Optimización: Uso de imágenes más ligeras con mejor gestión de calidad
   const images = [{
-    src: "/lovable-uploads/65a640f0-862a-47e4-bc80-4d6cc1f2599b.png",
-    placeholder: "/lovable-uploads/65a640f0-862a-47e4-bc80-4d6cc1f2599b.png?width=20" // Versión pequeña para placeholder
-  }, {
     src: "/lovable-uploads/ed56aab2-6ded-4bab-a2ab-2471f2fc6442.png",
     placeholder: "/lovable-uploads/ed56aab2-6ded-4bab-a2ab-2471f2fc6442.png?width=20"
   }, {
