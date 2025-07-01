@@ -17,12 +17,17 @@ const PaymentError: React.FC<PaymentErrorProps> = ({ errorMessage }) => {
   };
   
   const handleBackToUnit = () => {
-    // Return to the unit detail page, removing any query parameters
-    const unitId = localStorage.getItem('current_unit_id');
-    if (unitId) {
-      navigate(`/unit/${unitId}`);
+    // For cancellations, go to home page hero section
+    if (isUserCancellation) {
+      navigate('/#hero');
     } else {
-      navigate('/');
+      // For other errors, return to the unit detail page
+      const unitId = localStorage.getItem('current_unit_id');
+      if (unitId) {
+        navigate(`/unit/${unitId}`);
+      } else {
+        navigate('/');
+      }
     }
   };
 
@@ -35,7 +40,7 @@ const PaymentError: React.FC<PaymentErrorProps> = ({ errorMessage }) => {
       <div className="bg-red-50 border border-red-200 rounded-lg p-6 max-w-md mx-auto">
         <p className="text-red-700 mb-4">
           {isUserCancellation 
-            ? 'La transacción fue cancelada. Puedes volver a la página del domo para intentar nuevamente.' 
+            ? 'La transacción fue cancelada. Serás redirigido a la página principal.' 
             : 'Hubo un problema al procesar tu pago.'}
         </p>
         
@@ -45,7 +50,7 @@ const PaymentError: React.FC<PaymentErrorProps> = ({ errorMessage }) => {
             variant="default"
             className="w-full max-w-xs"
           >
-            Volver al domo
+            {isUserCancellation ? 'Volver al inicio' : 'Volver al domo'}
           </Button>
           
           {!isUserCancellation && (

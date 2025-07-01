@@ -31,16 +31,12 @@ export const useTransactionRedirect = () => {
   };
   
   const redirectToHome = () => {
-    navigate('/');
+    navigate('/#hero');
   };
   
   const redirectToUnitAfterCancel = () => {
-    const unitId = localStorage.getItem('current_unit_id');
-    if (unitId) {
-      navigate(`/unit/${unitId}`);
-    } else {
-      navigate('/');
-    }
+    // For cancellations, redirect to home page hero section
+    navigate('/#hero');
   };
 
   return {
