@@ -18,12 +18,19 @@ export const useDateAvailability = (startDate?: Date, endDate?: Date) => {
         return;
       }
 
+      // Validar que las fechas sean válidas
+      if (startDate >= endDate) {
+        console.warn('🔍 [useDateAvailability] Fechas inválidas: startDate >= endDate');
+        setAvailableDomos(0);
+        return;
+      }
+
       setIsLoadingAvailability(true);
       
       try {
         console.log('🔍 [useDateAvailability] Verificando disponibilidad para fechas:', {
-          startDate: startDate.toISOString(),
-          endDate: endDate.toISOString()
+          startDate: startDate.toISOString().split('T')[0],
+          endDate: endDate.toISOString().split('T')[0]
         });
 
         const result = await checkAvailability(startDate, endDate, 1);
@@ -31,10 +38,16 @@ export const useDateAvailability = (startDate?: Date, endDate?: Date) => {
         console.log('✅ [useDateAvailability] Resultado:', {
           availableUnits: result.availableUnits,
           totalUnits: result.totalUnits,
-          isAvailable: result.isAvailable
+          isAvailable: result.isAvailable,
+          error: result.error
         });
 
-        setAvailableDomos(result.availableUnits);
+        if (result.error) {
+          console.error('❌ [useDateAvailability] Error en verificación:', result.error);
+          setAvailableDomos(0);
+        } else {
+          setAvailableDomos(result.availableUnits);
+        }
       } catch (error) {
         console.error('❌ [useDateAvailability] Error:', error);
         setAvailableDomos(0);

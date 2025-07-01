@@ -47,8 +47,9 @@ export const useUnifiedAvailabilityChecker = () => {
       }
 
       const totalUnits = allUnits.length;
+      console.log(`📊 [UnifiedAvailability] Total unidades: ${totalUnits}`);
 
-      // 2. Construir la consulta de reservas confirmadas
+      // 2. Verificar reservas confirmadas que se solapan
       let confirmedQuery = supabase
         .from('reservations')
         .select('unit_id, check_in, check_out, status, id')
@@ -56,64 +57,78 @@ export const useUnifiedAvailabilityChecker = () => {
         .or(`and(check_in.lt.${checkOut.toISOString()},check_out.gt.${checkIn.toISOString()})`)
         .eq('status', 'confirmed');
 
-      // Solo excluir si se proporciona un ID válido
-      if (excludeReservationId) {
+      // Solo excluir si se proporciona un ID válido de UUID
+      if (excludeReservationId && excludeReservationId.length === 36 && !excludeReservationId.includes('undefined')) {
         confirmedQuery = confirmedQuery.neq('id', excludeReservationId);
       }
 
       const { data: confirmedReservations, error: reservationsError } = await confirmedQuery;
 
       if (reservationsError) {
+        console.error('❌ [UnifiedAvailability] Error en reservas confirmadas:', reservationsError);
         throw new Error(`Error verificando reservas: ${reservationsError.message}`);
       }
 
-      // 3. Obtener reservas pendientes recientes (últimos 15 minutos)
+      console.log(`📊 [UnifiedAvailability] Reservas confirmadas: ${confirmedReservations?.length || 0}`);
+
+      // 3. Verificar reservas pendientes recientes (últimos 15 minutos)
       const fifteenMinutesAgo = new Date(Date.now() - 15 * 60 * 1000).toISOString();
       
       let pendingQuery = supabase
         .from('reservations')
-        .select('unit_id, check_in, check_out, status, created_at')
+        .select('unit_id, check_in, check_out, status, created_at, id')
         .in('unit_id', allUnits.map(u => u.id))
         .or(`and(check_in.lt.${checkOut.toISOString()},check_out.gt.${checkIn.toISOString()})`)
         .eq('status', 'pending')
         .gte('created_at', fifteenMinutesAgo);
 
-      // Solo excluir si se proporciona un ID válido
-      if (excludeReservationId) {
+      // Solo excluir si se proporciona un ID válido de UUID
+      if (excludeReservationId && excludeReservationId.length === 36 && !excludeReservationId.includes('undefined')) {
         pendingQuery = pendingQuery.neq('id', excludeReservationId);
       }
 
       const { data: pendingReservations, error: pendingError } = await pendingQuery;
 
       if (pendingError) {
+        console.error('❌ [UnifiedAvailability] Error en reservas pendientes:', pendingError);
         throw new Error(`Error verificando reservas pendientes: ${pendingError.message}`);
       }
 
+      console.log(`📊 [UnifiedAvailability] Reservas pendientes recientes: ${pendingReservations?.length || 0}`);
+
       // 4. Obtener unidades bloqueadas temporalmente
       const temporaryLockedUnits = temporaryLockManager.getLockedUnits(checkIn, checkOut);
+      console.log(`📊 [UnifiedAvailability] Unidades bloqueadas temporalmente: ${temporaryLockedUnits.length}`);
 
       // 5. Consolidar todas las unidades ocupadas
       const reservedUnitIds = new Set<string>();
       
       // Agregar reservas confirmadas
       confirmedReservations?.forEach(r => {
-        if (r.unit_id) reservedUnitIds.add(String(r.unit_id));
+        if (r.unit_id) {
+          reservedUnitIds.add(String(r.unit_id));
+          console.log(`🔒 [UnifiedAvailability] Unidad reservada (confirmada): ${r.unit_id}`);
+        }
       });
       
       // Agregar reservas pendientes recientes
       pendingReservations?.forEach(r => {
-        if (r.unit_id) reservedUnitIds.add(String(r.unit_id));
+        if (r.unit_id) {
+          reservedUnitIds.add(String(r.unit_id));
+          console.log(`🔒 [UnifiedAvailability] Unidad reservada (pendiente): ${r.unit_id}`);
+        }
       });
       
       // Agregar bloqueos temporales
       temporaryLockedUnits.forEach(unitId => {
         reservedUnitIds.add(String(unitId));
+        console.log(`🔒 [UnifiedAvailability] Unidad bloqueada temporalmente: ${unitId}`);
       });
 
       // 6. Calcular unidades disponibles
       const availableUnitIds = allUnits
-        .map(u => u.id)
-        .filter(id => !reservedUnitIds.has(String(id)));
+        .map(u => String(u.id))
+        .filter(id => !reservedUnitIds.has(id));
 
       const availableUnits = availableUnitIds.length;
       const isAvailable = availableUnits >= requiredUnits;
@@ -127,11 +142,12 @@ export const useUnifiedAvailabilityChecker = () => {
         lockedUnits: temporaryLockedUnits
       };
 
-      console.log('✅ [UnifiedAvailability] Resultado:', {
+      console.log('✅ [UnifiedAvailability] Resultado final:', {
         ...result,
         reservedByConfirmed: confirmedReservations?.length || 0,
         reservedByPending: pendingReservations?.length || 0,
-        temporaryLocked: temporaryLockedUnits.length
+        temporaryLocked: temporaryLockedUnits.length,
+        totalReserved: reservedUnitIds.size
       });
 
       return result;
@@ -161,6 +177,13 @@ export const useUnifiedAvailabilityChecker = () => {
     sessionId?: string
   ): Promise<{ success: boolean; reservedUnits?: string[]; sessionId?: string; error?: string }> => {
     
+    console.log('🔍 [UnifiedAvailability] Iniciando reserveWithLock:', {
+      checkIn: checkIn.toISOString().split('T')[0],
+      checkOut: checkOut.toISOString().split('T')[0],
+      requiredUnits,
+      sessionId
+    });
+
     // 1. Verificar disponibilidad
     const availability = await checkAvailability(checkIn, checkOut, requiredUnits);
     
@@ -174,6 +197,8 @@ export const useUnifiedAvailabilityChecker = () => {
     // 2. Seleccionar las mejores unidades disponibles
     const unitsToReserve = availability.availableUnitIds.slice(0, requiredUnits);
     
+    console.log('🔍 [UnifiedAvailability] Unidades seleccionadas para reserva:', unitsToReserve);
+
     // 3. Intentar adquirir bloqueo temporal
     const lockResult = await temporaryLockManager.acquireLock(
       unitsToReserve,
@@ -189,6 +214,8 @@ export const useUnifiedAvailabilityChecker = () => {
         error: lockResult.error
       };
     }
+
+    console.log('✅ [UnifiedAvailability] Bloqueo temporal exitoso');
 
     return {
       success: true,
