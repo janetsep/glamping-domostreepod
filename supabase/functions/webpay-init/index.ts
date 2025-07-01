@@ -32,6 +32,17 @@ function getWebPayConfig(): WebPayConfig {
   }
 }
 
+function generateValidBuyOrder(reservationId: string): string {
+  // WebPay requiere buy_order alfanumérico, máximo 26 caracteres
+  // Usar timestamp + parte del reservationId para asegurar unicidad
+  const timestamp = Date.now().toString();
+  const reservationPart = reservationId.replace(/[^a-zA-Z0-9]/g, '').substring(0, 8);
+  const buyOrder = `${timestamp.substring(-10)}${reservationPart}`.substring(0, 26);
+  
+  console.log(`🔧 [webpay-init] Buy order generado: ${buyOrder} (longitud: ${buyOrder.length})`);
+  return buyOrder;
+}
+
 serve(async (req) => {
   // Handle CORS preflight requests
   if (req.method === 'OPTIONS') {
@@ -85,12 +96,11 @@ serve(async (req) => {
     }
 
     const config = getWebPayConfig();
-    const buyOrder = `RES-${reservationId}-${Date.now()}`;
+    const buyOrder = generateValidBuyOrder(reservationId);
     const sessionId = `SES-${Date.now()}-${Math.random().toString(36).substring(2, 8)}`;
     
     // URLs de retorno
     const returnUrl = `${origin}/webpay/return`;
-    const finalUrl = `${origin}/webpay/confirm`;
 
     // Preparar datos para WebPay
     const webpayData = {
@@ -100,7 +110,10 @@ serve(async (req) => {
       return_url: returnUrl
     };
 
-    console.log(`📤 [webpay-init] Enviando datos a WebPay:`, webpayData);
+    console.log(`📤 [webpay-init] Enviando datos a WebPay:`, {
+      ...webpayData,
+      buy_order_length: buyOrder.length
+    });
 
     // Llamar a WebPay
     const response = await fetch(config.apiUrl, {
@@ -125,12 +138,6 @@ serve(async (req) => {
     // Verificar que la respuesta tenga los campos necesarios
     if (!webpayResponse.url || !webpayResponse.token) {
       throw new Error('Respuesta inválida de WebPay: faltan url o token');
-    }
-
-    // Guardar información en la reserva si es necesario
-    if (client_info) {
-      console.log(`💾 [webpay-init] Guardando información del cliente para reserva ${reservationId}`);
-      // Aquí podrías guardar la información del cliente si es necesario
     }
 
     // Respuesta exitosa
