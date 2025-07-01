@@ -1,49 +1,52 @@
 
-import { useState, useEffect } from "react";
-import { checkGeneralAvailability } from "@/hooks/reservations/utils/availabilityChecker/checkGeneralAvailability";
+import { useState, useEffect } from 'react';
+import { useUnifiedAvailabilityChecker } from '@/hooks/reservations/useUnifiedAvailabilityChecker';
 
+/**
+ * Hook optimizado para verificar disponibilidad de fechas
+ * Se ejecuta automáticamente cuando cambian las fechas
+ */
 export const useDateAvailability = (startDate?: Date, endDate?: Date) => {
   const [availableDomos, setAvailableDomos] = useState<number | undefined>(undefined);
   const [isLoadingAvailability, setIsLoadingAvailability] = useState(false);
+  const { checkAvailability } = useUnifiedAvailabilityChecker();
 
   useEffect(() => {
-    if (!startDate || !endDate) {
-      setAvailableDomos(undefined);
-      setIsLoadingAvailability(false);
-      return;
-    }
+    const checkDatesAvailability = async () => {
+      if (!startDate || !endDate) {
+        setAvailableDomos(undefined);
+        return;
+      }
 
-    const check = async () => {
       setIsLoadingAvailability(true);
+      
       try {
-        console.log('🔍 [useDateAvailability] Verificando disponibilidad para rango:', {
-          inicio: startDate.toISOString().split('T')[0],
-          fin: endDate.toISOString().split('T')[0],
+        console.log('🔍 [useDateAvailability] Verificando disponibilidad para fechas:', {
+          startDate: startDate.toISOString(),
+          endDate: endDate.toISOString()
         });
 
-        // Verificamos con un requisito de 1 para obtener la disponibilidad mínima general en el rango.
-        const result = await checkGeneralAvailability(startDate, endDate, 1);
+        const result = await checkAvailability(startDate, endDate, 1);
         
-        console.log('✅ [useDateAvailability] Resultado de checkGeneralAvailability:', {
-          unidadesDisponibles: result.availableUnits,
+        console.log('✅ [useDateAvailability] Resultado:', {
+          availableUnits: result.availableUnits,
+          totalUnits: result.totalUnits
         });
 
         setAvailableDomos(result.availableUnits);
-
       } catch (error) {
-        console.error('❌ [useDateAvailability] Error calculando disponibilidad:', error);
+        console.error('❌ [useDateAvailability] Error:', error);
         setAvailableDomos(0);
       } finally {
         setIsLoadingAvailability(false);
       }
     };
 
-    check();
-  }, [startDate, endDate]);
+    checkDatesAvailability();
+  }, [startDate, endDate, checkAvailability]);
 
   return {
     availableDomos,
-    isLoadingAvailability,
+    isLoadingAvailability
   };
 };
-

@@ -1,229 +1,231 @@
 
-import { supabase } from '@/lib/supabase';
-
 interface TemporaryLock {
   unitIds: string[];
-  sessionId: string;
   checkIn: Date;
   checkOut: Date;
+  sessionId: string;
   expiresAt: Date;
-  guests: number;
+  requiredUnits: number;
 }
 
-// Cache en memoria para bloqueos temporales
-const temporaryLocks = new Map<string, TemporaryLock>();
-const LOCK_DURATION_MINUTES = 15;
+/**
+ * Sistema de bloqueo temporal para unidades durante el proceso de reserva
+ * Optimizado para producción con limpieza automática
+ */
+class TemporaryLockManager {
+  private locks: Map<string, TemporaryLock> = new Map();
+  private readonly LOCK_DURATION = 10 * 60 * 1000; // 10 minutos
+  private cleanupInterval: NodeJS.Timeout | null = null;
 
-export class TemporaryLockManager {
-  private static instance: TemporaryLockManager;
-  private cleanupInterval: NodeJS.Timeout;
+  constructor() {
+    this.startCleanupInterval();
+  }
 
-  private constructor() {
+  private startCleanupInterval() {
     // Limpiar bloqueos expirados cada 2 minutos
     this.cleanupInterval = setInterval(() => {
       this.cleanupExpiredLocks();
     }, 2 * 60 * 1000);
   }
 
-  public static getInstance(): TemporaryLockManager {
-    if (!TemporaryLockManager.instance) {
-      TemporaryLockManager.instance = new TemporaryLockManager();
+  private cleanupExpiredLocks() {
+    const now = new Date();
+    const expiredKeys: string[] = [];
+
+    this.locks.forEach((lock, key) => {
+      if (now > lock.expiresAt) {
+        expiredKeys.push(key);
+      }
+    });
+
+    expiredKeys.forEach(key => {
+      console.log(`🧹 [TemporaryLock] Limpiando bloqueo expirado: ${key}`);
+      this.locks.delete(key);
+    });
+
+    if (expiredKeys.length > 0) {
+      console.log(`✅ [TemporaryLock] Limpiados ${expiredKeys.length} bloqueos expirados`);
     }
-    return TemporaryLockManager.instance;
   }
 
-  /**
-   * Intenta adquirir un bloqueo temporal para las unidades especificadas
-   */
-  public async acquireLock(
+  async acquireLock(
     unitIds: string[],
     checkIn: Date,
     checkOut: Date,
-    guests: number,
-    sessionId: string = this.generateSessionId()
-  ): Promise<{ success: boolean; lockedUnits?: string[]; error?: string }> {
+    requiredUnits: number,
+    sessionId?: string
+  ): Promise<{ success: boolean; sessionId?: string; error?: string }> {
     
-    console.log('🔒 [TemporaryLock] Intentando adquirir bloqueo:', {
-      unitIds,
-      checkIn: checkIn.toISOString(),
-      checkOut: checkOut.toISOString(),
-      guests,
-      sessionId
-    });
+    // Limpiar bloqueos expirados antes de verificar
+    this.cleanupExpiredLocks();
 
-    // Verificar si las unidades están disponibles (sin bloqueos existentes)
-    const conflictingLocks = this.findConflictingLocks(unitIds, checkIn, checkOut, sessionId);
+    const lockSessionId = sessionId || `lock-${Date.now()}-${Math.random().toString(36).substring(2, 9)}`;
+    
+    // Verificar si alguna unidad ya está bloqueada
+    const conflictingLocks = this.getConflictingLocks(unitIds, checkIn, checkOut, lockSessionId);
     
     if (conflictingLocks.length > 0) {
       return {
         success: false,
-        error: `Las unidades ${conflictingLocks.join(', ')} están siendo procesadas por otro usuario. Intenta nuevamente en unos minutos.`
+        error: `Unidades ${conflictingLocks.join(', ')} ya están bloqueadas temporalmente`
       };
     }
 
     // Crear el bloqueo
-    const lockKey = this.generateLockKey(unitIds, checkIn, checkOut);
-    const expiresAt = new Date(Date.now() + LOCK_DURATION_MINUTES * 60 * 1000);
-    
     const lock: TemporaryLock = {
-      unitIds,
-      sessionId,
-      checkIn,
-      checkOut,
-      expiresAt,
-      guests
+      unitIds: [...unitIds],
+      checkIn: new Date(checkIn),
+      checkOut: new Date(checkOut),
+      sessionId: lockSessionId,
+      expiresAt: new Date(Date.now() + this.LOCK_DURATION),
+      requiredUnits
     };
 
-    temporaryLocks.set(lockKey, lock);
+    this.locks.set(lockSessionId, lock);
 
-    console.log('✅ [TemporaryLock] Bloqueo adquirido exitosamente:', lockKey);
-    
+    console.log(`🔒 [TemporaryLock] Bloqueo adquirido para sesión ${lockSessionId}:`, {
+      unitIds,
+      checkIn: checkIn.toISOString(),
+      checkOut: checkOut.toISOString(),
+      expiresAt: lock.expiresAt.toISOString()
+    });
+
     return {
       success: true,
-      lockedUnits: unitIds
+      sessionId: lockSessionId
     };
   }
 
-  /**
-   * Libera un bloqueo temporal específico
-   */
-  public releaseLock(
+  private getConflictingLocks(
+    unitIds: string[],
+    checkIn: Date,
+    checkOut: Date,
+    excludeSessionId?: string
+  ): string[] {
+    const conflicts: string[] = [];
+
+    this.locks.forEach((lock, sessionId) => {
+      if (sessionId === excludeSessionId) return;
+
+      // Verificar si hay solapamiento de fechas
+      const datesOverlap = checkIn < lock.checkOut && checkOut > lock.checkIn;
+      
+      if (datesOverlap) {
+        // Verificar si hay unidades en común
+        const commonUnits = unitIds.filter(unitId => 
+          lock.unitIds.includes(unitId)
+        );
+        
+        if (commonUnits.length > 0) {
+          conflicts.push(...commonUnits);
+        }
+      }
+    });
+
+    return [...new Set(conflicts)]; // Eliminar duplicados
+  }
+
+  releaseLock(
     unitIds: string[],
     checkIn: Date,
     checkOut: Date,
     sessionId: string
   ): void {
-    const lockKey = this.generateLockKey(unitIds, checkIn, checkOut);
-    const lock = temporaryLocks.get(lockKey);
+    const lock = this.locks.get(sessionId);
     
-    if (lock && lock.sessionId === sessionId) {
-      temporaryLocks.delete(lockKey);
-      console.log('🔓 [TemporaryLock] Bloqueo liberado:', lockKey);
+    if (lock) {
+      this.locks.delete(sessionId);
+      console.log(`🔓 [TemporaryLock] Bloqueo liberado para sesión ${sessionId}`);
+    } else {
+      console.log(`⚠️ [TemporaryLock] Intento de liberar bloqueo inexistente: ${sessionId}`);
     }
   }
 
-  /**
-   * Extiende la duración de un bloqueo existente
-   */
-  public extendLock(
-    unitIds: string[],
-    checkIn: Date,
-    checkOut: Date,
-    sessionId: string
-  ): boolean {
-    const lockKey = this.generateLockKey(unitIds, checkIn, checkOut);
-    const lock = temporaryLocks.get(lockKey);
+  extendLock(sessionId: string, additionalMinutes: number = 10): boolean {
+    const lock = this.locks.get(sessionId);
     
-    if (lock && lock.sessionId === sessionId) {
-      lock.expiresAt = new Date(Date.now() + LOCK_DURATION_MINUTES * 60 * 1000);
-      console.log('⏰ [TemporaryLock] Bloqueo extendido:', lockKey);
-      return true;
+    if (!lock) {
+      console.log(`⚠️ [TemporaryLock] Intento de extender bloqueo inexistente: ${sessionId}`);
+      return false;
     }
+
+    lock.expiresAt = new Date(lock.expiresAt.getTime() + additionalMinutes * 60 * 1000);
     
-    return false;
+    console.log(`⏰ [TemporaryLock] Bloqueo extendido para sesión ${sessionId}:`, {
+      newExpiresAt: lock.expiresAt.toISOString()
+    });
+    
+    return true;
   }
 
-  /**
-   * Obtiene todas las unidades bloqueadas para un rango de fechas
-   */
-  public getLockedUnits(checkIn: Date, checkOut: Date): string[] {
-    const now = new Date();
+  getLockedUnits(checkIn: Date, checkOut: Date): string[] {
+    this.cleanupExpiredLocks();
+    
     const lockedUnits: string[] = [];
-    
-    for (const [key, lock] of temporaryLocks.entries()) {
-      // Verificar si el bloqueo no ha expirado
-      if (lock.expiresAt > now) {
-        // Verificar si hay solapamiento de fechas
-        if (this.datesOverlap(lock.checkIn, lock.checkOut, checkIn, checkOut)) {
-          lockedUnits.push(...lock.unitIds);
-        }
+
+    this.locks.forEach((lock) => {
+      // Verificar si hay solapamiento de fechas
+      const datesOverlap = checkIn < lock.checkOut && checkOut > lock.checkIn;
+      
+      if (datesOverlap) {
+        lockedUnits.push(...lock.unitIds);
       }
-    }
-    
+    });
+
     return [...new Set(lockedUnits)]; // Eliminar duplicados
   }
 
-  /**
-   * Encuentra bloqueos que conflictan con las unidades especificadas
-   */
-  private findConflictingLocks(
-    unitIds: string[],
-    checkIn: Date,
-    checkOut: Date,
-    excludeSessionId: string
-  ): string[] {
-    const now = new Date();
-    const conflicts: string[] = [];
+  getCurrentLocks(): Array<{ sessionId: string; lock: TemporaryLock }> {
+    this.cleanupExpiredLocks();
     
-    for (const [key, lock] of temporaryLocks.entries()) {
-      // Saltar si es el mismo session
-      if (lock.sessionId === excludeSessionId) continue;
+    return Array.from(this.locks.entries()).map(([sessionId, lock]) => ({
+      sessionId,
+      lock
+    }));
+  }
+
+  // Método para limpiar todos los bloqueos (útil para pruebas)
+  clearAllLocks(): void {
+    this.locks.clear();
+    console.log('🧹 [TemporaryLock] Todos los bloqueos han sido limpiados');
+  }
+
+  // Método para obtener estadísticas
+  getStats(): {
+    totalLocks: number;
+    lockedUnits: number;
+    oldestLock?: Date;
+    newestLock?: Date;
+  } {
+    this.cleanupExpiredLocks();
+    
+    const locks = Array.from(this.locks.values());
+    const allUnitIds = locks.flatMap(lock => lock.unitIds);
+    const uniqueUnits = new Set(allUnitIds);
+    
+    let oldestLock: Date | undefined;
+    let newestLock: Date | undefined;
+    
+    locks.forEach(lock => {
+      const createdAt = new Date(lock.expiresAt.getTime() - this.LOCK_DURATION);
       
-      // Saltar si el bloqueo ha expirado
-      if (lock.expiresAt <= now) continue;
+      if (!oldestLock || createdAt < oldestLock) {
+        oldestLock = createdAt;
+      }
       
-      // Verificar solapamiento de fechas
-      if (this.datesOverlap(lock.checkIn, lock.checkOut, checkIn, checkOut)) {
-        // Verificar si alguna unidad está en conflicto
-        const conflictingUnits = unitIds.filter(id => lock.unitIds.includes(id));
-        conflicts.push(...conflictingUnits);
+      if (!newestLock || createdAt > newestLock) {
+        newestLock = createdAt;
       }
-    }
-    
-    return [...new Set(conflicts)];
-  }
+    });
 
-  /**
-   * Verifica si dos rangos de fechas se solapan
-   */
-  private datesOverlap(start1: Date, end1: Date, start2: Date, end2: Date): boolean {
-    return start1 < end2 && end1 > start2;
-  }
-
-  /**
-   * Limpia bloqueos expirados
-   */
-  private cleanupExpiredLocks(): void {
-    const now = new Date();
-    let cleanedCount = 0;
-    
-    for (const [key, lock] of temporaryLocks.entries()) {
-      if (lock.expiresAt <= now) {
-        temporaryLocks.delete(key);
-        cleanedCount++;
-      }
-    }
-    
-    if (cleanedCount > 0) {
-      console.log(`🧹 [TemporaryLock] Limpiados ${cleanedCount} bloqueos expirados`);
-    }
-  }
-
-  /**
-   * Genera una clave única para el bloqueo
-   */
-  private generateLockKey(unitIds: string[], checkIn: Date, checkOut: Date): string {
-    const sortedIds = [...unitIds].sort().join('-');
-    const checkInStr = checkIn.toISOString().split('T')[0];
-    const checkOutStr = checkOut.toISOString().split('T')[0];
-    return `${sortedIds}-${checkInStr}-${checkOutStr}`;
-  }
-
-  /**
-   * Genera un ID de sesión único
-   */
-  private generateSessionId(): string {
-    return `session-${Date.now()}-${Math.random().toString(36).substring(2, 9)}`;
-  }
-
-  /**
-   * Limpia todos los recursos
-   */
-  public cleanup(): void {
-    clearInterval(this.cleanupInterval);
-    temporaryLocks.clear();
+    return {
+      totalLocks: locks.length,
+      lockedUnits: uniqueUnits.size,
+      oldestLock,
+      newestLock
+    };
   }
 }
 
-// Exportar instancia singleton
-export const temporaryLockManager = TemporaryLockManager.getInstance();
+// Instancia singleton para uso global
+export const temporaryLockManager = new TemporaryLockManager();

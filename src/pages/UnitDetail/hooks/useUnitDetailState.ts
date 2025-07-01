@@ -19,12 +19,10 @@ export const useUnitDetailState = (unitId?: string) => {
   const [startDate, setStartDate] = useState<Date | undefined>();
   const [endDate, setEndDate] = useState<Date | undefined>();
 
-  // --- REFACTORED DATA FLOW ---
-
-  // 1. Get number of available domos for the selected date range.
+  // Verificación optimizada de disponibilidad
   const { availableDomos, isLoadingAvailability } = useDateAvailability(startDate, endDate);
 
-  // 2. Manage guests, now with knowledge of `availableDomos`.
+  // Gestión de huéspedes con conocimiento de disponibilidad
   const {
     guests,
     adults,
@@ -34,12 +32,12 @@ export const useUnitDetailState = (unitId?: string) => {
     setChildren
   } = useGuestManagement(availableDomos);
     
-  // 3. Derive required domos and availability status from the single sources of truth.
+  // Cálculo de domos requeridos y estado de disponibilidad
   const requiredDomos = useMemo(() => Math.max(1, Math.ceil(guests / 4)), [guests]);
 
   const isAvailable = useMemo(() => {
     if (isLoadingAvailability || availableDomos === undefined) {
-      return null; // While loading, availability is undetermined.
+      return null;
     }
     return availableDomos >= requiredDomos;
   }, [availableDomos, requiredDomos, isLoadingAvailability]);
@@ -51,10 +49,7 @@ export const useUnitDetailState = (unitId?: string) => {
     return availableDomos > 0 && availableDomos < requiredDomos;
   }, [availableDomos, requiredDomos, isLoadingAvailability]);
   
-  // Placeholder for alternative dates. The logic to find them should be triggered here if needed.
   const [alternativeDates] = useState<{ startDate: Date, endDate: Date }[]>([]);
-
-  // --- END REFACTORED DATA FLOW ---
 
   const {
     showQuote,
@@ -87,7 +82,7 @@ export const useUnitDetailState = (unitId?: string) => {
     getCurrentStep: baseGetCurrentStep
   } = useReservationState();
 
-  // Crear el objeto state para las acciones
+  // Estado para las acciones de reserva
   const stateForActions = {
     startDate,
     endDate,
@@ -95,7 +90,7 @@ export const useUnitDetailState = (unitId?: string) => {
     displayUnit,
     quote,
     requiredDomos,
-    availableDomos, // Pass this down for verifications
+    availableDomos,
     activitiesTotal,
     packagesTotal,
     selectedActivities,
@@ -106,12 +101,12 @@ export const useUnitDetailState = (unitId?: string) => {
   // Usar las acciones de reserva
   const { handleConfirmReservation } = useReservationActions(stateForActions);
 
-  // Wrapper para generateQuote que pase los parámetros correctos
+  // Wrapper para generateQuote
   const generateQuote = () => {
     baseGenerateQuote(displayUnit, startDate, endDate, guests, requiredDomos);
   };
 
-  // Wrapper para getCurrentStep que pase showQuote
+  // Wrapper para getCurrentStep
   const getCurrentStep = () => {
     return baseGetCurrentStep(showQuote);
   };

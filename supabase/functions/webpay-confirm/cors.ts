@@ -1,22 +1,24 @@
 
-// Gestión de CORS para la función webpay-confirm
-
 export const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
+  'Access-Control-Allow-Methods': 'POST, OPTIONS',
+  'Access-Control-Max-Age': '86400',
 };
 
-// Maneja las solicitudes de preflight OPTIONS
 export function handleCorsOptions() {
-  return new Response(null, { 
-    headers: corsHeaders 
+  return new Response(null, {
+    status: 200,
+    headers: corsHeaders
   });
 }
 
-// Añade las cabeceras CORS a cualquier respuesta
-export function createResponse(body: any, status: number = 200) {
-  return new Response(JSON.stringify(body), { 
+export function createResponse(data: any, status: number = 200) {
+  return new Response(JSON.stringify(data), {
     status,
-    headers: { ...corsHeaders, 'Content-Type': 'application/json' } 
+    headers: {
+      'Content-Type': 'application/json',
+      ...corsHeaders
+    }
   });
 }

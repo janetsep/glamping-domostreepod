@@ -1,5 +1,4 @@
 
-// Punto de entrada para la función webpay-confirm - simplificado
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { corsHeaders, handleCorsOptions, createResponse } from "./cors.ts";
 import { processWebPayConfirmation } from "./processors.ts";

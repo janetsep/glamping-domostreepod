@@ -15,7 +15,7 @@ interface AvailabilityResult {
 
 /**
  * Hook unificado para verificación de disponibilidad
- * Reemplaza todas las implementaciones fragmentadas
+ * Sistema optimizado para producción
  */
 export const useUnifiedAvailabilityChecker = () => {
   const [isChecking, setIsChecking] = useState(false);
@@ -180,7 +180,7 @@ export const useUnifiedAvailabilityChecker = () => {
     return {
       success: true,
       reservedUnits: unitsToReserve,
-      sessionId: sessionId || 'generated-by-lock-manager'
+      sessionId: lockResult.sessionId || sessionId || 'generated-by-lock-manager'
     };
   }, [checkAvailability]);
 
