@@ -30,7 +30,8 @@ export const useDateAvailability = (startDate?: Date, endDate?: Date) => {
         
         console.log('✅ [useDateAvailability] Resultado:', {
           availableUnits: result.availableUnits,
-          totalUnits: result.totalUnits
+          totalUnits: result.totalUnits,
+          isAvailable: result.isAvailable
         });
 
         setAvailableDomos(result.availableUnits);

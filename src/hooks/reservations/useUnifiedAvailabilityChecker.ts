@@ -32,7 +32,8 @@ export const useUnifiedAvailabilityChecker = () => {
       console.log('🔍 [UnifiedAvailability] Verificando disponibilidad:', {
         checkIn: checkIn.toISOString().split('T')[0],
         checkOut: checkOut.toISOString().split('T')[0],
-        requiredUnits
+        requiredUnits,
+        excludeReservationId
       });
 
       // 1. Obtener todas las unidades del sistema
@@ -47,14 +48,20 @@ export const useUnifiedAvailabilityChecker = () => {
 
       const totalUnits = allUnits.length;
 
-      // 2. Obtener reservas confirmadas que se solapan
-      const { data: confirmedReservations, error: reservationsError } = await supabase
+      // 2. Construir la consulta de reservas confirmadas
+      let confirmedQuery = supabase
         .from('reservations')
         .select('unit_id, check_in, check_out, status, id')
         .in('unit_id', allUnits.map(u => u.id))
         .or(`and(check_in.lt.${checkOut.toISOString()},check_out.gt.${checkIn.toISOString()})`)
-        .eq('status', 'confirmed')
-        .neq('id', excludeReservationId || 'none');
+        .eq('status', 'confirmed');
+
+      // Solo excluir si se proporciona un ID válido
+      if (excludeReservationId) {
+        confirmedQuery = confirmedQuery.neq('id', excludeReservationId);
+      }
+
+      const { data: confirmedReservations, error: reservationsError } = await confirmedQuery;
 
       if (reservationsError) {
         throw new Error(`Error verificando reservas: ${reservationsError.message}`);
@@ -63,14 +70,20 @@ export const useUnifiedAvailabilityChecker = () => {
       // 3. Obtener reservas pendientes recientes (últimos 15 minutos)
       const fifteenMinutesAgo = new Date(Date.now() - 15 * 60 * 1000).toISOString();
       
-      const { data: pendingReservations, error: pendingError } = await supabase
+      let pendingQuery = supabase
         .from('reservations')
         .select('unit_id, check_in, check_out, status, created_at')
         .in('unit_id', allUnits.map(u => u.id))
         .or(`and(check_in.lt.${checkOut.toISOString()},check_out.gt.${checkIn.toISOString()})`)
         .eq('status', 'pending')
-        .gte('created_at', fifteenMinutesAgo)
-        .neq('id', excludeReservationId || 'none');
+        .gte('created_at', fifteenMinutesAgo);
+
+      // Solo excluir si se proporciona un ID válido
+      if (excludeReservationId) {
+        pendingQuery = pendingQuery.neq('id', excludeReservationId);
+      }
+
+      const { data: pendingReservations, error: pendingError } = await pendingQuery;
 
       if (pendingError) {
         throw new Error(`Error verificando reservas pendientes: ${pendingError.message}`);

@@ -41,7 +41,7 @@ export const useGuestManagement = (availableDomos?: number) => {
   const handleGuestsChange = (newGuests: number) => {
     console.log('🔍 [useGuestManagement] Cambiando huéspedes:', { current: guests, new: newGuests });
     
-    // Verificar límite de capacidad
+    // Verificar límite de capacidad solo si hay disponibilidad conocida
     if (availableDomos !== undefined && availableDomos > 0) {
       const maxCapacity = availableDomos * 4;
       if (newGuests > maxCapacity) {
