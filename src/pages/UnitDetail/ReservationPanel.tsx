@@ -79,12 +79,14 @@ export const ReservationPanel = ({
   getCurrentStep,
   isReservationConfirmed = false
 }: ReservationPanelProps) => {
-  // Efecto para depurar cambios en las fechas
+  // Debug effect only in development
   useEffect(() => {
-    console.log('🔍 [ReservationPanel] Fechas actualizadas:', {
-      startDate: startDate?.toISOString(),
-      endDate: endDate?.toISOString()
-    });
+    if (process.env.NODE_ENV === 'development') {
+      console.log('🔍 [ReservationPanel] Fechas actualizadas:', {
+        startDate: startDate?.toISOString(),
+        endDate: endDate?.toISOString()
+      });
+    }
   }, [startDate, endDate]);
 
   const handleCalendarDateSelect = (date: Date) => {

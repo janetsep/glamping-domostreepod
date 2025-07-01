@@ -28,19 +28,25 @@ export const useDateAvailability = (startDate?: Date, endDate?: Date) => {
       setIsLoadingAvailability(true);
       
       try {
+      // Log only in development
+      if (process.env.NODE_ENV === 'development') {
         console.log('🔍 [useDateAvailability] Verificando disponibilidad para fechas:', {
           startDate: startDate.toISOString().split('T')[0],
           endDate: endDate.toISOString().split('T')[0]
         });
+      }
 
         const result = await checkAvailability(startDate, endDate, 1);
         
-        console.log('✅ [useDateAvailability] Resultado:', {
-          availableUnits: result.availableUnits,
-          totalUnits: result.totalUnits,
-          isAvailable: result.isAvailable,
-          error: result.error
-        });
+        // Log results only in development
+        if (process.env.NODE_ENV === 'development') {
+          console.log('✅ [useDateAvailability] Resultado:', {
+            availableUnits: result.availableUnits,
+            totalUnits: result.totalUnits,
+            isAvailable: result.isAvailable,
+            error: result.error
+          });
+        }
 
         if (result.error) {
           console.error('❌ [useDateAvailability] Error en verificación:', result.error);

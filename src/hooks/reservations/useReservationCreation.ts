@@ -66,7 +66,9 @@ export const useReservationCreation = ({
       );
 
       if (unitsToReserve.length < finalRequiredDomos) {
-        throw new Error(`Solo hay ${unitsToReserve.length} domos disponibles, se necesitan ${finalRequiredDomos}`);
+        const errorMessage = `Solo hay ${unitsToReserve.length} domos disponibles, se necesitan ${finalRequiredDomos}`;
+        onError?.(new Error(errorMessage));
+        return Promise.reject(new Error(errorMessage));
       }
 
       // Crear reservas usando transacción

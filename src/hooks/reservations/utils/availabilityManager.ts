@@ -299,4 +299,7 @@ export class AvailabilityManager {
     availabilityCache.clear();
     temporaryLocks.clear();
   }
-} 
+}
+
+// Instancia singleton para exportar
+export const availabilityManager = AvailabilityManager.getInstance();

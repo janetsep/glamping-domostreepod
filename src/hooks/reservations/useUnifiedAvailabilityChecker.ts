@@ -29,12 +29,15 @@ export const useUnifiedAvailabilityChecker = () => {
     setIsChecking(true);
     
     try {
-      console.log('🔍 [UnifiedAvailability] Verificando disponibilidad:', {
-        checkIn: checkIn.toISOString().split('T')[0],
-        checkOut: checkOut.toISOString().split('T')[0],
-        requiredUnits,
-        excludeReservationId
-      });
+      // Debug logs in development only
+      if (process.env.NODE_ENV === 'development') {
+        console.log('🔍 [UnifiedAvailability] Verificando disponibilidad:', {
+          checkIn: checkIn.toISOString().split('T')[0],
+          checkOut: checkOut.toISOString().split('T')[0],
+          requiredUnits,
+          excludeReservationId
+        });
+      }
 
       // 1. Obtener todas las unidades del sistema
       const { data: allUnits, error: unitsError } = await supabase
@@ -43,11 +46,18 @@ export const useUnifiedAvailabilityChecker = () => {
         .order('id', { ascending: true });
 
       if (unitsError || !allUnits) {
-        throw new Error(`Error obteniendo unidades: ${unitsError?.message}`);
+        console.error('❌ [UnifiedAvailability] Error obteniendo unidades:', unitsError);
+        return {
+          isAvailable: false,
+          availableUnits: 0,
+          totalUnits: 0,
+          availableUnitIds: [],
+          requiredUnits,
+          error: `Error obteniendo unidades: ${unitsError?.message || 'Error desconocido'}`
+        };
       }
 
       const totalUnits = allUnits.length;
-      console.log(`📊 [UnifiedAvailability] Total unidades: ${totalUnits}`);
 
       // 2. Verificar reservas confirmadas que se solapan
       let confirmedQuery = supabase
@@ -66,10 +76,17 @@ export const useUnifiedAvailabilityChecker = () => {
 
       if (reservationsError) {
         console.error('❌ [UnifiedAvailability] Error en reservas confirmadas:', reservationsError);
-        throw new Error(`Error verificando reservas: ${reservationsError.message}`);
+        return {
+          isAvailable: false,
+          availableUnits: 0,
+          totalUnits: 0,
+          availableUnitIds: [],
+          requiredUnits,
+          error: `Error verificando reservas: ${reservationsError.message}`
+        };
       }
 
-      console.log(`📊 [UnifiedAvailability] Reservas confirmadas: ${confirmedReservations?.length || 0}`);
+      // Log only in development
 
       // 3. Verificar reservas pendientes recientes (últimos 15 minutos)
       const fifteenMinutesAgo = new Date(Date.now() - 15 * 60 * 1000).toISOString();
@@ -91,14 +108,20 @@ export const useUnifiedAvailabilityChecker = () => {
 
       if (pendingError) {
         console.error('❌ [UnifiedAvailability] Error en reservas pendientes:', pendingError);
-        throw new Error(`Error verificando reservas pendientes: ${pendingError.message}`);
+        return {
+          isAvailable: false,
+          availableUnits: 0,
+          totalUnits: 0,
+          availableUnitIds: [],
+          requiredUnits,
+          error: `Error verificando reservas pendientes: ${pendingError.message}`
+        };
       }
 
-      console.log(`📊 [UnifiedAvailability] Reservas pendientes recientes: ${pendingReservations?.length || 0}`);
+      // Log only in development
 
       // 4. Obtener unidades bloqueadas temporalmente
       const temporaryLockedUnits = temporaryLockManager.getLockedUnits(checkIn, checkOut);
-      console.log(`📊 [UnifiedAvailability] Unidades bloqueadas temporalmente: ${temporaryLockedUnits.length}`);
 
       // 5. Consolidar todas las unidades ocupadas
       const reservedUnitIds = new Set<string>();
@@ -107,7 +130,6 @@ export const useUnifiedAvailabilityChecker = () => {
       confirmedReservations?.forEach(r => {
         if (r.unit_id) {
           reservedUnitIds.add(String(r.unit_id));
-          console.log(`🔒 [UnifiedAvailability] Unidad reservada (confirmada): ${r.unit_id}`);
         }
       });
       
@@ -115,14 +137,12 @@ export const useUnifiedAvailabilityChecker = () => {
       pendingReservations?.forEach(r => {
         if (r.unit_id) {
           reservedUnitIds.add(String(r.unit_id));
-          console.log(`🔒 [UnifiedAvailability] Unidad reservada (pendiente): ${r.unit_id}`);
         }
       });
       
       // Agregar bloqueos temporales
       temporaryLockedUnits.forEach(unitId => {
         reservedUnitIds.add(String(unitId));
-        console.log(`🔒 [UnifiedAvailability] Unidad bloqueada temporalmente: ${unitId}`);
       });
 
       // 6. Calcular unidades disponibles
@@ -142,13 +162,16 @@ export const useUnifiedAvailabilityChecker = () => {
         lockedUnits: temporaryLockedUnits
       };
 
-      console.log('✅ [UnifiedAvailability] Resultado final:', {
-        ...result,
-        reservedByConfirmed: confirmedReservations?.length || 0,
-        reservedByPending: pendingReservations?.length || 0,
-        temporaryLocked: temporaryLockedUnits.length,
-        totalReserved: reservedUnitIds.size
-      });
+      // Log results only in development
+      if (process.env.NODE_ENV === 'development') {
+        console.log('✅ [UnifiedAvailability] Resultado final:', {
+          ...result,
+          reservedByConfirmed: confirmedReservations?.length || 0,
+          reservedByPending: pendingReservations?.length || 0,
+          temporaryLocked: temporaryLockedUnits.length,
+          totalReserved: reservedUnitIds.size
+        });
+      }
 
       return result;
 
@@ -177,12 +200,15 @@ export const useUnifiedAvailabilityChecker = () => {
     sessionId?: string
   ): Promise<{ success: boolean; reservedUnits?: string[]; sessionId?: string; error?: string }> => {
     
-    console.log('🔍 [UnifiedAvailability] Iniciando reserveWithLock:', {
-      checkIn: checkIn.toISOString().split('T')[0],
-      checkOut: checkOut.toISOString().split('T')[0],
-      requiredUnits,
-      sessionId
-    });
+    // Log only in development
+    if (process.env.NODE_ENV === 'development') {
+      console.log('🔍 [UnifiedAvailability] Iniciando reserveWithLock:', {
+        checkIn: checkIn.toISOString().split('T')[0],
+        checkOut: checkOut.toISOString().split('T')[0],
+        requiredUnits,
+        sessionId
+      });
+    }
 
     // 1. Verificar disponibilidad
     const availability = await checkAvailability(checkIn, checkOut, requiredUnits);
@@ -197,7 +223,10 @@ export const useUnifiedAvailabilityChecker = () => {
     // 2. Seleccionar las mejores unidades disponibles
     const unitsToReserve = availability.availableUnitIds.slice(0, requiredUnits);
     
-    console.log('🔍 [UnifiedAvailability] Unidades seleccionadas para reserva:', unitsToReserve);
+    // Log only in development
+    if (process.env.NODE_ENV === 'development') {
+      console.log('🔍 [UnifiedAvailability] Unidades seleccionadas para reserva:', unitsToReserve);
+    }
 
     // 3. Intentar adquirir bloqueo temporal
     const lockResult = await temporaryLockManager.acquireLock(
@@ -215,7 +244,10 @@ export const useUnifiedAvailabilityChecker = () => {
       };
     }
 
-    console.log('✅ [UnifiedAvailability] Bloqueo temporal exitoso');
+    // Success logging only in development
+    if (process.env.NODE_ENV === 'development') {
+      console.log('✅ [UnifiedAvailability] Bloqueo temporal exitoso');
+    }
 
     return {
       success: true,

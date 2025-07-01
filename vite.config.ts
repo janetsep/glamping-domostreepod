@@ -21,9 +21,17 @@ export default defineConfig(({ mode }) => ({
     },
   },
   build: {
+    target: 'esnext',
+    minify: 'terser',
+    sourcemap: false,
     rollupOptions: {
-      // Asegurar que los módulos externos se resuelvan correctamente
-      external: []
+      output: {
+        manualChunks: {
+          vendor: ['react', 'react-dom'],
+          supabase: ['@supabase/supabase-js'],
+          ui: ['@radix-ui/react-dialog', '@radix-ui/react-popover']
+        }
+      }
     }
   },
 }));
