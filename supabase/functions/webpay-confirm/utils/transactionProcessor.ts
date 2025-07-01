@@ -1,5 +1,5 @@
 
-// Main transaction processing logic
+// Main transaction processing logic - simplificado y robusto
 import { WebPayResponse, TransactionResult } from "../types.ts";
 import { getWebPayConfig, confirmWebPayTransaction } from "../transbank.ts";
 import { findReservation } from "./reservationFinder.ts";
@@ -11,98 +11,95 @@ export async function processTransaction(
   reservationId?: string,
   clientInfo?: { name?: string; email?: string; phone?: string }
 ): Promise<TransactionResult> {
+  console.log(`🔄 [processTransaction] Iniciando procesamiento con token: ${token}`);
+  
   try {
-    // Confirmar transacción con WebPay
+    // 1. Confirmar transacción con WebPay
+    console.log('🔄 [processTransaction] Confirmando con WebPay...');
     const webpayConfig = getWebPayConfig();
     const responseData = await confirmWebPayTransaction(token, webpayConfig);
     
-    console.log(`Respuesta de confirmación de WebPay: ${JSON.stringify(responseData)}`);
+    console.log(`✅ [processTransaction] WebPay confirmado. Código: ${responseData.response_code}`);
     
-    let foundReservationId = reservationId || null;
-    let reservationData = {};
-    
-    // Solo actualizar reserva en Supabase si no es una unidad de paquete
-    if (!isPackageUnit) {
-      // Obtener credenciales de Supabase
-      const supabaseUrl = Deno.env.get("SUPABASE_URL") || "";
-      const supabaseKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") || "";
-      
-      if (!supabaseUrl || !supabaseKey) {
-        console.error("Variables de entorno SUPABASE_URL o SUPABASE_SERVICE_ROLE_KEY no definidas");
-        throw new Error("Error de configuración del servidor");
-      }
-      
-      // Buscar la reserva usando diferentes métodos
-      foundReservationId = await findReservation(supabaseUrl, supabaseKey, token, responseData, reservationId);
-      
-      // Si encontramos una reserva, actualizarla y obtener sus datos
-      if (foundReservationId) {
-        await updateReservationWithPaymentResult(
-          supabaseUrl, 
-          supabaseKey, 
-          foundReservationId, 
-          responseData, 
-          clientInfo
-        );
-        
-        // Verificar el estado final y obtener datos adicionales de la reserva
-        const reservationInfo = await verifyFinalReservationState(supabaseUrl, supabaseKey, foundReservationId);
-        
-        if (reservationInfo) {
-          console.log("Información completa de la reserva:", reservationInfo);
-          
-          // Obtener datos adicionales de la reserva para incluirlos en la respuesta
-          try {
-            const reservationResponse = await fetch(`${supabaseUrl}/rest/v1/reservations?id=eq.${foundReservationId}&select=*`, {
-              headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${supabaseKey}`,
-                'apikey': supabaseKey
-              }
-            });
-            
-            if (reservationResponse.ok) {
-              const reservations = await reservationResponse.json();
-              if (reservations.length > 0) {
-                const fullReservationData = reservations[0];
-                console.log("Datos completos de la reserva:", fullReservationData);
-                
-                // Extraer datos para la respuesta
-                reservationData = {
-                  unit_name: fullReservationData.unit_id,
-                  check_in: fullReservationData.check_in,
-                  check_out: fullReservationData.check_out,
-                  guests: fullReservationData.guests,
-                  pets: fullReservationData.pets,
-                  pets_price: fullReservationData.pets_price,
-                  selected_activities: fullReservationData.selected_activities,
-                  selected_packages: fullReservationData.selected_packages,
-                  activities_total: 0, // Calcular si es necesario
-                  packages_total: 0, // Calcular si es necesario
-                  reservation_code: fullReservationData.reservation_code
-                };
-              }
-            }
-          } catch (dataError) {
-            console.error("Error al obtener datos adicionales de la reserva:", dataError);
-          }
-        }
-      }
-    } else {
-      console.log("Reserva de paquete temporal, no se busca en la base de datos");
-      // Para reservas de paquete, usamos un ID fijo o generado en la respuesta
-      foundReservationId = reservationId || "package-reservation";
+    // 2. Si es unidad de paquete, devolver resultado inmediatamente
+    if (isPackageUnit) {
+      console.log('📦 [processTransaction] Unidad de paquete, no se actualiza base de datos');
+      return {
+        ...responseData,
+        reservation_id: reservationId || "package-reservation",
+        is_package_unit: true,
+        reservation_data: {}
+      };
     }
     
-    // Añadir el ID de la reserva y los datos a la respuesta para facilitar la redirección
+    // 3. Solo procesar reservas en Supabase si el pago fue exitoso
+    if (responseData.response_code !== 0) {
+      console.log(`⚠️ [processTransaction] Pago no exitoso: ${responseData.response_code}`);
+      return {
+        ...responseData,
+        reservation_id: reservationId,
+        is_package_unit: false,
+        reservation_data: {}
+      };
+    }
+    
+    // 4. Obtener credenciales de Supabase
+    const supabaseUrl = Deno.env.get("SUPABASE_URL");
+    const supabaseKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY");
+    
+    if (!supabaseUrl || !supabaseKey) {
+      throw new Error("Configuración de Supabase no disponible");
+    }
+    
+    // 5. Buscar la reserva
+    const foundReservationId = await findReservation(
+      supabaseUrl, 
+      supabaseKey, 
+      token, 
+      responseData, 
+      reservationId
+    );
+    
+    if (!foundReservationId) {
+      console.log('⚠️ [processTransaction] No se encontró reserva, pero pago exitoso');
+      return {
+        ...responseData,
+        reservation_id: null,
+        is_package_unit: false,
+        reservation_data: {}
+      };
+    }
+    
+    // 6. Actualizar reserva(s)
+    await updateReservationWithPaymentResult(
+      supabaseUrl,
+      supabaseKey,
+      foundReservationId,
+      responseData,
+      clientInfo
+    );
+    
+    // 7. Verificar estado final
+    const verificationResult = await verifyFinalReservationState(
+      supabaseUrl,
+      supabaseKey,
+      foundReservationId
+    );
+    
+    console.log(`✅ [processTransaction] Procesamiento completo: reserva ${foundReservationId}`);
+    
     return {
       ...responseData,
       reservation_id: foundReservationId,
-      is_package_unit: !!isPackageUnit,
-      reservation_data: reservationData
+      is_package_unit: false,
+      reservation_data: {
+        total_reservations: verificationResult.totalReservations,
+        all_confirmed: verificationResult.allConfirmed
+      }
     };
+    
   } catch (error) {
-    console.error(`Error en processTransaction: ${error.message || 'Error desconocido'}`);
+    console.error(`❌ [processTransaction] Error:`, error);
     throw error;
   }
 }

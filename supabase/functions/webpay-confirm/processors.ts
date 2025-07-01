@@ -1,5 +1,5 @@
 
-// Lógica principal de procesamiento para webpay-confirm
+// Lógica principal de procesamiento para webpay-confirm - simplificada
 import { TransactionResult } from "./types.ts";
 import { processTransaction } from "./utils/transactionProcessor.ts";
 
@@ -10,17 +10,14 @@ export async function processWebPayConfirmation(
   reservationId?: string,
   clientInfo?: {name?: string; email?: string; phone?: string}
 ): Promise<TransactionResult> {
+  console.log(`🔄 [processWebPayConfirmation] Token: ${token}, Package: ${isPackageUnit}, ID: ${reservationId}`);
+  
   try {
-    console.log(`Procesando confirmación de WebPay con token: ${token}`);
-    console.log(`ID de reserva proporcionado: ${reservationId || 'No proporcionado'}`);
-    console.log(`Información de cliente:`, clientInfo || 'No proporcionada');
-    
-    // Procesar la transacción y actualizar la información del cliente si corresponde
     const result = await processTransaction(token, isPackageUnit, reservationId, clientInfo);
-    
+    console.log(`✅ [processWebPayConfirmation] Procesamiento exitoso`);
     return result;
   } catch (error) {
-    console.error(`Error en processWebPayConfirmation: ${error.message || 'Error desconocido'}`);
+    console.error(`❌ [processWebPayConfirmation] Error: ${error.message}`);
     throw error;
   }
 }
