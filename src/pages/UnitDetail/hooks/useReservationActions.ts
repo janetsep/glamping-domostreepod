@@ -3,18 +3,19 @@ import { useCallback } from "react";
 import { toast } from "sonner";
 import { useReservationCreation } from "@/hooks/reservations/useReservationCreation";
 import { usePayment } from "@/hooks/reservations/usePayment";
+import { useAvailabilityManager } from "@/hooks/reservations/useAvailabilityManager";
 
 export const useReservationActions = (state: any) => {
   const { redirectToWebpay } = usePayment({
     setIsLoading: state.setIsProcessingPayment
   });
 
+  const { checkRealTimeAvailability } = useAvailabilityManager();
+
   const { createReservation } = useReservationCreation({
     onSuccess: (data) => {
       console.log('✅ [useReservationActions] Reserva creada exitosamente:', data);
-      console.log('🔄 [useReservationActions] Iniciando redirección a WebPay...');
       
-      // Redirigir a WebPay inmediatamente después de crear la reserva
       try {
         redirectToWebpay(data.reservationId, data.amount, false, state.displayUnit?.id || '');
         console.log('✅ [useReservationActions] Redirección a WebPay iniciada');
@@ -36,40 +37,43 @@ export const useReservationActions = (state: any) => {
   });
 
   const handleConfirmReservation = useCallback(async () => {
-    console.log('🔍 [useReservationActions] handleConfirmReservation - Iniciando reserva múltiple');
+    console.log('🔍 [useReservationActions] Iniciando confirmación de reserva');
     
     if (!state.startDate || !state.endDate || !state.displayUnit) {
       toast.error("Datos incompletos para crear la reserva");
       return;
     }
 
-    // Verificar disponibilidad antes de proceder
-    if (state.availableDomos !== undefined && state.requiredDomos > state.availableDomos) {
-      toast.error(`No hay suficientes domos disponibles. Se necesitan ${state.requiredDomos} domos, pero solo hay ${state.availableDomos} disponibles.`);
-      return;
-    }
-
     try {
       state.setIsProcessingPayment(true);
 
-      // Calcular el precio total incluyendo extras
+      // Verificar disponibilidad en tiempo real antes de proceder
+      const availability = await checkRealTimeAvailability(
+        state.startDate,
+        state.endDate,
+        state.requiredDomos
+      );
+
+      if (!availability.isAvailable) {
+        throw new Error(
+          `No hay suficientes domos disponibles. Se necesitan ${state.requiredDomos}, solo hay ${availability.availableUnits} disponibles.`
+        );
+      }
+
+      // Calcular precio total
       const baseTotal = state.quote?.totalPrice || 0;
       const finalTotal = baseTotal + state.activitiesTotal + state.packagesTotal;
 
-      console.log('🔍 [useReservationActions] Creando reserva múltiple con datos:', {
+      console.log('🔍 [useReservationActions] Creando reserva con verificación:', {
         requiredDomos: state.requiredDomos,
-        availableDomos: state.availableDomos,
-        checkIn: state.startDate.toISOString(),
-        checkOut: state.endDate.toISOString(),
-        guests: state.guests,
-        finalTotal
+        availableUnits: availability.availableUnits,
+        finalTotal,
+        availableUnitIds: availability.availableUnitIds
       });
 
-      // CAMBIO IMPORTANTE: En lugar de pasar solo displayUnit.id, 
-      // pasamos un array vacío para que el sistema seleccione automáticamente
-      // las unidades disponibles según requiredDomos
+      // Crear reserva con unidades verificadas
       await createReservation(
-        [], // Array vacío para que el sistema seleccione automáticamente
+        [], // Array vacío - el sistema usará availableUnitIds
         state.startDate,
         state.endDate,
         state.guests,
@@ -77,14 +81,15 @@ export const useReservationActions = (state: any) => {
         'webpay',
         state.selectedActivities.map(a => a.id),
         state.selectedPackages.map(p => p.id),
-        state.requiredDomos, // Pasar el número correcto de domos requeridos
-        undefined, // No pre-especificar unidades disponibles
+        state.requiredDomos,
+        availability.availableUnitIds, // Pasar unidades verificadas
         {
           name: localStorage.getItem('client_name') || '',
           email: localStorage.getItem('client_email') || '',
           phone: localStorage.getItem('client_phone') || ''
         }
       );
+
     } catch (error) {
       console.error('❌ [useReservationActions] Error en handleConfirmReservation:', error);
       state.setIsProcessingPayment(false);
@@ -92,7 +97,7 @@ export const useReservationActions = (state: any) => {
         description: error instanceof Error ? error.message : "Error desconocido"
       });
     }
-  }, [state, createReservation]);
+  }, [state, createReservation, checkRealTimeAvailability]);
 
   return {
     handleConfirmReservation

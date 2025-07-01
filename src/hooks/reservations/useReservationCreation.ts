@@ -1,15 +1,8 @@
-import { useState, useCallback } from 'react';
-import { packageData } from '@/components/packages/packageData';
-import { supabase } from '@/lib/supabase';
-import { isPackageUnit } from './utils/packageUnitChecker';
-import { calculateActivitiesTotal, calculatePackagesTotal, calculateFinalTotal } from './utils/priceCalculator';
-import { createReservationEntry, createTemporaryReservation } from './utils/supabaseUtils';
-import { toast } from '@/components/ui/use-toast';
-import { AvailabilityManager } from './utils/availabilityManager';
-import { useToast } from '@/components/ui/use-toast';
 
-const SUPABASE_URL = 'https://gtxjfmvnzrsuaxryffnt.supabase.co';
-const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imd0eGpmbXZuenJzdWF4cnlmZm50Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDA1MTg5ODIsImV4cCI6MjA1NjA5NDk4Mn0.WwPCyeZX42Jp4A4lW0jl7arXt0lzwRwm18-Ay_D4Ci8';
+import { useState, useCallback } from 'react';
+import { supabase } from '@/lib/supabase';
+import { toast } from '@/components/ui/use-toast';
+import { useToast } from '@/components/ui/use-toast';
 
 interface ClientInfo {
   name?: string;
@@ -57,72 +50,28 @@ export const useReservationCreation = ({
         checkOut: checkOut.toISOString(),
         guests,
         totalPrice,
-        requiredDomos,
-        availableUnitIds
+        requiredDomos
       });
 
-      // Calcular el número correcto de domos necesarios
-      const calculatedRequiredDomos = Math.ceil(guests / 4);
-      const finalRequiredDomos = requiredDomos || Math.max(calculatedRequiredDomos, 1);
+      // Calcular domos necesarios
+      const finalRequiredDomos = requiredDomos || Math.max(Math.ceil(guests / 4), 1);
 
-      // NUEVO: Siempre vamos a buscar los domos disponibles si los param vienen vacíos o no alcanzan
-      let unitsToCreate: string[];
+      // Verificar y obtener unidades disponibles
+      const unitsToReserve = await getAvailableUnits(
+        unitIds,
+        checkIn,
+        checkOut,
+        finalRequiredDomos,
+        availableUnitIds
+      );
 
-      // Si llega disponible la lista de unidades válidas y es suficiente, usarla.
-      if (availableUnitIds && availableUnitIds.length >= finalRequiredDomos) {
-        unitsToCreate = availableUnitIds.slice(0, finalRequiredDomos);
-        console.log('✅ [useReservationCreation] Usando unidades pre-verificadas:', unitsToCreate);
-      } else if (Array.isArray(unitIds) && unitIds.length >= finalRequiredDomos) {
-        unitsToCreate = unitIds.slice(0, finalRequiredDomos);
-        console.log('✅ [useReservationCreation] Usando unitIds (array):', unitsToCreate);
-      } else {
-        // Buscar unidades disponibles en base de datos
-        console.log('🔍 [useReservationCreation] Buscando Unidades Disponibles desde base de datos...');
-        // Consultar glamping_units y reservas existentes
-        const { data: allUnits, error: unitsError } = await supabase
-          .from('glamping_units')
-          .select('id')
-          .order('id', { ascending: true });
-
-        if (unitsError || !allUnits || allUnits.length === 0) {
-          throw new Error('No se encontraron unidades disponibles para reservar');
-        }
-
-        // Verificar contra las reservas traslapadas
-        const fifteenMinutesAgo = new Date(Date.now() - 15 * 60 * 1000).toISOString();
-        const { data: conflictingReservations, error: reservationsError } = await supabase
-          .from('reservations')
-          .select('unit_id')
-          .in('unit_id', allUnits.map(u => u.id))
-          .or(`and(check_in.lt.${checkOut.toISOString()},check_out.gt.${checkIn.toISOString()})`)
-          .or(`status.eq.confirmed,and(status.eq.pending,created_at.gte.${fifteenMinutesAgo})`);
-
-        if (reservationsError) throw new Error('Error al verificar disponibilidad');
-
-        const reservedUnitIds = new Set(
-          conflictingReservations?.filter(r => r.unit_id !== null && r.unit_id !== undefined)
-            .map(r => String(r.unit_id)) || []
-        );
-
-        const availableUnits = allUnits.filter(unit => !reservedUnitIds.has(String(unit.id)));
-
-        if (availableUnits.length < finalRequiredDomos) {
-          throw new Error(`No hay suficientes domos disponibles. Se requieren ${finalRequiredDomos}, hay solo ${availableUnits.length}.`);
-        }
-
-        unitsToCreate = availableUnits.slice(0, finalRequiredDomos).map(unit => unit.id);
-        console.log('✅ [useReservationCreation] Unidades seleccionadas desde base de datos:', unitsToCreate);
+      if (unitsToReserve.length < finalRequiredDomos) {
+        throw new Error(`Solo hay ${unitsToReserve.length} domos disponibles, se necesitan ${finalRequiredDomos}`);
       }
 
-      console.log('✅ [useReservationCreation] Unidades finales para crear reservas:', {
-        unidades: unitsToCreate,
-        totalUnidades: unitsToCreate.length,
-        requiredDomos: finalRequiredDomos
-      });
-
-      // Llamada a crear todas las reservas (1 por domo)
-      const reservation = await createReservationEntry(
-        unitsToCreate,
+      // Crear reservas usando transacción
+      const reservations = await createReservationsTransaction(
+        unitsToReserve.slice(0, finalRequiredDomos),
         checkIn,
         checkOut,
         guests,
@@ -133,33 +82,31 @@ export const useReservationCreation = ({
         clientInfo
       );
 
-      if (reservation && Array.isArray(reservation) && reservation.length > 0) {
-        const primaryReservationId = reservation[0].id;
-        const resultData = {
-          reservationId: primaryReservationId,
-          amount: totalPrice,
-          reservationCode: reservation[0].reservation_code
-        };
+      const resultData = {
+        reservationId: reservations[0].id,
+        amount: totalPrice,
+        reservationCode: reservations[0].reservation_code
+      };
 
-        // Callback onSuccess
-        if (onSuccess) onSuccess(resultData);
+      toast({
+        title: "Reserva iniciada",
+        description: `Tu reserva de ${reservations.length} domo(s) se ha creado exitosamente`
+      });
 
-        toast({
-          title: "Reserva iniciada",
-          description: `Tu reserva de ${reservation.length} domo(s) se ha creado y ahora serás redirigido a Webpay para completar el pago`
-        });
+      onSuccess?.(resultData);
+      return resultData;
 
-        return resultData;
-      } else {
-        throw new Error('Error al obtener ID de reserva después de la creación.');
-      }
     } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : "Error al crear la reserva";
+      console.error('❌ [useReservationCreation] Error:', errorMessage);
+      
       toast({
         title: "Error",
-        description: error instanceof Error ? error.message : "Error al crear la reserva",
+        description: errorMessage,
         variant: "destructive"
       });
-      onError?.(error instanceof Error ? error : new Error('Error desconocido'));
+      
+      onError?.(error instanceof Error ? error : new Error(errorMessage));
       throw error;
     } finally {
       setIsLoading(false);
@@ -171,3 +118,186 @@ export const useReservationCreation = ({
     isLoading
   };
 };
+
+// Función para obtener unidades disponibles de manera segura
+async function getAvailableUnits(
+  unitIds: string | string[],
+  checkIn: Date,
+  checkOut: Date,
+  requiredDomos: number,
+  availableUnitIds?: string[]
+): Promise<string[]> {
+  
+  // Si ya tenemos unidades pre-verificadas y suficientes
+  if (availableUnitIds && availableUnitIds.length >= requiredDomos) {
+    console.log('✅ Usando unidades pre-verificadas:', availableUnitIds.slice(0, requiredDomos));
+    return availableUnitIds.slice(0, requiredDomos);
+  }
+
+  // Si se pasó un array de unitIds específicos
+  if (Array.isArray(unitIds) && unitIds.length >= requiredDomos) {
+    const verified = await verifyUnitsAvailability(unitIds, checkIn, checkOut);
+    if (verified.length >= requiredDomos) {
+      console.log('✅ Usando unitIds verificados:', verified.slice(0, requiredDomos));
+      return verified.slice(0, requiredDomos);
+    }
+  }
+
+  // Buscar unidades disponibles en la base de datos
+  console.log('🔍 Buscando unidades disponibles en la base de datos...');
+  
+  const { data: allUnits, error: unitsError } = await supabase
+    .from('glamping_units')
+    .select('id')
+    .order('id', { ascending: true });
+
+  if (unitsError || !allUnits) {
+    throw new Error('Error al obtener unidades disponibles');
+  }
+
+  const availableUnits = await verifyUnitsAvailability(
+    allUnits.map(u => u.id), 
+    checkIn, 
+    checkOut
+  );
+
+  console.log(`✅ Unidades disponibles encontradas: ${availableUnits.length}`);
+  return availableUnits;
+}
+
+// Función para verificar disponibilidad de unidades específicas
+async function verifyUnitsAvailability(
+  unitIds: string[],
+  checkIn: Date,
+  checkOut: Date
+): Promise<string[]> {
+  
+  const fifteenMinutesAgo = new Date(Date.now() - 15 * 60 * 1000).toISOString();
+  
+  const { data: conflictingReservations, error } = await supabase
+    .from('reservations')
+    .select('unit_id')
+    .in('unit_id', unitIds)
+    .or(`and(check_in.lt.${checkOut.toISOString()},check_out.gt.${checkIn.toISOString()})`)
+    .or(`status.eq.confirmed,and(status.eq.pending,created_at.gte.${fifteenMinutesAgo})`);
+
+  if (error) {
+    throw new Error(`Error verificando disponibilidad: ${error.message}`);
+  }
+
+  const reservedUnitIds = new Set(
+    conflictingReservations?.map(r => String(r.unit_id)) || []
+  );
+
+  return unitIds.filter(unitId => !reservedUnitIds.has(String(unitId)));
+}
+
+// Función para crear reservas usando transacción
+async function createReservationsTransaction(
+  unitIds: string[],
+  checkIn: Date,
+  checkOut: Date,
+  totalGuests: number,
+  totalPrice: number,
+  paymentMethod: string,
+  selectedActivities: string[],
+  selectedPackages: string[],
+  clientInfo?: ClientInfo
+) {
+  // Generar código de reserva único
+  const reservationCode = generateReservationCode();
+  
+  // Distribuir huéspedes y precio entre domos
+  const reservationsData = distributeGuestsAndPrice(
+    unitIds,
+    totalGuests,
+    totalPrice,
+    checkIn,
+    checkOut,
+    paymentMethod,
+    selectedActivities,
+    selectedPackages,
+    reservationCode,
+    clientInfo
+  );
+
+  // Insertar todas las reservas en una transacción
+  const { data, error } = await supabase
+    .from('reservations')
+    .insert(reservationsData)
+    .select();
+
+  if (error) {
+    throw new Error(`Error creando reservas: ${error.message}`);
+  }
+
+  if (!data || data.length === 0) {
+    throw new Error('No se pudieron crear las reservas');
+  }
+
+  console.log(`✅ ${data.length} reservas creadas exitosamente con código: ${reservationCode}`);
+  return data;
+}
+
+// Función para distribuir huéspedes y precio entre domos
+function distributeGuestsAndPrice(
+  unitIds: string[],
+  totalGuests: number,
+  totalPrice: number,
+  checkIn: Date,
+  checkOut: Date,
+  paymentMethod: string,
+  selectedActivities: string[],
+  selectedPackages: string[],
+  reservationCode: string,
+  clientInfo?: ClientInfo
+) {
+  const reservations = [];
+  let remainingGuests = totalGuests;
+  let remainingPrice = totalPrice;
+
+  for (let i = 0; i < unitIds.length; i++) {
+    const isLastUnit = i === unitIds.length - 1;
+    
+    // Distribuir huéspedes
+    const unitGuests = isLastUnit 
+      ? remainingGuests 
+      : Math.min(4, Math.ceil(remainingGuests / (unitIds.length - i)));
+    
+    // Distribuir precio proporcionalmente
+    const unitPrice = isLastUnit 
+      ? remainingPrice 
+      : Math.round((unitGuests / totalGuests) * totalPrice);
+
+    remainingGuests -= unitGuests;
+    remainingPrice -= unitPrice;
+
+    reservations.push({
+      unit_id: unitIds[i],
+      check_in: checkIn.toISOString(),
+      check_out: checkOut.toISOString(),
+      guests: unitGuests,
+      total_price: unitPrice,
+      status: 'pending' as const,
+      payment_method: paymentMethod,
+      selected_activities: selectedActivities,
+      selected_packages: selectedPackages,
+      reservation_code: reservationCode,
+      client_name: clientInfo?.name,
+      client_email: clientInfo?.email,
+      client_phone: clientInfo?.phone,
+      payment_details: {
+        created_at: new Date().toISOString()
+      }
+    });
+  }
+
+  return reservations;
+}
+
+// Función para generar código de reserva único
+function generateReservationCode(): string {
+  const timestamp = Date.now().toString(36);
+  const random = Math.random().toString(36).substring(2, 6);
+  return `${timestamp}${random}`.toUpperCase().substring(0, 8);
+}
