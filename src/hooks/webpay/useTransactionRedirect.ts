@@ -35,8 +35,13 @@ export const useTransactionRedirect = () => {
   };
   
   const redirectToUnitAfterCancel = () => {
-    // For cancellations, redirect to home page hero section
-    navigate('/#hero');
+    // For cancellations, redirect back to the unit detail page
+    const unitId = localStorage.getItem('current_unit_id');
+    if (unitId) {
+      navigate(`/unit/${unitId}`);
+    } else {
+      navigate('/');
+    }
   };
 
   return {
