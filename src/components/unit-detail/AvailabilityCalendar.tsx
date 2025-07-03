@@ -47,17 +47,11 @@ export const AvailabilityCalendar = ({
 
   // Actualizar el estado local cuando cambien las props
   useEffect(() => {
-    console.log('🔍 [AvailabilityCalendar] Props actualizadas:', { 
-      selectedStartDate: selectedStartDate?.toISOString(), 
-      selectedEndDate: selectedEndDate?.toISOString() 
-    });
-
     // Solo actualizar el estado local si las props son diferentes
     if (
       (selectedStartDate?.getTime() !== range.from?.getTime()) ||
       (selectedEndDate?.getTime() !== range.to?.getTime())
     ) {
-      console.log('🔍 [AvailabilityCalendar] Actualizando estado local del rango');
       setRange({
         from: selectedStartDate,
         to: selectedEndDate
@@ -65,25 +59,9 @@ export const AvailabilityCalendar = ({
     }
   }, [selectedStartDate, selectedEndDate]);
 
-  // Efecto para depurar cambios en el estado local
-  useEffect(() => {
-    console.log('🔍 [AvailabilityCalendar] Estado del rango actualizado:', {
-      from: range.from?.toISOString(),
-      to: range.to?.toISOString()
-    });
-  }, [range]);
-
   const { calendarDays, isLoading, isDateAvailable, isDateRangeAvailable } = useCalendarAvailability(unitId, currentMonth, range.from);
 
   const handleDateClick = async (day: AvailabilityCalendarDay) => {
-    console.log('🔍 [AvailabilityCalendar] handleDateClick llamado con:', {
-      date: day.date.toISOString(),
-      isAvailable: day.isAvailable,
-      availableUnits: day.availableUnits,
-      requiredDomos,
-      isToday: isToday(day.date),
-      isBeforeToday: isBefore(day.date, new Date())
-    });
 
     // Solo validar que la fecha esté disponible (al menos 1 domo) y no sea pasada
     if (!day.isAvailable || (day.availableUnits !== undefined && day.availableUnits === 0)) {
@@ -110,12 +88,10 @@ export const AvailabilityCalendar = ({
     // Si estamos seleccionando la fecha de inicio
     if (!range.from || (range.from && range.to)) {
       newRange = { from: day.date, to: undefined };
-      console.log('🔍 [AvailabilityCalendar] Iniciando nuevo rango con fecha:', day.date.toISOString());
     } 
     // Si la fecha seleccionada es anterior a la fecha de inicio
     else if (day.date < range.from) {
       newRange = { from: day.date, to: undefined };
-      console.log('🔍 [AvailabilityCalendar] Reiniciando rango con nueva fecha de inicio:', day.date.toISOString());
     } 
     // Si estamos seleccionando la fecha de fin
     else {
@@ -135,17 +111,12 @@ export const AvailabilityCalendar = ({
       }
       
       newRange = { from: range.from, to: day.date };
-      console.log('🔍 [AvailabilityCalendar] Completando rango con fecha de fin:', day.date.toISOString());
     }
 
     // Actualizar estado local
     setRange(newRange);
 
     // Notificar al componente padre
-    console.log('🔍 [AvailabilityCalendar] Notificando cambio de rango:', {
-      startDate: newRange.from?.toISOString(),
-      endDate: newRange.to?.toISOString()
-    });
     onSelectRange({ 
       startDate: newRange.from, 
       endDate: newRange.to 

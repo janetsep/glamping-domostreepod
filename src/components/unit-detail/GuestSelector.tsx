@@ -35,14 +35,6 @@ export const GuestSelector = ({
   // Calcular domos requeridos según huéspedes seleccionados
   const requiredDomos = Math.ceil(value / 4);
 
-  console.log('🔍 [GuestSelector] Estado actual:', {
-    value,
-    availableDomos,
-    maxAllowedGuests,
-    requiredDomos,
-    adults,
-    children
-  });
 
   const handleAdultsChange = (newAdults: number) => {
     if (newAdults >= 0 && newAdults + children <= maxAllowedGuests) {

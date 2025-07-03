@@ -3,6 +3,7 @@ import { useState, useCallback } from 'react';
 import { supabase } from '@/lib/supabase';
 import { toast } from '@/components/ui/use-toast';
 import { useToast } from '@/components/ui/use-toast';
+import { logger } from '@/utils/logger';
 
 interface ClientInfo {
   name?: string;
@@ -44,7 +45,7 @@ export const useReservationCreation = ({
     setIsLoading(true);
 
     try {
-      console.log('🚀 [useReservationCreation] Iniciando creación de reserva:', {
+      logger.info('Iniciando creación de reserva:', {
         unitIds,
         checkIn: checkIn.toISOString(),
         checkOut: checkOut.toISOString(),
@@ -132,7 +133,7 @@ async function getAvailableUnits(
   
   // Si ya tenemos unidades pre-verificadas y suficientes
   if (availableUnitIds && availableUnitIds.length >= requiredDomos) {
-    console.log('✅ Usando unidades pre-verificadas:', availableUnitIds.slice(0, requiredDomos));
+    logger.info('Usando unidades pre-verificadas:', availableUnitIds.slice(0, requiredDomos));
     return availableUnitIds.slice(0, requiredDomos);
   }
 
@@ -140,13 +141,13 @@ async function getAvailableUnits(
   if (Array.isArray(unitIds) && unitIds.length >= requiredDomos) {
     const verified = await verifyUnitsAvailability(unitIds, checkIn, checkOut);
     if (verified.length >= requiredDomos) {
-      console.log('✅ Usando unitIds verificados:', verified.slice(0, requiredDomos));
+      logger.info('Usando unitIds verificados:', verified.slice(0, requiredDomos));
       return verified.slice(0, requiredDomos);
     }
   }
 
   // Buscar unidades disponibles en la base de datos
-  console.log('🔍 Buscando unidades disponibles en la base de datos...');
+  logger.info('Buscando unidades disponibles en la base de datos...');
   
   const { data: allUnits, error: unitsError } = await supabase
     .from('glamping_units')
@@ -163,7 +164,7 @@ async function getAvailableUnits(
     checkOut
   );
 
-  console.log(`✅ Unidades disponibles encontradas: ${availableUnits.length}`);
+  logger.info(`Unidades disponibles encontradas: ${availableUnits.length}`);
   return availableUnits;
 }
 
@@ -237,7 +238,7 @@ async function createReservationsTransaction(
     throw new Error('No se pudieron crear las reservas');
   }
 
-  console.log(`✅ ${data.length} reservas creadas exitosamente con código: ${reservationCode}`);
+  logger.info(`${data.length} reservas creadas exitosamente con código: ${reservationCode}`);
   return data;
 }
 

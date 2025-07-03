@@ -22,15 +22,6 @@ export const CalendarGrid = ({
   disableNightMode,
   requiredDomos = 1
 }: CalendarGridProps) => {
-  // Solo loggear cuando cambian las fechas seleccionadas
-  useEffect(() => {
-    if (selectedStartDate || selectedEndDate) {
-      console.log('📅 [CalendarGrid] Fechas seleccionadas:', {
-        inicio: selectedStartDate?.toISOString().split('T')[0],
-        fin: selectedEndDate?.toISOString().split('T')[0]
-      });
-    }
-  }, [selectedStartDate, selectedEndDate]);
 
   // Función para obtener clases CSS según disponibilidad
   const getDateClasses = (day: AvailabilityCalendarDay): string => {
@@ -101,18 +92,7 @@ export const CalendarGrid = ({
           e.preventDefault();
           e.stopPropagation();
           if (canClick) {
-            console.log('📅 [CalendarGrid] Click en fecha disponible:', {
-              fecha: day.date.toISOString().split('T')[0],
-              unidadesDisponibles: day.availableUnits
-            });
             onDateClick(day);
-          } else {
-            console.log('📅 [CalendarGrid] Click en fecha no disponible:', {
-              fecha: day.date.toISOString().split('T')[0],
-              disponible: day.isAvailable,
-              esPasado: isPastDate,
-              unidadesDisponibles: day.availableUnits
-            });
           }
         };
 

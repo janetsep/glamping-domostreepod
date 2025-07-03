@@ -35,12 +35,6 @@ const ReservationConfirmed: React.FC<ReservationConfirmedProps> = ({
     return <LoadingState />;
   }
 
-  console.log('🔍 [ReservationConfirmed] Renderizando con:', {
-    totalGuests,
-    requiredDomos,
-    allReservationsCount: allReservations.length,
-    transactionResultId: transactionResult?.reservation_id
-  });
 
   return (
     <div className="space-y-6">

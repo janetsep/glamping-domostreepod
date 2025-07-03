@@ -90,19 +90,13 @@ export const ReservationPanel = ({
   }, [startDate, endDate]);
 
   const handleCalendarDateSelect = (date: Date) => {
-    console.log('🔍 [ReservationPanel] handleCalendarDateSelect llamado con:', date.toISOString());
     setStartDate(date);
     if (endDate && endDate <= date) {
-      console.log('🔍 [ReservationPanel] Reiniciando fecha de fin porque es anterior o igual a la nueva fecha de inicio');
       setEndDate(undefined);
     }
   };
 
   const handleAlternativeDateSelect = (start: Date, end: Date) => {
-    console.log('🔍 [ReservationPanel] handleAlternativeDateSelect llamado con:', {
-      start: start.toISOString(),
-      end: end.toISOString()
-    });
     setStartDate(start);
     setEndDate(end);
   };

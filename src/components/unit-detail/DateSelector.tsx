@@ -36,13 +36,6 @@ export const DateSelector: React.FC<DateSelectorProps> = ({
     requiredDomos
   });
 
-  // Efecto para depurar cambios en las fechas
-  useEffect(() => {
-    console.log('🔍 [DateSelector] Fechas actualizadas:', {
-      startDate: startDate?.toISOString(),
-      endDate: endDate?.toISOString()
-    });
-  }, [startDate, endDate]);
 
   return (
     <div className="space-y-4">
@@ -55,10 +48,7 @@ export const DateSelector: React.FC<DateSelectorProps> = ({
           date={startDate}
           isOpen={startCalendarOpen}
           onOpenChange={setStartCalendarOpen}
-          onSelectDate={(date) => {
-            console.log('🔍 [DateSelector] Selección de fecha de entrada:', date?.toISOString());
-            handleStartDateSelect(date);
-          }}
+          onSelectDate={handleStartDateSelect}
           unitId={unitId}
           requiredDomos={requiredDomos}
         />
@@ -73,10 +63,7 @@ export const DateSelector: React.FC<DateSelectorProps> = ({
           date={endDate}
           isOpen={endCalendarOpen}
           onOpenChange={setEndCalendarOpen}
-          onSelectDate={(date) => {
-            console.log('🔍 [DateSelector] Selección de fecha de salida:', date?.toISOString());
-            handleEndDateSelect(date);
-          }}
+          onSelectDate={handleEndDateSelect}
           unitId={unitId}
           selectedStartDate={startDate}
           initialMonth={endDateCalendarMonth}
