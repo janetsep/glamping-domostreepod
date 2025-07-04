@@ -8,7 +8,7 @@ import ClientInfoSection from '@/components/webpay/ClientInfoSection';
 import ReservationConfirmed from '@/components/webpay/ReservationConfirmed';
 
 const WebPayReturn = () => {
-  const { isLoading, transactionResult, error, resetState } = useTransactionConfirmation();
+  const { isCancelled, isLoading, transactionResult, error, resetState } = useTransactionConfirmation();
   const { sendEmail, isEmailSending, emailSent } = useEmailSender();
   const navigate = useNavigate();
   
@@ -60,6 +60,11 @@ const WebPayReturn = () => {
       navigate('/');
     }
   };
+
+  // If transaction was cancelled, don't render anything (redirect is handled in the hook)
+  if (isCancelled) {
+    return null;
+  }
 
   return (
     <div className="container mx-auto px-4 py-20 flex justify-center">

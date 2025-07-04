@@ -6,15 +6,18 @@ import { useTransactionProcessor } from './useTransactionProcessor';
 export const useTransactionConfirmation = () => {
   const location = useLocation();
   const navigate = useNavigate();
+  
+  // Check if transaction was cancelled (no token)
+  const params = new URLSearchParams(location.search);
+  const token = params.get('token_ws');
+  const isCancelled = !token;
+  
+  // Only use transaction processor if not cancelled
   const { state, processTransaction, resetState } = useTransactionProcessor();
 
   useEffect(() => {
     const handleTransactionConfirmation = async () => {
-      // Extract token_ws from URL query parameters
-      const params = new URLSearchParams(location.search);
-      const token = params.get('token_ws');
-      
-      if (!token) {
+      if (isCancelled) {
         console.log("No se encontró token - transacción cancelada por el usuario");
         // Redirigir inmediatamente al domo cuando no hay token (cancelación)
         const unitId = localStorage.getItem('current_unit_id');
@@ -31,12 +34,13 @@ export const useTransactionConfirmation = () => {
     };
 
     handleTransactionConfirmation();
-  }, [location.search]);
+  }, [location.search, isCancelled, navigate, processTransaction, token]);
 
   return {
-    isLoading: state.isLoading,
-    transactionResult: state.transactionResult,
-    error: state.error,
+    isCancelled,
+    isLoading: isCancelled ? false : state.isLoading,
+    transactionResult: isCancelled ? null : state.transactionResult,
+    error: isCancelled ? null : state.error,
     resetState
   };
 };
