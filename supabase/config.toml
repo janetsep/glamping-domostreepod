@@ -24,5 +24,8 @@ verify_jwt = false
 [functions.webpay-test]
 verify_jwt = false
 
+[functions.simple-test]
+verify_jwt = false
+
 [functions.send-reservation-email]
 verify_jwt = false

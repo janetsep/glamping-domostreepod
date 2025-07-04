@@ -11,17 +11,23 @@ export async function confirmTransaction(token_ws: string): Promise<TransactionR
     const endpoint = getWebPayConfirmEndpoint();
     console.log(`📍 Endpoint: ${endpoint}`);
     
-    // Primero probar conectividad básica
+    // Probar con función simple primero
     try {
-      console.log('🔍 Probando conectividad con Edge Functions...');
-      const testResponse = await fetch(endpoint, {
-        method: 'OPTIONS',
-        headers: { 'Content-Type': 'application/json' }
+      console.log('🔍 Probando función simple...');
+      const simpleTestUrl = `https://gtxjfmvnzrsuaxryffnt.supabase.co/functions/v1/simple-test`;
+      const testResponse = await fetch(simpleTestUrl, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ test: true })
       });
-      console.log(`📊 Test de conectividad: ${testResponse.status}`);
+      console.log(`📊 Test simple: ${testResponse.status}`);
+      if (!testResponse.ok) {
+        const testError = await testResponse.text();
+        throw new Error(`Las Edge Functions no responden correctamente: ${testError}`);
+      }
     } catch (connectError) {
       console.error('❌ Error de conectividad:', connectError);
-      throw new Error('No se puede conectar con el servicio de pagos. Las Edge Functions no están disponibles.');
+      throw new Error('Las Edge Functions no están funcionando. Contacta al administrador del sistema.');
     }
     
     // Hacer la petición principal
