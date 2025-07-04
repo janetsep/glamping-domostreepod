@@ -5,40 +5,13 @@ import { SUPABASE_URL, SUPABASE_ANON_KEY } from '@/lib/constants';
 
 // Service for confirming WebPay transactions
 export async function confirmTransaction(token_ws: string): Promise<TransactionResult> {
-  // First register information for debugging
-  console.log(`Intentando confirmar transacción con token: ${token_ws}`);
+  console.log(`🔄 Confirmando transacción con token: ${token_ws}`);
   
   try {
     const endpoint = getWebPayConfirmEndpoint();
-    console.log(`Endpoint de confirmación: ${endpoint}`);
+    console.log(`📍 Endpoint: ${endpoint}`);
     
-    // Test básico de conectividad con las Edge Functions
-    console.log('🔍 Probando conectividad con Edge Functions...');
-    try {
-      const healthResponse = await fetch(`${SUPABASE_URL}/functions/v1/`, {
-        method: 'GET',
-        headers: createHeaders(),
-      });
-      console.log(`✅ Respuesta de salud de Edge Functions: ${healthResponse.status}`);
-    } catch (healthError) {
-      console.error('❌ No se puede conectar con Edge Functions:', healthError);
-      throw new Error('Las Edge Functions de Supabase no están disponibles. Verifica que estén deployadas correctamente.');
-    }
-
-    // Test específico de la función webpay-confirm
-    console.log('🔍 Probando función webpay-confirm específicamente...');
-    try {
-      const testResponse = await fetch(endpoint, {
-        method: 'OPTIONS',
-        headers: createHeaders(),
-      });
-      console.log(`✅ Test CORS de webpay-confirm: ${testResponse.status}`);
-    } catch (corsError) {
-      console.error('❌ Error en test CORS:', corsError);
-      throw new Error('La función webpay-confirm no está disponible o tiene problemas de CORS.');
-    }
-    
-    // Realizar la confirmación real
+    // Hacer la petición directa sin tests previos que pueden fallar
     const confirmResponse = await fetch(endpoint, {
       method: 'POST',
       headers: {
@@ -53,43 +26,60 @@ export async function confirmTransaction(token_ws: string): Promise<TransactionR
       })
     });
 
-    // Capture full response text for debugging
-    const responseText = await confirmResponse.text();
-    console.log('Respuesta de confirmación (texto completo):', responseText);
+    console.log(`📊 Status: ${confirmResponse.status}`);
     
-    // Try to parse as JSON, but handle non-JSON responses gracefully
+    // Leer la respuesta completa
+    const responseText = await confirmResponse.text();
+    console.log('📝 Respuesta completa:', responseText);
+    
+    // Intentar parsear como JSON
     let responseData;
     try {
       responseData = JSON.parse(responseText);
-    } catch (e) {
-      console.error('Error al parsear la respuesta JSON:', e, 'Texto de respuesta:', responseText);
-      throw new Error(`La función de confirmación devolvió una respuesta inválida: ${responseText.substring(0, 200)}`);
+    } catch (parseError) {
+      console.error('❌ Error parseando JSON:', parseError);
+      
+      // Si la respuesta no es JSON, es probable que las Edge Functions no estén funcionando
+      if (responseText.includes('404') || responseText.includes('Not Found')) {
+        throw new Error('La función de pagos no está disponible. Las Edge Functions no están deployadas correctamente.');
+      } else if (responseText.includes('502') || responseText.includes('Bad Gateway')) {
+        throw new Error('Error temporal del servidor de pagos. Inténtalo de nuevo en unos momentos.');
+      } else {
+        throw new Error(`Respuesta inválida del servidor: ${responseText.substring(0, 100)}`);
+      }
     }
     
-    console.log('Respuesta de confirmación (objeto):', responseData);
+    console.log('✅ Datos parseados:', responseData);
 
     if (!confirmResponse.ok) {
-      const errorMessage = responseData.error || `Error HTTP: ${confirmResponse.status}`;
-      console.error(`Error en respuesta de confirmación: ${errorMessage}`, responseData);
+      const errorMessage = responseData?.error || `Error HTTP ${confirmResponse.status}`;
+      console.error(`❌ Error en confirmación:`, errorMessage);
       
-      if (confirmResponse.status === 404) {
-        throw new Error('La función webpay-confirm no existe o no está deployada correctamente.');
-      } else if (confirmResponse.status >= 500) {
-        throw new Error(`Error interno del servidor de pagos (${confirmResponse.status}). Inténtalo de nuevo en unos momentos.`);
+      // Manejar diferentes tipos de error
+      switch (confirmResponse.status) {
+        case 404:
+          throw new Error('El servicio de confirmación de pagos no está disponible. Contacta al administrador.');
+        case 500:
+          throw new Error('Error interno del servidor de pagos. Inténtalo de nuevo.');
+        case 502:
+        case 503:
+          throw new Error('El servidor de pagos está temporalmente no disponible.');
+        default:
+          throw new Error(errorMessage);
       }
-      
-      throw new Error(errorMessage);
     }
 
     return responseData;
-  } catch (error) {
-    console.error('Error en confirmTransaction:', error);
     
-    // Mejorar el mensaje de error para el usuario
+  } catch (error) {
+    console.error('❌ Error general en confirmTransaction:', error);
+    
+    // Manejar errores de red
     if (error instanceof TypeError && error.message.includes('Failed to fetch')) {
-      throw new Error('No se pudo conectar con el servicio de pagos. Posibles causas:\n• Las Edge Functions no están funcionando\n• Problema de conectividad de red\n• Bloqueo de CORS por el navegador\n\nPor favor, recarga la página e inténtalo de nuevo.');
+      throw new Error('No se pudo conectar con el servidor de pagos. Verifica tu conexión a internet y que las Edge Functions estén funcionando.');
     }
     
+    // Re-lanzar otros errores
     throw error;
   }
 }

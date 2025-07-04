@@ -1,68 +1,107 @@
 
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
-import { corsHeaders, handleCorsOptions, createResponse } from "./cors.ts";
-import { processWebPayConfirmation } from "./processors.ts";
+
+const corsHeaders = {
+  'Access-Control-Allow-Origin': '*',
+  'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
+  'Access-Control-Allow-Methods': 'POST, OPTIONS',
+};
+
+// Configuración WebPay para testing
+const WEBPAY_CONFIG = {
+  apiUrl: "https://webpay3gint.transbank.cl/rswebpaytransaction/api/webpay/v1.2/transactions",
+  commerceCode: "597055555532",
+  apiKey: "579B532A7440BB0C9079DED94D31EA1615BACEB56610332264630D42D0A36B1C"
+};
 
 serve(async (req) => {
-  // Handle CORS preflight requests
+  console.log(`🚀 [webpay-confirm] Nueva petición: ${req.method}`);
+  
+  // Handle CORS preflight
   if (req.method === 'OPTIONS') {
-    return handleCorsOptions();
+    console.log('✅ [webpay-confirm] Respondiendo CORS preflight');
+    return new Response(null, { headers: corsHeaders });
   }
   
+  if (req.method !== 'POST') {
+    console.log(`❌ [webpay-confirm] Método no permitido: ${req.method}`);
+    return new Response(
+      JSON.stringify({ error: 'Solo se permite método POST' }),
+      { 
+        status: 405, 
+        headers: { 'Content-Type': 'application/json', ...corsHeaders } 
+      }
+    );
+  }
+
   try {
-    if (req.method !== 'POST') {
-      return createResponse({ error: 'Solo se permite método POST' }, 405);
-    }
+    // Parsear el body de la petición
+    const body = await req.json();
+    const { token_ws } = body;
     
-    // Parsear solicitud
-    let requestData;
-    try {
-      requestData = await req.json();
-    } catch (e) {
-      console.error("❌ Error parseando JSON:", e);
-      return createResponse({ 
-        error: 'Formato de solicitud inválido',
-        details: e.message
-      }, 400);
-    }
-    
-    const { token_ws, is_package_unit, reservation_id, client_info } = requestData;
+    console.log(`🔄 [webpay-confirm] Procesando token: ${token_ws}`);
     
     if (!token_ws) {
-      console.error("❌ Falta token_ws");
-      return createResponse({ 
-        error: 'Falta el parámetro requerido: token_ws'
-      }, 400);
+      console.log('❌ [webpay-confirm] Falta token_ws');
+      return new Response(
+        JSON.stringify({ error: 'Falta parámetro token_ws' }),
+        { 
+          status: 400, 
+          headers: { 'Content-Type': 'application/json', ...corsHeaders } 
+        }
+      );
     }
+
+    // Confirmar transacción con WebPay
+    console.log('🔄 [webpay-confirm] Confirmando con WebPay...');
+    const webpayResponse = await fetch(`${WEBPAY_CONFIG.apiUrl}/${token_ws}`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+        'Tbk-Api-Key-Id': WEBPAY_CONFIG.commerceCode,
+        'Tbk-Api-Key-Secret': WEBPAY_CONFIG.apiKey
+      }
+    });
+
+    if (!webpayResponse.ok) {
+      const errorText = await webpayResponse.text();
+      console.error(`❌ [webpay-confirm] Error WebPay: ${webpayResponse.status} - ${errorText}`);
+      throw new Error(`Error WebPay: ${webpayResponse.status}`);
+    }
+
+    const webpayData = await webpayResponse.json();
+    console.log(`✅ [webpay-confirm] Respuesta WebPay:`, webpayData);
+
+    // Respuesta exitosa
+    const result = {
+      ...webpayData,
+      reservation_id: body.reservation_id || null,
+      is_package_unit: body.is_package_unit || false
+    };
+
+    console.log(`✅ [webpay-confirm] Procesamiento completado exitosamente`);
     
-    console.log(`✅ [webpay-confirm] Procesando: ${token_ws}`);
-    
-    // Procesar la confirmación
-    const result = await processWebPayConfirmation(
-      token_ws, 
-      !!is_package_unit,
-      reservation_id,
-      client_info
+    return new Response(
+      JSON.stringify(result),
+      { 
+        status: 200, 
+        headers: { 'Content-Type': 'application/json', ...corsHeaders } 
+      }
     );
-    
-    console.log(`✅ [webpay-confirm] Resultado: ${result.response_code === 0 ? 'Exitoso' : 'Fallido'}`);
-    return createResponse(result);
-    
+
   } catch (error) {
-    console.error(`❌ [webpay-confirm] Error general:`, error);
+    console.error(`❌ [webpay-confirm] Error:`, error);
     
-    // Manejo especial para transacciones ya procesadas
-    if (error.message?.includes("Transaction already locked")) {
-      return createResponse({
-        error: "Transacción ya procesada",
-        details: "Esta transacción ya fue confirmada anteriormente",
-        already_processing: true
-      }, 409);
-    }
-    
-    return createResponse({
-      error: 'Error interno del servidor',
-      details: error.message || 'Error desconocido'
-    }, 500);
+    return new Response(
+      JSON.stringify({
+        error: 'Error procesando pago',
+        details: error.message,
+        response_code: -1
+      }),
+      { 
+        status: 500, 
+        headers: { 'Content-Type': 'application/json', ...corsHeaders } 
+      }
+    );
   }
 });
