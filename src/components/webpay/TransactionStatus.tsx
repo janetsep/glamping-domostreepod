@@ -34,7 +34,7 @@ const TransactionStatus: React.FC<TransactionStatusProps> = ({
           console.log('Timeout reached while processing transaction, redirecting to unit page');
           navigate(`/unit/${unitId}`);
         }
-      }, 30000); // 30 second timeout
+      }, 15000); // Reduced from 30 to 15 seconds
       
       return () => clearTimeout(timeout);
     }

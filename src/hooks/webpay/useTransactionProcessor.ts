@@ -33,6 +33,45 @@ export const useTransactionProcessor = () => {
       const data = await confirmTransaction(token);
       console.log('✅ [processTransaction] Transacción confirmada:', JSON.stringify(data, null, 2));
 
+      // Check if transaction was cancelled or failed
+      if (data.response_code !== 0) {
+        console.log('⚠️ [processTransaction] Transacción no exitosa:', data.response_code);
+        
+        // Handle different response codes
+        let errorMessage = `Error en el pago: Código ${data.response_code}`;
+        
+        // Common WebPay response codes
+        switch (data.response_code) {
+          case -1:
+            errorMessage = 'Transacción cancelada por el usuario';
+            break;
+          case -2:
+            errorMessage = 'Transacción fallida';
+            break;
+          case -3:
+            errorMessage = 'Error en el procesamiento';
+            break;
+          case -4:
+            errorMessage = 'Transacción rechazada por el banco';
+            break;
+          case -5:
+            errorMessage = 'Transacción anulada por tiempo de espera';
+            break;
+          default:
+            if (data.response_code < 0) {
+              errorMessage = 'Transacción cancelada o rechazada';
+            }
+        }
+        
+        setState(prev => ({ 
+          ...prev, 
+          isLoading: false, 
+          error: errorMessage,
+          transactionResult: data
+        }));
+        return data;
+      }
+
       // Update reservation status if payment was successful
       if (data.response_code === 0 && data.reservation_id) {
         console.log(`🔄 [processTransaction] Actualizando reserva ${data.reservation_id} a estado confirmed`);

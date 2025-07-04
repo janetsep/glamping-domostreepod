@@ -19,17 +19,18 @@ const WebPayReturn = () => {
     phone: localStorage.getItem('client_phone') || ''
   });
   
-  // Auto-redirect on error or cancellation after a short delay
+  // Auto-redirect on error or cancellation immediately
   useEffect(() => {
     if (error) {
-      const redirectTimer = setTimeout(() => {
-        const unitId = localStorage.getItem('current_unit_id');
-        if (unitId && error.toLowerCase().includes('cancel')) {
+      const unitId = localStorage.getItem('current_unit_id');
+      if (unitId) {
+        // Redirect immediately to the unit page for any error (including cancellations)
+        const redirectTimer = setTimeout(() => {
           navigate(`/unit/${unitId}`);
-        }
-      }, 5000); // 5 second delay
-      
-      return () => clearTimeout(redirectTimer);
+        }, 1000); // Very short delay to allow user to see the error message
+        
+        return () => clearTimeout(redirectTimer);
+      }
     }
   }, [error, navigate]);
   
