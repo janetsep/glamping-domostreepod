@@ -1,10 +1,11 @@
 
 import { useEffect } from 'react';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { useTransactionProcessor } from './useTransactionProcessor';
 
 export const useTransactionConfirmation = () => {
   const location = useLocation();
+  const navigate = useNavigate();
   const { state, processTransaction, resetState } = useTransactionProcessor();
 
   useEffect(() => {
@@ -14,8 +15,14 @@ export const useTransactionConfirmation = () => {
       const token = params.get('token_ws');
       
       if (!token) {
-        console.error("No se encontró el token de la transacción");
-        resetState();
+        console.log("No se encontró token - transacción cancelada por el usuario");
+        // Redirigir inmediatamente al domo cuando no hay token (cancelación)
+        const unitId = localStorage.getItem('current_unit_id');
+        if (unitId) {
+          navigate(`/unit/${unitId}`);
+        } else {
+          navigate('/');
+        }
         return;
       }
       
