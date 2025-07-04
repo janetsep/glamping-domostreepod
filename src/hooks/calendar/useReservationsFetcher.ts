@@ -45,11 +45,15 @@ export const useReservationsFetcher = (currentMonth: Date) => {
       
       // Connection successful
       
+      // Obtener tanto reservas confirmadas como pendientes recientes (últimos 15 minutos)
+      // Esto debe ser consistente con checkGeneralAvailability
+      const fifteenMinutesAgo = new Date(Date.now() - 15 * 60 * 1000).toISOString();
+      
       const { data, error: supabaseError } = await supabase
         .from('reservations')
         .select('*')
-        .eq('status', 'confirmed') // Solo obtener reservas confirmadas
-        .or(`check_in.lte.${extendedEnd.toISOString()},check_out.gte.${extendedStart.toISOString()}`);
+        .or(`check_in.lte.${extendedEnd.toISOString()},check_out.gte.${extendedStart.toISOString()}`)
+        .or(`status.eq.confirmed,and(status.eq.pending,created_at.gte.${fifteenMinutesAgo})`);
       
       if (supabaseError) {
         console.error("❌ [useReservationsFetcher] Error obteniendo reservas:", supabaseError);

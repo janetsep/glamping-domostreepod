@@ -10,6 +10,7 @@ interface Reservation {
   check_out: string;
   unit_id: string | null;
   status: string;
+  created_at: string;
 }
 
 export const useAvailabilityCalculator = () => {
@@ -37,10 +38,17 @@ export const useAvailabilityCalculator = () => {
         const dayStart = startOfDay(currentDate);
         const dayEnd = endOfDay(currentDate);
 
-        // ¡OJO! Contamos por cada domo ocupado esa noche
-        // Solo reservas confirmadas y que efectivamente cruzan la noche de currentDate
+        // Contar reservas que ocupan esta noche específica
+        // Incluir tanto confirmadas como pendientes recientes (consistente con checkGeneralAvailability)
         const overlappingReservations = reservations.filter(res => {
-          if (res.status !== 'confirmed' || !res.unit_id) return false;
+          if (!res.unit_id) return false;
+          
+          // Incluir reservas confirmadas o pendientes recientes
+          const isRelevantStatus = res.status === 'confirmed' || 
+            (res.status === 'pending' && new Date(res.created_at) > new Date(Date.now() - 15 * 60 * 1000));
+          
+          if (!isRelevantStatus) return false;
+          
           // La reserva bloquea currentDate si entra antes o igual, y sale después (checkout mayor a start)
           const checkIn = new Date(res.check_in);
           const checkOut = new Date(res.check_out);
