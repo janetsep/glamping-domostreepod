@@ -22,12 +22,22 @@ const WebPayReturn = () => {
   // Auto-redirect on error or cancellation immediately
   useEffect(() => {
     if (error) {
+      console.log('🔄 [WebPayReturn] Error detectado, programando redirección:', error);
       const unitId = localStorage.getItem('current_unit_id');
       if (unitId) {
         // Redirect immediately to the unit page for any error (including cancellations)
         const redirectTimer = setTimeout(() => {
+          console.log('🔄 [WebPayReturn] Redirigiendo por error a:', `/unit/${unitId}`);
           navigate(`/unit/${unitId}`);
-        }, 1000); // Very short delay to allow user to see the error message
+        }, 2000); // Slightly longer delay to allow user to see the error message
+        
+        return () => clearTimeout(redirectTimer);
+      } else {
+        // Fallback redirect to home
+        const redirectTimer = setTimeout(() => {
+          console.log('🔄 [WebPayReturn] Redirigiendo por error a home');
+          navigate('/');
+        }, 2000);
         
         return () => clearTimeout(redirectTimer);
       }

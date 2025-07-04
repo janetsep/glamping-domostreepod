@@ -9,9 +9,15 @@ export async function confirmTransaction(token_ws: string): Promise<TransactionR
   console.log(`Intentando confirmar transacción con token: ${token_ws}`);
   
   try {
-    const confirmResponse = await fetch(getWebPayConfirmEndpoint(), {
+    const endpoint = getWebPayConfirmEndpoint();
+    console.log(`Endpoint de confirmación: ${endpoint}`);
+    
+    const confirmResponse = await fetch(endpoint, {
       method: 'POST',
-      headers: createHeaders(),
+      headers: {
+        ...createHeaders(),
+        'Cache-Control': 'no-cache'
+      },
       body: JSON.stringify({ token_ws })
     });
 
