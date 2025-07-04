@@ -32,7 +32,7 @@ export const useTransactionProcessor = () => {
       console.log('🔄 [processTransaction] Confirmando transacción con WebPay...');
       
       const timeoutPromise = new Promise((_, reject) => 
-        setTimeout(() => reject(new Error('Timeout: La confirmación tardó demasiado')), 30000)
+        setTimeout(() => reject(new Error('Timeout: La confirmación tardó demasiado')), 15000)
       );
 
       const data = await Promise.race([
@@ -101,9 +101,8 @@ export const useTransactionProcessor = () => {
         isLoading: false, 
         error: errorMessage
       }));
-      toast.error('Error en la transacción', {
-        description: errorMessage
-      });
+      // Remove toast to prevent infinite loops
+      console.error('Error en la transacción:', errorMessage);
       throw error;
     }
   };

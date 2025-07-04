@@ -30,11 +30,13 @@ export const useTransactionConfirmation = () => {
       }
       
       // Process the transaction without redirection
-      await processTransaction(token);
+      if (token) {
+        await processTransaction(token);
+      }
     };
 
     handleTransactionConfirmation();
-  }, [location.search, isCancelled, navigate, processTransaction, token]);
+  }, [location.search, isCancelled, navigate]);
 
   return {
     isCancelled,
