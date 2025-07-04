@@ -11,7 +11,20 @@ export async function confirmTransaction(token_ws: string): Promise<TransactionR
     const endpoint = getWebPayConfirmEndpoint();
     console.log(`📍 Endpoint: ${endpoint}`);
     
-    // Hacer la petición directa sin tests previos que pueden fallar
+    // Primero probar conectividad básica
+    try {
+      console.log('🔍 Probando conectividad con Edge Functions...');
+      const testResponse = await fetch(endpoint, {
+        method: 'OPTIONS',
+        headers: { 'Content-Type': 'application/json' }
+      });
+      console.log(`📊 Test de conectividad: ${testResponse.status}`);
+    } catch (connectError) {
+      console.error('❌ Error de conectividad:', connectError);
+      throw new Error('No se puede conectar con el servicio de pagos. Las Edge Functions no están disponibles.');
+    }
+    
+    // Hacer la petición principal
     const confirmResponse = await fetch(endpoint, {
       method: 'POST',
       headers: {
