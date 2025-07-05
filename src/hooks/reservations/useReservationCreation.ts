@@ -4,6 +4,7 @@ import { supabase } from '@/lib/supabase';
 import { toast } from '@/components/ui/use-toast';
 import { useToast } from '@/components/ui/use-toast';
 import { logger } from '@/utils/logger';
+import { generateReservationCode } from './utils/reservationUtils';
 
 interface ClientInfo {
   name?: string;
@@ -208,7 +209,7 @@ async function createReservationsTransaction(
   clientInfo?: ClientInfo
 ) {
   // Generar código de reserva único
-  const reservationCode = generateReservationCode();
+  const reservationCode = await generateReservationCode();
   
   // Distribuir huéspedes y precio entre domos
   const reservationsData = distributeGuestsAndPrice(
@@ -298,9 +299,3 @@ function distributeGuestsAndPrice(
   return reservations;
 }
 
-// Función para generar código de reserva único
-function generateReservationCode(): string {
-  const timestamp = Date.now().toString(36);
-  const random = Math.random().toString(36).substring(2, 6);
-  return `${timestamp}${random}`.toUpperCase().substring(0, 8);
-}
