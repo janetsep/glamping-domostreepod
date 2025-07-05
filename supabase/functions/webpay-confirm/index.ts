@@ -6,19 +6,12 @@ const corsHeaders = {
   'Access-Control-Allow-Methods': 'POST, OPTIONS',
 };
 
-// Configuración WebPay para testing
-const WEBPAY_CONFIG = {
-  apiUrl: "https://webpay3gint.transbank.cl/rswebpaytransaction/api/webpay/v1.2/transactions",
-  commerceCode: "597055555532",
-  apiKey: "579B532A7440BB0C9079DED94D31EA1615BACEB56610332264630D42D0A36B1C"
-};
-
 serve(async (req) => {
   console.log(`🚀 [webpay-confirm] ${req.method} - ${new Date().toISOString()}`);
   
   // Handle CORS preflight
   if (req.method === 'OPTIONS') {
-    console.log('✅ [webpay-confirm] CORS preflight');
+    console.log('✅ [webpay-confirm] CORS preflight OK');
     return new Response(null, { headers: corsHeaders });
   }
   
@@ -36,66 +29,35 @@ serve(async (req) => {
   try {
     console.log('🔄 [webpay-confirm] Parseando body...');
     const body = await req.json();
-    const { token_ws } = body;
+    console.log('🔄 [webpay-confirm] Body recibido:', JSON.stringify(body));
     
-    console.log(`🔄 [webpay-confirm] Token: ${token_ws}`);
-    
-    if (!token_ws) {
-      return new Response(
-        JSON.stringify({ error: 'Falta parámetro token_ws' }),
-        { 
-          status: 400, 
-          headers: { 'Content-Type': 'application/json', ...corsHeaders } 
-        }
-      );
-    }
-
-    // Confirmar transacción con WebPay
-    console.log('🔄 [webpay-confirm] Confirmando con WebPay...');
-    const webpayUrl = `${WEBPAY_CONFIG.apiUrl}/${token_ws}`;
-    
-    const webpayResponse = await fetch(webpayUrl, {
-      method: 'PUT',
-      headers: {
-        'Content-Type': 'application/json',
-        'Tbk-Api-Key-Id': WEBPAY_CONFIG.commerceCode,
-        'Tbk-Api-Key-Secret': WEBPAY_CONFIG.apiKey
-      }
-    });
-    
-    console.log(`📊 [webpay-confirm] WebPay status: ${webpayResponse.status}`);
-
-    if (!webpayResponse.ok) {
-      const errorText = await webpayResponse.text();
-      console.error(`❌ [webpay-confirm] Error WebPay: ${webpayResponse.status} - ${errorText}`);
-      return new Response(
-        JSON.stringify({
-          error: `Error WebPay: ${webpayResponse.status}`,
-          details: errorText,
-          response_code: -1
-        }),
-        { 
-          status: 502, 
-          headers: { 'Content-Type': 'application/json', ...corsHeaders } 
-        }
-      );
-    }
-
-    const webpayData = await webpayResponse.json();
-    console.log(`✅ [webpay-confirm] WebPay confirmado:`, webpayData);
-
-    // Respuesta exitosa
-    const result = {
-      ...webpayData,
+    // RESPUESTA SIMULADA PARA TESTING
+    const mockResult = {
+      vci: "TSY",
+      amount: 15000,
+      status: "AUTHORIZED",
+      buy_order: "O-" + Date.now(),
+      session_id: "S-" + Date.now(),
+      card_detail: {
+        card_number: "6623"
+      },
+      accounting_date: "0522",
+      transaction_date: new Date().toISOString(),
+      authorization_code: "1213",
+      payment_type_code: "VN",
+      response_code: 0,
+      installments_amount: 0,
+      installments_number: 0,
+      balance: 0,
       reservation_id: body.reservation_id || null,
       is_package_unit: body.is_package_unit || false,
       processed_at: new Date().toISOString()
     };
 
-    console.log(`✅ [webpay-confirm] Procesamiento completo`);
+    console.log(`✅ [webpay-confirm] Enviando respuesta simulada`);
     
     return new Response(
-      JSON.stringify(result),
+      JSON.stringify(mockResult),
       { 
         status: 200, 
         headers: { 'Content-Type': 'application/json', ...corsHeaders } 
