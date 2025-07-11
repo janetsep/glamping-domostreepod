@@ -13,7 +13,7 @@ export const UnitInfo = ({
         <div className="flex items-start justify-between">
           <div>
             <CardTitle className="text-2xl font-display font-bold mb-2">
-              {unit.name}
+              Domo
             </CardTitle>
             <div className="flex items-center gap-2 text-muted-foreground mb-4">
               <MapPin className="w-4 h-4" />
