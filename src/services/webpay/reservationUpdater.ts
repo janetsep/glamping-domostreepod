@@ -45,6 +45,7 @@ export async function updateReservationIfNeeded(responseData: TransactionResult)
         return undefined;
       }
 
+      console.log(`✅ [FRONTEND] ${updateResult?.length || 0} reservas actualizadas a confirmed con código: ${primaryReservation.reservation_code}`);
       console.log(`✅ [FRONTEND] Resultado de la actualización:`, updateResult);
       
       return primaryReservation.unit_id;
