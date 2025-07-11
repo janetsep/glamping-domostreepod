@@ -18,6 +18,24 @@ export async function processClientInfo(
   console.log(`Actualizando información del cliente para reserva ${reservationId}`);
   console.log(`Datos del cliente: `, JSON.stringify(clientInfo));
   
+  // Primero obtener el reservation_code de la reserva principal
+  let reservationCode: string | null = null;
+  try {
+    const getCodeResponse = await fetch(`${supabaseUrl}/rest/v1/reservations?id=eq.${reservationId}&select=reservation_code`, {
+      headers: createHeaders(supabaseKey)
+    });
+    
+    if (getCodeResponse.ok) {
+      const codeData = await getCodeResponse.json();
+      if (codeData.length > 0 && codeData[0].reservation_code) {
+        reservationCode = codeData[0].reservation_code;
+        console.log(`Código de reserva encontrado: ${reservationCode}`);
+      }
+    }
+  } catch (error) {
+    console.warn(`Error al obtener código de reserva: ${error}`);
+  }
+  
   // Verificar si ya existe información del cliente
   try {
     const checkResponse = await fetch(`${supabaseUrl}/rest/v1/reservations?id=eq.${reservationId}&select=client_name,client_email,client_phone`, {
@@ -50,37 +68,12 @@ export async function processClientInfo(
     console.warn(`Error al verificar información existente: ${checkError}`);
   }
   
-  // Intentar actualizar información con el método principal
-  const clientUpdateSuccess = await updateClientInformation(supabaseUrl, supabaseKey, reservationId, clientInfo);
-  
-  if (clientUpdateSuccess) {
-    console.log(`Información del cliente actualizada correctamente para ${reservationId}`);
+  // Si tenemos reservation_code, actualizar TODAS las reservas con ese código
+  if (reservationCode) {
+    console.log(`Actualizando información del cliente para TODAS las reservas con código: ${reservationCode}`);
     
-    // Verificar que la actualización fue exitosa
     try {
-      const verifyResponse = await fetch(`${supabaseUrl}/rest/v1/reservations?id=eq.${reservationId}&select=client_name,client_email,client_phone`, {
-        headers: createHeaders(supabaseKey)
-      });
-      
-      if (verifyResponse.ok) {
-        const verifiedData = await verifyResponse.json();
-        if (verifiedData.length > 0) {
-          console.log(`Información del cliente verificada después de la actualización: `, JSON.stringify(verifiedData[0]));
-        }
-      }
-    } catch (verifyError) {
-      console.warn(`Error al verificar actualización: ${verifyError}`);
-    }
-    
-    return true;
-  } else {
-    console.warn(`No se pudo actualizar información del cliente para ${reservationId}`);
-    
-    // Intentar actualizar cliente con método alternativo
-    try {
-      console.log(`Intentando método alternativo para actualizar información del cliente`);
-      
-      const directClientUpdateResponse = await fetch(`${supabaseUrl}/rest/v1/reservations?id=eq.${reservationId}`, {
+      const updateAllResponse = await fetch(`${supabaseUrl}/rest/v1/reservations?reservation_code=eq.${reservationCode}`, {
         method: 'PATCH',
         headers: {
           ...createHeaders(supabaseKey),
@@ -94,16 +87,26 @@ export async function processClientInfo(
         })
       });
       
-      if (directClientUpdateResponse.ok) {
-        console.log(`Información del cliente actualizada correctamente con método alternativo`);
+      if (updateAllResponse.ok) {
+        console.log(`✅ Información del cliente actualizada para TODAS las reservas con código ${reservationCode}`);
         return true;
       } else {
-        const errorText = await directClientUpdateResponse.text();
-        console.error(`Error al actualizar información del cliente con método alternativo: ${errorText}`);
+        const errorText = await updateAllResponse.text();
+        console.error(`❌ Error al actualizar información del cliente para código ${reservationCode}: ${errorText}`);
       }
-    } catch (directClientUpdateError) {
-      console.error(`Error en actualización alternativa de cliente: ${directClientUpdateError}`);
+    } catch (updateAllError) {
+      console.error(`❌ Error en actualización masiva de cliente: ${updateAllError}`);
     }
+  }
+  
+  // Fallback: Intentar actualizar solo la reserva individual
+  const clientUpdateSuccess = await updateClientInformation(supabaseUrl, supabaseKey, reservationId, clientInfo);
+  
+  if (clientUpdateSuccess) {
+    console.log(`Información del cliente actualizada correctamente para ${reservationId} (fallback individual)`);
+    return true;
+  } else {
+    console.warn(`No se pudo actualizar información del cliente para ${reservationId}`);
     return false;
   }
 }
