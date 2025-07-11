@@ -8,6 +8,7 @@ export function useReservationData(transactionResult: TransactionResult) {
   const [isLoading, setIsLoading] = useState(true);
   const [totalGuests, setTotalGuests] = useState(0);
   const [requiredDomos, setRequiredDomos] = useState(1);
+  const [reservationCode, setReservationCode] = useState<string | null>(null);
 
   useEffect(() => {
     async function fetchReservations() {
@@ -21,7 +22,7 @@ export function useReservationData(transactionResult: TransactionResult) {
       // Obtener el reservation_code de la reserva principal
       const { data: mainRes, error: resError } = await supabase
         .from("reservations")
-        .select("reservation_code")
+        .select("reservation_code, check_in, check_out, total_price, guests")
         .eq("id", transactionResult.reservation_id)
         .maybeSingle();
 
@@ -38,6 +39,9 @@ export function useReservationData(transactionResult: TransactionResult) {
         .from("reservations")
         .select("id, guests, unit_id")
         .eq("reservation_code", mainRes.reservation_code);
+
+      // Guardar el código de reserva real
+      setReservationCode(mainRes.reservation_code);
 
       if (reservations && reservations.length > 0) {
         setAllReservations(reservations);
@@ -66,6 +70,7 @@ export function useReservationData(transactionResult: TransactionResult) {
     isLoading,
     totalGuests,
     requiredDomos,
+    reservationCode,
     getQuoteFromTransaction
   };
 }

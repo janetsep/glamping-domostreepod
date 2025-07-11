@@ -28,6 +28,7 @@ const ReservationConfirmed: React.FC<ReservationConfirmedProps> = ({
     isLoading,
     totalGuests,
     requiredDomos,
+    reservationCode,
     getQuoteFromTransaction
   } = useReservationData(transactionResult);
 
@@ -51,7 +52,7 @@ const ReservationConfirmed: React.FC<ReservationConfirmedProps> = ({
           
           <ReservationCodeDisplay
             reservationId={transactionResult.reservation_id}
-            reservationCode={transactionResult.reservation_data?.reservation_code || allReservations[0]?.reservation_code}
+            reservationCode={reservationCode}
           />
           
           <MultipleDomoInfo
