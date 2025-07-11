@@ -56,7 +56,19 @@ const AnniversarySection = () => {
                   <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
                     <div className="order-2 lg:order-1">
                       <CardDescription className="text-base md:text-lg text-gray-700 leading-relaxed">
-                        {tab.content}
+                        {Array.isArray(tab.content) ? (
+                          <div className="space-y-2">
+                            {tab.content.map((item, index) => {
+                              if (item === "") return <div key={index} className="mb-3" />;
+                              if (item.startsWith("###")) return <h4 key={index} className="font-semibold text-lg text-primary mt-4 mb-2">{item.replace("### ", "")}</h4>;
+                              if (item.startsWith("**") && item.endsWith("**")) return <p key={index} className="font-semibold mb-1">{item.slice(2, -2)}</p>;
+                              if (item.startsWith("•")) return <p key={index} className="ml-4 mb-1">{item}</p>;
+                              return <p key={index} className="mb-1">{item}</p>;
+                            })}
+                          </div>
+                        ) : (
+                          tab.content
+                        )}
                       </CardDescription>
                       
                       <div className="mt-6 flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
