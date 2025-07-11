@@ -119,7 +119,30 @@ export const familyPartyDetailContent = {
       id: "precios",
       name: "Precios",
       title: "Precios y Opciones",
-      content: "Paquete Fiesta Familiar en la Naturaleza (2 noches, viernes a domingo): Domo completo hasta 4 personas por $550.000 CLP. El paquete incluye alojamiento en domo geodésico completo (2 noches), decoración festiva familiar, parrilla completa para asado + fogón nocturno, todas las comidas + picoteo familiar con productos del invernadero, bebidas para toda la familia (jugos + opciones adultos), acceso a piscina de agua mineralizada, 1 hora de tinajas de ciprés incluida, terraza amplia con mobiliario para grupos, leña incluida para fogón, estacionamiento y conexión Starlink disponible. Servicios adicionales opcionales: hora extra de tinajas $25.000, decoración temática especial $30.000, carnes premium para el asado $35.000 por grupo, kit de juegos familiares $20.000 por grupo, leña extra para fogón $8.000, transporte desde Las Trancas $12.000 por viaje.",
+      content: [
+        "💰 **Paquete Fiesta Familiar en la Naturaleza** (2 noches, viernes a domingo)",
+        "🏠 **Precio:** Domo completo hasta 4 personas por $550.000 CLP",
+        "",
+        "### 📋 EL PAQUETE INCLUYE:",
+        "• Alojamiento en domo geodésico completo (2 noches)",
+        "• Decoración festiva familiar",
+        "• Parrilla completa para asado + fogón nocturno",
+        "• Todas las comidas + picoteo familiar con productos del invernadero",
+        "• Bebidas para toda la familia (jugos + opciones adultos)",
+        "• Acceso a piscina de agua mineralizada",
+        "• 1 hora de tinajas de ciprés incluida",
+        "• Terraza amplia con mobiliario para grupos",
+        "• Leña incluida para fogón",
+        "• Estacionamiento y conexión Starlink disponible",
+        "",
+        "### 🎯 SERVICIOS ADICIONALES OPCIONALES:",
+        "• Hora extra de tinajas: $25.000",
+        "• Decoración temática especial: $30.000",
+        "• Carnes premium para el asado: $35.000 por grupo",
+        "• Kit de juegos familiares: $20.000 por grupo",
+        "• Leña extra para fogón: $8.000",
+        "• Transporte desde Las Trancas: $12.000 por viaje"
+      ],
       image: "/lovable-uploads/5bf3bb3b-da31-4f12-a031-1d7274b2b1cc.png"
     }
   ]
