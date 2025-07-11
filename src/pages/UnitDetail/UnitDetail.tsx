@@ -8,6 +8,7 @@ import { UnitContent } from "./UnitContent";
 import { ReservationPanel } from "./ReservationPanel";
 import { ReservationConfirmation } from "./ReservationConfirmation";
 import { useUnitDetailState } from "./hooks/useUnitDetailState";
+import { usePaymentStatusHandler } from "./hooks/usePaymentStatusHandler";
 
 const UnitDetail = () => {
   const { unitId } = useParams<{ unitId: string }>();
@@ -16,6 +17,14 @@ const UnitDetail = () => {
   
   // Use our state hook
   const state = useUnitDetailState(unitId);
+  
+  // Handle payment status
+  const { processPaymentStatus } = usePaymentStatusHandler(state, searchParams);
+  
+  // Process payment status when component mounts or searchParams change
+  useEffect(() => {
+    processPaymentStatus();
+  }, [processPaymentStatus]);
 
   return (
     <div className="min-h-screen bg-white pt-24">
