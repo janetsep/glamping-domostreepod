@@ -39,22 +39,40 @@ export const getCelebrationById = (id: string) => {
 
 // Datos detallados para la página de Mujeres al Descanso y Relax
 export const womenRelaxDetailContent = {
-  title: "🌸 Mujeres al Descanso y Relax 🌸",
+  title: "Mujeres al Descanso y Relax",
   subtitle: "Un tiempo para ti en medio del bosque nativo",
   
   tabs: [
     {
       id: "que-incluye",
       name: "Qué Incluye",
-      title: "¿Qué Incluye el Paquete?",
-      content: "Diseñado especialmente para mujeres que buscan un respiro en la naturaleza, compartiendo momentos especiales entre amigas, madre-hija, hermanas o simplemente tiempo personal. Un tiempo para ti en medio del bosque nativo. Incluye: Domo geodésico para hasta 4 personas con 1 cama matrimonial + 2 camas de 1 plaza, baño privado completo, calefacción para todas las estaciones, vista directa al bosque nativo, conexión Starlink disponible, piscina de agua fría del río Chillán con propiedades minerales, 1 hora de tinajas de ciprés con agua mineralizada incluida, picoteo gourmet con productos del invernadero, jugos naturales y smoothies frescos, espumante de bienvenida, infusiones especiales y terraza con mobiliario para charlar al aire libre bajo las estrellas. ALIMENTACIÓN COMPLETA: Desayuno con productos frescos del invernadero, almuerzo campestre con verduras y hierbas del huerto, cena con ingredientes locales y de temporada, snacks saludables durante el día. Todas las comidas incluyen productos orgánicos cultivados en nuestro invernadero. Opciones vegetarianas y veganas disponibles.",
+      title: "¿Qué es este Paquete?",
+      content: "Una experiencia diseñada especialmente para mujeres que buscan un respiro en la naturaleza, compartiendo momentos especiales entre amigas, madre-hija, hermanas o simplemente tiempo personal. Este paquete ofrece la oportunidad perfecta para desconectar del estrés diario y reconectar con la naturaleza en un entorno seguro y revitalizante. Ideal para celebraciones especiales, retiros de bienestar o simplemente para disfrutar de un merecido descanso en compañía de las personas importantes en tu vida.",
       image: "/lovable-uploads/ec4a0c77-c6b5-4ec7-a6ab-f2ef933494c3.png"
     },
     {
       id: "precios",
       name: "Precios",
       title: "Precios y Opciones",
-      content: "Paquete Mujeres al Descanso y Relax (2 noches, viernes a domingo): Domo completo hasta 4 personas por $520.000 CLP. El paquete incluye alojamiento en domo geodésico completo (2 noches), todas las comidas + snacks con productos del invernadero, espumante de bienvenida + jugos + infusiones, acceso a piscina de agua mineralizada, 1 hora de tinajas de ciprés incluida, terraza con mobiliario para charlar al aire libre, estacionamiento y conexión Starlink disponible. Servicios adicionales opcionales: hora extra de tinajas $25.000, cena especial $25.000 por persona, kit de picnic $15.000 por grupo, transporte desde Las Trancas $12.000 por viaje.",
+      content: [
+        "**Paquete Mujeres al Descanso y Relax** (2 noches)",
+        "**Precio:** Domo completo hasta 4 personas por $520.000 CLP",
+        "",
+        "### EL PAQUETE INCLUYE:",
+        "• Alojamiento en domo geodésico completo (2 noches)",
+        "• Todas las comidas + snacks con productos del invernadero",
+        "• Espumante de bienvenida + jugos + infusiones",
+        "• Acceso a piscina de agua mineralizada",
+        "• 1 hora de tinajas de ciprés incluida",
+        "• Terraza con mobiliario para charlar al aire libre",
+        "• Estacionamiento y conexión Starlink disponible",
+        "",
+        "### SERVICIOS ADICIONALES OPCIONALES:",
+        "• Hora extra de tinajas: $25.000",
+        "• Cena especial: $25.000 por persona",
+        "• Kit de picnic: $15.000 por grupo",
+        "• Transporte desde Las Trancas: $12.000 por viaje"
+      ],
       image: "/lovable-uploads/258111ea-9c35-4f22-811b-3beaeba46f33.png"
     }
   ]
@@ -62,22 +80,42 @@ export const womenRelaxDetailContent = {
 
 // Datos detallados para la página de Cumpleaños
 export const birthdayDetailContent = {
-  title: "🎂 Cumpleaños en la Naturaleza 🎂",
+  title: "Cumpleaños en la Naturaleza",
   subtitle: "Celebra tu día especial rodeado del bosque nativo",
   
   tabs: [
     {
       id: "que-incluye",
       name: "Qué Incluye",
-      title: "¿Qué Incluye el Paquete?",
-      content: "Una celebración diferente en medio de la naturaleza, perfecta para festejar tu cumpleaños con familia, amigos o en pareja en un entorno único y privado. Incluye: Domo geodésico para hasta 4 personas con 1 cama matrimonial + 2 camas de 1 plaza, baño privado completo, calefacción para todas las estaciones, vista directa al bosque nativo, conexión Starlink disponible, piscina de agua fría del río Chillán con propiedades minerales, 1 hora de tinajas de ciprés con agua mineralizada incluida, decoración de cumpleaños en el domo y terraza, torta artesanal hecha con productos del invernadero, espumante para el brindis y picoteo festivo con productos frescos del huerto. ALIMENTACIÓN COMPLETA: Desayuno especial con productos frescos del invernadero, almuerzo de celebración con verduras y hierbas del huerto, cena festiva con ingredientes locales y de temporada, torta artesanal personalizada, jugos naturales y bebidas especiales durante el día. Todas las comidas están preparadas con productos orgánicos de nuestro invernadero.",
+      title: "¿Qué es este Paquete?",
+      content: "Una celebración diferente en medio de la naturaleza, perfecta para festejar tu cumpleaños con familia, amigos o en pareja en un entorno único y privado. Este paquete está diseñado para crear momentos inolvidables en tu día especial, combinando la tranquilidad del bosque nativo con todas las comodidades necesarias para una celebración perfecta. Incluye decoración especial, una torta artesanal y todo lo necesario para que tu cumpleaños sea una experiencia memorable rodeado de naturaleza.",
       image: "/lovable-uploads/3c440bec-e9af-462b-95d8-45e8eec15b88.png"
     },
     {
       id: "precios",
       name: "Precios",
       title: "Precios y Opciones",
-      content: "Paquete Cumpleaños en la Naturaleza (2 noches, viernes a domingo): Domo completo hasta 4 personas por $580.000 CLP. El paquete incluye alojamiento en domo geodésico completo (2 noches), decoración especial de cumpleaños, torta artesanal + espumante para brindar, todas las comidas + picoteo festivo con productos del invernadero, acceso a piscina de agua mineralizada, 1 hora de tinajas de ciprés incluida, terraza con mobiliario para celebrar, estacionamiento y conexión Starlink disponible. Servicios adicionales opcionales: hora extra de tinajas $25.000, decoración temática especial $20.000, cena gourmet $35.000 por persona, kit de picnic $15.000 por grupo, transporte desde Las Trancas $12.000 por viaje.",
+      content: [
+        "**Paquete Cumpleaños en la Naturaleza** (2 noches)",
+        "**Precio:** Domo completo hasta 4 personas por $580.000 CLP",
+        "",
+        "### EL PAQUETE INCLUYE:",
+        "• Alojamiento en domo geodésico completo (2 noches)",
+        "• Decoración especial de cumpleaños",
+        "• Torta artesanal + espumante para brindar",
+        "• Todas las comidas + picoteo festivo con productos del invernadero",
+        "• Acceso a piscina de agua mineralizada",
+        "• 1 hora de tinajas de ciprés incluida",
+        "• Terraza con mobiliario para celebrar",
+        "• Estacionamiento y conexión Starlink disponible",
+        "",
+        "### SERVICIOS ADICIONALES OPCIONALES:",
+        "• Hora extra de tinajas: $25.000",
+        "• Decoración temática especial: $20.000",
+        "• Cena gourmet: $35.000 por persona",
+        "• Kit de picnic: $15.000 por grupo",
+        "• Transporte desde Las Trancas: $12.000 por viaje"
+      ],
       image: "/lovable-uploads/3c440bec-e9af-462b-95d8-45e8eec15b88.png"
     }
   ]
@@ -85,34 +123,15 @@ export const birthdayDetailContent = {
 
 // Datos detallados para la página de Fiesta Familiar
 export const familyPartyDetailContent = {
-  title: "👨‍👩‍👧‍👦 Fiesta Familiar en la Naturaleza 👨‍👩‍👧‍👦",
+  title: "Fiesta Familiar en la Naturaleza",
   subtitle: "Celebra en familia rodeados del bosque nativo",
   
   tabs: [
     {
       id: "que-incluye",
       name: "Qué Incluye",
-      title: "¿Qué Incluye el Paquete?",
-      content: [
-        "🏠 **Alojamiento:** Domo geodésico para hasta 4 personas con 1 cama matrimonial + 2 camas de 1 plaza",
-        "🚿 **Comodidades:** Baño privado completo, calefacción para todas las estaciones",
-        "🌲 **Ubicación:** Vista directa al bosque nativo con conexión Starlink disponible",
-        "🏊 **Piscina:** Agua fría del río Chillán con propiedades minerales",
-        "🛁 **Tinajas:** 1 hora de tinajas de ciprés con agua mineralizada incluida",
-        "🎉 **Decoración:** Festiva en el domo y terraza",
-        "🔥 **Parrilla:** Completa para asado familiar",
-        "🥤 **Bebidas:** Jugos naturales y opciones para adultos",
-        "🥗 **Picoteo:** Productos frescos del huerto",
-        "🪵 **Fogón:** Nocturno con leña para compartir historias",
-        "",
-        "### 🍽️ ALIMENTACIÓN COMPLETA:",
-        "• **Desayuno:** Productos frescos del invernadero",
-        "• **Almuerzo:** Campestre con verduras y hierbas del huerto",
-        "• **Asado:** Carnes y acompañamientos frescos",
-        "• **Snacks:** Jugos durante el día",
-        "",
-        "*Todas las verduras y hierbas provienen de nuestro invernadero orgánico*"
-      ],
+      title: "¿Qué es este Paquete?",
+      content: "Una experiencia diseñada para reunir a toda la familia en un entorno natural donde grandes y pequeños pueden disfrutar de actividades al aire libre, comidas compartidas y momentos inolvidables bajo las estrellas. Este paquete familiar incluye todo lo necesario para una celebración perfecta: desde la parrilla para el asado familiar hasta el fogón nocturno para compartir historias. Ideal para cumpleaños familiares, reuniones, celebraciones especiales o simplemente para pasar tiempo de calidad en familia rodeados de la tranquilidad del bosque nativo.",
       image: "/lovable-uploads/5bf3bb3b-da31-4f12-a031-1d7274b2b1cc.png"
     },
     {
@@ -120,10 +139,10 @@ export const familyPartyDetailContent = {
       name: "Precios",
       title: "Precios y Opciones",
       content: [
-        "💰 **Paquete Fiesta Familiar en la Naturaleza** (2 noches, viernes a domingo)",
-        "🏠 **Precio:** Domo completo hasta 4 personas por $550.000 CLP",
+        "**Paquete Fiesta Familiar en la Naturaleza** (2 noches)",
+        "**Precio:** Domo completo hasta 4 personas por $550.000 CLP",
         "",
-        "### 📋 EL PAQUETE INCLUYE:",
+        "### EL PAQUETE INCLUYE:",
         "• Alojamiento en domo geodésico completo (2 noches)",
         "• Decoración festiva familiar",
         "• Parrilla completa para asado + fogón nocturno",
@@ -135,7 +154,7 @@ export const familyPartyDetailContent = {
         "• Leña incluida para fogón",
         "• Estacionamiento y conexión Starlink disponible",
         "",
-        "### 🎯 SERVICIOS ADICIONALES OPCIONALES:",
+        "### SERVICIOS ADICIONALES OPCIONALES:",
         "• Hora extra de tinajas: $25.000",
         "• Decoración temática especial: $30.000",
         "• Carnes premium para el asado: $35.000 por grupo",
@@ -150,22 +169,44 @@ export const familyPartyDetailContent = {
 
 // Datos detallados para la página de Aniversarios
 export const anniversaryDetailContent = {
-  title: "💕 Aniversarios Románticos 💕",
+  title: "Aniversarios Románticos",
   subtitle: "Celebra el amor rodeados del bosque nativo",
   
   tabs: [
     {
       id: "que-incluye",
       name: "Qué Incluye",
-      title: "¿Qué Incluye el Paquete?",
-      content: "Una celebración romántica en medio de la naturaleza, perfecta para conmemorar aniversarios de matrimonio, noviazgo o cualquier fecha especial en pareja en un entorno íntimo y privado. Incluye: Domo geodésico para hasta 4 personas con 1 cama matrimonial + 2 camas de 1 plaza, baño privado completo, calefacción para todas las estaciones, vista directa al bosque nativo, conexión Starlink disponible, ambiente romántico preparado especialmente, piscina de agua fría del río Chillán con propiedades minerales, 2 horas de tinajas de ciprés con agua mineralizada incluidas, decoración romántica en el domo y terraza, cena romántica a la luz de las velas, espumante premium para el brindis, pétalos de rosa y velas aromáticas, y masaje relajante en pareja (30 minutos). ALIMENTACIÓN GOURMET: Desayuno romántico servido en la terraza con productos frescos del invernadero, almuerzo ligero con productos del huerto, cena romántica de 3 tiempos con ingredientes locales gourmet, champagne y chocolates incluidos. Todas las comidas están preparadas con ingredientes orgánicos de nuestro invernadero. Menú personalizable según preferencias dietéticas.",
+      title: "¿Qué es este Paquete?",
+      content: "Una celebración romántica en medio de la naturaleza, perfecta para conmemorar aniversarios de matrimonio, noviazgo o cualquier fecha especial en pareja en un entorno íntimo y privado. Este paquete está diseñado especialmente para parejas que buscan reconectar y celebrar su amor en un ambiente único, con detalles románticos cuidadosamente preparados. Incluye decoración especial, cena a la luz de las velas, masajes en pareja y todo lo necesario para crear recuerdos inolvidables en su fecha especial.",
       image: "/lovable-uploads/258111ea-9c35-4f22-811b-3beaeba46f33.png"
     },
     {
       id: "precios",
       name: "Precios",
       title: "Precios y Opciones",
-      content: "Paquete Aniversario Romántico (2 noches, viernes a domingo): Domo completo hasta 4 personas por $650.000 CLP. El paquete incluye alojamiento en domo geodésico completo (2 noches), decoración romántica completa, cena romántica a la luz de las velas, todas las comidas gourmet con productos del invernadero, espumante premium + chocolates, acceso a piscina de agua mineralizada, 2 horas de tinajas de ciprés incluidas, masaje relajante en pareja (30 min), terraza privada decorada, estacionamiento y conexión Starlink disponible. Servicios adicionales opcionales: hora extra de tinajas $25.000, masaje completo en pareja (60 min) $80.000, cena gourmet de 5 tiempos $60.000 por pareja, decoración premium con globos y flores $40.000, transporte desde Las Trancas $12.000 por viaje.",
+      content: [
+        "**Paquete Aniversario Romántico** (2 noches)",
+        "**Precio:** Domo completo hasta 4 personas por $650.000 CLP",
+        "",
+        "### EL PAQUETE INCLUYE:",
+        "• Alojamiento en domo geodésico completo (2 noches)",
+        "• Decoración romántica completa",
+        "• Cena romántica a la luz de las velas",
+        "• Todas las comidas gourmet con productos del invernadero",
+        "• Espumante premium + chocolates",
+        "• Acceso a piscina de agua mineralizada",
+        "• 2 horas de tinajas de ciprés incluidas",
+        "• Masaje relajante en pareja (30 min)",
+        "• Terraza privada decorada",
+        "• Estacionamiento y conexión Starlink disponible",
+        "",
+        "### SERVICIOS ADICIONALES OPCIONALES:",
+        "• Hora extra de tinajas: $25.000",
+        "• Masaje completo en pareja (60 min): $80.000",
+        "• Cena gourmet de 5 tiempos: $60.000 por pareja",
+        "• Decoración premium con globos y flores: $40.000",
+        "• Transporte desde Las Trancas: $12.000 por viaje"
+      ],
       image: "/lovable-uploads/258111ea-9c35-4f22-811b-3beaeba46f33.png"
     }
   ]
