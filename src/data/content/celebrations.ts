@@ -93,7 +93,26 @@ export const familyPartyDetailContent = {
       id: "que-incluye",
       name: "Qué Incluye",
       title: "¿Qué Incluye el Paquete?",
-      content: "Una celebración familiar en medio de la naturaleza, perfecta para reuniones familiares, celebraciones especiales, reencuentros o cualquier ocasión donde la familia quiera compartir en un entorno natural y privado. Incluye: Domo geodésico para hasta 4 personas con 1 cama matrimonial + 2 camas de 1 plaza, baño privado completo, calefacción para todas las estaciones, vista directa al bosque nativo, conexión Starlink disponible, piscina de agua fría del río Chillán con propiedades minerales, 1 hora de tinajas de ciprés con agua mineralizada incluida, decoración festiva en el domo y terraza, parrilla completa para asado familiar, bebidas para todos (jugos naturales y opciones para adultos), picoteo familiar con productos frescos del huerto y fogón nocturno con leña para compartir historias. ALIMENTACIÓN COMPLETA: Desayuno familiar con productos frescos del invernadero, almuerzo campestre con verduras y hierbas del huerto, asado familiar con carnes y acompañamientos frescos, snacks y jugos durante el día. Todas las verduras y hierbas provienen de nuestro invernadero orgánico, incluyendo carnes para el asado y acompañamientos.",
+      content: [
+        "🏠 **Alojamiento:** Domo geodésico para hasta 4 personas con 1 cama matrimonial + 2 camas de 1 plaza",
+        "🚿 **Comodidades:** Baño privado completo, calefacción para todas las estaciones",
+        "🌲 **Ubicación:** Vista directa al bosque nativo con conexión Starlink disponible",
+        "🏊 **Piscina:** Agua fría del río Chillán con propiedades minerales",
+        "🛁 **Tinajas:** 1 hora de tinajas de ciprés con agua mineralizada incluida",
+        "🎉 **Decoración:** Festiva en el domo y terraza",
+        "🔥 **Parrilla:** Completa para asado familiar",
+        "🥤 **Bebidas:** Jugos naturales y opciones para adultos",
+        "🥗 **Picoteo:** Productos frescos del huerto",
+        "🪵 **Fogón:** Nocturno con leña para compartir historias",
+        "",
+        "### 🍽️ ALIMENTACIÓN COMPLETA:",
+        "• **Desayuno:** Productos frescos del invernadero",
+        "• **Almuerzo:** Campestre con verduras y hierbas del huerto",
+        "• **Asado:** Carnes y acompañamientos frescos",
+        "• **Snacks:** Jugos durante el día",
+        "",
+        "*Todas las verduras y hierbas provienen de nuestro invernadero orgánico*"
+      ],
       image: "/lovable-uploads/5bf3bb3b-da31-4f12-a031-1d7274b2b1cc.png"
     },
     {

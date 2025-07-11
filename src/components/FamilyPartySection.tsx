@@ -55,9 +55,49 @@ const FamilyPartySection = () => {
                 <CardContent>
                   <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
                     <div className="order-2 lg:order-1">
-                      <CardDescription className="text-base md:text-lg text-gray-700 leading-relaxed">
-                        {tab.content}
-                      </CardDescription>
+                      {Array.isArray(tab.content) ? (
+                        <div className="space-y-2">
+                          {tab.content.map((item, index) => {
+                            if (item === "") return <div key={index} className="h-2" />;
+                            if (item.startsWith("###")) {
+                              return (
+                                <h4 key={index} className="text-lg font-semibold text-primary mt-4 mb-2">
+                                  {item.replace("###", "").trim()}
+                                </h4>
+                              );
+                            }
+                            if (item.startsWith("•")) {
+                              return (
+                                <div key={index} className="ml-4 text-gray-700">
+                                  {item}
+                                </div>
+                              );
+                            }
+                            if (item.startsWith("*") && item.endsWith("*")) {
+                              return (
+                                <p key={index} className="text-sm italic text-gray-600 mt-2">
+                                  {item.slice(1, -1)}
+                                </p>
+                              );
+                            }
+                            return (
+                              <div key={index} className="flex items-start gap-2 text-gray-700">
+                                <span className="mt-1">{item.split(" ")[0]}</span>
+                                <span 
+                                  className="flex-1"
+                                  dangerouslySetInnerHTML={{
+                                    __html: item.split(" ").slice(1).join(" ").replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+                                  }}
+                                />
+                              </div>
+                            );
+                          })}
+                        </div>
+                      ) : (
+                        <CardDescription className="text-base md:text-lg text-gray-700 leading-relaxed">
+                          {tab.content}
+                        </CardDescription>
+                      )}
                       
                       <div className="mt-6 flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
                         <Button className="bg-gradient-to-r from-primary to-pink-500 text-white hover:from-primary/90 hover:to-pink-500/90">
