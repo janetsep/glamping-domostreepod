@@ -9,7 +9,8 @@ interface UnitInfoProps {
 export const UnitInfo = ({
   unit
 }: UnitInfoProps) => {
-  const averageRating = getAverageRating();
+  // Puntuación real de la sección "¡Los Huéspedes Opinan!" - Calificación general
+  const realRating = 4.9;
   
   return <Card>
       <CardHeader>
@@ -25,7 +26,7 @@ export const UnitInfo = ({
           </div>
           <div className="flex items-center gap-1">
             <Star className="w-5 h-5 fill-yellow-400 text-yellow-400" />
-            <span className="font-semibold">{averageRating}</span>
+            <span className="font-semibold">{realRating}</span>
           </div>
         </div>
       </CardHeader>
