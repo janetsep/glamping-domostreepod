@@ -33,28 +33,30 @@ export const UnitInfo = ({
             </div>
           </div>
           <div className="text-right">
-            {/* Tabla de puntuaciones por plataforma */}
-            <div className="mb-3 border border-gray-200 rounded-lg p-3 bg-gray-50">
-              <div className="space-y-1 text-xs">
+            {/* Tabla de puntuaciones por plataforma - formato horizontal */}
+            <div className="mb-3 bg-gray-50 rounded-lg p-2">
+              <div className="flex flex-wrap gap-4 text-xs justify-end border-b border-gray-300 pb-2">
                 {reviewsPlatforms.map((platform, index) => (
-                  <div key={platform.name} className={`flex justify-between items-center ${index === 0 ? 'border-b border-gray-300 pb-1 mb-1' : ''}`}>
+                  <div key={platform.name} className={`flex items-center gap-1 ${index === 0 ? 'border-b-2 border-black pb-1' : ''}`}>
                     <span className={platform.color}>{platform.name}</span>
                     <span className="font-semibold">{platform.rating}</span>
                   </div>
                 ))}
               </div>
-            </div>
-            
-            {/* Calificación general con estrellas */}
-            <div className="text-center">
-              <div className="text-sm text-gray-600 mb-1">Calificación general</div>
-              <div className="flex items-center justify-center gap-1 mb-1">
-                <span className="font-bold text-lg">{generalRating}</span>
-                {[...Array(5)].map((_, i) => (
-                  <Star key={i} className="w-4 h-4 fill-red-500 text-red-500" />
-                ))}
+              
+              {/* Calificación general con estrellas */}
+              <div className="pt-2">
+                <div className="text-sm text-gray-700 mb-1">Calificación general</div>
+                <div className="flex items-center justify-end gap-1">
+                  <span className="font-bold text-lg">{generalRating}</span>
+                  <div className="flex">
+                    {[...Array(5)].map((_, i) => (
+                      <Star key={i} className="w-4 h-4 fill-red-500 text-red-500" />
+                    ))}
+                  </div>
+                  <span className="text-xs text-gray-500 ml-1">(161)</span>
+                </div>
               </div>
-              <div className="text-xs text-gray-500">(161)</div>
             </div>
           </div>
         </div>
