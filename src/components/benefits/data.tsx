@@ -99,31 +99,31 @@ export const experiencesData: ExperiencesData = {
       title: "Meditación Guiada en el Bosque",
       description: "Sesiones de meditación entre antiguos árboles nativos guiadas por expertos en mindfulness.",
       details: "La práctica de meditación en nuestro bosque ofrece beneficios demostrados para reducir el estrés y mejorar el bienestar. Las sesiones duran aproximadamente 1 hora y están diseñadas tanto para principiantes como para practicantes experimentados. Se incluyen esterillas, mantas y té de hierbas locales.",
-      image: "/lovable-uploads/9750700a-7f4e-4744-9703-049733204f14.png"
+      image: "/lovable-uploads/daf4f24d-4485-4324-9991-3f7d52a79e0f.png"
     }, {
       icon: <TreeDeciduousIcon />,
       title: "Terapia Forestal",
       description: "Experimenta el poder curativo de los bosques con nuestro programa de terapia forestal.",
       details: "Basado en la práctica japonesa del 'Shinrin-yoku' (baño de bosque), esta experiencia guiada te conecta profundamente con la naturaleza a través de tus sentidos. Estudios científicos han demostrado sus beneficios para el sistema inmunológico, la reducción de hormonas del estrés y la mejora del estado de ánimo.",
-      image: "/lovable-uploads/881f84e7-856a-4057-bdc0-d55b67859a18.png"
+      image: "/lovable-uploads/7202eec3-bd82-4939-90a9-0a6509fa2af0.png"
     }, {
       icon: <ThermometerIcon />,
       title: "Baños Termales Volcánicos",
       description: "Sumérgete en las mágicas aguas termales provenientes directamente del volcán Nevados de Chillán.",
       details: "Estas aguas poseen propiedades reconocidas científicamente por aliviar dolores musculares, mejorar la piel y reducir el estrés. Reconocidas por siglos debido a sus propiedades terapéuticas, estas aguas volcánicas ricas en azufre, hierro y minerales esenciales revitalizarán tu cuerpo y espíritu. Déjate envolver por el vapor curativo en nuestras tinajas de ciprés, en medio de un entorno natural incomparable.",
-      image: "/lovable-uploads/46270626-ab65-40db-895a-8668daa5032b.png"
+      image: "/lovable-uploads/a12a8e24-f99f-48c6-9bc2-eea9e8df4ef5.png"
     }, {
       icon: <FlameIcon />,
       title: "Ritual de Sauna y Tinaja",
       description: "Purifica cuerpo y mente con nuestro ritual de sauna seguido de inmersión en tinaja de agua termal.",
       details: "Este ritual de contraste térmico es conocido por sus beneficios circulatorios y desintoxicantes. Comienza con 15 minutos en nuestra sauna seca construida con maderas aromáticas nativas, seguido de una breve inmersión en agua fría y finaliza con un relajante baño en nuestras tinajas de agua termal mineralizada.",
-      image: "/lovable-uploads/dafd81f1-18a1-4796-9a46-b39914b747a9.jpg"
+      image: "/lovable-uploads/26544819-643d-4e3f-8599-74f7f3611221.png"
     }, {
       icon: <GlassWaterIcon />,
       title: "Piscina Natural de Montaña",
       description: "Vive la experiencia única de bañarte en nuestra piscina natural alimentada con agua fresca de la montaña.",
       details: "Las aguas cristalinas y frías fortalecen tu sistema inmunitario y revitalizan tu mente. Equilibra tu cuerpo sumergiéndote en estas aguas puras y revitalizantes que nacen directamente de los deshielos cordilleranos. Ideal para recuperar energía después de un día lleno de aventuras al aire libre.",
-      image: "/lovable-uploads/b8a0fbdb-9f9c-48fe-a336-e5d378411a67.png"
+      image: "/lovable-uploads/0aba3582-f7e0-478e-b316-3893d4cebacc.png"
     }
     ],
   },
@@ -136,25 +136,25 @@ export const experiencesData: ExperiencesData = {
       title: "Juegos de Mesa Junto al Fuego",
       description: "Disfruta de nuestra selección de juegos de mesa premium en nuestra acogedora sala común.",
       details: "Nuestra colección incluye clásicos y nuevos juegos de estrategia, perfectos para noches frías. La sala cuenta con una chimenea a leña, cómodas butacas y un servicio de té, chocolate caliente y snacks disponible para complementar la experiencia.",
-      image: "/lovable-uploads/34c4f9ff-baac-4d48-a8bd-f3c149302031.png"
+      image: "/lovable-uploads/8c94b429-4fba-49f4-a9e1-9d5970782bba.png"
     }, {
       icon: <DiceIcon />,
       title: "Torneo de Juegos Tradicionales Chilenos",
       description: "Participa en torneos de rayuela, trompo, emboque y otros juegos tradicionales chilenos.",
       details: "Aprende sobre el rico patrimonio cultural chileno a través de sus juegos tradicionales. Realizamos torneos semanales donde podrás competir amistosamente con otros huéspedes. Incluye instrucción básica para quienes no conocen los juegos y pequeños premios artesanales para los ganadores.",
-      image: "/lovable-uploads/f3566ed7-fad7-43b9-9ee9-8f1cfcfc55cd.png"
+      image: "/lovable-uploads/15e939f8-681c-4a2e-a19a-8cace70e9e38.png"
     }, {
       icon: <SparklesIcon />,
       title: "Observación de Estrellas",
       description: "Aprovecha nuestros cielos limpios para una sesión guiada de observación astronómica.",
       details: "Lejos de la contaminación lumínica, nuestro lugar ofrece condiciones ideales para la astronomía. Las sesiones incluyen telescopios profesionales, guía astronómico que te ayudará a identificar constelaciones, planetas y otros cuerpos celestes, y una selección de bebidas calientes para disfrutar bajo las estrellas.",
-      image: "/lovable-uploads/852513f7-08f6-41be-aab5-2d435195b174.png"
+      image: "/lovable-uploads/daf4f24d-4485-4324-9991-3f7d52a79e0f.png"
     }, {
       icon: <FlameKindlingIcon />,
       title: "Parrilla bajo las Estrellas",
       description: "Comparte momentos inolvidables junto al fuego en nuestra zona de parrillas al aire libre.",
       details: "Una experiencia ideal para fortalecer lazos y crear recuerdos en medio de la naturaleza. Rodeado de bosques milenarios y bajo el cielo estrellado del Valle Las Trancas, prepara un asado memorable en familia o con amigos, conectando a través de los sabores y aromas de la gastronomía tradicional chilena.",
-      image: "/lovable-uploads/7f6ccade-6dee-4a0c-9e1c-689a1a923b73.png"
+      image: "/lovable-uploads/7202eec3-bd82-4939-90a9-0a6509fa2af0.png"
     }, {
       icon: <UtensilsIcon />,
       title: "Sabores del Invernadero de Montaña",
