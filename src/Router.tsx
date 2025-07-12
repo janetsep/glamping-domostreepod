@@ -13,6 +13,7 @@ import UnitDetail from "./pages/UnitDetail";
 import TravelerType from "./pages/TravelerType";
 import CelebrationDetail from "./pages/CelebrationDetail";
 import { ReservationTest } from "./pages/ReservationTest";
+import ProductionTest from "./pages/ProductionTest";
 import { useEffect } from "react";
 import WebPayReturn from "./pages/WebPayReturn";
 import { HelmetProvider } from "react-helmet-async";
@@ -28,6 +29,7 @@ const router = createBrowserRouter(
       <Route path="celebracion/:id" element={<CelebrationDetail />} />
       <Route path="webpay/return" element={<WebPayReturn />} />
       <Route path="demo-reservas" element={<ReservationTest />} />
+      <Route path="production-test" element={<ProductionTest />} />
     </Route>
   )
 );

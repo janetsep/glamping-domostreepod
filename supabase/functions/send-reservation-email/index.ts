@@ -44,14 +44,28 @@ serve(async (req) => {
       );
     }
     
-    // Fetch reservation data
-    const response = await fetch(`${supabaseUrl}/rest/v1/reservations?id=eq.${reservationId}&select=*,units(*)`, {
+    // Fetch reservation data with unit information
+    const response = await fetch(`${supabaseUrl}/rest/v1/reservations?id=eq.${reservationId}&select=*`, {
       headers: {
         'Authorization': `Bearer ${supabaseKey}`,
         'apikey': supabaseKey,
         'Content-Type': 'application/json'
       }
     });
+    
+    // Also fetch unit information separately for more reliable data
+    let unitResponse;
+    try {
+      unitResponse = await fetch(`${supabaseUrl}/rest/v1/glamping_units?select=*`, {
+        headers: {
+          'Authorization': `Bearer ${supabaseKey}`,
+          'apikey': supabaseKey,
+          'Content-Type': 'application/json'
+        }
+      });
+    } catch (unitError) {
+      console.log('Warning: Could not fetch unit details, continuing without unit info');
+    }
     
     if (!response.ok) {
       throw new Error(`Error al obtener datos de la reserva: ${response.status}`);
@@ -70,7 +84,19 @@ serve(async (req) => {
     }
     
     const reservation = reservations[0];
-    const unit = reservation.units;
+    
+    // Get unit information
+    let unit = null;
+    if (unitResponse && unitResponse.ok) {
+      const units = await unitResponse.json();
+      unit = units.find(u => u.id === reservation.unit_id) || null;
+    }
+    
+    // Enhanced reservation details
+    const checkInDate = reservation.check_in ? new Date(reservation.check_in) : null;
+    const checkOutDate = reservation.check_out ? new Date(reservation.check_out) : null;
+    const totalNights = checkInDate && checkOutDate ? 
+      Math.ceil((checkOutDate.getTime() - checkInDate.getTime()) / (1000 * 60 * 60 * 24)) : 0;
     
     // Create email content with detailed information about the reservation
     const emailContent = `
@@ -104,23 +130,42 @@ serve(async (req) => {
           </div>
           
           <div class="reservation-details">
-            <h2>Detalles de la Unidad</h2>
+            <h2>Detalles de la Reserva</h2>
             <div class="detail-row">
               <div class="detail-label">Unidad:</div>
-              <div>${unit?.name || 'No disponible'}</div>
+              <div>${unit?.name || reservation.unit_id || 'TreePod Glamping Unit'}</div>
             </div>
             <div class="detail-row">
               <div class="detail-label">Check-in:</div>
-              <div>${reservation.check_in ? new Date(reservation.check_in).toLocaleDateString('es-CL') : 'No disponible'}</div>
+              <div>${checkInDate ? checkInDate.toLocaleDateString('es-CL', { 
+                weekday: 'long', 
+                year: 'numeric', 
+                month: 'long', 
+                day: 'numeric' 
+              }) : 'No disponible'}</div>
             </div>
             <div class="detail-row">
               <div class="detail-label">Check-out:</div>
-              <div>${reservation.check_out ? new Date(reservation.check_out).toLocaleDateString('es-CL') : 'No disponible'}</div>
+              <div>${checkOutDate ? checkOutDate.toLocaleDateString('es-CL', {
+                weekday: 'long', 
+                year: 'numeric', 
+                month: 'long', 
+                day: 'numeric' 
+              }) : 'No disponible'}</div>
+            </div>
+            <div class="detail-row">
+              <div class="detail-label">Noches:</div>
+              <div>${totalNights > 0 ? totalNights : 'No disponible'}</div>
             </div>
             <div class="detail-row">
               <div class="detail-label">Huéspedes:</div>
               <div>${reservation.guests || 'No disponible'}</div>
             </div>
+            ${reservation.reservation_type && reservation.reservation_type !== 'normal' ? `
+            <div class="detail-row">
+              <div class="detail-label">Tipo de Reserva:</div>
+              <div style="text-transform: capitalize;">${reservation.reservation_type}</div>
+            </div>` : ''}
           </div>
           
           <div class="reservation-details">
@@ -154,10 +199,13 @@ serve(async (req) => {
     </html>
     `;
     
-    // In a real scenario, you would use an email service like SendGrid, Resend, etc.
-    // For demo purposes, we'll just return success
+    // Para demostración: crear el HTML detallado y simular el envío de correo
+    // En producción, aquí conectarías con Resend, SendGrid, etc.
     
-    console.log(`Simulando envío de correo a ${email} para la reserva ${reservationId}`);
+    console.log(`📧 ENVÍO SIMULADO DE CORREO EXITOSO 📧`);
+    console.log(`To: ${email}`);
+    console.log(`Reservation ID: ${reservationId}`);
+    console.log(`Content Preview:`, emailContent.substring(0, 200) + '...');
     
     return new Response(
       JSON.stringify({ 

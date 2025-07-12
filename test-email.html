@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Test Email Functionality</title>
+    <script>
+        async function testEmail() {
+            const email = "janetsep@gmail.com";
+            const testReservationId = "test-123-reservation";
+            
+            try {
+                console.log('Sending test email to:', email);
+                
+                const response = await fetch('https://gtxjfmvnzrsuaxryffnt.supabase.co/functions/v1/send-reservation-email', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        email: email,
+                        phone: "+56912345678",
+                        name: "Janet Sepúlveda",
+                        reservationId: testReservationId
+                    })
+                });
+                
+                const result = await response.json();
+                
+                if (response.ok) {
+                    document.getElementById('result').innerHTML = 
+                        `<div style="color: green;">
+                            <h3>✅ Email test successful!</h3>
+                            <p>Email would be sent to: ${email}</p>
+                            <p>Response: ${JSON.stringify(result, null, 2)}</p>
+                        </div>`;
+                } else {
+                    document.getElementById('result').innerHTML = 
+                        `<div style="color: red;">
+                            <h3>❌ Email test failed</h3>
+                            <p>Error: ${JSON.stringify(result, null, 2)}</p>
+                        </div>`;
+                }
+            } catch (error) {
+                document.getElementById('result').innerHTML = 
+                    `<div style="color: red;">
+                        <h3>❌ Email test failed</h3>
+                        <p>Error: ${error.message}</p>
+                    </div>`;
+            }
+        }
+    </script>
+</head>
+<body>
+    <h1>Test Email Functionality</h1>
+    <button onclick="testEmail()">Test Email to janetsep@gmail.com</button>
+    <div id="result" style="margin-top: 20px; padding: 20px; border: 1px solid #ccc; border-radius: 5px;"></div>
+</body>
+</html>
