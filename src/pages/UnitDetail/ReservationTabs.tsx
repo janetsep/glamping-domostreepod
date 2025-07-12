@@ -78,6 +78,7 @@ export const ReservationTabs = ({
           name: 'Mujeres al Descanso y Relax',
           duration: '2 noches',
           price: '$520.000',
+          basePrice: 520000,
           description: 'Paquete fijo por domo, incluye todas las comodidades para hasta 8 personas'
         };
       case 'cumpleanos-package':
@@ -85,13 +86,31 @@ export const ReservationTabs = ({
           name: 'Cumpleaños en la Naturaleza',
           duration: '2 noches',
           price: '$580.000',
+          basePrice: 580000,
           description: 'Paquete fijo por domo con decoración especial'
+        };
+      case 'aniversario-package':
+        return {
+          name: 'Aniversario Romántico',
+          duration: '2 noches',
+          price: '$650.000',
+          basePrice: 650000,
+          description: 'Paquete romántico fijo por domo con cena especial'
+        };
+      case 'familia-package':
+        return {
+          name: 'Fiesta Familiar en la Naturaleza',
+          duration: '2 noches',
+          price: '$550.000',
+          basePrice: 550000,
+          description: 'Paquete familiar fijo por domo con todas las comodidades'
         };
       default:
         return {
           name: 'Paquete de Celebración',
           duration: '2 noches',
           price: 'Precio fijo',
+          basePrice: 520000,
           description: 'Paquete por domo'
         };
     }
@@ -174,7 +193,7 @@ export const ReservationTabs = ({
               </button>
             </div>
             <p className="text-xs text-gray-600">
-              Precio total: ${((selectedDomos || 1) * 520000).toLocaleString()} CLP
+              Precio total: ${((selectedDomos || 1) * (packageInfo?.basePrice || 520000)).toLocaleString()} CLP
             </p>
           </div>
         )}

@@ -38,12 +38,23 @@ export const useQuoteManagement = () => {
       displayUnit.id === 'familia-package'
     );
 
+    // Obtener precio base del paquete
+    const getPackagePrice = (packageId: string) => {
+      switch (packageId) {
+        case 'mujeres-relax-package': return 520000;
+        case 'cumpleanos-package': return 580000;
+        case 'aniversario-package': return 650000;
+        case 'familia-package': return 550000;
+        default: return 520000;
+      }
+    };
+
     if (isCelebrationPackage) {
       // Para paquetes de celebración: precio fijo por domo, multiplicado por número de domos
       console.log('🎉 [useQuoteManagement] Paquete de celebración detectado');
       
       const nights = Math.ceil((endDate.getTime() - startDate.getTime()) / (1000 * 60 * 60 * 24));
-      const basePrice = displayUnit.prices?.base_price || 0;
+      const basePrice = getPackagePrice(displayUnit.id);
       const totalPrice = basePrice * requiredDomos; // Precio del paquete por número de domos
       
       const quoteDetails = {
