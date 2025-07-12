@@ -35,7 +35,7 @@ const router = createBrowserRouter(
 function Router() {
   // Handle hash navigation when the page loads or changes
   useEffect(() => {
-    const handleHashChange = () => {
+    const handleHashNavigation = () => {
       // Check if there's a hash in the URL
       if (window.location.hash) {
         // Extract the ID from the hash
@@ -44,21 +44,31 @@ function Router() {
         const element = document.getElementById(id);
         // If the element exists, scroll to it
         if (element) {
+          // Longer delay to ensure the page has fully loaded
           setTimeout(() => {
             element.scrollIntoView({ behavior: 'smooth' });
-          }, 100);
+          }, 300);
         }
       }
     };
 
-    // Add event listener for hash changes
-    window.addEventListener('hashchange', handleHashChange);
-    // Handle hash on initial load
-    handleHashChange();
+    // Handle hash navigation on route changes and hash changes
+    const handleRouteChange = () => {
+      // Small delay to ensure DOM is updated after route change
+      setTimeout(handleHashNavigation, 100);
+    };
 
-    // Clean up the event listener
+    // Add event listeners
+    window.addEventListener('hashchange', handleHashNavigation);
+    window.addEventListener('popstate', handleRouteChange);
+    
+    // Handle hash on initial load and route changes
+    handleHashNavigation();
+
+    // Clean up the event listeners
     return () => {
-      window.removeEventListener('hashchange', handleHashChange);
+      window.removeEventListener('hashchange', handleHashNavigation);
+      window.removeEventListener('popstate', handleRouteChange);
     };
   }, []);
 
