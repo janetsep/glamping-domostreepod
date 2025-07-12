@@ -2,6 +2,7 @@ import { DateSelector } from "./DateSelector";
 import { PackageInfoDisplay, getPackageInfo } from "./PackageInfo";
 import { DomeSelector } from "./DomeSelector";
 import { AvailabilityAlerts } from "./AvailabilityAlerts";
+import { PackageDurationMessage } from "./PackageDurationMessage";
 
 interface CelebrationPackageTabProps {
   unitId: string;
@@ -43,6 +44,12 @@ export const CelebrationPackageTab = ({
         onEndDateChange={onEndDateChange}
         unitId={unitId}
         requiredDomos={requiredDomos}
+      />
+      
+      <PackageDurationMessage
+        startDate={startDate}
+        endDate={endDate}
+        packageDuration={2}
       />
       
       <DomeSelector
