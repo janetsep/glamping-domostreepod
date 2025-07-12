@@ -1,9 +1,9 @@
 
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { DateSelector } from "@/components/unit-detail/DateSelector";
-import { GuestSelector } from "@/components/unit-detail/GuestSelector";
 import { ActivitiesSelector } from "@/components/unit-detail/ActivitiesSelector";
 import { ThemedPackagesSelector } from "@/components/unit-detail/ThemedPackagesSelector";
+import { CelebrationPackageTab } from "@/components/unit-detail/CelebrationPackageTab";
+import { RegularUnitTab } from "@/components/unit-detail/RegularUnitTab";
 import { Activity, ThemedPackage } from "@/types";
 
 interface ReservationTabsProps {
@@ -70,54 +70,6 @@ export const ReservationTabs = ({
     unitId === 'familia-package'
   );
 
-  // Obtener información del paquete
-  const getPackageInfo = (packageId: string) => {
-    switch (packageId) {
-      case 'mujeres-relax-package':
-        return {
-          name: 'Mujeres al Descanso y Relax',
-          duration: '2 noches',
-          price: '$520.000',
-          basePrice: 520000,
-          description: 'Paquete fijo por domo, incluye todas las comodidades para hasta 8 personas'
-        };
-      case 'cumpleanos-package':
-        return {
-          name: 'Cumpleaños en la Naturaleza',
-          duration: '2 noches',
-          price: '$580.000',
-          basePrice: 580000,
-          description: 'Paquete fijo por domo con decoración especial'
-        };
-      case 'aniversario-package':
-        return {
-          name: 'Aniversario Romántico',
-          duration: '2 noches',
-          price: '$650.000',
-          basePrice: 650000,
-          description: 'Paquete romántico fijo por domo con cena especial'
-        };
-      case 'familia-package':
-        return {
-          name: 'Fiesta Familiar en la Naturaleza',
-          duration: '2 noches',
-          price: '$550.000',
-          basePrice: 550000,
-          description: 'Paquete familiar fijo por domo con todas las comodidades'
-        };
-      default:
-        return {
-          name: 'Paquete de Celebración',
-          duration: '2 noches',
-          price: 'Precio fijo',
-          basePrice: 520000,
-          description: 'Paquete por domo'
-        };
-    }
-  };
-
-  const packageInfo = isCelebrationPackage ? getPackageInfo(unitId) : null;
-
   return (
     <Tabs 
       defaultValue="dates" 
@@ -136,79 +88,37 @@ export const ReservationTabs = ({
       </TabsList>
       
       <TabsContent value="dates" className="space-y-4">
-        {/* Información del paquete para paquetes de celebración */}
-        {isCelebrationPackage && packageInfo && (
-          <div className="p-4 bg-primary/5 border border-primary/20 rounded-lg mb-4">
-            <h3 className="font-semibold text-primary mb-2">{packageInfo.name}</h3>
-            <div className="text-sm space-y-1">
-              <p><span className="font-medium">Duración:</span> {packageInfo.duration}</p>
-              <p><span className="font-medium">Precio:</span> {packageInfo.price} por domo</p>
-              <p className="text-gray-600">{packageInfo.description}</p>
-            </div>
-          </div>
-        )}
-        
-        <DateSelector
-          startDate={startDate}
-          endDate={endDate}
-          onStartDateChange={onStartDateChange}
-          onEndDateChange={onEndDateChange}
-          unitId={unitId}
-          requiredDomos={requiredDomos}
-        />
-        
-        {/* Selector de huéspedes solo para unidades regulares */}
-        {!isCelebrationPackage && (
-          <GuestSelector
-            value={guests}
-            onChange={onGuestsChange}
-            maxGuests={16}
+        {isCelebrationPackage && selectedDomos !== undefined && setSelectedDomos ? (
+          <CelebrationPackageTab
+            unitId={unitId}
+            startDate={startDate}
+            endDate={endDate}
+            onStartDateChange={onStartDateChange}
+            onEndDateChange={onEndDateChange}
+            requiredDomos={requiredDomos}
+            selectedDomos={selectedDomos}
+            setSelectedDomos={setSelectedDomos}
+            isAvailable={isAvailable}
             availableDomos={availableDomos}
+            guests={guests}
+          />
+        ) : (
+          <RegularUnitTab
+            unitId={unitId}
+            startDate={startDate}
+            endDate={endDate}
+            onStartDateChange={onStartDateChange}
+            onEndDateChange={onEndDateChange}
+            guests={guests}
+            onGuestsChange={onGuestsChange}
             adults={adults}
             children={children}
             onAdultsChange={onAdultsChange}
             onChildrenChange={onChildrenChange}
+            requiredDomos={requiredDomos}
+            isAvailable={isAvailable}
+            availableDomos={availableDomos}
           />
-        )}
-        
-        {/* Selector de domos para paquetes de celebración */}
-        {isCelebrationPackage && setSelectedDomos && (
-          <div className="space-y-2">
-            <label className="text-sm font-medium">Número de domos</label>
-            <div className="flex items-center space-x-4">
-              <button
-                onClick={() => setSelectedDomos(Math.max(1, (selectedDomos || 1) - 1))}
-                className="w-8 h-8 rounded-full border border-primary/20 hover:bg-primary/10 flex items-center justify-center"
-                disabled={(selectedDomos || 1) <= 1}
-              >
-                -
-              </button>
-              <span className="w-12 text-center font-medium">{selectedDomos || 1}</span>
-              <button
-                onClick={() => setSelectedDomos(Math.min((availableDomos || 6), (selectedDomos || 1) + 1))}
-                className="w-8 h-8 rounded-full border border-primary/20 hover:bg-primary/10 flex items-center justify-center"
-                disabled={availableDomos !== undefined && (selectedDomos || 1) >= availableDomos}
-              >
-                +
-              </button>
-            </div>
-            <p className="text-xs text-gray-600">
-              Precio total: ${((selectedDomos || 1) * (packageInfo?.basePrice || 520000)).toLocaleString()} CLP
-            </p>
-          </div>
-        )}
-        
-        {isAvailable === false && (
-          <div className="p-3 bg-red-50 border border-red-100 rounded text-red-800 text-sm mt-4">
-            No hay disponibilidad para las fechas seleccionadas. Por favor, selecciona otras fechas.
-          </div>
-        )}
-        
-        {availableDomos !== undefined && requiredDomos !== undefined && availableDomos < requiredDomos && (
-          <div className="p-3 bg-amber-50 border border-amber-100 rounded text-amber-800 text-sm mt-4">
-            No hay suficientes domos disponibles. Se necesitan {requiredDomos} domos para {guests} huéspedes, 
-            pero solo hay {availableDomos} disponibles. Por favor, reduce la cantidad de huéspedes o selecciona otras fechas.
-          </div>
         )}
       </TabsContent>
       
