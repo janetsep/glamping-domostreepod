@@ -9,9 +9,17 @@ interface UnitInfoProps {
 export const UnitInfo = ({
   unit
 }: UnitInfoProps) => {
-  // Puntuación real de la sección "¡Los Huéspedes Opinan!" - Calificación general
-  const realRating = 4.9;
+  // Datos reales de la sección "¡Los Huéspedes Opinan!"
+  const reviewsPlatforms = [
+    { name: "Todas las reseñas", rating: "4.9", color: "text-gray-700" },
+    { name: "Airbnb", rating: "5.0", color: "text-red-500" },
+    { name: "Google", rating: "4.9", color: "text-blue-500" },
+    { name: "Booking.com", rating: "9.6", color: "text-blue-700" },
+    { name: "Tripadvisor", rating: "5.0", color: "text-green-600" }
+  ];
   
+  const generalRating = 4.9;
+
   return <Card>
       <CardHeader>
         <div className="flex items-start justify-between">
@@ -24,9 +32,30 @@ export const UnitInfo = ({
               <span className="text-sm">Valle Las Trancas, Región de Ñuble</span>
             </div>
           </div>
-          <div className="flex items-center gap-1">
-            <Star className="w-5 h-5 fill-yellow-400 text-yellow-400" />
-            <span className="font-semibold">{realRating}</span>
+          <div className="text-right">
+            {/* Tabla de puntuaciones por plataforma */}
+            <div className="mb-3 border border-gray-200 rounded-lg p-3 bg-gray-50">
+              <div className="space-y-1 text-xs">
+                {reviewsPlatforms.map((platform, index) => (
+                  <div key={platform.name} className={`flex justify-between items-center ${index === 0 ? 'border-b border-gray-300 pb-1 mb-1' : ''}`}>
+                    <span className={platform.color}>{platform.name}</span>
+                    <span className="font-semibold">{platform.rating}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+            
+            {/* Calificación general con estrellas */}
+            <div className="text-center">
+              <div className="text-sm text-gray-600 mb-1">Calificación general</div>
+              <div className="flex items-center justify-center gap-1 mb-1">
+                <span className="font-bold text-lg">{generalRating}</span>
+                {[...Array(5)].map((_, i) => (
+                  <Star key={i} className="w-4 h-4 fill-red-500 text-red-500" />
+                ))}
+              </div>
+              <div className="text-xs text-gray-500">(161)</div>
+            </div>
           </div>
         </div>
       </CardHeader>
