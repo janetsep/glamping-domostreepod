@@ -25,14 +25,15 @@ export const ReservationConfirmation = forwardRef<HTMLDivElement, ReservationCon
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [clientInfoSubmitted, setClientInfoSubmitted] = useState(false);
     const [reservationCode, setReservationCode] = useState<string | null>(null);
+    // Inicializar estado vacío sin usar localStorage para evitar conflictos
     const [clientInfo, setClientInfo] = useState<ClientInformation>({
-      name: localStorage.getItem('client_name') || '',
-      email: localStorage.getItem('client_email') || '',
-      phone: localStorage.getItem('client_phone') || ''
+      name: '',
+      email: '',
+      phone: ''
     });
     const { saveClientInformation } = useMutateReservationStatus();
 
-    // Verificar si ya existe información del cliente para esta reserva
+    // Verificar si ya existe información del cliente para esta reserva específica
     useEffect(() => {
       const checkExistingClientInfo = async () => {
         if (reservationId) {
@@ -44,11 +45,11 @@ export const ReservationConfirmation = forwardRef<HTMLDivElement, ReservationCon
               .single();
               
             if (data) {
-              // Update local state with database values if available
+              // Solo usar datos de la base de datos para esta reserva específica
               const updatedInfo = {
-                name: data.client_name || clientInfo.name,
-                email: data.client_email || clientInfo.email,
-                phone: data.client_phone || clientInfo.phone
+                name: data.client_name || '',
+                email: data.client_email || '',
+                phone: data.client_phone || ''
               };
               
               setClientInfo(updatedInfo);
@@ -62,10 +63,33 @@ export const ReservationConfirmation = forwardRef<HTMLDivElement, ReservationCon
               if (data.client_name && data.client_email && data.client_phone) {
                 console.log('Ya existe información completa del cliente para esta reserva:', data);
                 setClientInfoSubmitted(true);
+              } else {
+                // Si no hay información completa, usar localStorage como fallback solo una vez
+                const fallbackInfo = {
+                  name: data.client_name || localStorage.getItem('client_name') || '',
+                  email: data.client_email || localStorage.getItem('client_email') || '',
+                  phone: data.client_phone || localStorage.getItem('client_phone') || ''
+                };
+                setClientInfo(fallbackInfo);
               }
+            } else {
+              // Si no hay datos en la base de datos, usar localStorage
+              const fallbackInfo = {
+                name: localStorage.getItem('client_name') || '',
+                email: localStorage.getItem('client_email') || '',
+                phone: localStorage.getItem('client_phone') || ''
+              };
+              setClientInfo(fallbackInfo);
             }
           } catch (error) {
             console.error('Error al verificar información del cliente:', error);
+            // En caso de error, usar localStorage como fallback
+            const fallbackInfo = {
+              name: localStorage.getItem('client_name') || '',
+              email: localStorage.getItem('client_email') || '',
+              phone: localStorage.getItem('client_phone') || ''
+            };
+            setClientInfo(fallbackInfo);
           }
         }
       };

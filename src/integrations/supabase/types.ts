@@ -190,6 +190,9 @@ export type Database = {
           payment_method: string
           pets: number | null
           reservation_code: string | null
+          reservation_type:
+            | Database["public"]["Enums"]["reservation_type_enum"]
+            | null
           selected_activities: string[] | null
           selected_packages: string[] | null
           services: string[] | null
@@ -212,6 +215,9 @@ export type Database = {
           payment_method?: string
           pets?: number | null
           reservation_code?: string | null
+          reservation_type?:
+            | Database["public"]["Enums"]["reservation_type_enum"]
+            | null
           selected_activities?: string[] | null
           selected_packages?: string[] | null
           services?: string[] | null
@@ -234,6 +240,9 @@ export type Database = {
           payment_method?: string
           pets?: number | null
           reservation_code?: string | null
+          reservation_type?:
+            | Database["public"]["Enums"]["reservation_type_enum"]
+            | null
           selected_activities?: string[] | null
           selected_packages?: string[] | null
           services?: string[] | null
@@ -287,7 +296,13 @@ export type Database = {
       [_ in never]: never
     }
     Enums: {
-      [_ in never]: never
+      reservation_type_enum:
+        | "normal"
+        | "celebracion"
+        | "actividad"
+        | "romance"
+        | "familia"
+        | "especial"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -414,6 +429,15 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      reservation_type_enum: [
+        "normal",
+        "celebracion",
+        "actividad",
+        "romance",
+        "familia",
+        "especial",
+      ],
+    },
   },
 } as const

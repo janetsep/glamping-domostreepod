@@ -41,7 +41,8 @@ export const useReservationCreation = ({
     selectedPackages: string[] = [],
     requiredDomos?: number,
     availableUnitIds?: string[],
-    clientInfo?: ClientInfo
+    clientInfo?: ClientInfo,
+    reservationType: 'normal' | 'celebracion' | 'actividad' | 'romance' | 'familia' | 'especial' = 'normal'
   ) => {
     setIsLoading(true);
 
@@ -83,7 +84,8 @@ export const useReservationCreation = ({
         paymentMethod,
         selectedActivities,
         selectedPackages,
-        clientInfo
+        clientInfo,
+        reservationType
       );
 
       const resultData = {
@@ -206,7 +208,8 @@ async function createReservationsTransaction(
   paymentMethod: string,
   selectedActivities: string[],
   selectedPackages: string[],
-  clientInfo?: ClientInfo
+  clientInfo?: ClientInfo,
+  reservationType: 'normal' | 'celebracion' | 'actividad' | 'romance' | 'familia' | 'especial' = 'normal'
 ) {
   // Generar código de reserva único
   const reservationCode = await generateReservationCode();
@@ -222,7 +225,8 @@ async function createReservationsTransaction(
     selectedActivities,
     selectedPackages,
     reservationCode,
-    clientInfo
+    clientInfo,
+    reservationType
   );
 
   // Insertar todas las reservas en una transacción
@@ -254,7 +258,8 @@ function distributeGuestsAndPrice(
   selectedActivities: string[],
   selectedPackages: string[],
   reservationCode: string,
-  clientInfo?: ClientInfo
+  clientInfo?: ClientInfo,
+  reservationType: 'normal' | 'celebracion' | 'actividad' | 'romance' | 'familia' | 'especial' = 'normal'
 ) {
   const reservations = [];
   let remainingGuests = totalGuests;
@@ -287,6 +292,7 @@ function distributeGuestsAndPrice(
       selected_activities: selectedActivities,
       selected_packages: selectedPackages,
       reservation_code: reservationCode,
+      reservation_type: reservationType,
       client_name: clientInfo?.name,
       client_email: clientInfo?.email,
       client_phone: clientInfo?.phone,
