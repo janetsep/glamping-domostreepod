@@ -1,7 +1,6 @@
 
 import Hero from "@/components/Hero";
 import Gallery from "@/components/Gallery";
-import TravelerTypes from "@/components/TravelerTypes";
 import Packages from "@/components/Packages";
 import Testimonials from "@/components/Testimonials";
 import Location from "@/components/Location";
@@ -19,7 +18,6 @@ const Index = () => {
       <Hero />
       <CultureSection />
       <Gallery />
-      <TravelerTypes />
       <Packages units={units} isLoading={isLoading} />
       <Celebrations />
       <Testimonials />
