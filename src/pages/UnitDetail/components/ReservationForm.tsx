@@ -69,22 +69,56 @@ export const ReservationForm = ({
 }: ReservationFormProps) => {
   const [showAlternatives, setShowAlternatives] = useState(false);
 
-  // Calcular domos requeridos por huéspedes
-  const calculatedRequiredDomos = Math.ceil(guests / 4);
+  // Detectar si es un paquete de celebración
+  const isCelebrationPackage = unitId && (
+    unitId.includes('package') || 
+    unitId === 'mujeres-relax-package' ||
+    unitId === 'cumpleanos-package' ||
+    unitId === 'aniversario-package' ||
+    unitId === 'familia-package'
+  );
+
+  // Para paquetes de celebración, establecer automáticamente la duración
+  useEffect(() => {
+    if (isCelebrationPackage && startDate && !endDate) {
+      const packageDuration = getPackageDuration(unitId);
+      const calculatedEndDate = new Date(startDate);
+      calculatedEndDate.setDate(calculatedEndDate.getDate() + packageDuration);
+      setEndDate(calculatedEndDate);
+    }
+  }, [startDate, endDate, isCelebrationPackage, unitId, setEndDate]);
+
+  // Función para obtener la duración del paquete
+  const getPackageDuration = (packageId: string): number => {
+    switch (packageId) {
+      case 'mujeres-relax-package':
+      case 'cumpleanos-package':
+      case 'aniversario-package':
+      case 'familia-package':
+        return 2; // 2 noches por defecto
+      default:
+        return 2;
+    }
+  };
+
+  // Calcular domos requeridos solo para unidades regulares
+  const calculatedRequiredDomos = isCelebrationPackage ? 1 : Math.ceil(guests / 4);
 
   // ¿Hay suficientes domos para el grupo?
-  const hasSufficientDomos = availableDomos !== undefined ? availableDomos >= calculatedRequiredDomos : false;
+  const hasSufficientDomos = isCelebrationPackage ? 
+    true : // Los paquetes siempre tienen disponibilidad simplificada
+    (availableDomos !== undefined ? availableDomos >= calculatedRequiredDomos : false);
 
   // Efecto para mostrar las fechas alternativas cuando no hay disponibilidad completa
   useEffect(() => {
-    if ((isAvailable === false || isAvailable && availableDomos !== undefined && availableDomos < calculatedRequiredDomos) && alternativeDates.length > 0) {
+    if (!isCelebrationPackage && (isAvailable === false || isAvailable && availableDomos !== undefined && availableDomos < calculatedRequiredDomos) && alternativeDates.length > 0) {
       setShowAlternatives(true);
     } else {
       setShowAlternatives(false);
     }
-  }, [isAvailable, availableDomos, calculatedRequiredDomos, alternativeDates]);
+  }, [isAvailable, availableDomos, calculatedRequiredDomos, alternativeDates, isCelebrationPackage]);
 
-  console.log('🔍 [ReservationForm] Estado final de cotización:', {
+  console.log('🔍 [ReservationForm] Estado:', {
     startDate: startDate?.toISOString(),
     endDate: endDate?.toISOString(),
     guests,
@@ -92,6 +126,7 @@ export const ReservationForm = ({
     availableDomos,
     hasSufficientDomos,
     isAvailable,
+    isCelebrationPackage,
     canQuote: startDate && endDate && hasSufficientDomos
   });
 

@@ -16,6 +16,15 @@ export const useUnitDetailState = (unitId?: string) => {
   const displayUnit = units.find(unit => unit.id === unitId) || units[0];
   const confirmationRef = useRef(null);
 
+  // Detectar si es un paquete de celebración
+  const isCelebrationPackage = unitId && (
+    unitId.includes('package') || 
+    unitId === 'mujeres-relax-package' ||
+    unitId === 'cumpleanos-package' ||
+    unitId === 'aniversario-package' ||
+    unitId === 'familia-package'
+  );
+
   const [startDate, setStartDate] = useState<Date | undefined>();
   const [endDate, setEndDate] = useState<Date | undefined>();
 
@@ -23,17 +32,21 @@ export const useUnitDetailState = (unitId?: string) => {
   const { availableDomos, isLoadingAvailability } = useDateAvailability(startDate, endDate);
 
   // Gestión de huéspedes con conocimiento de disponibilidad
-  const {
-    guests,
-    adults,
-    children,
-    setGuests,
-    setAdults,
-    setChildren
-  } = useGuestManagement(availableDomos);
+  const guestManagement = useGuestManagement(availableDomos);
+  
+  // Para paquetes de celebración, establecer valores por defecto
+  const guests = isCelebrationPackage ? 4 : guestManagement.guests;
+  const adults = isCelebrationPackage ? 4 : guestManagement.adults;
+  const children = isCelebrationPackage ? 0 : guestManagement.children;
+  const setGuests = isCelebrationPackage ? () => {} : guestManagement.setGuests;
+  const setAdults = isCelebrationPackage ? () => {} : guestManagement.setAdults;
+  const setChildren = isCelebrationPackage ? () => {} : guestManagement.setChildren;
     
   // Cálculo de domos requeridos y estado de disponibilidad
-  const requiredDomos = useMemo(() => Math.max(1, Math.ceil(guests / 4)), [guests]);
+  const requiredDomos = useMemo(() => {
+    if (isCelebrationPackage) return 1; // Los paquetes son siempre por 1 domo
+    return Math.max(1, Math.ceil(guests / 4));
+  }, [guests, isCelebrationPackage]);
 
   const isAvailable = useMemo(() => {
     if (isLoadingAvailability || availableDomos === undefined) {

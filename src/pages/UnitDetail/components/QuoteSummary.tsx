@@ -32,6 +32,9 @@ export const QuoteSummary = ({
 }: QuoteSummaryProps) => {
   // Usamos la distribución que viene directamente de la cotización
   const domoDistribution = quote?.domoDistribution || [];
+  
+  // Detectar si es un paquete de celebración
+  const isCelebrationPackage = quote?.isCelebrationPackage || false;
 
   return (
     <>
@@ -56,8 +59,18 @@ export const QuoteSummary = ({
           <p>Fechas seleccionadas:</p>
           <p>Entrada: {startDate?.toLocaleDateString()}</p>
           <p>Salida: {endDate?.toLocaleDateString()}</p>
-          <p>Huéspedes totales: {guests}</p>
-          <p>Domos necesarios: {requiredDomos}</p>
+          
+          {isCelebrationPackage ? (
+            <>
+              <p>Paquete de celebración: Precio fijo por domo</p>
+              <p>Duración: {quote.nights} {quote.nights === 1 ? 'noche' : 'noches'}</p>
+            </>
+          ) : (
+            <>
+              <p>Huéspedes totales: {guests}</p>
+              <p>Domos necesarios: {requiredDomos}</p>
+            </>
+          )}
         </div>
       )}
     </>

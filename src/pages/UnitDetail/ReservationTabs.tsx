@@ -57,6 +57,44 @@ export const ReservationTabs = ({
   unitId,
   availableDomos
 }: ReservationTabsProps) => {
+  // Detectar si es un paquete de celebración
+  const isCelebrationPackage = unitId && (
+    unitId.includes('package') || 
+    unitId === 'mujeres-relax-package' ||
+    unitId === 'cumpleanos-package' ||
+    unitId === 'aniversario-package' ||
+    unitId === 'familia-package'
+  );
+
+  // Obtener información del paquete
+  const getPackageInfo = (packageId: string) => {
+    switch (packageId) {
+      case 'mujeres-relax-package':
+        return {
+          name: 'Mujeres al Descanso y Relax',
+          duration: '2 noches',
+          price: '$520.000',
+          description: 'Paquete fijo por domo, incluye todas las comodidades para hasta 8 personas'
+        };
+      case 'cumpleanos-package':
+        return {
+          name: 'Cumpleaños en la Naturaleza',
+          duration: '2 noches',
+          price: '$580.000',
+          description: 'Paquete fijo por domo con decoración especial'
+        };
+      default:
+        return {
+          name: 'Paquete de Celebración',
+          duration: '2 noches',
+          price: 'Precio fijo',
+          description: 'Paquete por domo'
+        };
+    }
+  };
+
+  const packageInfo = isCelebrationPackage ? getPackageInfo(unitId) : null;
+
   return (
     <Tabs 
       defaultValue="dates" 
@@ -64,13 +102,29 @@ export const ReservationTabs = ({
       onValueChange={onTabChange}
       className="w-full"
     >
-      <TabsList className="grid grid-cols-3 mb-4">
-        <TabsTrigger value="dates">Fechas y huéspedes</TabsTrigger>
+      <TabsList className={`grid ${isCelebrationPackage ? 'grid-cols-2' : 'grid-cols-3'} mb-4`}>
+        <TabsTrigger value="dates">
+          {isCelebrationPackage ? 'Fechas' : 'Fechas y huéspedes'}
+        </TabsTrigger>
         <TabsTrigger value="activities">Actividades</TabsTrigger>
-        <TabsTrigger value="packages">Paquetes temáticos</TabsTrigger>
+        {!isCelebrationPackage && (
+          <TabsTrigger value="packages">Paquetes temáticos</TabsTrigger>
+        )}
       </TabsList>
       
       <TabsContent value="dates" className="space-y-4">
+        {/* Información del paquete para paquetes de celebración */}
+        {isCelebrationPackage && packageInfo && (
+          <div className="p-4 bg-primary/5 border border-primary/20 rounded-lg mb-4">
+            <h3 className="font-semibold text-primary mb-2">{packageInfo.name}</h3>
+            <div className="text-sm space-y-1">
+              <p><span className="font-medium">Duración:</span> {packageInfo.duration}</p>
+              <p><span className="font-medium">Precio:</span> {packageInfo.price} por domo</p>
+              <p className="text-gray-600">{packageInfo.description}</p>
+            </div>
+          </div>
+        )}
+        
         <DateSelector
           startDate={startDate}
           endDate={endDate}
@@ -80,16 +134,19 @@ export const ReservationTabs = ({
           requiredDomos={requiredDomos}
         />
         
-        <GuestSelector
-          value={guests}
-          onChange={onGuestsChange}
-          maxGuests={16}
-          availableDomos={availableDomos}
-          adults={adults}
-          children={children}
-          onAdultsChange={onAdultsChange}
-          onChildrenChange={onChildrenChange}
-        />
+        {/* Selector de huéspedes solo para unidades regulares */}
+        {!isCelebrationPackage && (
+          <GuestSelector
+            value={guests}
+            onChange={onGuestsChange}
+            maxGuests={16}
+            availableDomos={availableDomos}
+            adults={adults}
+            children={children}
+            onAdultsChange={onAdultsChange}
+            onChildrenChange={onChildrenChange}
+          />
+        )}
         
         {isAvailable === false && (
           <div className="p-3 bg-red-50 border border-red-100 rounded text-red-800 text-sm mt-4">

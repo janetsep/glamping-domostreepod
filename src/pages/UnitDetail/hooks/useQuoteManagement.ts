@@ -20,7 +20,8 @@ export const useQuoteManagement = () => {
       endDate: endDate?.toISOString(),
       guests,
       requiredDomos,
-      displayUnit: !!displayUnit
+      displayUnit: !!displayUnit,
+      unitId: displayUnit?.id
     });
 
     if (!startDate || !endDate || !displayUnit) {
@@ -28,11 +29,50 @@ export const useQuoteManagement = () => {
       return;
     }
 
-    // Calcular el número correcto de domos basado en huéspedes
+    // Detectar si es un paquete de celebración
+    const isCelebrationPackage = displayUnit.id && (
+      displayUnit.id.includes('package') || 
+      displayUnit.id === 'mujeres-relax-package' ||
+      displayUnit.id === 'cumpleanos-package' ||
+      displayUnit.id === 'aniversario-package' ||
+      displayUnit.id === 'familia-package'
+    );
+
+    if (isCelebrationPackage) {
+      // Para paquetes de celebración: precio fijo por domo, no por persona
+      console.log('🎉 [useQuoteManagement] Paquete de celebración detectado');
+      
+      const nights = Math.ceil((endDate.getTime() - startDate.getTime()) / (1000 * 60 * 60 * 24));
+      const basePrice = displayUnit.prices?.base_price || 0;
+      
+      const quoteDetails = {
+        unitPrice: basePrice,
+        totalPrice: basePrice, // Precio fijo por domo
+        checkIn: startDate,
+        checkOut: endDate,
+        nights,
+        guests,
+        requiredDomos: 1, // Los paquetes de celebración son por domo
+        breakdown: {
+          basePrice: basePrice,
+          nights: nights,
+          unitPrice: basePrice,
+          totalPrice: basePrice
+        },
+        isCelebrationPackage: true
+      };
+      
+      console.log('🔍 [useQuoteManagement] Cotización de paquete generada:', quoteDetails);
+      setQuote(quoteDetails);
+      setShowQuote(true);
+      return;
+    }
+
+    // Lógica normal para unidades regulares
     const calculatedRequiredDomos = Math.ceil(guests / 4);
     const finalRequiredDomos = Math.max(calculatedRequiredDomos, 1);
 
-    console.log('🔍 [useQuoteManagement] Calculando domos requeridos:', {
+    console.log('🔍 [useQuoteManagement] Calculando domos requeridos para unidad regular:', {
       huéspedes: guests,
       domosCalculados: calculatedRequiredDomos,
       domosFinales: finalRequiredDomos,
@@ -45,7 +85,7 @@ export const useQuoteManagement = () => {
         startDate,
         endDate,
         guests,
-        finalRequiredDomos // Usar el cálculo correcto
+        finalRequiredDomos
       );
       
       console.log('🔍 [useQuoteManagement] Cotización generada:', quoteDetails);
