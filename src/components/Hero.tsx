@@ -27,20 +27,25 @@ const Hero = () => {
   const benefitsRef = useRef<HTMLElement>(null);
   const heroRef = useRef<HTMLElement>(null); // Referencia a la sección hero
 
-  // Usar las nuevas imágenes reales mejoradas de TreePod
-  const images = [{
-    src: treepodExterior,
-    placeholder: treepodExterior + "?width=20"
-  }, {
-    src: treepodInterior,
-    placeholder: treepodInterior + "?width=20"
-  }, {
-    src: forestCanopy,
-    placeholder: forestCanopy + "?width=20"
-  }, {
-    src: treepodSiteOverview,
-    placeholder: treepodSiteOverview + "?width=20"
-  }];
+  // Usar las imágenes reales auténticas de TreePod
+  const images = [
+    {
+      src: "/lovable-uploads/a12a8e24-f99f-48c6-9bc2-eea9e8df4ef5.png", // Domo al atardecer
+      placeholder: "/lovable-uploads/dafd81f1-18a1-4796-9a46-b39914b747a9.jpg"
+    },
+    {
+      src: "/lovable-uploads/26544819-643d-4e3f-8599-74f7f3611221.png", // Domo en bosque verde
+      placeholder: "/lovable-uploads/dafd81f1-18a1-4796-9a46-b39914b747a9.jpg"
+    },
+    {
+      src: "/lovable-uploads/0aba3582-f7e0-478e-b316-3893d4cebacc.png", // Interior acogedor
+      placeholder: "/lovable-uploads/dafd81f1-18a1-4796-9a46-b39914b747a9.jpg"
+    },
+    {
+      src: "/lovable-uploads/7202eec3-bd82-4939-90a9-0a6509fa2af0.png", // Domo en invierno
+      placeholder: "/lovable-uploads/dafd81f1-18a1-4796-9a46-b39914b747a9.jpg"
+    }
+  ];
 
   // Optimización: Precarga de la siguiente imagen 
   useEffect(() => {

@@ -16,8 +16,8 @@ export const specialtyPackages: PackageItem[] = [
     detailedDescription: "Reserva todo el complejo TreePod para tu familia y disfruta de una experiencia única con privacidad total en Valle Las Trancas. Todos los domos, las tinajas de agua mineralizada y la piscina de montaña alimentada por la cascada Velo de Novia serán exclusivamente para ustedes. El entorno perfecto para celebraciones familiares, reuniones especiales o simplemente disfrutar de tiempo de calidad con los tuyos en la tranquilidad del bosque nativo de la cordillera de los Andes.",
     price: 450000,
     originalPrice: 550000,
-    image: treepodSiteOverview,
-    interiorImage: treepodInterior,
+    image: "/lovable-uploads/15e939f8-681c-4a2e-a19a-8cace70e9e38.png", // Vista panorámica en invierno
+    interiorImage: "/lovable-uploads/0aba3582-f7e0-478e-b316-3893d4cebacc.png", // Interior acogedor
     size: "Todo el complejo",
     maxGuests: 16,
     features: ["2 noches de alojamiento", "Todos los domos del complejo", "Capacidad: hasta 16 personas", "Exclusividad total", "Personalización del servicio"],
@@ -104,8 +104,8 @@ export const specialtyPackages: PackageItem[] = [
     detailedDescription: "Una experiencia diseñada para reunir a toda la familia en un entorno natural donde grandes y pequeños pueden disfrutar de actividades al aire libre, comidas compartidas y momentos inolvidables bajo las estrellas. Este paquete familiar incluye todo lo necesario para una celebración perfecta: desde la parrilla para el asado familiar hasta el fogón nocturno para compartir historias. Ideal para cumpleaños familiares, reuniones, celebraciones especiales o simplemente para pasar tiempo de calidad en familia rodeados de la tranquilidad del bosque nativo.",
     price: 550000,
     originalPrice: 650000,
-    image: treepodExterior,
-    interiorImage: treepodInterior,
+    image: "/lovable-uploads/26544819-643d-4e3f-8599-74f7f3611221.png", // Exterior en bosque
+    interiorImage: "/lovable-uploads/8c94b429-4fba-49f4-a9e1-9d5970782bba.png", // Interior con vista panorámica
     size: "1 domo",
     maxGuests: 4,
     features: ["2 noches de alojamiento", "Parrilla completa para asado", "Fogón nocturno", "Todas las comidas familiares", "1 hora de tinajas incluida"],

@@ -36,14 +36,14 @@ const GlampingUnits = ({ units = [], isLoading }: GlampingUnitsProps) => {
       name: "Domo TreePod 1",
       max_guests: 4,
       prices: { base_price: 85000 },
-      image_url: treepodExterior
+      image_url: "/lovable-uploads/26544819-643d-4e3f-8599-74f7f3611221.png"
     },
     {
       id: "demo-2", 
       name: "Domo TreePod 2",
       max_guests: 4,
       prices: { base_price: 85000 },
-      image_url: treepodInterior
+      image_url: "/lovable-uploads/a12a8e24-f99f-48c6-9bc2-eea9e8df4ef5.png"
     }
   ];
 

@@ -19,8 +19,15 @@ interface ImageGalleryProps {
 export const ImageGallery = ({ unit }: ImageGalleryProps) => {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   
-  // Usar las imágenes reales mejoradas como galería principal
-  const realImages = [treepodExterior, treepodInterior, treepodCozyInterior, forestCanopy];
+  // Usar las imágenes reales auténticas de TreePod
+  const realImages = [
+    "/lovable-uploads/26544819-643d-4e3f-8599-74f7f3611221.png", // Exterior en bosque
+    "/lovable-uploads/0aba3582-f7e0-478e-b316-3893d4cebacc.png", // Interior con chimenea
+    "/lovable-uploads/8c94b429-4fba-49f4-a9e1-9d5970782bba.png", // Interior panorámico
+    "/lovable-uploads/daf4f24d-4485-4324-9991-3f7d52a79e0f.png", // Cocina
+    "/lovable-uploads/a12a8e24-f99f-48c6-9bc2-eea9e8df4ef5.png", // Exterior atardecer
+    "/lovable-uploads/7202eec3-bd82-4939-90a9-0a6509fa2af0.png"  // Invierno con nieve
+  ];
   
   // Usar las imágenes reales si no hay imágenes específicas del unit
   const images = getUnitImages(unit).length > 1 ? getUnitImages(unit) : realImages;
