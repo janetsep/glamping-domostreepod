@@ -1,5 +1,5 @@
 
-import { Coffee, Droplets, Wifi, Flame, BedDouble, Mountain, Users, Home } from "lucide-react";
+import { Coffee, Droplets, Wifi, Flame, BedDouble, Mountain, Users, Home, Heart, Sparkles } from "lucide-react";
 import { PackageItem } from "../PackageCard";
 import { createIcon } from "./utils";
 
@@ -24,6 +24,28 @@ export const specialtyPackages: PackageItem[] = [
       { icon: createIcon(BedDouble), text: "Domos completamente equipados" },
       { icon: createIcon(Mountain), text: "Acceso privado a senderos naturales" },
       { icon: createIcon(Home), text: "Privacidad total para tu familia" }
+    ]
+  },
+  {
+    id: "mujeres-relax-package",
+    title: "Mujeres Relax - Retiro de Bienestar",
+    description: "Un paquete especial diseñado para mujeres que buscan relajación y bienestar. Incluye acceso a tinajas termales con aguas mineralizadas, actividades de relajación y un ambiente tranquilo para reconectar contigo misma.",
+    detailedDescription: "Escápate del estrés diario y regálate un momento de paz y tranquilidad en TreePod. Nuestro paquete Mujeres Relax está especialmente diseñado para crear un espacio de sanación y renovación. Disfruta de las propiedades terapéuticas de nuestras aguas mineralizadas en tinajas de ciprés, rodeada de la serenidad del bosque nativo. El ambiente perfecto para meditar, leer, practicar yoga o simplemente conectar contigo misma.",
+    price: 180000,
+    originalPrice: 220000,
+    image: "/lovable-uploads/ba985569-8f29-4da1-af9c-2aba9a5a886b.png",
+    interiorImage: "/lovable-uploads/9c5dac9d-9528-439a-9d1c-2257f501f821.png",
+    size: "1-2 domos",
+    maxGuests: 8,
+    features: ["2 noches de alojamiento", "Hasta 2 domos disponibles", "Capacidad: hasta 8 personas", "Ambiente tranquilo", "Actividades de bienestar"],
+    amenities: [
+      { icon: createIcon(Heart), text: "Ambiente de relajación y bienestar" },
+      { icon: createIcon(Droplets), text: "Acceso prioritario a tinajas termales" },
+      { icon: createIcon(Sparkles), text: "Kit de bienvenida especial" },
+      { icon: createIcon(Mountain), text: "Senderos para meditación al aire libre" },
+      { icon: createIcon(Coffee), text: "Infusiones relajantes incluidas" },
+      { icon: createIcon(BedDouble), text: "Domos acondicionados para el descanso" },
+      { icon: createIcon(Wifi), text: "WiFi disponible (uso opcional)" }
     ]
   }
 ];
