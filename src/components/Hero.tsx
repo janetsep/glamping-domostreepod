@@ -27,26 +27,26 @@ const Hero = () => {
   const benefitsRef = useRef<HTMLElement>(null);
   const heroRef = useRef<HTMLElement>(null); // Referencia a la sección hero
 
-  // Usar las imágenes reales auténticas de TreePod
+  // Usar las imágenes más espectaculares de TreePod
   const images = [
     {
-      src: "/lovable-uploads/b5dd53f8-d95f-4105-845c-b602cf8079e3.png", // Domo geodésico blanco durante el día
+      src: "/lovable-uploads/b96ffc78-5019-43c3-b784-640caab9701d.png", // Domo exterior con auto en bosque - contexto perfecto
       placeholder: "/lovable-uploads/dafd81f1-18a1-4796-9a46-b39914b747a9.jpg"
     },
     {
-      src: "/lovable-uploads/788287b0-a257-445e-8ff3-24d98359526a.png", // Domo iluminado por la noche
+      src: "/lovable-uploads/0be51b02-7593-4256-9391-0ad365dc6c7c.png", // Domo iluminado en invierno - dramática y mágica
       placeholder: "/lovable-uploads/dafd81f1-18a1-4796-9a46-b39914b747a9.jpg"
     },
     {
-      src: "/lovable-uploads/82e1c000-2a82-4f42-b38f-128aeac6c06b.png", // Interior del domo con cama y chimenea
+      src: "/lovable-uploads/53b31073-a4c8-4648-acc3-ba3fcd021375.png", // Vista del bosque hacia arriba - inmersiva
       placeholder: "/lovable-uploads/dafd81f1-18a1-4796-9a46-b39914b747a9.jpg"
     },
     {
-      src: "/lovable-uploads/357aac3e-3fc1-4843-a178-41ef9cfe6937.png", // Interior del domo con vista panorámica
+      src: "/lovable-uploads/34212443-36e1-4fed-9d5b-5248581e725b.png", // Vista aérea de la cama - perspectiva única
       placeholder: "/lovable-uploads/dafd81f1-18a1-4796-9a46-b39914b747a9.jpg"
     },
     {
-      src: "/lovable-uploads/f82d272b-5cd5-419c-b45b-fdee7caafdd1.png", // Invernadero con terraza de madera
+      src: "/lovable-uploads/16d79724-475b-43ae-b69a-98723c78adc0.png", // Interior moderno y elegante
       placeholder: "/lovable-uploads/dafd81f1-18a1-4796-9a46-b39914b747a9.jpg"
     }
   ];
