@@ -4,6 +4,10 @@ import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
 import type { GlampingUnit } from "@/lib/supabase";
 
+// Importar las nuevas imágenes reales
+import treepodExterior from "@/assets/treepod-exterior-real.jpg";
+import treepodInterior from "@/assets/treepod-interior-real.jpg";
+
 interface GlampingUnitsProps {
   units: GlampingUnit[];
   isLoading: boolean;
@@ -25,21 +29,21 @@ const GlampingUnits = ({ units = [], isLoading }: GlampingUnitsProps) => {
     );
   }
 
-  // Si no hay unidades, mostrar datos de ejemplo
+  // Si no hay unidades, mostrar datos de ejemplo con imágenes reales
   const displayUnits = units.length > 0 ? units : [
     {
       id: "demo-1",
       name: "Domo TreePod 1",
       max_guests: 4,
       prices: { base_price: 85000 },
-      image_url: "/lovable-uploads/fd23279d-7903-4b82-871d-b0ab29e6e890.png"
+      image_url: treepodExterior
     },
     {
       id: "demo-2", 
       name: "Domo TreePod 2",
       max_guests: 4,
       prices: { base_price: 85000 },
-      image_url: "/lovable-uploads/5bcb79d0-1a05-40e3-9088-2836fa262778.png"
+      image_url: treepodInterior
     }
   ];
 

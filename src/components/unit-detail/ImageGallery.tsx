@@ -6,6 +6,12 @@ import { ChevronLeft, ChevronRight, Expand } from "lucide-react";
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 import { GlampingUnit, getUnitImages } from "@/lib/supabase";
 
+// Importar imágenes reales mejoradas
+import treepodExterior from "@/assets/treepod-exterior-real.jpg";
+import treepodInterior from "@/assets/treepod-interior-real.jpg";
+import treepodCozyInterior from "@/assets/treepod-cozy-interior.jpg";
+import forestCanopy from "@/assets/forest-canopy-real.jpg";
+
 interface ImageGalleryProps {
   unit: GlampingUnit;
 }
@@ -13,8 +19,11 @@ interface ImageGalleryProps {
 export const ImageGallery = ({ unit }: ImageGalleryProps) => {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   
-  // Usar la función helper para obtener las imágenes
-  const images = getUnitImages(unit);
+  // Usar las imágenes reales mejoradas como galería principal
+  const realImages = [treepodExterior, treepodInterior, treepodCozyInterior, forestCanopy];
+  
+  // Usar las imágenes reales si no hay imágenes específicas del unit
+  const images = getUnitImages(unit).length > 1 ? getUnitImages(unit) : realImages;
 
   const nextImage = () => {
     setCurrentImageIndex((prev) => (prev + 1) % images.length);

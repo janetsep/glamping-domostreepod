@@ -4,6 +4,12 @@ import ScrollArrow from "./ScrollArrow";
 import { LazyLoadImage } from "react-lazy-load-image-component";
 import 'react-lazy-load-image-component/src/effects/blur.css';
 
+// Importar las nuevas imágenes reales mejoradas
+import treepodExterior from "@/assets/treepod-exterior-real.jpg";
+import treepodInterior from "@/assets/treepod-interior-real.jpg";
+import forestCanopy from "@/assets/forest-canopy-real.jpg";
+import treepodSiteOverview from "@/assets/treepod-site-overview.jpg";
+
 // Declaración para TypeScript
 declare global {
   interface Window {
@@ -21,19 +27,19 @@ const Hero = () => {
   const benefitsRef = useRef<HTMLElement>(null);
   const heroRef = useRef<HTMLElement>(null); // Referencia a la sección hero
 
-  // Optimización: Uso de imágenes más ligeras con mejor gestión de calidad
+  // Usar las nuevas imágenes reales mejoradas de TreePod
   const images = [{
-    src: "/lovable-uploads/ed56aab2-6ded-4bab-a2ab-2471f2fc6442.png",
-    placeholder: "/lovable-uploads/ed56aab2-6ded-4bab-a2ab-2471f2fc6442.png?width=20"
+    src: treepodExterior,
+    placeholder: treepodExterior + "?width=20"
   }, {
-    src: "/lovable-uploads/5bcb79d0-1a05-40e3-9088-2836fa262778.png",
-    placeholder: "/lovable-uploads/5bcb79d0-1a05-40e3-9088-2836fa262778.png?width=20"
+    src: treepodInterior,
+    placeholder: treepodInterior + "?width=20"
   }, {
-    src: "/lovable-uploads/3f3be815-8b79-44fa-89b0-d3d4f795e9a7.png",
-    placeholder: "/lovable-uploads/3f3be815-8b79-44fa-89b0-d3d4f795e9a7.png?width=20"
+    src: forestCanopy,
+    placeholder: forestCanopy + "?width=20"
   }, {
-    src: "/lovable-uploads/fd23279d-7903-4b82-871d-b0ab29e6e890.png",
-    placeholder: "/lovable-uploads/fd23279d-7903-4b82-871d-b0ab29e6e890.png?width=20"
+    src: treepodSiteOverview,
+    placeholder: treepodSiteOverview + "?width=20"
   }];
 
   // Optimización: Precarga de la siguiente imagen 
