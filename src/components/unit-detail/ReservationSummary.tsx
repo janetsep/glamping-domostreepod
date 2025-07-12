@@ -92,11 +92,27 @@ export const ReservationSummary: React.FC<ReservationSummaryProps> = ({
       
       {getSeasonTitle()}
       
-      {/* Mostrar solo la línea de resumen principal */}
-      {quote.breakdown && quote.breakdown.length > 0 && (
+      {/* Mostrar desglose detallado para paquetes de celebración */}
+      {quote.breakdown && Array.isArray(quote.breakdown) && quote.breakdown.length > 0 && (
+        <div className="space-y-2">
+          {quote.breakdown.map((item: any, index: number) => (
+            <div key={index} className="flex justify-between items-center">
+              <span className={`${index === 0 ? 'font-medium text-gray-700' : 'text-gray-600'}`}>
+                {item.description}
+              </span>
+              <span className={`${index === 0 ? 'font-semibold' : 'font-medium'}`}>
+                {formatCurrency(item.amount)}
+              </span>
+            </div>
+          ))}
+        </div>
+      )}
+      
+      {/* Fallback para formato anterior */}
+      {quote.breakdown && !Array.isArray(quote.breakdown) && (
         <div className="flex justify-between items-center font-medium">
-          <span className="text-gray-700">{quote.breakdown[0].description}</span>
-          <span className="font-semibold">{formatCurrency(quote.breakdown[0].amount)}</span>
+          <span className="text-gray-700">Estadía total</span>
+          <span className="font-semibold">{formatCurrency(quote.totalPrice)}</span>
         </div>
       )}
       

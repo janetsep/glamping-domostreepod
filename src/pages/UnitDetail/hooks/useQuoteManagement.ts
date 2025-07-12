@@ -55,23 +55,54 @@ export const useQuoteManagement = () => {
       
       const nights = Math.ceil((endDate.getTime() - startDate.getTime()) / (1000 * 60 * 60 * 24));
       const basePrice = getPackagePrice(displayUnit.id);
-      const totalPrice = basePrice * requiredDomos; // Precio del paquete por número de domos
+      
+      // Determinar duración del paquete (por defecto 2 días/noches)
+      const packageDuration = 2;
+      
+      // Calcular días extras si los hay
+      const extraNights = Math.max(0, nights - packageDuration);
+      const extraNightPrice = 80000; // Precio por noche extra (solo desayuno)
+      const extraNightsTotal = extraNights * extraNightPrice * requiredDomos;
+      
+      const totalPrice = (basePrice * requiredDomos) + extraNightsTotal;
+      
+      // Crear breakdown detallado
+      const breakdown = [
+        {
+          description: `${packageDuration} noches - Paquete ${displayUnit.name}`,
+          amount: basePrice * requiredDomos,
+          nights: packageDuration,
+          domoNumber: requiredDomos,
+          guests: requiredDomos * 4 // Estimado
+        }
+      ];
+      
+      // Agregar línea de días extras si aplica
+      if (extraNights > 0) {
+        breakdown.push({
+          description: `${extraNights} ${extraNights === 1 ? 'noche extra' : 'noches extras'} (solo desayuno)`,
+          amount: extraNightsTotal,
+          nights: extraNights,
+          domoNumber: requiredDomos,
+          guests: 0
+        });
+      }
       
       const quoteDetails = {
         unitPrice: basePrice,
         totalPrice: totalPrice,
+        pricePerNight: Math.round(totalPrice / nights),
         checkIn: startDate,
         checkOut: endDate,
         nights,
         guests,
         requiredDomos: requiredDomos,
-        breakdown: {
-          basePrice: basePrice,
-          nights: nights,
-          unitPrice: basePrice,
-          totalPrice: totalPrice,
-          domosCount: requiredDomos
-        },
+        breakdown: breakdown,
+        rateDescription: extraNights > 0 ? 
+          `Incluye ${packageDuration} noches del paquete completo + ${extraNights} ${extraNights === 1 ? 'noche extra' : 'noches extras'} con desayuno` :
+          `${packageDuration} noches - Experiencia completa`,
+        extraNights: extraNights,
+        packageDuration: packageDuration,
         isCelebrationPackage: true
       };
       

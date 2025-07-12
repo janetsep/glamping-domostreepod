@@ -4,6 +4,19 @@ import { DomeSelector } from "./DomeSelector";
 import { AvailabilityAlerts } from "./AvailabilityAlerts";
 import { PackageDurationMessage } from "./PackageDurationMessage";
 
+// Función para obtener la duración del paquete
+const getPackageDuration = (packageId: string): number => {
+  switch (packageId) {
+    case 'mujeres-relax-package':
+    case 'cumpleanos-package':
+    case 'aniversario-package':
+    case 'familia-package':
+      return 2; // 2 noches por defecto
+    default:
+      return 2;
+  }
+};
+
 interface CelebrationPackageTabProps {
   unitId: string;
   startDate?: Date;
@@ -49,7 +62,7 @@ export const CelebrationPackageTab = ({
       <PackageDurationMessage
         startDate={startDate}
         endDate={endDate}
-        packageDuration={2}
+        packageDuration={getPackageDuration(unitId)}
       />
       
       <DomeSelector
