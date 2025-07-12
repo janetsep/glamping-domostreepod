@@ -1,4 +1,3 @@
-
 import React from "react";
 import {
   Droplets, Mountain, Book, Wifi, Bath, Heart, 
@@ -43,22 +42,26 @@ export const experiencesData: ExperiencesData = {
       icon: <BikeIcon />,
       title: "Tours en Bicicleta",
       description: "Recorre los senderos del valle con nuestras bicicletas de montaña premium.",
-      details: "Ofrecemos rutas guiadas y autoguiadas para todos los niveles de habilidad. Nuestras bicicletas cuentan con asistencia eléctrica opcional, perfectas para explorar los cerros circundantes. Incluye mapa, casco, botella de agua y kit de reparación."
+      details: "Ofrecemos rutas guiadas y autoguiadas para todos los niveles de habilidad. Nuestras bicicletas cuentan con asistencia eléctrica opcional, perfectas para explorar los cerros circundantes. Incluye mapa, casco, botella de agua y kit de reparación.",
+      image: "/lovable-uploads/4bb0b8cf-adee-40c4-ac00-a3676ff6cdcc.png"
     }, {
       icon: <MapIcon />,
       title: "Senderismo por Bosque Nativo",
       description: "Explora senderos exclusivos que atraviesan nuestro bosque de Ñirres, Coihues y Araucarias.",
-      details: "Nuestros senderos ofrecen vistas panorámicas al Valle Las Trancas y los Nevados de Chillán. Cada ruta está cuidadosamente marcada y mantenida, con puntos de interés y áreas de descanso estratégicamente ubicadas para disfrutar de la flora y fauna local."
+      details: "Nuestros senderos ofrecen vistas panorámicas al Valle Las Trancas y los Nevados de Chillán. Cada ruta está cuidadosamente marcada y mantenida, con puntos de interés y áreas de descanso estratégicamente ubicadas para disfrutar de la flora y fauna local.",
+      image: "/lovable-uploads/5e659144-32c4-419c-aa12-1d8d51ee81b5.png"
     }, {
       icon: <CarIcon />,
       title: "Excursiones a Parques Nacionales",
       description: "Visita los majestuosos Parques Nacionales cercanos con nuestras excursiones guiadas.",
-      details: "Trabajamos con operadores turísticos locales que ofrecen excursiones a los parques nacionales más emblemáticos de la región. Incluyen transporte desde nuestra propiedad, almuerzo gourmet y guías bilingües apasionados por la conservación."
+      details: "Trabajamos con operadores turísticos locales que ofrecen excursiones a los parques nacionales más emblemáticos de la región. Incluyen transporte desde nuestra propiedad, almuerzo gourmet y guías bilingües apasionados por la conservación.",
+      image: "/lovable-uploads/9c5dac9d-9528-439a-9d1c-2257f501f821.png"
     }, {
       icon: <MountainIcon />,
       title: "Aventuras Guiadas en la Naturaleza",
       description: "Explora la belleza virgen del Valle Las Trancas de la mano de expertos operadores locales.",
-      details: "Una aventura segura y fascinante para conectar profundamente con la biodiversidad única del sur de Chile. Trekking, senderismo interpretativo, avistamiento de fauna y más: descubre bosques encantados, paisajes volcánicos y senderos inolvidables que ofrecen la verdadera esencia cordillerana."
+      details: "Una aventura segura y fascinante para conectar profundamente con la biodiversidad única del sur de Chile. Trekking, senderismo interpretativo, avistamiento de fauna y más: descubre bosques encantados, paisajes volcánicos y senderos inolvidables que ofrecen la verdadera esencia cordillerana.",
+      image: "/lovable-uploads/717e7999-5c62-4fc9-a165-917b692351f9.png"
     }
     ],
   },
@@ -70,17 +73,20 @@ export const experiencesData: ExperiencesData = {
       icon: <BookIcon />,
       title: "Ruta de los Pincheira",
       description: "Descubre la fascinante historia de los hermanos Pincheira, legendarios bandidos del siglo XIX.",
-      details: "Esta experiencia combina senderismo suave con inmersión histórica. Visitarás los refugios naturales y puntos estratégicos utilizados por esta banda durante sus años de actividad. Un guía historiador te sumergirá en las leyendas y realidades de estos personajes que desafiaron al ejército chileno."
+      details: "Esta experiencia combina senderismo suave con inmersión histórica. Visitarás los refugios naturales y puntos estratégicos utilizados por esta banda durante sus años de actividad. Un guía historiador te sumergirá en las leyendas y realidades de estos personajes que desafiaron al ejército chileno.",
+      image: "/lovable-uploads/71928294-5635-46f7-a3ec-5fb33ef836ea.png"
     }, {
       icon: <BookOpenIcon />,
       title: "Leyendas del Volcán",
       description: "Conoce las historias ancestrales del Nevado de Chillán en una charla mágica alrededor del fuego.",
-      details: "Una experiencia cultural enriquecedora que fortalece el respeto por nuestro patrimonio natural. Aprende sobre el poder curativo y la importancia cultural de las aguas volcánicas, tal como lo han descrito estudios históricos y científicos, mientras observas la silueta imponente del volcán en el horizonte."
+      details: "Una experiencia cultural enriquecedora que fortalece el respeto por nuestro patrimonio natural. Aprende sobre el poder curativo y la importancia cultural de las aguas volcánicas, tal como lo han descrito estudios históricos y científicos, mientras observas la silueta imponente del volcán en el horizonte.",
+      image: "/lovable-uploads/9eae4d11-6229-4086-acbc-dcb83c2d25df.png"
     }, {
       icon: <SquareLibraryIcon />,
       title: "Artesanía Local",
       description: "Aprende sobre las técnicas ancestrales de artesanía en lana, madera y cerámica de la zona.",
-      details: "Visitas a talleres de artesanos locales que mantienen vivas las tradiciones de la zona. Podrás participar en talleres prácticos donde aprenderás técnicas básicas y te llevarás una pieza hecha por ti. Incluye materiales, instrucción y una degustación de productos locales."
+      details: "Visitas a talleres de artesanos locales que mantienen vivas las tradiciones de la zona. Podrás participar en talleres prácticos donde aprenderás técnicas básicas y te llevarás una pieza hecha por ti. Incluye materiales, instrucción y una degustación de productos locales.",
+      image: "/lovable-uploads/aac5fd64-e9cc-4455-b0d2-b81c4741b389.png"
     }
     ],
   },
@@ -92,27 +98,32 @@ export const experiencesData: ExperiencesData = {
       icon: <TreePineIcon />,
       title: "Meditación Guiada en el Bosque",
       description: "Sesiones de meditación entre antiguos árboles nativos guiadas por expertos en mindfulness.",
-      details: "La práctica de meditación en nuestro bosque ofrece beneficios demostrados para reducir el estrés y mejorar el bienestar. Las sesiones duran aproximadamente 1 hora y están diseñadas tanto para principiantes como para practicantes experimentados. Se incluyen esterillas, mantas y té de hierbas locales."
+      details: "La práctica de meditación en nuestro bosque ofrece beneficios demostrados para reducir el estrés y mejorar el bienestar. Las sesiones duran aproximadamente 1 hora y están diseñadas tanto para principiantes como para practicantes experimentados. Se incluyen esterillas, mantas y té de hierbas locales.",
+      image: "/lovable-uploads/9750700a-7f4e-4744-9703-049733204f14.png"
     }, {
       icon: <TreeDeciduousIcon />,
       title: "Terapia Forestal",
       description: "Experimenta el poder curativo de los bosques con nuestro programa de terapia forestal.",
-      details: "Basado en la práctica japonesa del 'Shinrin-yoku' (baño de bosque), esta experiencia guiada te conecta profundamente con la naturaleza a través de tus sentidos. Estudios científicos han demostrado sus beneficios para el sistema inmunológico, la reducción de hormonas del estrés y la mejora del estado de ánimo."
+      details: "Basado en la práctica japonesa del 'Shinrin-yoku' (baño de bosque), esta experiencia guiada te conecta profundamente con la naturaleza a través de tus sentidos. Estudios científicos han demostrado sus beneficios para el sistema inmunológico, la reducción de hormonas del estrés y la mejora del estado de ánimo.",
+      image: "/lovable-uploads/881f84e7-856a-4057-bdc0-d55b67859a18.png"
     }, {
       icon: <ThermometerIcon />,
       title: "Baños Termales Volcánicos",
       description: "Sumérgete en las mágicas aguas termales provenientes directamente del volcán Nevados de Chillán.",
-      details: "Estas aguas poseen propiedades reconocidas científicamente por aliviar dolores musculares, mejorar la piel y reducir el estrés. Reconocidas por siglos debido a sus propiedades terapéuticas, estas aguas volcánicas ricas en azufre, hierro y minerales esenciales revitalizarán tu cuerpo y espíritu. Déjate envolver por el vapor curativo en nuestras tinajas de ciprés, en medio de un entorno natural incomparable."
+      details: "Estas aguas poseen propiedades reconocidas científicamente por aliviar dolores musculares, mejorar la piel y reducir el estrés. Reconocidas por siglos debido a sus propiedades terapéuticas, estas aguas volcánicas ricas en azufre, hierro y minerales esenciales revitalizarán tu cuerpo y espíritu. Déjate envolver por el vapor curativo en nuestras tinajas de ciprés, en medio de un entorno natural incomparable.",
+      image: "/lovable-uploads/46270626-ab65-40db-895a-8668daa5032b.png"
     }, {
       icon: <FlameIcon />,
       title: "Ritual de Sauna y Tinaja",
       description: "Purifica cuerpo y mente con nuestro ritual de sauna seguido de inmersión en tinaja de agua termal.",
-      details: "Este ritual de contraste térmico es conocido por sus beneficios circulatorios y desintoxicantes. Comienza con 15 minutos en nuestra sauna seca construida con maderas aromáticas nativas, seguido de una breve inmersión en agua fría y finaliza con un relajante baño en nuestras tinajas de agua termal mineralizada."
+      details: "Este ritual de contraste térmico es conocido por sus beneficios circulatorios y desintoxicantes. Comienza con 15 minutos en nuestra sauna seca construida con maderas aromáticas nativas, seguido de una breve inmersión en agua fría y finaliza con un relajante baño en nuestras tinajas de agua termal mineralizada.",
+      image: "/lovable-uploads/dafd81f1-18a1-4796-9a46-b39914b747a9.jpg"
     }, {
       icon: <GlassWaterIcon />,
       title: "Piscina Natural de Montaña",
       description: "Vive la experiencia única de bañarte en nuestra piscina natural alimentada con agua fresca de la montaña.",
-      details: "Las aguas cristalinas y frías fortalecen tu sistema inmunitario y revitalizan tu mente. Equilibra tu cuerpo sumergiéndote en estas aguas puras y revitalizantes que nacen directamente de los deshielos cordilleranos. Ideal para recuperar energía después de un día lleno de aventuras al aire libre."
+      details: "Las aguas cristalinas y frías fortalecen tu sistema inmunitario y revitalizan tu mente. Equilibra tu cuerpo sumergiéndote en estas aguas puras y revitalizantes que nacen directamente de los deshielos cordilleranos. Ideal para recuperar energía después de un día lleno de aventuras al aire libre.",
+      image: "/lovable-uploads/b8a0fbdb-9f9c-48fe-a336-e5d378411a67.png"
     }
     ],
   },
@@ -124,27 +135,32 @@ export const experiencesData: ExperiencesData = {
       icon: <GamepadIcon />,
       title: "Juegos de Mesa Junto al Fuego",
       description: "Disfruta de nuestra selección de juegos de mesa premium en nuestra acogedora sala común.",
-      details: "Nuestra colección incluye clásicos y nuevos juegos de estrategia, perfectos para noches frías. La sala cuenta con una chimenea a leña, cómodas butacas y un servicio de té, chocolate caliente y snacks disponible para complementar la experiencia."
+      details: "Nuestra colección incluye clásicos y nuevos juegos de estrategia, perfectos para noches frías. La sala cuenta con una chimenea a leña, cómodas butacas y un servicio de té, chocolate caliente y snacks disponible para complementar la experiencia.",
+      image: "/lovable-uploads/34c4f9ff-baac-4d48-a8bd-f3c149302031.png"
     }, {
       icon: <DiceIcon />,
       title: "Torneo de Juegos Tradicionales Chilenos",
       description: "Participa en torneos de rayuela, trompo, emboque y otros juegos tradicionales chilenos.",
-      details: "Aprende sobre el rico patrimonio cultural chileno a través de sus juegos tradicionales. Realizamos torneos semanales donde podrás competir amistosamente con otros huéspedes. Incluye instrucción básica para quienes no conocen los juegos y pequeños premios artesanales para los ganadores."
+      details: "Aprende sobre el rico patrimonio cultural chileno a través de sus juegos tradicionales. Realizamos torneos semanales donde podrás competir amistosamente con otros huéspedes. Incluye instrucción básica para quienes no conocen los juegos y pequeños premios artesanales para los ganadores.",
+      image: "/lovable-uploads/f3566ed7-fad7-43b9-9ee9-8f1cfcfc55cd.png"
     }, {
       icon: <SparklesIcon />,
       title: "Observación de Estrellas",
       description: "Aprovecha nuestros cielos limpios para una sesión guiada de observación astronómica.",
-      details: "Lejos de la contaminación lumínica, nuestro lugar ofrece condiciones ideales para la astronomía. Las sesiones incluyen telescopios profesionales, guía astronómico que te ayudará a identificar constelaciones, planetas y otros cuerpos celestes, y una selección de bebidas calientes para disfrutar bajo las estrellas."
+      details: "Lejos de la contaminación lumínica, nuestro lugar ofrece condiciones ideales para la astronomía. Las sesiones incluyen telescopios profesionales, guía astronómico que te ayudará a identificar constelaciones, planetas y otros cuerpos celestes, y una selección de bebidas calientes para disfrutar bajo las estrellas.",
+      image: "/lovable-uploads/852513f7-08f6-41be-aab5-2d435195b174.png"
     }, {
       icon: <FlameKindlingIcon />,
       title: "Parrilla bajo las Estrellas",
       description: "Comparte momentos inolvidables junto al fuego en nuestra zona de parrillas al aire libre.",
-      details: "Una experiencia ideal para fortalecer lazos y crear recuerdos en medio de la naturaleza. Rodeado de bosques milenarios y bajo el cielo estrellado del Valle Las Trancas, prepara un asado memorable en familia o con amigos, conectando a través de los sabores y aromas de la gastronomía tradicional chilena."
+      details: "Una experiencia ideal para fortalecer lazos y crear recuerdos en medio de la naturaleza. Rodeado de bosques milenarios y bajo el cielo estrellado del Valle Las Trancas, prepara un asado memorable en familia o con amigos, conectando a través de los sabores y aromas de la gastronomía tradicional chilena.",
+      image: "/lovable-uploads/7f6ccade-6dee-4a0c-9e1c-689a1a923b73.png"
     }, {
       icon: <UtensilsIcon />,
       title: "Sabores del Invernadero de Montaña",
       description: "Disfruta de una experiencia gastronómica auténticamente local, con ingredientes frescos cultivados en nuestro invernadero.",
-      details: "Reserva tu menú especial y saborea la frescura auténtica en Valle Las Trancas en cada bocado. Cada plato rescata lo mejor de la tierra cordillerana, creando una experiencia culinaria saludable, sostenible y conectada profundamente con la naturaleza."
+      details: "Reserva tu menú especial y saborea la frescura auténtica en Valle Las Trancas en cada bocado. Cada plato rescata lo mejor de la tierra cordillerana, creando una experiencia culinaria saludable, sostenible y conectada profundamente con la naturaleza.",
+      image: "/lovable-uploads/82c8828f-f40f-4d4a-a240-bef61c16fc9f.png"
     }
     ],
   },
