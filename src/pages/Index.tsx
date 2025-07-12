@@ -2,6 +2,7 @@
 import Hero from "@/components/Hero";
 import Gallery from "@/components/Gallery";
 import Packages from "@/components/Packages";
+import Benefits from "@/components/Benefits";
 import Testimonials from "@/components/Testimonials";
 import Location from "@/components/Location";
 import SimplifiedContact from "@/components/SimplifiedContact";
@@ -19,6 +20,7 @@ const Index = () => {
       <CultureSection />
       <Gallery />
       <Packages units={units} isLoading={isLoading} />
+      <Benefits />
       <Celebrations />
       <Testimonials />
       <Location />
