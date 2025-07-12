@@ -47,5 +47,71 @@ export const specialtyPackages: PackageItem[] = [
       { icon: createIcon(BedDouble), text: "Domos acondicionados para el descanso" },
       { icon: createIcon(Wifi), text: "WiFi disponible (uso opcional)" }
     ]
+  },
+  {
+    id: "cumpleanos-package",
+    title: "Cumpleaños en la Naturaleza",
+    description: "Una celebración diferente en medio de la naturaleza, perfecta para festejar tu cumpleaños con familia, amigos o en pareja en un entorno único y privado.",
+    detailedDescription: "Una celebración diferente en medio de la naturaleza, perfecta para festejar tu cumpleaños con familia, amigos o en pareja en un entorno único y privado. Este paquete está diseñado para crear momentos inolvidables en tu día especial, combinando la tranquilidad del bosque nativo con todas las comodidades necesarias para una celebración perfecta. Incluye decoración especial, una torta artesanal y todo lo necesario para que tu cumpleaños sea una experiencia memorable rodeado de naturaleza.",
+    price: 580000,
+    originalPrice: 680000,
+    image: "/lovable-uploads/3c440bec-e9af-462b-95d8-45e8eec15b88.png",
+    interiorImage: "/lovable-uploads/3c440bec-e9af-462b-95d8-45e8eec15b88.png",
+    size: "1 domo",
+    maxGuests: 4,
+    features: ["2 noches de alojamiento", "Decoración especial de cumpleaños", "Torta artesanal", "Todas las comidas incluidas", "1 hora de tinajas incluida"],
+    amenities: [
+      { icon: createIcon(Heart), text: "Decoración especial de cumpleaños" },
+      { icon: createIcon(Sparkles), text: "Torta artesanal + espumante" },
+      { icon: createIcon(Droplets), text: "1 hora de tinajas de ciprés incluida" },
+      { icon: createIcon(Coffee), text: "Todas las comidas + picoteo festivo" },
+      { icon: createIcon(Mountain), text: "Terraza con mobiliario para celebrar" },
+      { icon: createIcon(BedDouble), text: "Domo geodésico completo" },
+      { icon: createIcon(Wifi), text: "WiFi Starlink disponible" }
+    ]
+  },
+  {
+    id: "aniversarios-package", 
+    title: "Aniversarios Románticos",
+    description: "Una celebración romántica en medio de la naturaleza, perfecta para conmemorar aniversarios de matrimonio, noviazgo o cualquier fecha especial en pareja en un entorno íntimo y privado.",
+    detailedDescription: "Una celebración romántica en medio de la naturaleza, perfecta para conmemorar aniversarios de matrimonio, noviazgo o cualquier fecha especial en pareja en un entorno íntimo y privado. Este paquete está diseñado especialmente para parejas que buscan reconectar y celebrar su amor en un ambiente único, con detalles románticos cuidadosamente preparados. Incluye decoración especial, cena a la luz de las velas, masajes en pareja y todo lo necesario para crear recuerdos inolvidables en su fecha especial.",
+    price: 650000,
+    originalPrice: 750000,
+    image: "/lovable-uploads/258111ea-9c35-4f22-811b-3beaeba46f33.png",
+    interiorImage: "/lovable-uploads/258111ea-9c35-4f22-811b-3beaeba46f33.png",
+    size: "1 domo",
+    maxGuests: 4,
+    features: ["2 noches de alojamiento", "Decoración romántica completa", "Cena romántica a la luz de las velas", "Masaje en pareja incluido", "2 horas de tinajas incluidas"],
+    amenities: [
+      { icon: createIcon(Heart), text: "Decoración romántica completa" },
+      { icon: createIcon(Sparkles), text: "Cena romántica a la luz de las velas" },
+      { icon: createIcon(Droplets), text: "2 horas de tinajas de ciprés incluidas" },
+      { icon: createIcon(Coffee), text: "Comidas gourmet + espumante premium" },
+      { icon: createIcon(Mountain), text: "Masaje relajante en pareja (30 min)" },
+      { icon: createIcon(BedDouble), text: "Terraza privada decorada" },
+      { icon: createIcon(Wifi), text: "WiFi Starlink disponible" }
+    ]
+  },
+  {
+    id: "fiesta-familiar-package",
+    title: "Fiesta Familiar en la Naturaleza", 
+    description: "Una experiencia diseñada para reunir a toda la familia en un entorno natural donde grandes y pequeños pueden disfrutar de actividades al aire libre, comidas compartidas y momentos inolvidables bajo las estrellas.",
+    detailedDescription: "Una experiencia diseñada para reunir a toda la familia en un entorno natural donde grandes y pequeños pueden disfrutar de actividades al aire libre, comidas compartidas y momentos inolvidables bajo las estrellas. Este paquete familiar incluye todo lo necesario para una celebración perfecta: desde la parrilla para el asado familiar hasta el fogón nocturno para compartir historias. Ideal para cumpleaños familiares, reuniones, celebraciones especiales o simplemente para pasar tiempo de calidad en familia rodeados de la tranquilidad del bosque nativo.",
+    price: 550000,
+    originalPrice: 650000,
+    image: "/lovable-uploads/5bf3bb3b-da31-4f12-a031-1d7274b2b1cc.png",
+    interiorImage: "/lovable-uploads/5bf3bb3b-da31-4f12-a031-1d7274b2b1cc.png",
+    size: "1 domo",
+    maxGuests: 4,
+    features: ["2 noches de alojamiento", "Parrilla completa para asado", "Fogón nocturno", "Todas las comidas familiares", "1 hora de tinajas incluida"],
+    amenities: [
+      { icon: createIcon(Flame), text: "Parrilla completa + fogón nocturno" },
+      { icon: createIcon(Users), text: "Decoración festiva familiar" },
+      { icon: createIcon(Droplets), text: "1 hora de tinajas de ciprés incluida" },
+      { icon: createIcon(Coffee), text: "Comidas + bebidas para toda la familia" },
+      { icon: createIcon(Mountain), text: "Terraza amplia con mobiliario para grupos" },
+      { icon: createIcon(BedDouble), text: "Domo geodésico completo" },
+      { icon: createIcon(Wifi), text: "WiFi Starlink + leña incluida" }
+    ]
   }
 ];

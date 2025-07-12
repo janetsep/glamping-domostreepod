@@ -24,7 +24,7 @@ export const getPackageInfo = (packageId: string): PackageInfo => {
         basePrice: 580000,
         description: 'Paquete fijo por domo con decoración especial'
       };
-    case 'aniversario-package':
+    case 'aniversarios-package':
       return {
         name: 'Aniversario Romántico',
         duration: '2 noches',
@@ -32,13 +32,21 @@ export const getPackageInfo = (packageId: string): PackageInfo => {
         basePrice: 650000,
         description: 'Paquete romántico fijo por domo con cena especial'
       };
-    case 'familia-package':
+    case 'fiesta-familiar-package':
       return {
         name: 'Fiesta Familiar en la Naturaleza',
         duration: '2 noches',
         price: '$550.000',
         basePrice: 550000,
         description: 'Paquete familiar fijo por domo con todas las comodidades'
+      };
+    case '4':
+      return {
+        name: 'Para familias que buscan exclusividad total',
+        duration: '2 noches',
+        price: '$450.000',
+        basePrice: 450000,
+        description: 'Reserva todo el complejo para una experiencia única de privacidad total'
       };
     default:
       return {
