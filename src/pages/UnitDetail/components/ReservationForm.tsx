@@ -20,6 +20,8 @@ interface ReservationFormProps {
   setAdults?: (adults: number) => void;
   setChildren?: (children: number) => void;
   requiredDomos?: number;
+  selectedDomos?: number;
+  setSelectedDomos?: (domos: number) => void;
   isAvailable: boolean | null;
   onReservation: () => void;
   selectedActivities: Activity[];
@@ -52,6 +54,8 @@ export const ReservationForm = ({
   setAdults,
   setChildren,
   requiredDomos = 1,
+  selectedDomos = 1,
+  setSelectedDomos,
   isAvailable,
   onReservation,
   selectedActivities,
@@ -156,8 +160,10 @@ export const ReservationForm = ({
         onAdultsChange={setAdults}
         onChildrenChange={setChildren}
         requiredDomos={calculatedRequiredDomos} 
+        selectedDomos={selectedDomos}
+        setSelectedDomos={setSelectedDomos}
         isAvailable={isAvailable} 
-        selectedActivities={selectedActivities} 
+        selectedActivities={selectedActivities}
         onActivityToggle={onActivityToggle} 
         activitiesTotal={activitiesTotal} 
         selectedPackages={selectedPackages} 

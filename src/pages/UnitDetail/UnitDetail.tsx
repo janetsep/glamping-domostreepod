@@ -77,6 +77,8 @@ const UnitDetail = () => {
                     setAdults={state.setAdults}
                     setChildren={state.setChildren}
                     requiredDomos={state.requiredDomos}
+                    selectedDomos={state.selectedDomos}
+                    setSelectedDomos={state.setSelectedDomos}
                     isAvailable={state.isAvailable}
                     showQuote={state.showQuote}
                     quote={state.quote}

@@ -21,6 +21,8 @@ interface ReservationTabsProps {
   onAdultsChange?: (adults: number) => void;
   onChildrenChange?: (children: number) => void;
   requiredDomos?: number;
+  selectedDomos?: number;
+  setSelectedDomos?: (domos: number) => void;
   isAvailable: boolean | null;
   selectedActivities: Activity[];
   onActivityToggle: (activity: Activity) => void;
@@ -47,6 +49,8 @@ export const ReservationTabs = ({
   onAdultsChange,
   onChildrenChange,
   requiredDomos,
+  selectedDomos,
+  setSelectedDomos,
   isAvailable,
   selectedActivities,
   onActivityToggle,
@@ -146,6 +150,33 @@ export const ReservationTabs = ({
             onAdultsChange={onAdultsChange}
             onChildrenChange={onChildrenChange}
           />
+        )}
+        
+        {/* Selector de domos para paquetes de celebración */}
+        {isCelebrationPackage && setSelectedDomos && (
+          <div className="space-y-2">
+            <label className="text-sm font-medium">Número de domos</label>
+            <div className="flex items-center space-x-4">
+              <button
+                onClick={() => setSelectedDomos(Math.max(1, (selectedDomos || 1) - 1))}
+                className="w-8 h-8 rounded-full border border-primary/20 hover:bg-primary/10 flex items-center justify-center"
+                disabled={(selectedDomos || 1) <= 1}
+              >
+                -
+              </button>
+              <span className="w-12 text-center font-medium">{selectedDomos || 1}</span>
+              <button
+                onClick={() => setSelectedDomos(Math.min((availableDomos || 6), (selectedDomos || 1) + 1))}
+                className="w-8 h-8 rounded-full border border-primary/20 hover:bg-primary/10 flex items-center justify-center"
+                disabled={availableDomos !== undefined && (selectedDomos || 1) >= availableDomos}
+              >
+                +
+              </button>
+            </div>
+            <p className="text-xs text-gray-600">
+              Precio total: ${((selectedDomos || 1) * 520000).toLocaleString()} CLP
+            </p>
+          </div>
         )}
         
         {isAvailable === false && (

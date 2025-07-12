@@ -18,6 +18,8 @@ interface ReservationPanelProps {
   setAdults?: (adults: number) => void;
   setChildren?: (children: number) => void;
   requiredDomos?: number;
+  selectedDomos?: number;
+  setSelectedDomos?: (domos: number) => void;
   isAvailable: boolean | null;
   showQuote: boolean;
   quote: any;
@@ -57,6 +59,8 @@ export const ReservationPanel = ({
   setAdults,
   setChildren,
   requiredDomos = 1,
+  selectedDomos,
+  setSelectedDomos,
   isAvailable,
   showQuote,
   quote,
@@ -131,8 +135,10 @@ export const ReservationPanel = ({
             children={children}
             setAdults={setAdults}
             setChildren={setChildren}
-            requiredDomos={requiredDomos} 
-            isAvailable={isAvailable} 
+            requiredDomos={requiredDomos}
+            selectedDomos={selectedDomos}
+            setSelectedDomos={setSelectedDomos}
+            isAvailable={isAvailable}
             onReservation={onReservation} 
             selectedActivities={selectedActivities} 
             selectedPackages={selectedPackages} 

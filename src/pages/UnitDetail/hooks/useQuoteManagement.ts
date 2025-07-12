@@ -39,25 +39,27 @@ export const useQuoteManagement = () => {
     );
 
     if (isCelebrationPackage) {
-      // Para paquetes de celebración: precio fijo por domo, no por persona
+      // Para paquetes de celebración: precio fijo por domo, multiplicado por número de domos
       console.log('🎉 [useQuoteManagement] Paquete de celebración detectado');
       
       const nights = Math.ceil((endDate.getTime() - startDate.getTime()) / (1000 * 60 * 60 * 24));
       const basePrice = displayUnit.prices?.base_price || 0;
+      const totalPrice = basePrice * requiredDomos; // Precio del paquete por número de domos
       
       const quoteDetails = {
         unitPrice: basePrice,
-        totalPrice: basePrice, // Precio fijo por domo
+        totalPrice: totalPrice,
         checkIn: startDate,
         checkOut: endDate,
         nights,
         guests,
-        requiredDomos: 1, // Los paquetes de celebración son por domo
+        requiredDomos: requiredDomos,
         breakdown: {
           basePrice: basePrice,
           nights: nights,
           unitPrice: basePrice,
-          totalPrice: basePrice
+          totalPrice: totalPrice,
+          domosCount: requiredDomos
         },
         isCelebrationPackage: true
       };

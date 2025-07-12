@@ -42,11 +42,14 @@ export const useUnitDetailState = (unitId?: string) => {
   const setAdults = isCelebrationPackage ? () => {} : guestManagement.setAdults;
   const setChildren = isCelebrationPackage ? () => {} : guestManagement.setChildren;
     
+  // Estado para domos seleccionados en paquetes de celebración
+  const [selectedDomos, setSelectedDomos] = useState(1);
+  
   // Cálculo de domos requeridos y estado de disponibilidad
   const requiredDomos = useMemo(() => {
-    if (isCelebrationPackage) return 1; // Los paquetes son siempre por 1 domo
+    if (isCelebrationPackage) return selectedDomos; // Permitir múltiples domos en paquetes
     return Math.max(1, Math.ceil(guests / 4));
-  }, [guests, isCelebrationPackage]);
+  }, [guests, isCelebrationPackage, selectedDomos]);
 
   const isAvailable = useMemo(() => {
     if (isLoadingAvailability || availableDomos === undefined) {
@@ -137,6 +140,7 @@ export const useUnitDetailState = (unitId?: string) => {
     adults,
     children,
     requiredDomos,
+    selectedDomos,
     isAvailable,
     availableDomos,
     isPartialAvailability,
@@ -163,6 +167,7 @@ export const useUnitDetailState = (unitId?: string) => {
     setGuests,
     setAdults,
     setChildren,
+    setSelectedDomos,
     setShowQuote,
     setQuote,
     setIsProcessingPayment,
