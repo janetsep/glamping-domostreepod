@@ -1,13 +1,34 @@
 
 import { useCallback, useState } from "react";
 import { toast } from "sonner";
+import { useParams } from "react-router-dom";
 import { useReservationCreation } from "@/hooks/reservations/useReservationCreation";
 import { usePayment } from "@/hooks/reservations/usePayment";
 import { useUnifiedAvailabilityChecker } from "@/hooks/reservations/useUnifiedAvailabilityChecker";
 import { temporaryLockManager } from "@/hooks/reservations/utils/temporaryLockManager";
 
 export const useReservationActions = (state: any) => {
+  const { unitId } = useParams<{ unitId: string }>();
   const [sessionId] = useState(() => `session-${Date.now()}-${Math.random().toString(36).substring(2, 9)}`);
+  
+  // Función para determinar el tipo de reserva basado en la ruta
+  const getReservationType = (): 'normal' | 'celebracion' | 'actividad' | 'romance' | 'familia' | 'especial' => {
+    if (!unitId) return 'normal';
+    
+    switch (unitId) {
+      case 'cumpleanos-package':
+        return 'celebracion';
+      case 'aniversario-package':
+        return 'romance';
+      case 'familia-package':
+        return 'familia';
+      case 'mujeres-relax-package':
+        return 'especial';
+      default:
+        if (unitId.includes('package')) return 'especial';
+        return 'normal';
+    }
+  };
   
   const { redirectToWebpay } = usePayment({
     setIsLoading: state.setIsProcessingPayment
@@ -96,7 +117,8 @@ export const useReservationActions = (state: any) => {
           name: localStorage.getItem('client_name') || '',
           email: localStorage.getItem('client_email') || '',
           phone: localStorage.getItem('client_phone') || ''
-        }
+        },
+        getReservationType() // Pasar el tipo de reserva correcto
       );
 
     } catch (error) {
