@@ -100,7 +100,10 @@ const FamilyPartySection = () => {
                       )}
                       
                       <div className="mt-6 flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
-                        <Button className="bg-gradient-to-r from-primary to-pink-500 text-white hover:from-primary/90 hover:to-pink-500/90">
+                        <Button 
+                          className="bg-gradient-to-r from-primary to-pink-500 text-white hover:from-primary/90 hover:to-pink-500/90"
+                          onClick={() => navigate('/unit/fiesta-familiar-package')}
+                        >
                           Reservar Fiesta Familiar
                         </Button>
                       </div>

@@ -112,7 +112,10 @@ const CelebrationDetail = () => {
               </p>
               
               <div className="mt-8">
-                <Button className="bg-gradient-to-r from-primary to-pink-500 text-white hover:from-primary/90 hover:to-pink-500/90">
+                <Button 
+                  className="bg-gradient-to-r from-primary to-pink-500 text-white hover:from-primary/90 hover:to-pink-500/90"
+                  onClick={() => navigate(`/unit/${id}-package`)}
+                >
                   Reservar Ahora
                 </Button>
               </div>
