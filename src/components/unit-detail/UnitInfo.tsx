@@ -1,7 +1,7 @@
 import type { GlampingUnit } from "@/lib/supabase";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { MapPin, Users, Bed, Bath, Star, Wifi, Trees } from "lucide-react";
+import { MapPin, Users, Bed, Bath, Star, Wifi, Trees, Home, Search, Building2, Plane } from "lucide-react";
 import { getAverageRating } from "@/data/content/testimonials";
 interface UnitInfoProps {
   unit: GlampingUnit;
@@ -11,11 +11,11 @@ export const UnitInfo = ({
 }: UnitInfoProps) => {
   // Datos reales de la sección "¡Los Huéspedes Opinan!"
   const reviewsPlatforms = [
-    { name: "Todas las reseñas", rating: "4.9", color: "text-gray-700" },
-    { name: "Airbnb", rating: "5.0", color: "text-red-500" },
-    { name: "Google", rating: "4.9", color: "text-blue-500" },
-    { name: "Booking.com", rating: "9.6", color: "text-blue-700" },
-    { name: "Tripadvisor", rating: "5.0", color: "text-green-600" }
+    { name: "Todas las reseñas", rating: "4.9", color: "text-gray-700", icon: null },
+    { name: "Airbnb", rating: "5.0", color: "text-red-500", icon: Home },
+    { name: "Google", rating: "4.9", color: "text-blue-500", icon: Search },
+    { name: "Booking.com", rating: "9.6", color: "text-blue-700", icon: Building2 },
+    { name: "Tripadvisor", rating: "5.0", color: "text-green-600", icon: Plane }
   ];
   
   const generalRating = 4.9;
@@ -37,10 +37,11 @@ export const UnitInfo = ({
             <div className="mb-3 bg-gray-50 rounded-lg p-2">
               <div className="flex flex-wrap gap-4 text-xs justify-end border-b border-gray-300 pb-2">
                 {reviewsPlatforms.map((platform, index) => (
-                  <div key={platform.name} className={`flex items-center gap-1 ${index === 0 ? 'border-b-2 border-black pb-1' : ''}`}>
-                    <span className={platform.color}>{platform.name}</span>
-                    <span className="font-semibold">{platform.rating}</span>
-                  </div>
+                   <div key={platform.name} className={`flex items-center gap-1 ${index === 0 ? 'border-b-2 border-black pb-1' : ''}`}>
+                     {platform.icon && <platform.icon className="w-3 h-3" />}
+                     <span className={platform.color}>{platform.name}</span>
+                     <span className="font-semibold">{platform.rating}</span>
+                   </div>
                 ))}
               </div>
               
