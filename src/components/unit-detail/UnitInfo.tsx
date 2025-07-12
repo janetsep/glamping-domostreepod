@@ -2,12 +2,15 @@ import type { GlampingUnit } from "@/lib/supabase";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { MapPin, Users, Bed, Bath, Star, Wifi, Trees } from "lucide-react";
+import { getAverageRating } from "@/data/content/testimonials";
 interface UnitInfoProps {
   unit: GlampingUnit;
 }
 export const UnitInfo = ({
   unit
 }: UnitInfoProps) => {
+  const averageRating = getAverageRating();
+  
   return <Card>
       <CardHeader>
         <div className="flex items-start justify-between">
@@ -22,7 +25,7 @@ export const UnitInfo = ({
           </div>
           <div className="flex items-center gap-1">
             <Star className="w-5 h-5 fill-yellow-400 text-yellow-400" />
-            <span className="font-semibold">4.9</span>
+            <span className="font-semibold">{averageRating}</span>
           </div>
         </div>
       </CardHeader>
