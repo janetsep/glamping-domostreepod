@@ -229,3 +229,139 @@ export const anniversaryDetailContent = {
     }
   ]
 };
+
+// Datos detallados para la página de Fiestas Patrias
+export const fiestasPatriasDetailContent = {
+  title: "Fiestas Patrias en la Naturaleza",
+  subtitle: "Celebra la tradición chilena rodeado del bosque nativo",
+  
+  tabs: [
+    {
+      id: "que-incluye",
+      name: "Qué Incluye",
+      title: "¿Qué es este Paquete?",
+      content: "Una celebración patria única en medio de la naturaleza, perfecta para disfrutar de las tradiciones chilenas en un entorno especial rodeado del bosque nativo. Este paquete está diseñado para vivir las Fiestas Patrias de manera diferente, combinando la alegría de nuestras tradiciones con la tranquilidad de la naturaleza. Incluye empanadas artesanales, chicha en rama, música folclórica y todas las comodidades necesarias para una celebración patria memorable en familia o con amigos.",
+      image: "/lovable-uploads/3c440bec-e9af-462b-95d8-45e8eec15b88.png"
+    },
+    {
+      id: "precios",
+      name: "Precios",
+      title: "Precios y Opciones",
+      content: [
+        "**Paquete Fiestas Patrias en la Naturaleza** (2 noches)",
+        "**Precio:** Domo completo hasta 4 personas por $570.000 CLP",
+        "",
+        "### EL PAQUETE INCLUYE:",
+        "• Alojamiento en domo geodésico completo (2 noches)",
+        "• Decoración patria temática",
+        "• Empanadas artesanales + sopaipillas + chicha en rama",
+        "• Parrilla completa para asado + anticucho",
+        "• Todas las comidas + picoteo patrio con productos del invernadero",
+        "• Acceso a piscina de agua mineralizada",
+        "• 1 hora de tinajas de ciprés incluida",
+        "• Música folclórica ambiente",
+        "• Terraza con mobiliario para celebrar",
+        "• Estacionamiento y conexión Starlink disponible",
+        "",
+        "### SERVICIOS ADICIONALES OPCIONALES:",
+        "• Hora extra de tinajas: $25.000",
+        "• Show de cueca y folclore: $80.000",
+        "• Carnes premium para el asado: $40.000 por grupo",
+        "• Kit de juegos criollos: $25.000 por grupo",
+        "• Transporte desde Las Trancas: $12.000 por viaje"
+      ],
+      image: "/lovable-uploads/3c440bec-e9af-462b-95d8-45e8eec15b88.png"
+    }
+  ]
+};
+
+// Datos detallados para la página de Navidad
+export const navidadDetailContent = {
+  title: "Navidad Mágica en la Naturaleza",
+  subtitle: "Celebra la Navidad rodeado del bosque nativo",
+  
+  tabs: [
+    {
+      id: "que-incluye",
+      name: "Qué Incluye",
+      title: "¿Qué es este Paquete?",
+      content: "Una Navidad mágica en medio de la naturaleza, perfecta para celebrar esta fecha especial con tu familia en un entorno único donde la paz del bosque se combina con la alegría navideña. Este paquete está diseñado para crear una experiencia navideña inolvidable, alejada del bullicio de la ciudad pero con toda la magia de la época. Incluye decoración navideña especial, cena navideña tradicional, intercambio de regalos bajo las estrellas y todas las comodidades para una Navidad diferente y memorable.",
+      image: "/lovable-uploads/5bf3bb3b-da31-4f12-a031-1d7274b2b1cc.png"
+    },
+    {
+      id: "precios",
+      name: "Precios",
+      title: "Precios y Opciones",
+      content: [
+        "**Paquete Navidad Mágica en la Naturaleza** (2 noches)",
+        "**Precio:** Domo completo hasta 4 personas por $650.000 CLP",
+        "",
+        "### EL PAQUETE INCLUYE:",
+        "• Alojamiento en domo geodésico completo (2 noches)",
+        "• Decoración navideña completa",
+        "• Cena navideña tradicional (pavo + acompañamientos)",
+        "• Cola de mono + chocolate caliente + ponche navideño",
+        "• Todas las comidas + dulces navideños con productos del invernadero",
+        "• Acceso a piscina de agua mineralizada",
+        "• 1 hora de tinajas de ciprés incluida",
+        "• Villancicos ambiente + fogón navideño",
+        "• Espacio decorado para intercambio de regalos",
+        "• Estacionamiento y conexión Starlink disponible",
+        "",
+        "### SERVICIOS ADICIONALES OPCIONALES:",
+        "• Hora extra de tinajas: $25.000",
+        "• Visita del Viejito Pascuero: $50.000",
+        "• Cena navideña gourmet: $45.000 por persona",
+        "• Kit de postres navideños: $30.000 por grupo",
+        "• Transporte desde Las Trancas: $12.000 por viaje"
+      ],
+      image: "/lovable-uploads/5bf3bb3b-da31-4f12-a031-1d7274b2b1cc.png"
+    }
+  ]
+};
+
+// Datos detallados para la página de Año Nuevo
+export const anoNuevoDetailContent = {
+  title: "Año Nuevo Bajo las Estrellas",
+  subtitle: "Recibe el nuevo año rodeado del bosque nativo",
+  
+  tabs: [
+    {
+      id: "que-incluye",
+      name: "Qué Incluye",
+      title: "¿Qué es este Paquete?",
+      content: "Una celebración de Año Nuevo íntima y memorable bajo las estrellas del bosque nativo para comenzar el año con renovadas energías. Este paquete está diseñado para quienes buscan una forma especial y tranquila de recibir el nuevo año, alejados del bullicio pero con toda la emoción de la fecha. Incluye cena de gala, brindis a medianoche, fuegos artificiales privados y una experiencia única para reflexionar sobre el año que termina y dar la bienvenida al que comienza en un entorno natural extraordinario.",
+      image: "/lovable-uploads/258111ea-9c35-4f22-811b-3beaeba46f33.png"
+    },
+    {
+      id: "precios",
+      name: "Precios",
+      title: "Precios y Opciones",
+      content: [
+        "**Paquete Año Nuevo Bajo las Estrellas** (2 noches)",
+        "**Precio:** Domo completo hasta 4 personas por $680.000 CLP",
+        "",
+        "### EL PAQUETE INCLUYE:",
+        "• Alojamiento en domo geodésico completo (2 noches)",
+        "• Decoración de Año Nuevo elegante",
+        "• Cena de gala de Año Nuevo",
+        "• Espumante premium para brindis de medianoche",
+        "• Fuegos artificiales privados a las 00:00",
+        "• Todas las comidas gourmet con productos del invernadero",
+        "• Acceso a piscina de agua mineralizada",
+        "• 2 horas de tinajas de ciprés incluidas",
+        "• Música ambiente + fogón de medianoche",
+        "• Terraza especial para recibir el nuevo año",
+        "• Estacionamiento y conexión Starlink disponible",
+        "",
+        "### SERVICIOS ADICIONALES OPCIONALES:",
+        "• Hora extra de tinajas: $25.000",
+        "• Show de fuegos artificiales extendido: $100.000",
+        "• Cena de gala de 7 tiempos: $80.000 por persona",
+        "• Masaje relajante de inicio de año: $60.000 por persona",
+        "• Transporte desde Las Trancas: $12.000 por viaje"
+      ],
+      image: "/lovable-uploads/258111ea-9c35-4f22-811b-3beaeba46f33.png"
+    }
+  ]
+};
