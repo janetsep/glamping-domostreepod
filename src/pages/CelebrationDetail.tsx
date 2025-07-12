@@ -9,6 +9,9 @@ import WomenRelaxSection from "@/components/WomenRelaxSection";
 import BirthdaySection from "@/components/BirthdaySection";
 import FamilyPartySection from "@/components/FamilyPartySection";
 import AnniversarySection from "@/components/AnniversarySection";
+import FiestasPatriasSection from "@/components/FiestasPatriasSection";
+import NavidadSection from "@/components/NavidadSection";
+import AnoNuevoSection from "@/components/AnoNuevoSection";
 
 const CelebrationDetail = () => {
   const { id } = useParams<{ id: string }>();
@@ -72,6 +75,33 @@ const CelebrationDetail = () => {
     return (
       <div className="min-h-screen pt-20">
         <AnniversarySection />
+      </div>
+    );
+  }
+
+  // Si es Fiestas Patrias, mostrar la sección detallada
+  if (id === "fiestas-patrias") {
+    return (
+      <div className="min-h-screen pt-20">
+        <FiestasPatriasSection />
+      </div>
+    );
+  }
+
+  // Si es Navidad, mostrar la sección detallada
+  if (id === "navidad") {
+    return (
+      <div className="min-h-screen pt-20">
+        <NavidadSection />
+      </div>
+    );
+  }
+
+  // Si es Año Nuevo, mostrar la sección detallada
+  if (id === "ano-nuevo") {
+    return (
+      <div className="min-h-screen pt-20">
+        <AnoNuevoSection />
       </div>
     );
   }

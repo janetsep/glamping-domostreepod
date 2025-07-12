@@ -40,6 +40,30 @@ export const getPackageInfo = (packageId: string): PackageInfo => {
         basePrice: 550000,
         description: 'Paquete familiar fijo por domo con todas las comodidades'
       };
+    case 'fiestas-patrias-package':
+      return {
+        name: 'Fiestas Patrias en la Naturaleza',
+        duration: '2 noches',
+        price: '$580.000',
+        basePrice: 580000,
+        description: 'Paquete fijo por domo con decoración patria y actividades tradicionales'
+      };
+    case 'navidad-package':
+      return {
+        name: 'Navidad Mágica en el Bosque',
+        duration: '2 noches',
+        price: '$650.000',
+        basePrice: 650000,
+        description: 'Paquete navideño fijo por domo con decoración especial y cena navideña'
+      };
+    case 'ano-nuevo-package':
+      return {
+        name: 'Año Nuevo bajo las Estrellas',
+        duration: '2 noches',
+        price: '$680.000',
+        basePrice: 680000,
+        description: 'Paquete de fin de año fijo por domo con celebración especial'
+      };
     case '4':
       return {
         name: 'Para familias que buscan exclusividad total',
