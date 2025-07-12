@@ -19,14 +19,9 @@ export const useGlampingUnits = () => {
           throw error;
         }
 
-        if (data && data.length > 0) {
-          console.log('Units found:', data.length);
-          return data as GlampingUnit[];
-        }
-
-        console.log('No units found, using fallback data');
-        // Fallback to packageData
-        return packageData.map((packageItem): GlampingUnit => ({
+        // Combine database units with package units
+        const dbUnits = data || [];
+        const packageUnits = packageData.map((packageItem): GlampingUnit => ({
           id: packageItem.id,
           name: packageItem.title,
           description: packageItem.detailedDescription || packageItem.description,
@@ -36,9 +31,13 @@ export const useGlampingUnits = () => {
           },
           image_url: packageItem.image,
         }));
+
+        const allUnits = [...dbUnits, ...packageUnits];
+        console.log('Total units found:', allUnits.length);
+        return allUnits;
       } catch (error) {
         console.error('Error in useGlampingUnits:', error);
-        // Return fallback data on error
+        // Return package data on error
         return packageData.map((packageItem): GlampingUnit => ({
           id: packageItem.id,
           name: packageItem.title,

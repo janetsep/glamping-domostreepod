@@ -31,7 +31,7 @@ export const specialtyPackages: PackageItem[] = [
     title: "Mujeres Relax - Retiro de Bienestar",
     description: "Un paquete especial diseñado para mujeres que buscan relajación y bienestar. Incluye acceso a tinajas termales con aguas mineralizadas, actividades de relajación y un ambiente tranquilo para reconectar contigo misma.",
     detailedDescription: "Escápate del estrés diario y regálate un momento de paz y tranquilidad en TreePod. Nuestro paquete Mujeres Relax está especialmente diseñado para crear un espacio de sanación y renovación. Disfruta de las propiedades terapéuticas de nuestras aguas mineralizadas en tinajas de ciprés, rodeada de la serenidad del bosque nativo. El ambiente perfecto para meditar, leer, practicar yoga o simplemente conectar contigo misma.",
-    price: 180000,
+    price: 520000,
     originalPrice: 220000,
     image: "/lovable-uploads/ba985569-8f29-4da1-af9c-2aba9a5a886b.png",
     interiorImage: "/lovable-uploads/9c5dac9d-9528-439a-9d1c-2257f501f821.png",
