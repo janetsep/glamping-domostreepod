@@ -43,25 +43,25 @@ export const experiencesData: ExperiencesData = {
       title: "Tours en Bicicleta",
       description: "Recorre los senderos del valle con nuestras bicicletas de montaña premium.",
       details: "Ofrecemos rutas guiadas y autoguiadas para todos los niveles de habilidad. Nuestras bicicletas cuentan con asistencia eléctrica opcional, perfectas para explorar los cerros circundantes. Incluye mapa, casco, botella de agua y kit de reparación.",
-      image: "/lovable-uploads/4bb0b8cf-adee-40c4-ac00-a3676ff6cdcc.png"
+      image: "/lovable-uploads/daf4f24d-4485-4324-9991-3f7d52a79e0f.png"
     }, {
       icon: <MapIcon />,
       title: "Senderismo por Bosque Nativo",
       description: "Explora senderos exclusivos que atraviesan nuestro bosque de Ñirres, Coihues y Araucarias.",
       details: "Nuestros senderos ofrecen vistas panorámicas al Valle Las Trancas y los Nevados de Chillán. Cada ruta está cuidadosamente marcada y mantenida, con puntos de interés y áreas de descanso estratégicamente ubicadas para disfrutar de la flora y fauna local.",
-      image: "/lovable-uploads/5e659144-32c4-419c-aa12-1d8d51ee81b5.png"
+      image: "/lovable-uploads/7202eec3-bd82-4939-90a9-0a6509fa2af0.png"
     }, {
       icon: <CarIcon />,
       title: "Excursiones a Parques Nacionales",
       description: "Visita los majestuosos Parques Nacionales cercanos con nuestras excursiones guiadas.",
       details: "Trabajamos con operadores turísticos locales que ofrecen excursiones a los parques nacionales más emblemáticos de la región. Incluyen transporte desde nuestra propiedad, almuerzo gourmet y guías bilingües apasionados por la conservación.",
-      image: "/lovable-uploads/9c5dac9d-9528-439a-9d1c-2257f501f821.png"
+      image: "/lovable-uploads/a12a8e24-f99f-48c6-9bc2-eea9e8df4ef5.png"
     }, {
       icon: <MountainIcon />,
       title: "Aventuras Guiadas en la Naturaleza",
       description: "Explora la belleza virgen del Valle Las Trancas de la mano de expertos operadores locales.",
       details: "Una aventura segura y fascinante para conectar profundamente con la biodiversidad única del sur de Chile. Trekking, senderismo interpretativo, avistamiento de fauna y más: descubre bosques encantados, paisajes volcánicos y senderos inolvidables que ofrecen la verdadera esencia cordillerana.",
-      image: "/lovable-uploads/717e7999-5c62-4fc9-a165-917b692351f9.png"
+      image: "/lovable-uploads/26544819-643d-4e3f-8599-74f7f3611221.png"
     }
     ],
   },
@@ -74,19 +74,19 @@ export const experiencesData: ExperiencesData = {
       title: "Ruta de los Pincheira",
       description: "Descubre la fascinante historia de los hermanos Pincheira, legendarios bandidos del siglo XIX.",
       details: "Esta experiencia combina senderismo suave con inmersión histórica. Visitarás los refugios naturales y puntos estratégicos utilizados por esta banda durante sus años de actividad. Un guía historiador te sumergirá en las leyendas y realidades de estos personajes que desafiaron al ejército chileno.",
-      image: "/lovable-uploads/71928294-5635-46f7-a3ec-5fb33ef836ea.png"
+      image: "/lovable-uploads/0aba3582-f7e0-478e-b316-3893d4cebacc.png"
     }, {
       icon: <BookOpenIcon />,
       title: "Leyendas del Volcán",
       description: "Conoce las historias ancestrales del Nevado de Chillán en una charla mágica alrededor del fuego.",
       details: "Una experiencia cultural enriquecedora que fortalece el respeto por nuestro patrimonio natural. Aprende sobre el poder curativo y la importancia cultural de las aguas volcánicas, tal como lo han descrito estudios históricos y científicos, mientras observas la silueta imponente del volcán en el horizonte.",
-      image: "/lovable-uploads/9eae4d11-6229-4086-acbc-dcb83c2d25df.png"
+      image: "/lovable-uploads/8c94b429-4fba-49f4-a9e1-9d5970782bba.png"
     }, {
       icon: <SquareLibraryIcon />,
       title: "Artesanía Local",
       description: "Aprende sobre las técnicas ancestrales de artesanía en lana, madera y cerámica de la zona.",
       details: "Visitas a talleres de artesanos locales que mantienen vivas las tradiciones de la zona. Podrás participar en talleres prácticos donde aprenderás técnicas básicas y te llevarás una pieza hecha por ti. Incluye materiales, instrucción y una degustación de productos locales.",
-      image: "/lovable-uploads/aac5fd64-e9cc-4455-b0d2-b81c4741b389.png"
+      image: "/lovable-uploads/15e939f8-681c-4a2e-a19a-8cace70e9e38.png"
     }
     ],
   },
