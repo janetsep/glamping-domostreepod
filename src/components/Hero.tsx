@@ -30,19 +30,23 @@ const Hero = () => {
   // Usar las imágenes reales auténticas de TreePod
   const images = [
     {
-      src: "/lovable-uploads/a12a8e24-f99f-48c6-9bc2-eea9e8df4ef5.png", // Domo al atardecer
+      src: "/lovable-uploads/b5dd53f8-d95f-4105-845c-b602cf8079e3.png", // Domo geodésico blanco durante el día
       placeholder: "/lovable-uploads/dafd81f1-18a1-4796-9a46-b39914b747a9.jpg"
     },
     {
-      src: "/lovable-uploads/26544819-643d-4e3f-8599-74f7f3611221.png", // Domo en bosque verde
+      src: "/lovable-uploads/788287b0-a257-445e-8ff3-24d98359526a.png", // Domo iluminado por la noche
       placeholder: "/lovable-uploads/dafd81f1-18a1-4796-9a46-b39914b747a9.jpg"
     },
     {
-      src: "/lovable-uploads/0aba3582-f7e0-478e-b316-3893d4cebacc.png", // Interior acogedor
+      src: "/lovable-uploads/82e1c000-2a82-4f42-b38f-128aeac6c06b.png", // Interior del domo con cama y chimenea
       placeholder: "/lovable-uploads/dafd81f1-18a1-4796-9a46-b39914b747a9.jpg"
     },
     {
-      src: "/lovable-uploads/7202eec3-bd82-4939-90a9-0a6509fa2af0.png", // Domo en invierno
+      src: "/lovable-uploads/357aac3e-3fc1-4843-a178-41ef9cfe6937.png", // Interior del domo con vista panorámica
+      placeholder: "/lovable-uploads/dafd81f1-18a1-4796-9a46-b39914b747a9.jpg"
+    },
+    {
+      src: "/lovable-uploads/f82d272b-5cd5-419c-b45b-fdee7caafdd1.png", // Invernadero con terraza de madera
       placeholder: "/lovable-uploads/dafd81f1-18a1-4796-9a46-b39914b747a9.jpg"
     }
   ];
