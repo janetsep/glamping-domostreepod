@@ -74,7 +74,17 @@ const FooterNavigation = ({
               
               {/* Submenu items */}
               {item.submenu && <ul className="mt-1 ml-6 space-y-1">
-                  {item.submenu.map(subItem => {})}
+                  {item.submenu.map(subItem => (
+                    <li key={subItem.name}>
+                      <button 
+                        onClick={(e) => handleSubmenuClick(subItem.href, e)} 
+                        className="text-gray-500 hover:text-primary flex items-center transition-colors cursor-pointer group text-sm"
+                      >
+                        <subItem.icon className="h-3 w-3 mr-2 group-hover:text-cyan-500" />
+                        <span className="group-hover:text-cyan-500 transition-colors">{subItem.name}</span>
+                      </button>
+                    </li>
+                  ))}
                 </ul>}
             </div>
           </li>)}
