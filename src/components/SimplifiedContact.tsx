@@ -5,7 +5,7 @@ import SocialButtons from "./contact/SocialButtons";
 const SimplifiedContact = () => {
   const faqs = [{
     question: "¿Qué incluye la estadía?",
-    answer: "Todas las estadías incluyen alojamiento en domo geodésico completamente equipado, desayuno, acceso a senderos privados y tinaja de madera. Algunos paquetes incluyen servicios adicionales."
+    answer: "Nuestras estadías incluyen alojamiento en domos geodésicos completamente equipados con todas las comodidades necesarias y acceso exclusivo a senderos privados en el bosque nativo. Servicios adicionales disponibles según el paquete seleccionado."
   }, {
     question: "¿Cómo llegar?",
     answer: "Estamos ubicados en el Valle Las Trancas, a 1.5 horas de la ciudad de Chillán. Enviamos instrucciones detalladas y ubicación GPS al confirmar tu reserva."
