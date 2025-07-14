@@ -1,14 +1,12 @@
-
 import { useNavigate } from "react-router-dom";
 import { ShieldCheck } from "lucide-react";
-
 interface FooterLinksProps {
   navigateTo: (path: string) => void;
 }
-
-const FooterLinks = ({ navigateTo }: FooterLinksProps) => {
-  return (
-    <div className="border-t border-gray-200 pt-8 pb-6">
+const FooterLinks = ({
+  navigateTo
+}: FooterLinksProps) => {
+  return <div className="border-t border-gray-200 pt-8 pb-6">
       {/* Payment Methods & Cancellation Policy */}
       <div className="flex flex-col md:flex-row justify-between items-center mb-8">
         <div className="flex flex-col mb-4 md:mb-0">
@@ -16,22 +14,17 @@ const FooterLinks = ({ navigateTo }: FooterLinksProps) => {
           <div className="flex items-center gap-3">
             {/* WebPayPlus payment method icons */}
             <div className="flex flex-wrap gap-2">
-              <img 
-                src="/lovable-uploads/8d77f343-0ff2-4d41-a7dd-54af7e387725.png" 
-                alt="WebPay Plus" 
-                className="h-12 object-contain" 
-                onError={(e) => {
-                  // Fallback URL if the image fails to load
-                  e.currentTarget.src = "https://www.transbank.cl/wp-content/uploads/2022/10/webpay-1.svg";
-                }}
-              />
+              <img src="/lovable-uploads/8d77f343-0ff2-4d41-a7dd-54af7e387725.png" alt="WebPay Plus" className="h-12 object-contain" onError={e => {
+              // Fallback URL if the image fails to load
+              e.currentTarget.src = "https://www.transbank.cl/wp-content/uploads/2022/10/webpay-1.svg";
+            }} />
             </div>
           </div>
         </div>
         
         <div className="flex items-center gap-2 text-sm text-gray-600">
           <ShieldCheck className="h-5 w-5 text-cyan-500" />
-          <span>Cancelación gratuita hasta 7 días antes de la llegada</span>
+          
         </div>
       </div>
 
@@ -56,8 +49,6 @@ const FooterLinks = ({ navigateTo }: FooterLinksProps) => {
           Mapa del Sitio
         </button>
       </div>
-    </div>
-  );
+    </div>;
 };
-
 export default FooterLinks;
