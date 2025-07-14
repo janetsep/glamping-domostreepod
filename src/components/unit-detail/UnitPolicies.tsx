@@ -26,7 +26,7 @@ export const UnitPolicies = ({
     checkOut: "12:00",
     cancellation: "Cancelación flexible hasta 7 días antes",
     rules: [
-      "No se permiten mascotas",
+      "Se aceptan mascotas pequeñas, bien portadas, nunca deben quedar solas en el domo (previo aviso y aceptación)",
       "No fumar en el interior",
       "Respetar el entorno natural",
       "Máximo 4 huéspedes por domo"
