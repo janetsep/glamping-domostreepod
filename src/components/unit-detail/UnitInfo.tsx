@@ -1,7 +1,8 @@
 import type { GlampingUnit } from "@/lib/supabase";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { MapPin, Users, Bed, Bath, Star, Wifi, Trees, Home, Search, Building2, Plane } from "lucide-react";
+import { MapPin, Users, Bed, Bath, Star, Wifi, Trees } from "lucide-react";
+import { AirbnbIcon, GoogleIcon, BookingIcon, TripadvisorIcon } from "@/components/icons/PlatformIcons";
 import { getAverageRating } from "@/data/content/testimonials";
 interface UnitInfoProps {
   unit: GlampingUnit;
@@ -12,10 +13,10 @@ export const UnitInfo = ({
   // Datos reales de la sección "¡Los Huéspedes Opinan!"
   const reviewsPlatforms = [
     { name: "Todas las reseñas", rating: "4.9", color: "text-gray-700", icon: null },
-    { name: "Airbnb", rating: "5.0", color: "text-red-500", icon: Home },
-    { name: "Google", rating: "4.9", color: "text-blue-500", icon: Search },
-    { name: "Booking.com", rating: "9.6", color: "text-blue-700", icon: Building2 },
-    { name: "Tripadvisor", rating: "5.0", color: "text-green-600", icon: Plane }
+    { name: "Airbnb", rating: "5.0", color: "text-red-500", icon: AirbnbIcon },
+    { name: "Google", rating: "4.9", color: "text-blue-500", icon: GoogleIcon },
+    { name: "Booking.com", rating: "9.6", color: "text-blue-700", icon: BookingIcon },
+    { name: "Tripadvisor", rating: "5.0", color: "text-green-600", icon: TripadvisorIcon }
   ];
   
   const generalRating = 4.9;
