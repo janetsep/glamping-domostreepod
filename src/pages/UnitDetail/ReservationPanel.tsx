@@ -108,7 +108,7 @@ export const ReservationPanel = ({
   return (
     <div className="sticky top-0 h-screen overflow-y-auto bg-white border-l border-gray-200 p-5">
       <h2 className="text-xl font-display font-bold mb-3 text-sm">
-        Reserva tu experiencia en Domos TreePod
+        Reserva tu experiencia en domos TreePod
       </h2>
       
       {/* Barra de progreso debajo del título */}
