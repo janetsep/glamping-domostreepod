@@ -24,11 +24,6 @@ const OurStorySection = () => {
           <div className="flex justify-center">
             <div className="grid grid-cols-2 gap-4">
               <img 
-                src="/images/founders/jaime.jpg" 
-                alt="Jaime, co-fundador" 
-                className="rounded-lg shadow-lg h-64 object-cover"
-              />
-              <img 
                 src="/images/founders/janet.jpg" 
                 alt="Janet, co-fundadora" 
                 className="rounded-lg shadow-lg h-64 object-cover"
