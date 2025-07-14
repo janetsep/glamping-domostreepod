@@ -1,14 +1,12 @@
-
 import { MapPin, Phone, Mail, MessageSquare, Facebook, Instagram, Youtube } from "lucide-react";
 import { footerContent } from "@/data/siteContent";
-
 const ContactInfo = () => {
   return <div>
       <h4 className="font-display font-bold text-lg mb-4">{footerContent.contactTitle}</h4>
       <ul className="space-y-3 text-gray-600">
         <li className="flex items-start gap-2">
           <MapPin className="h-5 w-5 mt-0.5 flex-shrink-0 text-primary" />
-          <span>{footerContent.address}</span>
+          
         </li>
         <li className="flex items-center gap-2">
           <Phone className="h-5 w-5 flex-shrink-0 text-primary" />
@@ -38,5 +36,4 @@ const ContactInfo = () => {
       </div>
     </div>;
 };
-
 export default ContactInfo;
