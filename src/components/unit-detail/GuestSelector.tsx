@@ -131,9 +131,6 @@ export const GuestSelector = ({
         </p>
       )}
       
-      <p className="text-gray-500 text-xs mt-2">
-        Cada domo puede alojar hasta 4 huéspedes
-      </p>
       
       {value > 0 && (
         <p className="text-blue-700 text-sm mt-2 font-medium">
