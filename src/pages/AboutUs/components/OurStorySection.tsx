@@ -1,10 +1,7 @@
-
 import React from "react";
 import { aboutUsContent } from "@/data/content/aboutUs";
-
 const OurStorySection = () => {
-  return (
-    <section className="py-16 bg-white">
+  return <section className="py-16 bg-white">
       <div className="container mx-auto px-4">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
           <div>
@@ -23,22 +20,13 @@ const OurStorySection = () => {
           </div>
           <div className="flex justify-center">
             <div className="grid grid-cols-2 gap-4">
-              <img 
-                src="/images/founders/janet.jpg" 
-                alt="Janet, co-fundadora" 
-                className="rounded-lg shadow-lg h-64 object-cover"
-              />
-              <img 
-                src="/images/locations/valle-las-trancas.jpg" 
-                alt="Valle Las Trancas, bosque nativo" 
-                className="rounded-lg shadow-lg h-64 object-cover col-span-2"
-              />
+              
+              
+              
             </div>
           </div>
         </div>
       </div>
-    </section>
-  );
+    </section>;
 };
-
 export default OurStorySection;
