@@ -4,10 +4,7 @@ const ContactInfo = () => {
   return <div>
       <h4 className="font-display font-bold text-lg mb-4">{footerContent.contactTitle}</h4>
       <ul className="space-y-3 text-gray-600">
-        <li className="flex items-start gap-2">
-          <MapPin className="h-5 w-5 mt-0.5 flex-shrink-0 text-primary" />
-          
-        </li>
+        
         
         <li className="flex items-center gap-2">
           <Mail className="h-5 w-5 flex-shrink-0 text-primary" />
