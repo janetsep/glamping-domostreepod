@@ -24,7 +24,7 @@ export const UnitPolicies = ({
   policies = {
     checkIn: "16:00",
     checkOut: "12:00",
-    cancellation: "Cancelación flexible hasta 24 horas antes",
+    cancellation: "Cancelación flexible hasta 7 días antes",
     rules: [
       "No se permiten mascotas",
       "No fumar en el interior",
