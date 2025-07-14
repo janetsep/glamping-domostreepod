@@ -31,7 +31,7 @@ export const UnitExperience = () => {
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
           <Heart className="w-5 h-5 text-primary" />
-          Tu experiencia TreePod
+          Tu experiencia en domos TreePod
         </CardTitle>
       </CardHeader>
       <CardContent className="space-y-4">
