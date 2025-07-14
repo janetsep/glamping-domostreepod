@@ -22,8 +22,8 @@ interface UnitPoliciesProps {
 
 export const UnitPolicies = ({ 
   policies = {
-    checkIn: "15:00",
-    checkOut: "11:00", 
+    checkIn: "16:00",
+    checkOut: "12:00",
     cancellation: "Cancelación flexible hasta 24 horas antes",
     rules: [
       "No se permiten mascotas",
