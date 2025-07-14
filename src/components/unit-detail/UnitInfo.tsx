@@ -36,15 +36,15 @@ export const UnitInfo = ({
           <div className="text-right">
             {/* Tabla de puntuaciones por plataforma - formato horizontal */}
             <div className="mb-3 bg-gray-50 rounded-lg p-2">
-              <div className="flex flex-wrap gap-4 text-xs justify-end border-b border-gray-300 pb-2">
-                {reviewsPlatforms.map((platform, index) => (
-                   <div key={platform.name} className={`flex items-center gap-1 ${index === 0 ? 'border-b-2 border-black pb-1' : ''}`}>
-                     {platform.icon && <platform.icon className="w-3 h-3" />}
-                     <span className={platform.color}>{platform.name}</span>
-                     <span className="font-semibold">{platform.rating}</span>
-                   </div>
-                ))}
-              </div>
+               <div className="flex gap-3 text-xs justify-end border-b border-gray-300 pb-2">
+                 {reviewsPlatforms.map((platform, index) => (
+                    <div key={platform.name} className={`flex items-center gap-1.5 ${index === 0 ? 'border-b-2 border-black pb-1' : ''}`}>
+                      {platform.icon && <platform.icon className="w-5 h-5" />}
+                      <span className={platform.color}>{platform.name}</span>
+                      <span className="font-semibold">{platform.rating}</span>
+                    </div>
+                 ))}
+               </div>
               
               {/* Calificación general con estrellas */}
               <div className="pt-2">
