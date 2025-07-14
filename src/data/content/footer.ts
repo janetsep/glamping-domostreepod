@@ -12,7 +12,7 @@ export const footerContent = {
     { text: "Contacto", path: "/contact" }
   ],
   contactTitle: "Contacto",
-  address: "Camino a la Montaña km 5, Valle Las Trancas, Chile",
+  address: "Ruta N-55 kilometro 71 1/2, Valle Las Trancas, Región de Ñuble",
   phone: "+56 9 8464 3307",
   email: "info@domostreepod.cl",
   copyrightText: "© 2025 Domos Treepod. Todos los derechos reservados.",
