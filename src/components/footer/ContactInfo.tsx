@@ -8,10 +8,7 @@ const ContactInfo = () => {
           <MapPin className="h-5 w-5 mt-0.5 flex-shrink-0 text-primary" />
           
         </li>
-        <li className="flex items-center gap-2">
-          <Phone className="h-5 w-5 flex-shrink-0 text-primary" />
-          <a href={`tel:${footerContent.phone}`} className="hover:text-primary transition-colors">{footerContent.phone}</a>
-        </li>
+        
         <li className="flex items-center gap-2">
           <Mail className="h-5 w-5 flex-shrink-0 text-primary" />
           <a href={`mailto:${footerContent.email}`} className="hover:text-primary transition-colors">
