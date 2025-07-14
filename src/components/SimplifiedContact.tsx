@@ -11,7 +11,7 @@ const SimplifiedContact = () => {
     answer: "Estamos ubicados en el Valle Las Trancas, a 1.5 horas de la ciudad de Chillán. Enviamos instrucciones detalladas y ubicación GPS al confirmar tu reserva."
   }, {
     question: "¿Cuál es la política de cancelación?",
-    answer: "Las cancelaciones realizadas con más de 7 días de anticipación reciben un reembolso del 85%. Con menos de 7 días, se reembolsa el 50%. Con menos de 48 horas no hay reembolso, pero puedes reprogramar tu estadía."
+    answer: "Las cancelaciones realizadas con más de 7 días de anticipación reciben un reembolso del 85%. Con menos de 7 días, se reembolsa el 50%. Con menos de 48 horas no hay reembolso. En todos los casos de cancelación puedes reprogramar tu estadía (máximo 1 año)."
   }];
   return <section id="contact" className="py-20 bg-white">
       <div className="w-full bg-primary/5 border-b border-primary/10 py-3 mb-16">
