@@ -16,7 +16,7 @@ const ContactInfo = () => {
           </a>
         </li>
         <li className="flex items-center gap-2">
-          <MessageSquare className="h-5 w-5 flex-shrink-0 text-primary" />
+          <Phone className="h-5 w-5 flex-shrink-0 text-primary" />
           <a href={`https://wa.me/${footerContent.phone.replace(/\s+/g, '')}`} target="_blank" rel="noopener noreferrer" className="hover:text-primary transition-colors">{footerContent.phone}</a>
         </li>
       </ul>
