@@ -75,7 +75,7 @@ export const UnitInfo = ({
           </Badge>
           <Badge variant="secondary" className="flex items-center gap-1">
             <Bed className="w-3 h-3" />
-            Cama king size
+            Cama Matrimonial
           </Badge>
           <Badge variant="secondary" className="flex items-center gap-1">
             <Bath className="w-3 h-3" />
