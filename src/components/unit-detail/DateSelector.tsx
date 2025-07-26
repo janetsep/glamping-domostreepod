@@ -1,6 +1,7 @@
 import { useEffect } from "react";
 import { Label } from "@/components/ui/label";
 import { DatePickerButton } from "./date-selector/DatePickerButton";
+import { DateRangePicker } from "./date-selector/DateRangePicker";
 import { useDateSelection } from "./hooks/useDateSelection";
 
 interface DateSelectorProps {
@@ -39,42 +40,51 @@ export const DateSelector: React.FC<DateSelectorProps> = ({
 
   return (
     <div className="space-y-4">
-      <div>
-        <Label htmlFor="start-date" className="block mb-2">
-          Fecha de entrada
-        </Label>
-        <DatePickerButton
-          label="Seleccionar fecha de entrada"
-          date={startDate}
-          isOpen={startCalendarOpen}
-          onOpenChange={setStartCalendarOpen}
-          onSelectDate={handleStartDateSelect}
-          unitId={unitId}
-          requiredDomos={requiredDomos}
-        />
-      </div>
+      {/* Nuevo selector de rango de fechas unificado */}
+      <DateRangePicker
+        startDate={startDate}
+        endDate={endDate}
+        onStartDateChange={onStartDateChange}
+        onEndDateChange={onEndDateChange}
+        unitId={unitId}
+        requiredDomos={requiredDomos}
+      />
+      
+      {/* Fallback a selectores individuales si es necesario */}
+      <div className="hidden">
+        <div>
+          <Label htmlFor="start-date" className="block mb-2">
+            Fecha de entrada
+          </Label>
+          <DatePickerButton
+            label="Seleccionar fecha de entrada"
+            date={startDate}
+            isOpen={startCalendarOpen}
+            onOpenChange={setStartCalendarOpen}
+            onSelectDate={handleStartDateSelect}
+            unitId={unitId}
+            requiredDomos={requiredDomos}
+          />
+        </div>
 
-      <div>
-        <Label htmlFor="end-date" className="block mb-2">
-          Fecha de salida
-        </Label>
-        <DatePickerButton
-          label="Seleccionar fecha de salida"
-          date={endDate}
-          isOpen={endCalendarOpen}
-          onOpenChange={setEndCalendarOpen}
-          onSelectDate={handleEndDateSelect}
-          unitId={unitId}
-          selectedStartDate={startDate}
-          initialMonth={endDateCalendarMonth}
-          checkDateRange={true}
-          disabled={!startDate}
-          requiredDomos={requiredDomos}
-        />
-      </div>
-
-      <div className="text-sm text-muted-foreground">
-        <p>Check-in: 16:00 hrs | Check-out: 12:00 hrs</p>
+        <div>
+          <Label htmlFor="end-date" className="block mb-2">
+            Fecha de salida
+          </Label>
+          <DatePickerButton
+            label="Seleccionar fecha de salida"
+            date={endDate}
+            isOpen={endCalendarOpen}
+            onOpenChange={setEndCalendarOpen}
+            onSelectDate={handleEndDateSelect}
+            unitId={unitId}
+            selectedStartDate={startDate}
+            initialMonth={endDateCalendarMonth}
+            checkDateRange={true}
+            disabled={!startDate}
+            requiredDomos={requiredDomos}
+          />
+        </div>
       </div>
     </div>
   );

@@ -2,7 +2,7 @@ import type { GlampingUnit } from "@/lib/supabase";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { MapPin, Users, Bed, Bath, Star, Wifi, Trees } from "lucide-react";
-import { AirbnbIcon, GoogleIcon, BookingIcon, TripadvisorIcon } from "@/components/icons/PlatformIcons";
+import { AirbnbIcon, GoogleIcon, BookingIcon, TripadvisorIcon } from "@/components/icons/RealPlatformIcons";
 import { getAverageRating } from "@/data/content/testimonials";
 interface UnitInfoProps {
   unit: GlampingUnit;
@@ -39,7 +39,7 @@ export const UnitInfo = ({
                <div className="flex gap-3 text-xs justify-end border-b border-gray-300 pb-2">
                  {reviewsPlatforms.map((platform, index) => (
                     <div key={platform.name} className={`flex items-center gap-1.5 ${index === 0 ? 'border-b-2 border-black pb-1' : ''}`}>
-                      {platform.icon && <platform.icon className="w-5 h-5" />}
+                      {platform.icon && <platform.icon className="w-4 h-4" />}
                       <span className={platform.color}>{platform.name}</span>
                       <span className="font-semibold">{platform.rating}</span>
                     </div>

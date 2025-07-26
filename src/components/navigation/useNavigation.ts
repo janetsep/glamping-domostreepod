@@ -10,6 +10,10 @@ export const useNavigation = () => {
 
   const handleReserveClick = () => {
     navigate(`/unit/${defaultUnitId}`);
+    // Hacer scroll al principio de la página después de la navegación
+    setTimeout(() => {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }, 100);
   };
 
   const scrollToSection = (id: string) => {

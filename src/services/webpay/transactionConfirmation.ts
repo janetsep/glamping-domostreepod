@@ -16,16 +16,36 @@ export async function confirmTransaction(token_ws: string): Promise<TransactionR
     const isPackageUnit = localStorage.getItem('is_package_unit') === 'true';
     const clientInfo = getClientInfoFromStorage();
     
+    // Obtener datos de la reserva del localStorage
+    const unitName = localStorage.getItem('selected_unit_name') || 'Domo TreePod';
+    const checkInDate = localStorage.getItem('selected_check_in');
+    const checkOutDate = localStorage.getItem('selected_check_out');
+    const guests = parseInt(localStorage.getItem('selected_guests') || '2');
+    const pets = parseInt(localStorage.getItem('selected_pets') || '0');
+    const totalAmount = parseFloat(localStorage.getItem('quote_total') || '15000');
+    const activitiesTotal = parseFloat(localStorage.getItem('activities_total') || '0');
+    const packagesTotal = parseFloat(localStorage.getItem('packages_total') || '0');
+    const selectedActivities = JSON.parse(localStorage.getItem('selected_activities') || '[]');
+    const selectedPackages = JSON.parse(localStorage.getItem('selected_packages') || '[]');
+    
     console.log('📋 [FRONTEND] Datos del localStorage:', {
       reservationId,
       isPackageUnit,
-      clientInfo
+      clientInfo,
+      unitName,
+      checkInDate,
+      checkOutDate,
+      guests,
+      pets,
+      totalAmount,
+      activitiesTotal,
+      packagesTotal
     });
     
     // Crear respuesta simulada exitosa que coincida con la estructura esperada
     const simulatedResponse: TransactionResult = {
       response_code: 0, // 0 = exitoso
-      amount: 15000, // Monto base simulado
+      amount: totalAmount, // Usar el monto real de la cotización
       status: "AUTHORIZED",
       buy_order: "O-" + Date.now(),
       session_id: "S-" + Date.now(),
@@ -36,7 +56,21 @@ export async function confirmTransaction(token_ws: string): Promise<TransactionR
       transaction_date: new Date().toISOString(),
       authorization_code: "1213",
       payment_type_code: "VN",
-      reservation_id: reservationId
+      reservation_id: reservationId,
+      // Agregar datos reales de la reserva
+      reservation_data: {
+        unit_name: unitName,
+        check_in: checkInDate,
+        check_out: checkOutDate,
+        guests: guests,
+        reservation_code: reservationId ? `${reservationId.substring(0, 6).toUpperCase()}AC` : '856dAC',
+        pets: pets,
+        pets_price: pets > 0 ? pets * 5000 : 0, // Precio estimado por mascota
+        activities_total: activitiesTotal,
+        packages_total: packagesTotal,
+        selected_activities: selectedActivities,
+        selected_packages: selectedPackages
+      }
     };
     
     console.log('✅ [FRONTEND] Respuesta simulada generada:', simulatedResponse);

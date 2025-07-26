@@ -11,6 +11,8 @@ interface CalendarGridProps {
   selectedEndDate: Date | null;
   disableNightMode?: boolean;
   requiredDomos?: number;
+  hoverDate?: Date;
+  onHoverDate?: (date: Date | undefined) => void;
 }
 
 export const CalendarGrid = ({
@@ -20,7 +22,9 @@ export const CalendarGrid = ({
   selectedStartDate,
   selectedEndDate,
   disableNightMode,
-  requiredDomos = 1
+  requiredDomos = 1,
+  hoverDate,
+  onHoverDate
 }: CalendarGridProps) => {
 
   // Función para obtener clases CSS según disponibilidad
@@ -35,11 +39,29 @@ export const CalendarGrid = ({
     const isStartDate = selectedStartDate && isSameDay(day.date, selectedStartDate);
     const isEndDate = selectedEndDate && isSameDay(day.date, selectedEndDate);
     const isSelected = isStartDate || isEndDate;
+    
+    // Verificar si está en el rango seleccionado
+    const isInRange = selectedStartDate && selectedEndDate && 
+        day.date > selectedStartDate && day.date < selectedEndDate;
+    
+    // Verificar si está en el rango de hover (preview)
+    const isInHoverRange = selectedStartDate && !selectedEndDate && hoverDate && 
+        ((day.date > selectedStartDate && day.date <= hoverDate) || 
+         (day.date >= hoverDate && day.date < selectedStartDate));
 
     // Si está seleccionado, usar colores de selección
     if (isSelected) {
       classes += " text-white bg-blue-500 hover:bg-blue-600 font-semibold";
-    } else {
+    } 
+    // Si está en el rango seleccionado, usar colores de rango
+    else if (isInRange) {
+      classes += " bg-blue-100 text-blue-700 hover:bg-blue-200";
+    }
+    // Si está en el rango de hover (preview), usar colores de preview
+    else if (isInHoverRange) {
+      classes += " bg-blue-50 text-blue-600 hover:bg-blue-100 border border-blue-200";
+    }
+    else {
       // Aplicar clases de texto según el mes
       if (!isSameMonth(day.date, currentMonth)) {
         classes += " text-gray-300";
@@ -95,11 +117,25 @@ export const CalendarGrid = ({
             onDateClick(day);
           }
         };
+        
+        const handleMouseEnter = () => {
+          if (canClick && onHoverDate && selectedStartDate && !selectedEndDate) {
+            onHoverDate(day.date);
+          }
+        };
+        
+        const handleMouseLeave = () => {
+          if (onHoverDate && selectedStartDate && !selectedEndDate) {
+            onHoverDate(undefined);
+          }
+        };
 
         return (
           <div 
             key={index} 
             onClick={handleClick}
+            onMouseEnter={handleMouseEnter}
+            onMouseLeave={handleMouseLeave}
             className={`relative ${canClick ? 'cursor-pointer' : 'cursor-not-allowed'}`}
           >
             <div className={getDateClasses(day)}>

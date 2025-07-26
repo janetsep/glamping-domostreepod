@@ -19,6 +19,8 @@ interface AvailabilityCalendarProps {
   initialMonth?: Date;
   disableNightMode?: boolean;
   requiredDomos?: number;
+  hoverDate?: Date;
+  onHoverDate?: (date: Date | undefined) => void;
 }
 
 export const AvailabilityCalendar = ({ 
@@ -29,7 +31,9 @@ export const AvailabilityCalendar = ({
   selectedEndDate,
   initialMonth,
   disableNightMode = false,
-  requiredDomos = 1
+  requiredDomos = 1,
+  hoverDate,
+  onHoverDate
 }: AvailabilityCalendarProps) => {
   // Usar initialMonth si se proporciona, de lo contrario usar la fecha actual
   const [currentMonth, setCurrentMonth] = useState<Date>(initialMonth || new Date());
@@ -156,6 +160,8 @@ export const AvailabilityCalendar = ({
         selectedEndDate={range.to}
         disableNightMode={disableNightMode}
         requiredDomos={requiredDomos}
+        hoverDate={hoverDate}
+        onHoverDate={onHoverDate}
       />
       <CalendarLegend />
     </div>

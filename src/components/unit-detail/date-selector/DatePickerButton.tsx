@@ -44,13 +44,17 @@ export const DatePickerButton = ({
       endDate: range.endDate?.toISOString()
     });
     
-    // Si estamos seleccionando la fecha de inicio
-    if (!selectedStartDate) {
+    // Si no hay fecha de inicio seleccionada, usar la fecha de inicio del rango
+    if (!selectedStartDate && range.startDate) {
       onSelectDate(range.startDate);
     } 
-    // Si estamos seleccionando la fecha de fin
-    else if (selectedStartDate && !selectedEndDate) {
+    // Si ya hay fecha de inicio pero no fecha de fin, usar la fecha de fin del rango
+    else if (selectedStartDate && !selectedEndDate && range.endDate) {
       onSelectDate(range.endDate);
+    }
+    // Si ya hay fecha de inicio pero no fecha de fin, y solo se proporciona startDate, usarla como endDate
+    else if (selectedStartDate && !selectedEndDate && range.startDate && !range.endDate) {
+      onSelectDate(range.startDate);
     }
   };
 

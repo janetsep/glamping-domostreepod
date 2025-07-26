@@ -41,7 +41,16 @@ export const useReservationActions = (state: any) => {
       console.log('✅ [useReservationActions] Reserva creada exitosamente:', data);
       
       try {
-        redirectToWebpay(data.reservationId, data.amount, false, state.displayUnit?.id || '');
+        redirectToWebpay(
+          data.reservationId, 
+          data.amount, 
+          false, 
+          state.displayUnit?.id || '',
+          state.startDate,
+          state.endDate,
+          state.guests,
+          state.displayUnit?.name || 'Domo TreePod'
+        );
         console.log('✅ [useReservationActions] Redirección a WebPay iniciada');
       } catch (redirectError) {
         console.error('❌ [useReservationActions] Error en redirección a WebPay:', redirectError);

@@ -7,7 +7,11 @@ export function usePayment(setIsLoading: (isLoading: boolean) => void) {
     reservationId: string,
     amount: number,
     isPackageUnit: boolean = false,
-    unitId: string = ''
+    unitId: string = '',
+    checkInDate?: Date,
+    checkOutDate?: Date,
+    guests?: number,
+    unitName?: string
   ) => {
     setIsLoading(true);
     
@@ -16,6 +20,23 @@ export function usePayment(setIsLoading: (isLoading: boolean) => void) {
       
       // Store information for later reference
       storeReservationInfo(reservationId, unitId, isPackageUnit);
+      
+      // Store reservation dates and details for payment success page
+      if (checkInDate) {
+        localStorage.setItem('selected_check_in', checkInDate.toISOString());
+      }
+      if (checkOutDate) {
+        localStorage.setItem('selected_check_out', checkOutDate.toISOString());
+      }
+      if (guests !== undefined) {
+        localStorage.setItem('selected_guests', guests.toString());
+      }
+      if (unitName) {
+        localStorage.setItem('selected_unit_name', unitName);
+      }
+      if (amount) {
+        localStorage.setItem('quote_total', amount.toString());
+      }
       
       // Retrieve client information from localStorage
       const clientInfo = getClientInfoFromStorage();

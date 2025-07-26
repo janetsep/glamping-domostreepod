@@ -64,11 +64,37 @@ const WebPayReturn = () => {
   // Function to navigate back to unit detail page
   const handleBackToUnit = () => {
     const unitId = localStorage.getItem('current_unit_id');
-    if (unitId && transactionResult?.reservation_id) {
-      navigate(`/unit/${unitId}?payment=success&reservationId=${transactionResult.reservation_id}`);
-    } else {
-      navigate('/');
+    const reservationId = transactionResult?.reservation_id;
+    
+    console.log('🔍 [WebPayReturn] Navegando a detalles de reserva:', {
+      unitId,
+      reservationId,
+      transactionResult: transactionResult ? 'disponible' : 'no disponible'
+    });
+    
+    // Try to navigate to unit detail with payment success parameters
+    if (unitId && reservationId) {
+      const targetUrl = `/unit/${unitId}?payment=success&reservationId=${reservationId}`;
+      console.log('✅ [WebPayReturn] Navegando a:', targetUrl);
+      navigate(targetUrl);
+      return;
     }
+    
+    // Fallback: try to get unitId from transaction result or URL
+    if (reservationId) {
+      // Try to extract unitId from current URL or use a default
+      const urlParams = new URLSearchParams(window.location.search);
+      const fallbackUnitId = urlParams.get('unitId') || '1'; // Default unit ID
+      
+      console.log('⚠️ [WebPayReturn] Usando fallback unitId:', fallbackUnitId);
+      const fallbackUrl = `/unit/${fallbackUnitId}?payment=success&reservationId=${reservationId}`;
+      navigate(fallbackUrl);
+      return;
+    }
+    
+    // Last resort: navigate to home
+    console.log('❌ [WebPayReturn] No se pudo determinar la navegación, yendo a home');
+    navigate('/');
   };
 
   // If transaction was cancelled, don't render anything (redirect is handled in the hook)
