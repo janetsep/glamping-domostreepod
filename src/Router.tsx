@@ -5,6 +5,8 @@ import {
   Route,
   createRoutesFromElements,
 } from "react-router-dom";
+import { useEffect } from "react";
+import { HelmetProvider } from "react-helmet-async";
 import App from "./App";
 import AboutUs from "./pages/AboutUs";
 import NotFound from "./pages/NotFound";
@@ -14,9 +16,7 @@ import TravelerType from "./pages/TravelerType";
 import CelebrationDetail from "./pages/CelebrationDetail";
 import { ReservationTest } from "./pages/ReservationTest";
 import ProductionTest from "./pages/ProductionTest";
-import { useEffect } from "react";
 import WebPayReturn from "./pages/WebPayReturn";
-import { HelmetProvider } from "react-helmet-async";
 
 // Create the router with all our routes
 const router = createBrowserRouter(

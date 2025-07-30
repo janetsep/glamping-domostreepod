@@ -1,0 +1,290 @@
+# Page snapshot
+
+```yaml
+- navigation:
+  - img "Domos TreePod - Glamping Eco-Luxury en Chile, experiencia sostenible en la naturaleza"
+  - button "Domos":
+    - img
+    - text: Domos
+    - img
+  - button "Experiencias":
+    - img
+    - text: Experiencias
+    - img
+  - button "Contacto":
+    - img
+    - text: Contacto
+  - link "Contactar por WhatsApp":
+    - /url: https://wa.me/56912345678
+    - img
+  - button "Reservar":
+    - img
+    - text: Reservar
+- main:
+  - img "Bosque y naturaleza 1"
+  - img "Bosque y naturaleza 2"
+  - img "Bosque y naturaleza 5"
+  - heading "Glamping Eco-Luxury en Chile" [level=1]
+  - paragraph: Experiencia de lujo sostenible en domos geodésicos con tecnología Starlink, rodeados de naturaleza pristina en la Cordillera de los Andes.
+  - button "Ver imagen 1"
+  - button "Ver imagen 2"
+  - button "Ver imagen 3"
+  - button "Ver imagen 4"
+  - button "Ver imagen 5"
+  - navigation:
+    - button "Cultura"
+    - button "Gastronomía"
+    - button "Naturaleza"
+    - button "Historia"
+    - button "Experiencia"
+  - heading "Cultura Local" [level=2]
+  - paragraph: Rica y diversa, el Valle Las Trancas entrelaza raíces mapuches, tradiciones españolas, historia de Los Pincheira, y la resistencia de sus comunidades modernas. Las culturas nativas influyen fuertemente en la forma de vida del valle, desde los nombres de ríos, montañas y bosques hasta el arte y la arquitectura en las ciudades modernas. Aprendemos el significado de los tótems ancestrales, experimentamos danzas ceremoniales, y reflexionamos sobre una forma de vida construida en la preservación del mundo natural con intención.
+  - img "Cultura Local"
+  - heading "Galería" [level=2]
+  - paragraph: Descubre las imágenes más hermosas de nuestros domos y el entorno natural que nos rodea
+  - heading "Descubre Nuestros Domos" [level=2]
+  - paragraph: Alojamiento para cada tipo de huésped.
+  - img "Parejas Jóvenes Aventureras"
+  - heading "Parejas Jóvenes Aventureras" [level=3]
+  - paragraph: En TreePod ofrecemos una experiencia única para parejas jóvenes que buscan aventura y romanticismo en un entorno natural. Nuestros domos geodésicos ofrecen el escenario perfecto para combinar la adrenalina de las actividades al aire libre con momentos íntimos en un ambiente privado y acogedor.
+  - button "Detalles"
+  - img "Familias con Niños"
+  - heading "Familias con Niños" [level=3]
+  - paragraph: TreePod ofrece un espacio ideal para familias que buscan conectar con la naturaleza. Nuestros domos brindan comodidad, seguridad y acceso a actividades divertidas para todos, creando recuerdos familiares inolvidables en el Valle Las Trancas.
+  - button "Detalles"
+  - img "Grupos de Amigos"
+  - heading "Grupos de Amigos" [level=3]
+  - paragraph: En TreePod, los grupos de amigos encontrarán el espacio ideal para fortalecer lazos y crear recuerdos inolvidables. Nuestros domos y áreas comunes están diseñados para compartir experiencias únicas en un entorno natural espectacular.
+  - button "Detalles"
+  - img "Familias que buscan exclusividad"
+  - heading "Familias que buscan exclusividad" [level=3]
+  - paragraph: TreePod ofrece la posibilidad de reservar todo el complejo para familias o grupos que buscan privacidad absoluta. Disfruten de todos nuestros domos y servicios en exclusividad, creando una experiencia verdaderamente personal y única.
+  - button "Detalles"
+  - button "Reservar"
+  - heading "Experiencias Eco-Luxury" [level=2]
+  - paragraph: Conecta con la naturaleza a través de experiencias sostenibles y de lujo en el corazón del Valle Las Trancas. Aventura, relajación y confort premium en armonía con el medio ambiente.
+  - tablist:
+    - tab "Recorridos y Paisajes" [selected]
+    - tab "Historias y Cultura Local"
+    - tab "Baño de Bosque y Bienestar"
+    - tab "Juegos y Entretenimiento"
+  - tabpanel "Recorridos y Paisajes":
+    - heading "Recorridos y Paisajes" [level=3]
+    - paragraph: Explora los impresionantes paisajes del Valle Las Trancas, actividades al aire libre autoguiadas.
+    - img "Tours en Bicicleta"
+    - img
+    - heading "Tours en Bicicleta" [level=4]
+    - paragraph: Recorre los senderos del valle con nuestras bicicletas de montaña premium.
+    - text: Ofrecemos rutas guiadas y autoguiadas para todos los niveles de habilidad. Nuestras bicicletas cuentan con asistencia eléctrica opcional, perfectas para explorar los cerros circundantes. Incluye mapa, casco, botella de agua y kit de reparación.
+    - img "Senderismo por Bosque Nativo"
+    - img
+    - heading "Senderismo por Bosque Nativo" [level=4]
+    - paragraph: Explora senderos exclusivos que atraviesan nuestro bosque de Ñirres, Coihues y Araucarias.
+    - text: Nuestros senderos ofrecen vistas panorámicas al Valle Las Trancas y los Nevados de Chillán. Cada ruta está cuidadosamente marcada y mantenida, con puntos de interés y áreas de descanso estratégicamente ubicadas para disfrutar de la flora y fauna local.
+    - img "Excursiones a Parques Nacionales"
+    - img
+    - heading "Excursiones a Parques Nacionales" [level=4]
+    - paragraph: Visita los majestuosos Parques Nacionales cercanos con nuestras excursiones guiadas.
+    - text: Trabajamos con operadores turísticos locales que ofrecen excursiones a los parques nacionales más emblemáticos de la región. Incluyen transporte desde nuestra propiedad, almuerzo gourmet y guías bilingües apasionados por la conservación.
+    - img "Aventuras Guiadas en la Naturaleza"
+    - img
+    - heading "Aventuras Guiadas en la Naturaleza" [level=4]
+    - paragraph: Explora la belleza virgen del Valle Las Trancas de la mano de expertos operadores locales.
+    - text: "Una aventura segura y fascinante para conectar profundamente con la biodiversidad única del sur de Chile. Trekking, senderismo interpretativo, avistamiento de fauna y más: descubre bosques encantados, paisajes volcánicos y senderos inolvidables que ofrecen la verdadera esencia cordillerana."
+  - heading "Celebraciones" [level=2]
+  - paragraph: Celebraciones únicas en un entorno natural incomparable
+  - heading "Cumpleaños" [level=3]
+  - paragraph: Celebra tu día especial rodeado de naturaleza en un ambiente único y acogedor. Nuestros domos ofrecen el marco perfecto para un cumpleaños inolvidable con tus seres queridos.
+  - button "Ver detalles":
+    - img
+    - text: Ver detalles
+  - heading "Aniversarios" [level=3]
+  - paragraph: Conmemora ese día tan especial con una escapada romántica a TreePod. Las tinajas con aguas mineralizadas y la tranquilidad del bosque crean el ambiente perfecto para celebrar el amor.
+  - button "Ver detalles":
+    - img
+    - text: Ver detalles
+  - heading "Fiesta Familiar" [level=3]
+  - paragraph: Reúne a toda la familia en un entorno natural donde grandes y pequeños pueden disfrutar de actividades al aire libre, comidas compartidas y momentos inolvidables bajo las estrellas.
+  - button "Ver detalles":
+    - img
+    - text: Ver detalles
+  - heading "Mujeres al Descanso y Relax" [level=3]
+  - paragraph: Una experiencia diseñada para grupos de mujeres que buscan un momento de desconexión, bienestar y reconexión en un entorno natural seguro y revitalizante.
+  - button "Ver detalles":
+    - img
+    - text: Ver detalles
+  - heading "Fiestas Patrias" [level=3]
+  - paragraph: Celebra las Fiestas Patrias con tradición chilena en medio de la naturaleza. Disfruta de empanadas, chicha y toda la alegría patria en un ambiente único rodeado del bosque nativo.
+  - button "Ver detalles":
+    - img
+    - text: Ver detalles
+  - heading "Navidad" [level=3]
+  - paragraph: Vive una Navidad mágica en la naturaleza. Celebra esta fecha especial con tu familia en un entorno único donde la paz del bosque se combina con la alegría navideña.
+  - button "Ver detalles":
+    - img
+    - text: Ver detalles
+  - heading "Año Nuevo" [level=3]
+  - paragraph: Recibe el Año Nuevo de manera especial en medio de la naturaleza. Una celebración íntima y memorable bajo las estrellas del bosque nativo para comenzar el año con renovadas energías.
+  - button "Ver detalles":
+    - img
+    - text: Ver detalles
+  - heading "¡Los Huéspedes Opinan!" [level=2]
+  - paragraph: Comentarios indican cómo es vivir la montaña en nuestro glamping.
+  - heading "¿Dónde Estamos?" [level=2]
+  - paragraph: En el Valle Las Trancas, rodeados de bosque nativo y de montañas que cambian de color con las estaciones.
+  - iframe
+  - img
+  - heading "Valle Las Trancas, Chile" [level=3]
+  - paragraph: Ubicados a 9 km del centro de ski Nevados de Chillán, y a solo una hora de la ciudad de Chillán.
+  - paragraph: 36°54'S 71°28'O
+  - heading "Descubre los alrededores:" [level=3]
+  - img
+  - heading "Senderos Naturales" [level=4]
+  - paragraph: Recorre bosques milenarios y cascadas escondidas.
+  - img
+  - heading "Termas Naturales" [level=4]
+  - paragraph: A solo 15 minutos de las mejores aguas termales de la región.
+  - img
+  - heading "Fauna Local" [level=4]
+  - paragraph: Observa las especies autóctonas en su hábitat natural.
+  - img
+  - heading "Centro de Ski" [level=4]
+  - paragraph: A 15 minutos del centro de ski Nevados de Chillán.
+  - heading "Cómo llegar:" [level=3]
+  - img
+  - heading "Desde Chillán" [level=4]
+  - paragraph: 1 hora y media por ruta pavimentada N-55.
+  - img
+  - heading "Desde Concepción" [level=4]
+  - paragraph: 2 horas por autopista (230 km).
+  - img
+  - heading "Desde Santiago" [level=4]
+  - paragraph: 5 horas por autopista 5 sur (420 km) o 45 minutos en avión + 1 hora y media en auto desde Chillán.
+  - img
+  - heading "En Bus" [level=4]
+  - paragraph: Buses diarios desde Chillán al Valle Las Trancas (consultar horarios).
+  - heading "Contáctanos" [level=2]
+  - paragraph: Estamos aquí para responder tus preguntas y ayudarte a planificar tu viaje
+  - heading "¿Cómo podemos ayudarte?" [level=3]
+  - img
+  - heading "WhatsApp" [level=4]
+  - link "+56 9 8464 3307":
+    - /url: https://wa.me/569 8464 3307
+  - paragraph: Respuesta rápida de lunes a domingo
+  - img
+  - heading "Teléfono" [level=4]
+  - link "+56 9 8464 3307":
+    - /url: tel:+569 8464 3307
+  - paragraph: Atención de 9:00 a 18:00 hrs
+  - img
+  - heading "Correo electrónico" [level=4]
+  - link "info@domostreepod.cl":
+    - /url: mailto:info@domostreepod.cl
+  - paragraph: Te respondemos en máximo 24 horas
+  - heading "Horario de atención" [level=4]
+  - paragraph: Nuestro equipo está disponible para atenderte de lunes a domingo. Para consultas urgentes, te recomendamos contactarnos vía WhatsApp.
+  - heading "Preguntas frecuentes" [level=3]
+  - heading "¿Qué incluye la estadía?" [level=4]
+  - paragraph: Nuestras estadías incluyen alojamiento en domos geodésicos completamente equipados con todas las comodidades necesarias y acceso exclusivo a senderos privados en el bosque nativo. Servicios adicionales disponibles según el paquete seleccionado.
+  - heading "¿Cómo llegar?" [level=4]
+  - paragraph: Estamos ubicados en el Valle Las Trancas, a 1.5 horas de la ciudad de Chillán. Enviamos instrucciones detalladas y ubicación GPS al confirmar tu reserva.
+  - heading "¿Cuál es la política de cancelación?" [level=4]
+  - paragraph: Las cancelaciones realizadas con más de 7 días de anticipación reciben un reembolso del 85%. Con menos de 7 días, se reembolsa el 50%. Con menos de 48 horas no hay reembolso. En todos los casos de cancelación puedes reprogramar tu estadía (máximo 1 año).
+  - heading "Nota importante" [level=4]
+  - paragraph: Para garantizar la mejor experiencia posible, te recomendamos reservar con al menos 2 semanas de anticipación, especialmente para fines de semana y temporada alta.
+  - button "Ver redes sociales":
+    - img
+- contentinfo:
+  - img "Domos Treepod Logo"
+  - paragraph: Experimenta la magia de estar entre árboles a traves de nuestros domos ubicados en Valle Las Trancas, Chile.
+  - img
+  - text: Ruta N-55 kilometro 71 1/2, Valle Las Trancas, Región de Ñuble
+  - heading "Menú" [level=4]
+  - list:
+    - listitem:
+      - button "Inicio":
+        - img
+        - text: Inicio
+    - listitem:
+      - button "Domos":
+        - img
+        - text: Domos
+    - listitem:
+      - button "Experiencias":
+        - img
+        - text: Experiencias
+      - list:
+        - listitem:
+          - button "Tinajas":
+            - img
+            - text: Tinajas
+        - listitem:
+          - button "Trekking y Paisajes":
+            - img
+            - text: Trekking y Paisajes
+        - listitem:
+          - button "Historias y Cultura Local":
+            - img
+            - text: Historias y Cultura Local
+        - listitem:
+          - button "Baño de Bosque":
+            - img
+            - text: Baño de Bosque
+        - listitem:
+          - button "Juegos de Mesa":
+            - img
+            - text: Juegos de Mesa
+    - listitem:
+      - button "Galería":
+        - img
+        - text: Galería
+    - listitem:
+      - button "Cómo llegar":
+        - img
+        - text: Cómo llegar
+    - listitem:
+      - button "Sobre Nosotros":
+        - img
+        - text: Sobre Nosotros
+    - listitem:
+      - button "Contacto":
+        - img
+        - text: Contacto
+  - heading "Contacto" [level=4]
+  - list:
+    - listitem:
+      - img
+      - link "info@domostreepod.cl":
+        - /url: mailto:info@domostreepod.cl
+    - listitem:
+      - img
+      - link "+56 9 8464 3307":
+        - /url: https://wa.me/+56984643307
+  - link "Facebook":
+    - /url: https://facebook.com
+    - img
+  - link "Instagram":
+    - /url: https://instagram.com
+    - img
+  - link "YouTube":
+    - /url: https://youtube.com
+    - img
+  - heading "Novedades y Ofertas" [level=4]
+  - paragraph: Suscríbete a nuestro newsletter para recibir ofertas exclusivas y novedades.
+  - textbox "Tu correo electrónico"
+  - button "Suscribirme"
+  - text: "Métodos de pago:"
+  - img "WebPay Plus"
+  - button "Términos y Condiciones"
+  - button "Política de Privacidad"
+  - button "Política de Cancelación"
+  - button "Preguntas Frecuentes"
+  - button "Sobre Nosotros"
+  - button "Mapa del Sitio"
+  - paragraph: © 2025 Domos Treepod. Todos los derechos reservados.
+  - button "Volver arriba":
+    - img
+    - text: Volver arriba
+- region "Notifications (F8)":
+  - list
+```

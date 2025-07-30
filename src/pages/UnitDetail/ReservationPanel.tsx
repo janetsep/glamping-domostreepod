@@ -106,7 +106,7 @@ export const ReservationPanel = ({
   };
 
   return (
-    <div className="sticky top-0 h-screen overflow-y-auto bg-white border-l border-gray-200 p-5">
+    <div className="lg:sticky lg:top-0 lg:h-screen lg:overflow-y-auto bg-white lg:border-l border-gray-200 p-4 lg:p-5 mb-6 lg:mb-0 rounded-lg lg:rounded-none shadow-lg lg:shadow-none">
       <h2 className="text-xl font-display font-bold mb-3 text-sm">
         Reserva tu experiencia en domos TreePod
       </h2>

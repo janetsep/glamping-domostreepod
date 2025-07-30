@@ -4,6 +4,7 @@ import { updateReservationData, verifyReservationUpdate } from './utils/supabase
 import { SUPABASE_URL, SUPABASE_ANON_KEY } from '@/lib/constants';
 import { supabase } from '@/lib/supabase';
 import { toast } from 'sonner';
+import { logger } from '@/utils/logger';
 
 export interface ClientInformation {
   name: string;
@@ -23,7 +24,7 @@ export const useClientInformation = () => {
     setError(null);
 
     try {
-      console.log(`Starting to save client information for reservation ${reservationId}:`, clientInfo);
+      logger.log(`Starting to save client information for reservation ${reservationId}`);
       
       // First attempt: Direct update with client
       try {
@@ -39,11 +40,11 @@ export const useClientInformation = () => {
           .select();
         
         if (updateError) {
-          console.error('Direct update failed:', updateError);
+          logger.error('Direct update failed:', updateError);
           throw updateError;
         }
 
-        console.log('Update successful:', data);
+        logger.log('Update successful');
         
         // Verify the update
         const { data: verifyData, error: verifyError } = await supabase
@@ -53,11 +54,11 @@ export const useClientInformation = () => {
           .single();
         
         if (verifyError) {
-          console.error('Verification failed:', verifyError);
+          logger.error('Verification failed:', verifyError);
           throw verifyError;
         }
 
-        console.log('Verification successful:', verifyData);
+        logger.log('Verification successful');
         
         // Show success toast
         toast.success('Información guardada correctamente', {
@@ -66,10 +67,10 @@ export const useClientInformation = () => {
 
         return true;
       } catch (directError) {
-        console.error('Error in direct update:', directError);
+        logger.error('Error in direct update:', directError);
         
         // Second attempt: Using fetch
-        console.log('Attempting alternative update method');
+        logger.log('Attempting alternative update method');
         const response = await fetch(`${SUPABASE_URL}/rest/v1/reservations?id=eq.${reservationId}`, {
           method: 'PATCH',
           headers: {
@@ -88,15 +89,15 @@ export const useClientInformation = () => {
 
         if (!response.ok) {
           const errorText = await response.text();
-          console.error('Alternative update failed:', errorText);
+          logger.error('Alternative update failed:', errorText);
           throw new Error(`Error en actualización alternativa: ${errorText}`);
         }
 
-        console.log('Alternative update successful');
+        logger.log('Alternative update successful');
         return true;
       }
     } catch (err: any) {
-      console.error('Final error in saveClientInformation:', err);
+      logger.error('Final error in saveClientInformation:', err);
       setError(err.message || 'Error al guardar información del cliente');
       
       // Show error toast

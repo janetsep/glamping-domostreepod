@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🔧 Debug Completo - Widgets Elfsight</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; }
+        .container { max-width: 900px; margin: 0 auto; }
+        .method { margin: 30px 0; padding: 20px; border: 2px solid #ddd; border-radius: 8px; }
+        .method h2 { margin-top: 0; }
+        .success { border-color: #28a745; background: #d4edda; }
+        .warning { border-color: #ffc107; background: #fff3cd; }
+        .info { border-color: #17a2b8; background: #d1ecf1; }
+        .status { padding: 10px; margin: 10px 0; border-radius: 4px; font-weight: bold; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔧 Debug Completo - Widgets Elfsight TreePod</h1>
+        
+        <div class="method info">
+            <h2>📊 Información del Sistema</h2>
+            <div id="system-info">Cargando información del sistema...</div>
+        </div>
+
+        <div class="method warning">
+            <h2>🎯 Método 1: Tu Widget de Testimonios</h2>
+            <p><strong>ID:</strong> 58776635-7259-470b-9077-f838d052ebab</p>
+            <div class="elfsight-app-58776635-7259-470b-9077-f838d052ebab" data-elfsight-app-lazy></div>
+            <div id="status-1" class="status">⏳ Cargando widget personal...</div>
+        </div>
+
+        <div class="method info">
+            <h2>🧪 Método 2: Widget de Prueba Público</h2>
+            <p><strong>ID:</strong> 5d13fc8a-4c4a-4e5a-a2b8-86c25ae3e0aa (Widget público de ejemplo)</p>
+            <div class="elfsight-app-5d13fc8a-4c4a-4e5a-a2b8-86c25ae3e0aa" data-elfsight-app-lazy></div>
+            <div id="status-2" class="status">⏳ Cargando widget de prueba...</div>
+        </div>
+
+        <div class="method success">
+            <h2>🔗 Método 3: Iframe Directo</h2>
+            <p>Este método debería funcionar siempre si el widget existe</p>
+            <iframe 
+                src="https://widget.elfsight.com/p/platform/?p=eyJwX2lkIjoiNTg3NzY2MzUtNzI1OS00NzBiLTkwNzctZjgzOGQwNTJlYmFiIn0%3D"
+                style="width: 100%; height: 400px; border: none; border-radius: 4px;"
+                title="Testimonios Iframe"
+            ></iframe>
+            <div class="status">✅ Este método no depende de JavaScript</div>
+        </div>
+
+        <div class="method info">
+            <h2>📝 Log de Debug</h2>
+            <div id="debug-log" style="background: #f8f9fa; padding: 15px; border-radius: 4px; font-family: monospace; font-size: 12px; max-height: 300px; overflow-y: auto;">
+                Iniciando debug...<br>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://static.elfsight.com/platform/platform.js" async></script>
+    <script>
+        let debugLog = [];
+        const maxChecks = 20;
+        
+        function log(message) {
+            const timestamp = new Date().toLocaleTimeString();
+            const logMessage = `[${timestamp}] ${message}`;
+            debugLog.push(logMessage);
+            console.log(logMessage);
+            
+            const logElement = document.getElementById('debug-log');
+            if (logElement) {
+                logElement.innerHTML = debugLog.join('<br>') + '<br>';
+                logElement.scrollTop = logElement.scrollHeight;
+            }
+        }
+        
+        function updateSystemInfo() {
+            const info = `
+                <strong>Navegador:</strong> ${navigator.userAgent}<br>
+                <strong>URL actual:</strong> ${window.location.href}<br>
+                <strong>Protocolo:</strong> ${window.location.protocol}<br>
+                <strong>Elfsight disponible:</strong> ${window.elfsight ? '✅ Sí' : '❌ No'}<br>
+                <strong>Función initialize:</strong> ${window.elfsight?.initialize ? '✅ Sí' : '❌ No'}<br>
+                <strong>Scripts Elfsight encontrados:</strong> ${document.querySelectorAll('script[src*="elfsight"]').length}
+            `;
+            document.getElementById('system-info').innerHTML = info;
+        }
+        
+        function checkWidget(selector, statusId, name) {
+            let checks = 0;
+            
+            const check = () => {
+                checks++;
+                const widget = document.querySelector(selector);
+                const statusEl = document.getElementById(statusId);
+                
+                if (widget) {
+                    const hasContent = widget.children.length > 0 || widget.innerHTML.length > 50 || widget.offsetHeight > 50;
+                    
+                    if (hasContent) {
+                        statusEl.textContent = `✅ ${name} cargado correctamente!`;
+                        statusEl.style.background = '#d4edda';
+                        statusEl.style.color = '#155724';
+                        log(`✅ ${name} cargado exitosamente`);
+                        return;
+                    }
+                }
+                
+                if (checks < maxChecks) {
+                    statusEl.textContent = `⏳ ${name} cargando... (${checks}/${maxChecks})`;
+                    log(`⏳ ${name} - Intento ${checks}/${maxChecks}`);
+                    setTimeout(check, 1000);
+                } else {
+                    statusEl.textContent = `❌ ${name} no pudo cargar`;
+                    statusEl.style.background = '#f8d7da';
+                    statusEl.style.color = '#721c24';
+                    log(`❌ ${name} falló después de ${maxChecks} intentos`);
+                }
+            };
+            
+            setTimeout(check, 2000);
+        }
+        
+        function initElfsight() {
+            if (window.elfsight && typeof window.elfsight.initialize === 'function') {
+                log('🔧 Elfsight disponible, inicializando...');
+                try {
+                    window.elfsight.initialize();
+                    log('🔧 Inicialización completada');
+                    
+                    // Start checking widgets
+                    checkWidget('.elfsight-app-58776635-7259-470b-9077-f838d052ebab', 'status-1', 'Widget Personal');
+                    checkWidget('.elfsight-app-5d13fc8a-4c4a-4e5a-a2b8-86c25ae3e0aa', 'status-2', 'Widget de Prueba');
+                    
+                } catch (error) {
+                    log('❌ Error en inicialización: ' + error.message);
+                }
+            } else {
+                log('⏳ Elfsight no disponible, esperando...');
+                setTimeout(initElfsight, 1000);
+            }
+        }
+        
+        document.addEventListener('DOMContentLoaded', () => {
+            log('🚀 Página cargada, iniciando debug...');
+            updateSystemInfo();
+            setInterval(updateSystemInfo, 2000);
+            initElfsight();
+        });
+    </script>
+</body>
+</html>

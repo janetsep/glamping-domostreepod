@@ -6,26 +6,31 @@ import treepodInterior from "@/assets/treepod-interior-real.jpg";
 import forestCanopy from "@/assets/forest-canopy-real.jpg";
 import treepodSiteOverview from "@/assets/treepod-site-overview.jpg";
 
-// Usar las imágenes más espectaculares de TreePod
+// Usar las imágenes más espectaculares de TreePod - Actualizadas con las mejores fotos
 export const heroImages: CarouselImage[] = [
   {
-    src: "/lovable-uploads/b96ffc78-5019-43c3-b784-640caab9701d.png", // Domo exterior con auto en bosque - contexto perfecto
-    placeholder: "/lovable-uploads/dafd81f1-18a1-4796-9a46-b39914b747a9.jpg"
+    src: "/lovable-uploads/domo-vista.jpg", // Domo Vista - Puntuación 95/100 - Mejor opción para banner
+    placeholder: "/lovable-uploads/dafd81f1-18a1-4796-9a46-b39914b747a9.jpg",
+    alt: "Domo geodésico TreePod con vista panorámica al bosque nativo chileno"
   },
   {
-    src: "/lovable-uploads/0be51b02-7593-4256-9391-0ad365dc6c7c.png", // Domo iluminado en invierno - dramática y mágica
-    placeholder: "/lovable-uploads/dafd81f1-18a1-4796-9a46-b39914b747a9.jpg"
+    src: "/lovable-uploads/domo3noche7.jpg", // Ambiente nocturno romántico - Puntuación 92/100
+    placeholder: "/lovable-uploads/dafd81f1-18a1-4796-9a46-b39914b747a9.jpg",
+    alt: "Domo iluminado de noche creando ambiente romántico bajo las estrellas"
   },
   {
-    src: "/lovable-uploads/53b31073-a4c8-4648-acc3-ba3fcd021375.png", // Vista del bosque hacia arriba - inmersiva
-    placeholder: "/lovable-uploads/dafd81f1-18a1-4796-9a46-b39914b747a9.jpg"
+    src: "/lovable-uploads/domo3iainterior4mejor.jpeg", // Interior acogedor - Puntuación 94/100
+    placeholder: "/lovable-uploads/dafd81f1-18a1-4796-9a46-b39914b747a9.jpg",
+    alt: "Interior lujoso del domo con estufa a pellet y decoración premium"
   },
   {
-    src: "/lovable-uploads/34212443-36e1-4fed-9d5b-5248581e725b.png", // Vista aérea de la cama - perspectiva única
-    placeholder: "/lovable-uploads/dafd81f1-18a1-4796-9a46-b39914b747a9.jpg"
+    src: "/lovable-uploads/las-trancas-rio.jpg", // Vista panorámica río - Puntuación 93/100
+    placeholder: "/lovable-uploads/dafd81f1-18a1-4796-9a46-b39914b747a9.jpg",
+    alt: "Vista espectacular del río y montañas desde TreePod Glamping"
   },
   {
-    src: "/lovable-uploads/16d79724-475b-43ae-b69a-98723c78adc0.png", // Interior moderno y elegante
-    placeholder: "/lovable-uploads/dafd81f1-18a1-4796-9a46-b39914b747a9.jpg"
+    src: "/lovable-uploads/domo-desayuno.jpg", // Experiencia gastronómica - Puntuación 96/100
+    placeholder: "/lovable-uploads/dafd81f1-18a1-4796-9a46-b39914b747a9.jpg",
+    alt: "Desayuno gourmet al aire libre con vista a la naturaleza"
   }
 ];

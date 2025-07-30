@@ -28,10 +28,11 @@ const UnitDetail = () => {
 
   return (
     <div className="min-h-screen bg-white pt-24">
-      <div className="container mx-auto px-4">
+      <div className="container mx-auto container-padding">
         <UnitHeader navigate={navigate} />
 
-        <div className="grid grid-cols-1 lg:grid-cols-5 gap-0">
+        {/* Layout móvil optimizado */}
+        <div className="flex flex-col lg:grid lg:grid-cols-5 gap-0">
           {state.displayUnit && (
             <>
               {/* Contenido scrollable del domo - 3/5 del ancho */}
@@ -45,10 +46,10 @@ const UnitDetail = () => {
                 />
               </div>
 
-              {/* Panel de reserva fijo - 2/5 del ancho */}
-              <div className="lg:col-span-2">
+              {/* Panel de reserva fijo - 2/5 del ancho, optimizado para móvil */}
+              <div className="order-first lg:order-last lg:col-span-2">
                 {state.isReservationConfirmed ? (
-                  <div className="sticky top-0 h-screen overflow-y-auto bg-white border-l border-gray-200 p-5">
+                  <div className="lg:sticky lg:top-0 lg:h-screen lg:overflow-y-auto bg-white lg:border-l border-gray-200 p-4 lg:p-5 mb-6 lg:mb-0 rounded-lg lg:rounded-none shadow-lg lg:shadow-none">
                     <ReservationConfirmation 
                       ref={state.confirmationRef}
                       startDate={state.startDate}

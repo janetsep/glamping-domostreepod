@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Elfsight Widgets</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 40px;
+            line-height: 1.6;
+        }
+        .widget-container {
+            margin: 40px 0;
+            padding: 20px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+        }
+        .widget-title {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 20px;
+            color: #333;
+        }
+        .status {
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+            font-weight: bold;
+        }
+        .success { background-color: #d4edda; color: #155724; }
+        .error { background-color: #f8d7da; color: #721c24; }
+        .info { background-color: #d1ecf1; color: #0c5460; }
+    </style>
+</head>
+<body>
+    <h1>🧪 Test de Widgets Elfsight - TreePod</h1>
+    
+    <div id="status-container">
+        <div class="status info">Iniciando prueba de widgets...</div>
+    </div>
+
+    <div class="widget-container">
+        <div class="widget-title">📸 Widget de Galería</div>
+        <div class="elfsight-app-95014e6a-2fd5-4219-b0c5-e50cd23e4e72" data-elfsight-app-lazy></div>
+        <div id="gallery-status" class="status info">Cargando widget de galería...</div>
+    </div>
+
+    <div class="widget-container">
+        <div class="widget-title">⭐ Widget de Testimonios</div>
+        <div class="elfsight-app-58776635-7259-470b-9077-f838d052ebab" data-elfsight-app-lazy></div>
+        <div id="testimonials-status" class="status info">Cargando widget de testimonios...</div>
+    </div>
+
+    <script src="https://static.elfsight.com/platform/platform.js" async></script>
+    <script>
+        let attempts = 0;
+        const maxAttempts = 20;
+        
+        function updateStatus(elementId, message, type = 'info') {
+            const element = document.getElementById(elementId);
+            element.textContent = message;
+            element.className = `status ${type}`;
+        }
+        
+        function checkWidgets() {
+            attempts++;
+            console.log(`🧪 TEST: Check attempt ${attempts}/${maxAttempts}`);
+            
+            // Check Gallery Widget
+            const galleryWidget = document.querySelector('.elfsight-app-95014e6a-2fd5-4219-b0c5-e50cd23e4e72');
+            const galleryLoaded = galleryWidget && (
+                galleryWidget.children.length > 0 || 
+                galleryWidget.innerHTML.trim().length > 50 ||
+                galleryWidget.offsetHeight > 50
+            );
+            
+            if (galleryLoaded) {
+                updateStatus('gallery-status', '✅ Widget de galería cargado correctamente', 'success');
+                console.log('🧪 TEST: Gallery widget loaded!');
+            } else {
+                updateStatus('gallery-status', `⏳ Esperando widget de galería... (${attempts}/${maxAttempts})`, 'info');
+            }
+            
+            // Check Testimonials Widget
+            const testimonialsWidget = document.querySelector('.elfsight-app-58776635-7259-470b-9077-f838d052ebab');
+            const testimonialsLoaded = testimonialsWidget && (
+                testimonialsWidget.children.length > 0 || 
+                testimonialsWidget.innerHTML.trim().length > 50 ||
+                testimonialsWidget.offsetHeight > 50
+            );
+            
+            if (testimonialsLoaded) {
+                updateStatus('testimonials-status', '✅ Widget de testimonios cargado correctamente', 'success');
+                console.log('🧪 TEST: Testimonials widget loaded!');
+            } else {
+                updateStatus('testimonials-status', `⏳ Esperando widget de testimonios... (${attempts}/${maxAttempts})`, 'info');
+            }
+            
+            // Update main status
+            const statusContainer = document.getElementById('status-container');
+            if (galleryLoaded && testimonialsLoaded) {
+                statusContainer.innerHTML = '<div class="status success">🎉 ¡Todos los widgets funcionan correctamente!</div>';
+                console.log('🧪 TEST: All widgets working!');
+                return;
+            } else if (attempts >= maxAttempts) {
+                let failedWidgets = [];
+                if (!galleryLoaded) failedWidgets.push('Galería');
+                if (!testimonialsLoaded) failedWidgets.push('Testimonios');
+                
+                statusContainer.innerHTML = `<div class="status error">❌ Widgets no funcionan: ${failedWidgets.join(', ')}</div>`;
+                
+                if (!galleryLoaded) {
+                    updateStatus('gallery-status', '❌ Widget de galería no pudo cargar', 'error');
+                }
+                if (!testimonialsLoaded) {
+                    updateStatus('testimonials-status', '❌ Widget de testimonios no pudo cargar', 'error');
+                }
+                console.log('🧪 TEST: Some widgets failed to load');
+                return;
+            }
+            
+            // Continue checking
+            setTimeout(checkWidgets, 500);
+        }
+        
+        // Wait for Elfsight to be available
+        const waitForElfsight = () => {
+            if (window.elfsight && typeof window.elfsight.initialize === 'function') {
+                console.log('🧪 TEST: Elfsight platform ready, initializing...');
+                window.elfsight.initialize();
+                setTimeout(checkWidgets, 1000);
+            } else {
+                console.log('🧪 TEST: Waiting for Elfsight platform...');
+                setTimeout(waitForElfsight, 200);
+            }
+        };
+        
+        document.addEventListener('DOMContentLoaded', () => {
+            console.log('🧪 TEST: Starting Elfsight widget test');
+            waitForElfsight();
+        });
+    </script>
+</body>
+</html>

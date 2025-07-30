@@ -85,7 +85,7 @@ const TravelerDetail = () => {
             </div>
 
             <div className="mt-8">
-              <Button size="lg" className="bg-cyan-600 hover:bg-cyan-700" onClick={handleReserveClick}>
+              <Button size="lg" className="btn-primary" onClick={handleReserveClick}>
                 <Sparkles className="mr-2 h-4 w-4" />
                 Reservar esta experiencia
               </Button>
@@ -118,7 +118,7 @@ const TravelerDetail = () => {
           </div>
 
           <div className="mt-8 flex justify-center">
-            <Button size="lg" className="bg-cyan-600 hover:bg-cyan-700" onClick={handleReserveClick}>
+            <Button size="lg" className="btn-primary" onClick={handleReserveClick}>
               <Users className="mr-2 h-4 w-4" />
               Reserva ahora
             </Button>

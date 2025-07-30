@@ -1,3 +1,4 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Crimson+Text:wght@400;600;700&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Libre+Baskerville:wght@400;700&display=swap');
@@ -8,35 +9,66 @@
 
 @layer base {
   :root {
-    --background: 0 0% 100%;
-    --foreground: 222.2 84% 4.9%;
+    /* Sistema base professional */
+    --background: 0 0% 98%;
+    --foreground: 210 35% 15%;
 
     --card: 0 0% 100%;
-    --card-foreground: 222.2 84% 4.9%;
+    --card-foreground: 210 35% 15%;
 
     --popover: 0 0% 100%;
-    --popover-foreground: 222.2 84% 4.9%;
+    --popover-foreground: 210 35% 15%;
 
-    --primary: 195 100% 45%;
-    --primary-foreground: 210 40% 98%;
+    /* Colores primarios - Azul cian logotipo */
+    --primary: 195 100% 45%; /* #00B8E6 - Azul cian del logotipo */
+    --primary-dark: 195 100% 35%; /* Versión más oscura para hover */
+    --primary-light: 195 100% 85%; /* Versión muy clara para fondos */
+    --primary-foreground: 0 0% 100%;
 
-    --secondary: 210 40% 96.1%;
-    --secondary-foreground: 222.2 47.4% 11.2%;
+    /* Colores secundarios - Tonos complementarios profesionales */
+    --secondary: 210 25% 92%; /* Gris azulado muy claro */
+    --secondary-dark: 210 30% 20%; /* Gris azulado oscuro profesional */
+    --secondary-foreground: 210 35% 15%;
 
-    --muted: 210 40% 96.1%;
-    --muted-foreground: 215.4 16.3% 46.9%;
+    /* Colores terciarios - Elegancia y sofisticación */
+    --tertiary: 220 15% 50%; /* Gris medio profesional */
+    --tertiary-light: 220 15% 95%; /* Gris muy claro */
+    --tertiary-foreground: 0 0% 100%;
 
-    --accent: 195 83% 48%;
-    --accent-foreground: 222.2 47.4% 11.2%;
+    /* Colores de superficie - Para elementos premium */
+    --surface: 0 0% 100%;
+    --surface-variant: 210 20% 96%;
+    --surface-hover: 195 50% 96%;
 
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 210 40% 98%;
+    /* Colores funcionales */
+    --muted: 210 25% 95%;
+    --muted-foreground: 210 20% 45%;
 
-    --border: 214.3 31.8% 91.4%;
-    --input: 214.3 31.8% 91.4%;
+    --accent: 195 85% 55%; /* Acento basado en el color primario */
+    --accent-foreground: 0 0% 100%;
+
+    --destructive: 0 65% 55%;
+    --destructive-foreground: 0 0% 100%;
+
+    --success: 142 70% 45%; /* Verde elegante para éxito */
+    --success-foreground: 0 0% 100%;
+
+    --warning: 38 95% 50%; /* Ámbar profesional */
+    --warning-foreground: 0 0% 100%;
+
+    /* Bordes y elementos UI */
+    --border: 210 25% 88%;
+    --border-light: 210 20% 92%;
+    --input: 210 25% 90%;
     --ring: 195 100% 45%;
 
-    --radius: 0.5rem;
+    /* Sombras profesionales */
+    --shadow-sm: 0 1px 2px 0 rgba(0, 184, 230, 0.05);
+    --shadow: 0 1px 3px 0 rgba(0, 184, 230, 0.1), 0 1px 2px 0 rgba(0, 184, 230, 0.06);
+    --shadow-md: 0 4px 6px -1px rgba(0, 184, 230, 0.1), 0 2px 4px -1px rgba(0, 184, 230, 0.06);
+    --shadow-lg: 0 10px 15px -3px rgba(0, 184, 230, 0.1), 0 4px 6px -2px rgba(0, 184, 230, 0.05);
+
+    --radius: 0.75rem; /* Bordes más redondeados y elegantes */
   }
 
   .dark {
@@ -69,31 +101,97 @@
     --ring: 195 100% 45%;
   }
   
-  /* Fuentes y estilos base */
+  /* Fuentes y estilos base profesionales */
   html {
     scroll-behavior: smooth;
+    font-synthesis: none;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
   }
   
   body {
-    @apply font-serif text-gray-800 bg-white text-base;
-    font-feature-settings: "ss01", "ss02", "ss03", "cv01", "cv02";
+    @apply bg-background text-foreground leading-relaxed;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+    letter-spacing: -0.015em;
   }
 
-  /* Estilos de titulares con tipografía elegante */
+  /* Tipografía consistente y simple */
   h1 {
-    @apply font-display font-bold text-3xl md:text-4xl lg:text-5xl;
+    @apply font-bold text-3xl md:text-4xl lg:text-5xl text-foreground;
+    font-family: 'Playfair Display', serif;
+    line-height: 1.2;
   }
   
   h2 {
-    @apply font-display font-bold text-2xl md:text-3xl;
+    @apply font-bold text-2xl md:text-3xl lg:text-4xl text-foreground;
+    font-family: 'Playfair Display', serif;
+    line-height: 1.3;
   }
   
   h3 {
-    @apply font-display font-bold text-xl md:text-2xl;
+    @apply font-semibold text-xl md:text-2xl lg:text-3xl text-foreground;
+    font-family: 'Playfair Display', serif;
+    line-height: 1.4;
   }
   
-  h4, h5, h6 {
-    @apply font-display font-bold;
+  h4 {
+    @apply font-semibold text-lg md:text-xl text-foreground;
+    line-height: 1.4;
+  }
+  
+  h5, h6 {
+    @apply font-medium text-base md:text-lg text-foreground;
+    line-height: 1.5;
+  }
+
+  /* Párrafos estándar */
+  p {
+    @apply text-base text-muted-foreground leading-relaxed;
+    line-height: 1.6;
+  }
+
+  /* Enlaces profesionales */
+  a {
+    @apply text-primary hover:text-primary-dark transition-colors duration-200;
+    text-decoration: none;
+  }
+
+  a:hover {
+    text-decoration: underline;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 2px;
+  }
+
+  /* Sistema de espaciado unificado para secciones */
+  .section-padding {
+    @apply py-16 md:py-20 lg:py-24;
+  }
+
+  .section-padding-sm {
+    @apply py-8 md:py-12 lg:py-16;
+  }
+
+  .section-padding-lg {
+    @apply py-20 md:py-28 lg:py-32;
+  }
+
+  .container-padding {
+    @apply px-4 md:px-6 lg:px-8;
+  }
+
+  /* Espaciado consistente para elementos */
+  .element-spacing {
+    @apply mb-6 md:mb-8;
+  }
+
+  .element-spacing-sm {
+    @apply mb-4 md:mb-6;
+  }
+
+  .element-spacing-lg {
+    @apply mb-8 md:mb-12;
   }
 }
 
@@ -102,30 +200,99 @@
     text-wrap: balance;
   }
   
+  /* Títulos de sección consistentes */
   .section-title {
-    @apply text-2xl md:text-3xl font-display font-bold text-primary mb-4 text-center;
+    @apply text-2xl md:text-3xl lg:text-4xl font-bold text-foreground mb-4 text-center;
+    font-family: 'Playfair Display', serif;
+    line-height: 1.3;
+  }
+  
+  .section-subtitle {
+    @apply text-lg md:text-xl font-medium text-muted-foreground mb-3 text-center;
   }
   
   .section-description {
-    @apply text-base md:text-lg text-center text-gray-600 mb-10 max-w-3xl mx-auto font-serif;
+    @apply text-base md:text-lg text-center text-muted-foreground mb-8 max-w-3xl mx-auto leading-relaxed;
+  }
+
+  /* Cards profesionales */
+  .card-premium {
+    @apply bg-surface border border-border-light rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300;
+    backdrop-filter: blur(10px);
+  }
+
+  .card-elevated {
+    @apply bg-surface border-0 rounded-2xl shadow-md hover:shadow-lg transition-all duration-300;
+    box-shadow: 0 4px 20px rgba(0, 184, 230, 0.08);
+  }
+
+  .card-glass {
+    background: rgba(255, 255, 255, 0.85);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
   }
   
-  .card-gradient {
-    background: linear-gradient(135deg, #fdfcfb 0%, #e2d1c3 100%);
+  /* Gradientes profesionales */
+  .gradient-primary {
+    background: linear-gradient(135deg, hsl(var(--primary)) 0%, hsl(var(--primary-dark)) 100%);
+  }
+
+  .gradient-surface {
+    background: linear-gradient(135deg, hsl(var(--surface)) 0%, hsl(var(--surface-variant)) 100%);
+  }
+
+  .gradient-elegant {
+    background: linear-gradient(135deg, 
+      hsl(var(--background)) 0%, 
+      hsl(var(--surface-variant)) 50%, 
+      hsl(var(--primary-light)) 100%);
   }
   
-  .section-padding {
-    @apply py-16 md:py-24;
+  /* Botones estándar - Azul cian del logo */
+  .btn-primary {
+    @apply bg-primary hover:bg-primary/90 text-white font-medium px-6 py-3 rounded-lg transition-all duration-200 shadow-md hover:shadow-lg;
+    font-size: 1rem;
+  }
+
+  .btn-secondary {
+    @apply bg-white hover:bg-gray-50 text-foreground font-medium px-6 py-3 rounded-lg transition-all duration-200 border border-border shadow-sm hover:shadow-md;
+  }
+
+  .btn-outline {
+    @apply bg-transparent hover:bg-primary text-primary hover:text-white font-medium px-6 py-3 rounded-lg transition-all duration-200 border-2 border-primary;
   }
   
-  /* Estilos específicos para botones y CTAs */
-  .cta-button {
-    @apply text-base md:text-lg lg:text-xl font-medium font-serif;
-  }
-  
-  /* Estilos para menú de navegación */
+  /* Navegación profesional */
   .nav-link {
-    @apply text-sm md:text-base font-serif;
+    @apply text-sm md:text-base font-medium text-muted-foreground hover:text-foreground transition-colors duration-200;
+    letter-spacing: -0.005em;
+  }
+
+  .nav-brand {
+    @apply text-xl md:text-2xl font-bold text-foreground;
+    font-family: 'Playfair Display', serif;
+  }
+
+  /* Efectos profesionales */
+  .hover-lift {
+    @apply transition-transform duration-200 hover:-translate-y-1;
+  }
+
+  .focus-ring {
+    @apply focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 focus:ring-offset-background;
+  }
+
+  /* Overlay profesional */
+  .overlay-dark {
+    background: linear-gradient(135deg, 
+      rgba(33, 41, 54, 0.4) 0%, 
+      rgba(33, 41, 54, 0.7) 100%);
+  }
+
+  .overlay-primary {
+    background: linear-gradient(135deg, 
+      rgba(0, 184, 230, 0.1) 0%, 
+      rgba(0, 184, 230, 0.3) 100%);
   }
 }
 

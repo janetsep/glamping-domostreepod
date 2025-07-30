@@ -86,3 +86,12 @@ export interface AvailabilityResult {
   requiredDomos: number;
   error?: string;
 }
+
+// Elfsight Platform Types
+declare global {
+  interface Window {
+    elfsight?: {
+      initialize: () => void;
+    };
+  }
+}

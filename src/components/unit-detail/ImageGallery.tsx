@@ -19,14 +19,28 @@ interface ImageGalleryProps {
 export const ImageGallery = ({ unit }: ImageGalleryProps) => {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   
-  // Usar las imágenes reales auténticas de TreePod
+  // Descripciones SEO-optimizadas para cada imagen
+  const imageDescriptions = [
+    "Interior lujoso del domo con estufa a pellet y decoración premium",
+    "Vista panorámica del interior del domo geodésico con luz natural",
+    "Domo TreePod en ambiente otoñal romántico rodeado de naturaleza",
+    "Vista espectacular del río y montañas desde el glamping",
+    "Cocina moderna totalmente equipada con diseño elegante",
+    "Experiencia nocturna mágica con iluminación ambiental"
+  ];
+  
+  const getImageAltText = (unitName: string, index: number) => {
+    return `${unitName} - ${imageDescriptions[index] || 'Experiencia glamping de lujo en domo geodésico'}`;
+  };
+  
+  // Usar las mejores imágenes seleccionadas por el agente photo-selector-web
   const realImages = [
-    "/lovable-uploads/26544819-643d-4e3f-8599-74f7f3611221.png", // Exterior en bosque
-    "/lovable-uploads/0aba3582-f7e0-478e-b316-3893d4cebacc.png", // Interior con chimenea
-    "/lovable-uploads/8c94b429-4fba-49f4-a9e1-9d5970782bba.png", // Interior panorámico
-    "/lovable-uploads/daf4f24d-4485-4324-9991-3f7d52a79e0f.png", // Cocina
-    "/lovable-uploads/a12a8e24-f99f-48c6-9bc2-eea9e8df4ef5.png", // Exterior atardecer
-    "/lovable-uploads/7202eec3-bd82-4939-90a9-0a6509fa2af0.png"  // Invierno con nieve
+    "/lovable-uploads/domo3iainterior4mejor.jpeg", // Interior acogedor - 94/100
+    "/lovable-uploads/domostreepod-interior1.jpg", // Vista amplia interior - 90/100
+    "/lovable-uploads/domoa1-domos-otono.jpeg", // Ambiente otoñal - 89/100
+    "/lovable-uploads/las-trancas-rio.jpg", // Vista panorámica río - 93/100
+    "/lovable-uploads/img-8313-edit.jpg", // Cocina moderna - 87/100
+    "/lovable-uploads/domo3noche7.jpg" // Ambiente nocturno - 92/100
   ];
   
   // Usar las imágenes reales si no hay imágenes específicas del unit
@@ -49,7 +63,7 @@ export const ImageGallery = ({ unit }: ImageGalleryProps) => {
       <div className="relative aspect-video">
         <img
           src={images[currentImageIndex]}
-          alt={`${unit.name} - Imagen ${currentImageIndex + 1}`}
+          alt={getImageAltText(unit.name, currentImageIndex)}
           className="w-full h-full object-cover"
           onError={(e) => {
             // Si falla la carga de una imagen, usar la imagen por defecto
@@ -92,7 +106,7 @@ export const ImageGallery = ({ unit }: ImageGalleryProps) => {
           <DialogContent className="max-w-4xl">
             <img
               src={images[currentImageIndex]}
-              alt={`${unit.name} - Imagen ${currentImageIndex + 1}`}
+              alt={getImageAltText(unit.name, currentImageIndex)}
               className="w-full h-auto"
             />
           </DialogContent>

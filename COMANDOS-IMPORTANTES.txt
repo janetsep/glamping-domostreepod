@@ -1,0 +1,32 @@
+🤖 TU AGENTE DE TESTING FUNCIONAL
+
+NUNCA OLVIDES ESTOS COMANDOS:
+
+==================================
+🤖 EJECUTAR AGENTE COMPLETO:
+npm run test:agent
+
+📊 VER EN INTERFAZ VISUAL:
+npm run test:e2e:ui
+
+📈 VER ÚLTIMO REPORTE:  
+npm run test:e2e:report
+
+🧠 RECORDAR COMANDOS:
+npm run recordar
+==================================
+
+✅ VERIFICA AUTOMÁTICAMENTE:
+- "Este botón funciona"
+- "Se ve bien el calendario"
+- "Es rápida la carga"
+- "El pago funciona"
+- "Si se anula, redirige bien"
+
+📁 ARCHIVOS IMPORTANTES:
+- AGENTE-TESTING.md (documentación completa)
+- tests/e2e/ (código del agente)
+- CLAUDE.md (configuración)
+
+🚨 EJECUTA ANTES DE DEPLOY:
+npm run test:agent

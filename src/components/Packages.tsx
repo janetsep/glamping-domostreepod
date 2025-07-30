@@ -16,17 +16,17 @@ const Packages = ({
   const handleTravelerTypeClick = (typeId: string) => {
     navigate(`/tipo-viajero/${typeId}`);
   };
-  return <section id="packages" className="py-10 bg-secondary/10">
+  return <section id="packages" className="section-padding bg-secondary/10">
       {/* Franja de título sin texto */}
       <div className="w-full bg-primary/5 border-b border-primary/10 py-3 mb-8">
-        <div className="container mx-auto px-4">
+        <div className="container mx-auto container-padding">
           {/* Título removido de la franja */}
         </div>
       </div>
       
-      <div className="container mx-auto px-4">
-        <h2 className="text-3xl md:text-4xl font-display font-bold text-primary mb-4 text-center">Descubre Nuestros Domos</h2>
-        <p className="text-xl text-center text-gray-600 mb-10 max-w-3xl mx-auto">Alojamiento para cada tipo de huésped.</p>
+      <div className="container mx-auto container-padding">
+        <h2 className="text-3xl md:text-4xl font-display font-bold text-primary element-spacing-sm text-center">Descubre Nuestros Domos</h2>
+        <p className="text-xl text-center text-gray-600 element-spacing-lg max-w-3xl mx-auto">Alojamiento para cada tipo de huésped.</p>
         
         {/* Tipos de viajero con efecto hover */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
@@ -46,7 +46,7 @@ const Packages = ({
                 </p>
                 
                 <div className="flex justify-between items-center">
-                  <Button className="bg-cyan-600 hover:bg-cyan-700 text-white" onClick={e => {
+                  <Button variant="secondary" onClick={e => {
                 e.stopPropagation();
                 handleTravelerTypeClick(type.id);
               }}>Detalles</Button>
@@ -56,7 +56,7 @@ const Packages = ({
         </div>
         
         <div className="flex justify-center mt-8">
-          <Button size="lg" onClick={() => navigate('/unit/48a7a330-ebae-4e79-8f53-31a84ac900d9')} className="bg-cyan-600 hover:bg-cyan-700">Reservar</Button>
+          <Button size="lg" onClick={() => navigate('/unit/48a7a330-ebae-4e79-8f53-31a84ac900d9')}>Reservar</Button>
         </div>
       </div>
     </section>;

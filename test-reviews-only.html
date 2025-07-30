@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Solo Reseñas - 58776635-7259-470b-9077-f838d052ebab</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; background: #f5f5f5; }
+        .container { max-width: 800px; margin: 0 auto; background: white; padding: 30px; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+        h1 { color: #333; text-align: center; }
+        .widget-container { margin: 30px 0; border: 2px solid #ddd; border-radius: 8px; padding: 20px; min-height: 400px; background: #fafafa; }
+        .status { padding: 15px; margin: 20px 0; border-radius: 5px; text-align: center; font-weight: bold; }
+        .checking { background: #fff3cd; color: #856404; }
+        .success { background: #d4edda; color: #155724; }
+        .error { background: #f8d7da; color: #721c24; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>⭐ Test de Widget de Reseñas</h1>
+        <div id="status" class="status checking">🔍 Verificando widget...</div>
+        
+        <div class="widget-container">
+            <h2 style="text-align: center; color: #666;">Widget ID: 58776635-7259-470b-9077-f838d052ebab</h2>
+            
+            <!-- Código exacto proporcionado -->
+            <div class="elfsight-app-58776635-7259-470b-9077-f838d052ebab" data-elfsight-app-lazy></div>
+        </div>
+        
+        <div style="background: #f0f8ff; padding: 20px; border-radius: 8px; margin-top: 20px;">
+            <h3>📊 Información de Debug:</h3>
+            <ul id="debug-list">
+                <li>Iniciando verificación...</li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- Script de Elfsight -->
+    <script src="https://static.elfsight.com/platform/platform.js" async></script>
+    
+    <script>
+        const debugLog = [];
+        let checkCount = 0;
+        const maxChecks = 30; // 15 segundos
+        
+        function addDebug(message) {
+            const time = new Date().toLocaleTimeString();
+            debugLog.push(`[${time}] ${message}`);
+            document.getElementById('debug-list').innerHTML = debugLog.map(log => `<li>${log}</li>`).join('');
+            console.log(`⭐ ${message}`);
+        }
+        
+        function updateStatus(message, type) {
+            const statusEl = document.getElementById('status');
+            statusEl.textContent = message;
+            statusEl.className = `status ${type}`;
+        }
+        
+        function checkWidget() {
+            checkCount++;
+            const widget = document.querySelector('.elfsight-app-58776635-7259-470b-9077-f838d052ebab');
+            
+            if (!widget) {
+                addDebug('❌ ERROR: No se encontró el contenedor del widget');
+                updateStatus('❌ Error: Widget container no encontrado', 'error');
+                return;
+            }
+            
+            addDebug(`Intento ${checkCount}/${maxChecks} - Verificando contenido...`);
+            
+            const hasContent = widget.children.length > 0 || 
+                             widget.innerHTML.trim().length > 50 || 
+                             widget.offsetHeight > 50;
+            
+            if (hasContent) {
+                addDebug('✅ ¡Widget cargado exitosamente!');
+                addDebug(`Elementos hijos: ${widget.children.length}`);
+                addDebug(`Altura: ${widget.offsetHeight}px`);
+                updateStatus('✅ ¡Widget de reseñas funcionando!', 'success');
+                return;
+            }
+            
+            if (checkCount >= maxChecks) {
+                addDebug('❌ Widget no cargó después de 15 segundos');
+                addDebug('Posibles causas:');
+                addDebug('- Widget pausado o inactivo en Elfsight');
+                addDebug('- Restricciones de dominio');
+                addDebug('- Problema con el widget ID');
+                updateStatus('❌ Widget no pudo cargar', 'error');
+                return;
+            }
+            
+            setTimeout(checkWidget, 500);
+        }
+        
+        // Verificar Elfsight
+        function checkElfsight() {
+            if (window.elfsight) {
+                addDebug('✅ Elfsight platform detectado');
+                if (typeof window.elfsight.initialize === 'function') {
+                    addDebug('🔧 Inicializando Elfsight...');
+                    try {
+                        window.elfsight.initialize();
+                        addDebug('✅ Elfsight inicializado correctamente');
+                        setTimeout(checkWidget, 1000);
+                    } catch (error) {
+                        addDebug('❌ Error al inicializar: ' + error.message);
+                    }
+                } else {
+                    addDebug('⚠️ Función initialize no disponible');
+                    setTimeout(checkWidget, 1000);
+                }
+            } else {
+                addDebug('⏳ Esperando Elfsight platform...');
+                setTimeout(checkElfsight, 500);
+            }
+        }
+        
+        // Iniciar cuando el DOM esté listo
+        document.addEventListener('DOMContentLoaded', () => {
+            addDebug('🚀 Iniciando test de widget de reseñas...');
+            checkElfsight();
+        });
+        
+        // También verificar cuando la ventana se carga completamente
+        window.addEventListener('load', () => {
+            addDebug('📄 Página completamente cargada');
+        });
+    </script>
+</body>
+</html>

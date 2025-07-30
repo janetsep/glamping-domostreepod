@@ -1,0 +1,81 @@
+name: 🤖 Agente de Testing Funcional
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main ]
+  schedule:
+    # Ejecutar agente cada día a las 9 AM
+    - cron: '0 9 * * *'
+
+jobs:
+  test-agent:
+    timeout-minutes: 30
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    
+    - uses: actions/setup-node@v4
+      with:
+        node-version: 18
+        cache: 'npm'
+    
+    - name: 📦 Instalar dependencias
+      run: npm ci
+    
+    - name: 🎭 Instalar navegadores Playwright
+      run: npx playwright install --with-deps
+    
+    - name: 🔨 Build del proyecto
+      run: npm run build
+    
+    - name: 🚀 Iniciar servidor de preview
+      run: |
+        npm run preview &
+        npx wait-on http://localhost:4173
+      env:
+        CI: true
+    
+    - name: 🤖 Ejecutar Agente de Testing Funcional
+      run: npm run test:e2e
+      env:
+        CI: true
+        PLAYWRIGHT_BASE_URL: http://localhost:4173
+    
+    - name: 📊 Subir reporte de testing
+      uses: actions/upload-artifact@v4
+      if: always()
+      with:
+        name: test-agent-report
+        path: playwright-report/
+        retention-days: 30
+    
+    - name: 📸 Subir screenshots de errores
+      uses: actions/upload-artifact@v4
+      if: failure()
+      with:
+        name: test-failures
+        path: test-results/
+        retention-days: 7
+
+  performance-check:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    
+    - uses: actions/setup-node@v4
+      with:
+        node-version: 18
+        cache: 'npm'
+    
+    - name: 📦 Instalar dependencias
+      run: npm ci
+    
+    - name: 🎭 Instalar Playwright
+      run: npx playwright install chromium
+    
+    - name: ⚡ Test de rendimiento
+      run: npx playwright test performance.spec.ts --project=chromium
+      env:
+        CI: true

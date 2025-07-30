@@ -33,7 +33,7 @@ export const ImageCarousel: React.FC<ImageCarouselProps> = ({
             effect="blur"
             placeholderSrc={image.placeholder}
             wrapperClassName="w-full h-full"
-            className="w-full h-full object-contain object-center transition-transform duration-10000 ease-in-out"
+            className="w-full h-full object-cover object-center transition-transform duration-10000 ease-in-out"
             visibleByDefault={index === currentImageIndex}
             threshold={500}
           />

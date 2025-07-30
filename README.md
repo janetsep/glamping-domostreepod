@@ -1,4 +1,34 @@
-# Welcome to your Lovable project
+# 🏕️ Glamping Domos TreePod
+
+Sitio web de reservas para experiencia de glamping eco-luxury en domos geodésicos con tecnología Starlink.
+
+## 🤖 Agente de Testing Funcional
+
+Este proyecto incluye un **agente de testing automatizado** que verifica automáticamente que el sitio funcione correctamente.
+
+### 🚀 Comandos Principales:
+
+```bash
+# 🤖 Ejecutar el agente completo
+npm run test:agent
+
+# 📊 Ver tests en vivo
+npm run test:e2e:ui
+
+# 📈 Ver último reporte
+npm run test:e2e:report
+
+# 🐛 Debug tests
+npm run test:e2e:debug
+```
+
+### ✅ Lo que Verifica el Agente:
+
+- **✅ "Este botón funciona"** - Todos los botones de navegación
+- **✅ "Se ve bien el calendario"** - Funcionalidad del calendario de reservas  
+- **✅ "Es rápida la carga"** - Velocidad < 3 segundos
+- **✅ "El pago funciona"** - Flujo completo de WebPay
+- **✅ "Si se anula, redirige bien"** - Manejo de cancelaciones
 
 ## Project info
 
@@ -50,15 +80,29 @@ npm run dev
 - Click on "New codespace" to launch a new Codespace environment.
 - Edit files directly within the Codespace and commit and push your changes once you're done.
 
+## 🧪 Testing
+
+- **Tests unitarios**: `npm run test`
+- **Agente E2E**: `npm run test:e2e`
+- **Coverage**: `npm run test:coverage`
+
 ## What technologies are used for this project?
 
-This project is built with .
+This project is built with modern web technologies:
 
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
+- **Frontend**: React 18 + TypeScript + Vite
+- **UI**: Tailwind CSS + Radix UI (shadcn-ui)
+- **Base de datos**: Supabase
+- **Pagos**: WebPay (Transbank)
+- **Testing**: Vitest + Playwright (Agente Funcional)
+
+## 🔒 Seguridad
+
+- Validación completa de inputs
+- Protección XSS
+- Rate limiting
+- Headers de seguridad
+- Tests de seguridad automatizados
 
 ## How can I deploy this project?
 

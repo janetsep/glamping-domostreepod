@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Completo - Todos los Widgets Elfsight</title>
+    <style>
+        body { 
+            font-family: Arial, sans-serif; 
+            padding: 20px; 
+            background: #f5f5f5; 
+        }
+        .container { 
+            max-width: 1200px; 
+            margin: 0 auto; 
+        }
+        h1 { 
+            text-align: center; 
+            color: #333; 
+            margin-bottom: 30px; 
+        }
+        .widget-test { 
+            background: white; 
+            padding: 20px; 
+            margin-bottom: 30px; 
+            border-radius: 10px; 
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1); 
+        }
+        .widget-header { 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            margin-bottom: 20px; 
+            padding-bottom: 10px; 
+            border-bottom: 2px solid #eee; 
+        }
+        .widget-title { 
+            font-size: 20px; 
+            font-weight: bold; 
+        }
+        .widget-status { 
+            padding: 5px 15px; 
+            border-radius: 20px; 
+            font-size: 14px; 
+            font-weight: bold; 
+        }
+        .checking { 
+            background: #fff3cd; 
+            color: #856404; 
+        }
+        .success { 
+            background: #d4edda; 
+            color: #155724; 
+        }
+        .error { 
+            background: #f8d7da; 
+            color: #721c24; 
+        }
+        .widget-container { 
+            min-height: 300px; 
+            border: 2px dashed #ddd; 
+            border-radius: 8px; 
+            padding: 20px; 
+            position: relative; 
+        }
+        .widget-info { 
+            background: #f0f8ff; 
+            padding: 10px; 
+            border-radius: 5px; 
+            margin-top: 10px; 
+            font-size: 12px; 
+        }
+        .debug-panel {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 30px;
+        }
+        .debug-log {
+            background: white;
+            padding: 15px;
+            border-radius: 5px;
+            font-family: monospace;
+            font-size: 12px;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🧪 Test Completo de Widgets Elfsight - TreePod</h1>
+        
+        <!-- Widget 1: Galería (Funciona) -->
+        <div class="widget-test">
+            <div class="widget-header">
+                <div class="widget-title">📸 Galería de Fotos</div>
+                <div id="status-gallery" class="widget-status checking">Verificando...</div>
+            </div>
+            <div class="widget-container">
+                <div class="elfsight-app-95014e6a-2fd5-4219-b0c5-e50cd23e4e72" data-elfsight-app-lazy></div>
+            </div>
+            <div class="widget-info">
+                <strong>ID:</strong> 95014e6a-2fd5-4219-b0c5-e50cd23e4e72<br>
+                <strong>Estado esperado:</strong> ✅ Funcionando (confirmado)
+            </div>
+        </div>
+        
+        <!-- Widget 2: Reseñas (No funciona) -->
+        <div class="widget-test">
+            <div class="widget-header">
+                <div class="widget-title">⭐ Reseñas / Testimonios</div>
+                <div id="status-reviews" class="widget-status checking">Verificando...</div>
+            </div>
+            <div class="widget-container">
+                <div class="elfsight-app-58776635-7259-470b-9077-f838d052ebab" data-elfsight-app-lazy></div>
+            </div>
+            <div class="widget-info">
+                <strong>ID:</strong> 58776635-7259-470b-9077-f838d052ebab<br>
+                <strong>Estado esperado:</strong> ❓ No funciona actualmente
+            </div>
+        </div>
+        
+        <!-- Widget 3: Mapa (No funciona) -->
+        <div class="widget-test">
+            <div class="widget-header">
+                <div class="widget-title">🗺️ Mapa de Ubicación</div>
+                <div id="status-map" class="widget-status checking">Verificando...</div>
+            </div>
+            <div class="widget-container">
+                <div class="elfsight-app-3b2bec9e-cc66-481c-88a9-3f156d8a74a3" data-elfsight-app-lazy></div>
+            </div>
+            <div class="widget-info">
+                <strong>ID:</strong> 3b2bec9e-cc66-481c-88a9-3f156d8a74a3<br>
+                <strong>Estado esperado:</strong> ❓ No funciona actualmente
+            </div>
+        </div>
+        
+        <!-- Panel de Debug -->
+        <div class="debug-panel">
+            <h2>🔍 Información de Debug</h2>
+            <div id="debug-log" class="debug-log">
+                Iniciando diagnóstico...<br>
+            </div>
+        </div>
+    </div>
+
+    <!-- Script de Elfsight -->
+    <script src="https://static.elfsight.com/platform/platform.js" async></script>
+    
+    <script>
+        const widgets = [
+            { id: '95014e6a-2fd5-4219-b0c5-e50cd23e4e72', name: 'gallery', label: 'Galería' },
+            { id: '58776635-7259-470b-9077-f838d052ebab', name: 'reviews', label: 'Reseñas' },
+            { id: '3b2bec9e-cc66-481c-88a9-3f156d8a74a3', name: 'map', label: 'Mapa' }
+        ];
+        
+        const debugLog = [];
+        let checksCompleted = 0;
+        
+        function addDebug(message) {
+            const time = new Date().toLocaleTimeString();
+            const logMessage = `[${time}] ${message}`;
+            debugLog.push(logMessage);
+            document.getElementById('debug-log').innerHTML = debugLog.join('<br>') + '<br>';
+            console.log(message);
+        }
+        
+        function updateWidgetStatus(widgetName, status) {
+            const statusEl = document.getElementById(`status-${widgetName}`);
+            if (status === 'success') {
+                statusEl.textContent = '✅ Funcionando';
+                statusEl.className = 'widget-status success';
+            } else if (status === 'error') {
+                statusEl.textContent = '❌ No funciona';
+                statusEl.className = 'widget-status error';
+            }
+        }
+        
+        function checkWidget(widgetInfo) {
+            const selector = `.elfsight-app-${widgetInfo.id}`;
+            const element = document.querySelector(selector);
+            let attempts = 0;
+            const maxAttempts = 20; // 10 segundos
+            
+            const check = () => {
+                attempts++;
+                
+                if (!element) {
+                    addDebug(`❌ ${widgetInfo.label}: No se encontró el elemento`);
+                    updateWidgetStatus(widgetInfo.name, 'error');
+                    checksCompleted++;
+                    return;
+                }
+                
+                const hasContent = element.children.length > 0 || 
+                                 element.innerHTML.trim().length > 50 || 
+                                 element.offsetHeight > 50;
+                
+                if (hasContent) {
+                    addDebug(`✅ ${widgetInfo.label}: Cargado exitosamente (${element.children.length} elementos, ${element.offsetHeight}px altura)`);
+                    updateWidgetStatus(widgetInfo.name, 'success');
+                    checksCompleted++;
+                    checkCompletion();
+                    return;
+                }
+                
+                if (attempts >= maxAttempts) {
+                    addDebug(`❌ ${widgetInfo.label}: No cargó después de ${maxAttempts/2} segundos`);
+                    updateWidgetStatus(widgetInfo.name, 'error');
+                    checksCompleted++;
+                    checkCompletion();
+                    return;
+                }
+                
+                setTimeout(check, 500);
+            };
+            
+            check();
+        }
+        
+        function checkCompletion() {
+            if (checksCompleted === widgets.length) {
+                addDebug('');
+                addDebug('=== RESUMEN FINAL ===');
+                
+                // Verificar cuáles funcionaron
+                const working = [];
+                const notWorking = [];
+                
+                widgets.forEach(widget => {
+                    const status = document.getElementById(`status-${widget.name}`).textContent;
+                    if (status.includes('✅')) {
+                        working.push(widget.label);
+                    } else {
+                        notWorking.push(widget.label);
+                    }
+                });
+                
+                if (working.length > 0) {
+                    addDebug(`✅ Funcionando: ${working.join(', ')}`);
+                }
+                if (notWorking.length > 0) {
+                    addDebug(`❌ No funcionando: ${notWorking.join(', ')}`);
+                }
+                
+                if (notWorking.length > 0) {
+                    addDebug('');
+                    addDebug('POSIBLES CAUSAS:');
+                    addDebug('1. Los widgets pueden estar pausados en tu cuenta Elfsight');
+                    addDebug('2. Pueden tener restricciones de dominio configuradas');
+                    addDebug('3. Pueden estar en un plan que no permite ciertos widgets');
+                    addDebug('4. Los IDs pueden ser de una cuenta diferente');
+                }
+            }
+        }
+        
+        function initializeElfsight() {
+            if (window.elfsight && typeof window.elfsight.initialize === 'function') {
+                addDebug('✅ Elfsight platform detectado, inicializando...');
+                try {
+                    window.elfsight.initialize();
+                    addDebug('✅ Elfsight inicializado correctamente');
+                    
+                    // Esperar un momento y luego verificar todos los widgets
+                    setTimeout(() => {
+                        addDebug('🔍 Verificando widgets...');
+                        widgets.forEach(widget => checkWidget(widget));
+                    }, 1500);
+                    
+                } catch (error) {
+                    addDebug('❌ Error al inicializar Elfsight: ' + error.message);
+                }
+            } else {
+                addDebug('⏳ Esperando Elfsight platform...');
+                setTimeout(initializeElfsight, 500);
+            }
+        }
+        
+        // Iniciar cuando el DOM esté listo
+        document.addEventListener('DOMContentLoaded', () => {
+            addDebug('🚀 Iniciando test completo de widgets Elfsight...');
+            addDebug(`📍 URL actual: ${window.location.href}`);
+            addDebug(`🌐 Dominio: ${window.location.hostname}`);
+            initializeElfsight();
+        });
+    </script>
+</body>
+</html>

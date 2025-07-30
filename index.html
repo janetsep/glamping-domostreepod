@@ -4,6 +4,15 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    
+    <!-- Security Headers -->
+    <meta http-equiv="X-Content-Type-Options" content="nosniff" />
+    <meta http-equiv="X-Frame-Options" content="DENY" />
+    <meta http-equiv="X-XSS-Protection" content="1; mode=block" />
+    <meta http-equiv="Referrer-Policy" content="strict-origin-when-cross-origin" />
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://*.supabase.co https://*.transbank.cl https://static.elfsight.com https://core.service.elfsight.com https://cdn.gpteng.co; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://static.elfsight.com; font-src 'self' https://fonts.gstatic.com https://static.elfsight.com; img-src 'self' data: https: blob:; connect-src 'self' https://*.supabase.co https://*.transbank.cl https://*.elfsight.com wss://*.supabase.co; frame-src 'self' https://*.elfsight.com; object-src 'none';" />
+    
+    <!-- Page Meta -->
     <title>Domos Treepod - Experiencia Glamping</title>
     <meta name="description" content="Experiencia de glamping en domos geodésicos con todo el confort y en medio de la naturaleza" />
     <meta name="author" content="Domos Treepod" />
@@ -35,8 +44,51 @@
 
   <body>
     <div id="root"></div>
-    <!-- Elfsight Social Feed | Redes Sociales -->
+    <!-- Elfsight Platform Script - EXACTO como en test funcional -->
     <script src="https://static.elfsight.com/platform/platform.js" async></script>
+    <script>
+      // Force Elfsight initialization for React compatibility
+      let elfsightInitAttempts = 0;
+      const maxElfsightAttempts = 50; // 25 seconds
+      
+      function forceElfsightInit() {
+        elfsightInitAttempts++;
+        
+        if (window.elfsight && typeof window.elfsight.initialize === 'function') {
+          console.log('🔧 ELFSIGHT: ✅ Inicializando en React...');
+          try {
+            window.elfsight.initialize();
+            console.log('🔧 ELFSIGHT: ✅ Inicializado correctamente');
+            
+            // Re-initialize every 3 seconds for React compatibility
+            setInterval(() => {
+              if (window.elfsight && typeof window.elfsight.initialize === 'function') {
+                window.elfsight.initialize();
+              }
+            }, 3000);
+            
+          } catch (error) {
+            console.log('🔧 ELFSIGHT: ❌ Error al inicializar:', error.message);
+          }
+        } else if (elfsightInitAttempts < maxElfsightAttempts) {
+          console.log(`🔧 ELFSIGHT: ⏳ Intento ${elfsightInitAttempts}/${maxElfsightAttempts} - Reintentando...`);
+          setTimeout(forceElfsightInit, 500);
+        } else {
+          console.log('🔧 ELFSIGHT: ❌ No se pudo inicializar después de 25 segundos');
+        }
+      }
+      
+      // Start initialization attempts
+      document.addEventListener('DOMContentLoaded', () => {
+        console.log('🔧 ELFSIGHT: 🚀 Iniciando forzado de widgets en React');
+        forceElfsightInit();
+      });
+      
+      // Also try when window loads
+      window.addEventListener('load', () => {
+        setTimeout(forceElfsightInit, 1000);
+      });
+    </script>
     <script src="https://cdn.gpteng.co/gptengineer.js" type="module"></script>
     <script type="module" src="/src/main.tsx"></script>
   </body>

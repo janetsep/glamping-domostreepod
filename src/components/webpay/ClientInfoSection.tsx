@@ -39,11 +39,6 @@ const ClientInfoSection: React.FC<ClientInfoSectionProps> = ({
     setIsSubmitting(true);
     
     try {
-      // Store client info in localStorage for future use
-      localStorage.setItem('client_name', clientInfo.name);
-      localStorage.setItem('client_email', clientInfo.email);
-      localStorage.setItem('client_phone', clientInfo.phone);
-      
       // Save the client information in the reservation
       const success = await saveClientInformation(transactionResult.reservation_id, clientInfo);
       

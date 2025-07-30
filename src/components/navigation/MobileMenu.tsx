@@ -36,7 +36,7 @@ const MobileMenu = ({
         href="https://wa.me/56912345678" 
         target="_blank" 
         rel="noopener noreferrer"
-        className="mr-2 bg-green-500 text-white p-2 rounded-full shadow-lg hover:bg-green-600 transition-colors flex items-center justify-center"
+        className="mr-2 bg-green-500 text-white p-2 rounded-lg shadow-md hover:bg-green-600 transition-colors flex items-center justify-center"
         aria-label="Contactar por WhatsApp"
       >
         <MessageSquare className="h-5 w-5" />

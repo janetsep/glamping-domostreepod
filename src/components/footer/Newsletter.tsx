@@ -30,7 +30,7 @@ const Newsletter = () => {
           required
           className="bg-white"
         />
-        <Button type="submit" className="w-full bg-cyan-500 hover:bg-cyan-600 text-white">
+        <Button type="submit" className="w-full btn-primary">
           Suscribirme
         </Button>
       </form>

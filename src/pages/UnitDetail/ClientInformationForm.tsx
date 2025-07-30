@@ -4,6 +4,8 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { sanitizeInput, validateEmail, validatePhone, validateName } from "@/utils/security";
+import { INPUT_MAX_LENGTHS } from "@/lib/constants";
 
 interface ClientInformationFormProps {
   onSubmit: (clientInfo: { name: string; email: string; phone: string }) => void;
@@ -41,20 +43,26 @@ export const ClientInformationForm = ({
       phone?: string;
     } = {};
     
-    if (!name.trim()) {
+    const sanitizedName = sanitizeInput(name);
+    const sanitizedEmail = sanitizeInput(email);
+    const sanitizedPhone = sanitizeInput(phone);
+    
+    if (!sanitizedName) {
       newErrors.name = "El nombre es obligatorio";
+    } else if (!validateName(sanitizedName)) {
+      newErrors.name = "El nombre no es válido (solo letras y espacios, 2-50 caracteres)";
     }
     
-    if (!email.trim()) {
+    if (!sanitizedEmail) {
       newErrors.email = "El correo electrónico es obligatorio";
-    } else if (!/\S+@\S+\.\S+/.test(email)) {
+    } else if (!validateEmail(sanitizedEmail)) {
       newErrors.email = "El correo electrónico no es válido";
     }
     
-    if (!phone.trim()) {
+    if (!sanitizedPhone) {
       newErrors.phone = "El teléfono es obligatorio";
-    } else if (!/^[+0-9]{8,15}$/.test(phone.replace(/\s/g, ""))) {
-      newErrors.phone = "El teléfono no es válido (mínimo 8 dígitos)";
+    } else if (!validatePhone(sanitizedPhone)) {
+      newErrors.phone = "El teléfono no es válido (8-15 dígitos)";
     }
     
     setErrors(newErrors);
@@ -65,7 +73,12 @@ export const ClientInformationForm = ({
     e.preventDefault();
     
     if (validateForm()) {
-      onSubmit({ name, email, phone });
+      // Sanitize inputs before submission
+      onSubmit({ 
+        name: sanitizeInput(name), 
+        email: sanitizeInput(email), 
+        phone: sanitizeInput(phone) 
+      });
     }
   };
 
@@ -85,6 +98,7 @@ export const ClientInformationForm = ({
             value={name}
             onChange={(e) => setName(e.target.value)}
             className={errors.name ? "border-red-500" : ""}
+            maxLength={INPUT_MAX_LENGTHS.name}
           />
           {errors.name && (
             <p className="text-sm text-red-500">{errors.name}</p>
@@ -100,6 +114,7 @@ export const ClientInformationForm = ({
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             className={errors.email ? "border-red-500" : ""}
+            maxLength={INPUT_MAX_LENGTHS.email}
           />
           {errors.email && (
             <p className="text-sm text-red-500">{errors.email}</p>
@@ -114,6 +129,7 @@ export const ClientInformationForm = ({
             value={phone}
             onChange={(e) => setPhone(e.target.value)}
             className={errors.phone ? "border-red-500" : ""}
+            maxLength={INPUT_MAX_LENGTHS.phone}
           />
           {errors.phone && (
             <p className="text-sm text-red-500">{errors.phone}</p>

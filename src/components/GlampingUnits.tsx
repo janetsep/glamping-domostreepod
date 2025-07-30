@@ -29,21 +29,23 @@ const GlampingUnits = ({ units = [], isLoading }: GlampingUnitsProps) => {
     );
   }
 
-  // Si no hay unidades, mostrar datos de ejemplo con imágenes reales
+  // Si no hay unidades, mostrar datos de ejemplo con las mejores imágenes seleccionadas
   const displayUnits = units.length > 0 ? units : [
     {
       id: "demo-1",
-      name: "Domo TreePod 1",
+      name: "Domo TreePod Premium",
       max_guests: 4,
       prices: { base_price: 85000 },
-      image_url: "/lovable-uploads/26544819-643d-4e3f-8599-74f7f3611221.png"
+      image_url: "/lovable-uploads/domo3iainterior4mejor.jpeg", // Interior acogedor - 94/100
+      description: "Domo con vista al bosque nativo y todas las comodidades premium"
     },
     {
       id: "demo-2", 
-      name: "Domo TreePod 2",
+      name: "Domo TreePod Deluxe",
       max_guests: 4,
       prices: { base_price: 85000 },
-      image_url: "/lovable-uploads/a12a8e24-f99f-48c6-9bc2-eea9e8df4ef5.png"
+      image_url: "/lovable-uploads/domoa1-domos-otono.jpeg", // Ambiente otoñal - 89/100
+      description: "Experiencia única con vistas panorámicas y ambiente romántico"
     }
   ];
 
@@ -63,7 +65,7 @@ const GlampingUnits = ({ units = [], isLoading }: GlampingUnitsProps) => {
               <div className="relative h-80 overflow-hidden">
                 <img
                   src={unit.image_url || "/placeholder.svg"}
-                  alt={unit.name}
+                  alt={`${unit.name} - Domo geodésico eco-luxury con vista panorámica a la naturaleza, experiencia glamping sostenible`}
                   className="w-full h-full object-cover transition-transform duration-500 hover:scale-110"
                 />
                 {/* Overlay oscuro permanente pero sutil con información básica */}

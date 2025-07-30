@@ -26,20 +26,41 @@ export default {
         background: "hsl(var(--background))",
         foreground: "hsl(var(--foreground))",
         primary: {
-          DEFAULT: "#00B8E6",
-          foreground: "#FFFFFF",
+          DEFAULT: "hsl(var(--primary))", // Azul cian del logotipo #00B8E6
+          dark: "hsl(var(--primary-dark))",
+          light: "hsl(var(--primary-light))",
+          foreground: "hsl(var(--primary-foreground))",
         },
         secondary: {
-          DEFAULT: "#E5E0D9",
-          foreground: "#2D2D2D",
+          DEFAULT: "hsl(var(--secondary))",
+          dark: "hsl(var(--secondary-dark))",
+          foreground: "hsl(var(--secondary-foreground))",
+        },
+        tertiary: {
+          DEFAULT: "hsl(var(--tertiary))",
+          light: "hsl(var(--tertiary-light))",
+          foreground: "hsl(var(--tertiary-foreground))",
+        },
+        surface: {
+          DEFAULT: "hsl(var(--surface))",
+          variant: "hsl(var(--surface-variant))",
+          hover: "hsl(var(--surface-hover))",
         },
         accent: {
-          DEFAULT: "#0EA5E9",
-          foreground: "#FFFFFF",
+          DEFAULT: "hsl(var(--accent))",
+          foreground: "hsl(var(--accent-foreground))",
         },
         destructive: {
           DEFAULT: "hsl(var(--destructive))",
           foreground: "hsl(var(--destructive-foreground))",
+        },
+        success: {
+          DEFAULT: "hsl(var(--success))",
+          foreground: "hsl(var(--success-foreground))",
+        },
+        warning: {
+          DEFAULT: "hsl(var(--warning))",
+          foreground: "hsl(var(--warning-foreground))",
         },
         muted: {
           DEFAULT: "hsl(var(--muted))",
@@ -53,10 +74,8 @@ export default {
           DEFAULT: "hsl(var(--card))",
           foreground: "hsl(var(--card-foreground))",
         },
-        cyan: {
-          500: "#0EA5E9",
-          600: "#0284C7",
-        },
+        // Bordes adicionales
+        "border-light": "hsl(var(--border-light))",
       },
       fontFamily: {
         serif: ["Crimson Text", "Libre Baskerville", "serif"],

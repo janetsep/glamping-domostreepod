@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Widget Mapa - 3b2bec9e-cc66-481c-88a9-3f156d8a74a3</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; }
+        .container { max-width: 800px; margin: 0 auto; }
+        .status { padding: 15px; margin: 10px 0; border-radius: 5px; font-weight: bold; }
+        .loading { background: #fff3cd; color: #856404; }
+        .success { background: #d4edda; color: #155724; }
+        .error { background: #f8d7da; color: #721c24; }
+        .widget-container { border: 2px solid #ddd; border-radius: 8px; padding: 20px; margin: 20px 0; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🗺️ Test Widget de Mapa</h1>
+        <div id="status" class="status loading">⏳ Iniciando test...</div>
+        
+        <div class="widget-container">
+            <h2>Widget ID: 3b2bec9e-cc66-481c-88a9-3f156d8a74a3</h2>
+            <div class="elfsight-app-3b2bec9e-cc66-481c-88a9-3f156d8a74a3" data-elfsight-app-lazy></div>
+        </div>
+        
+        <div style="margin-top: 20px; padding: 15px; background: #f8f9fa; border-radius: 5px;">
+            <h3>Información de Debug:</h3>
+            <div id="debug-info">Cargando información...</div>
+        </div>
+        
+        <div style="margin-top: 20px; padding: 15px; background: #e9ecef; border-radius: 5px;">
+            <h3>Enlaces de Verificación:</h3>
+            <p><strong>Widget directo:</strong> <a href="https://3b2bec9ecc66481c88a93f156d8a74a3.elf.site" target="_blank">https://3b2bec9ecc66481c88a93f156d8a74a3.elf.site</a></p>
+            <p><strong>Platform script:</strong> <a href="https://static.elfsight.com/platform/platform.js" target="_blank">https://static.elfsight.com/platform/platform.js</a></p>
+        </div>
+    </div>
+
+    <script src="https://static.elfsight.com/platform/platform.js" async></script>
+    
+    <script>
+        let checkCount = 0;
+        const maxChecks = 20; // 10 segundos
+        
+        function updateStatus(message, type = 'loading') {
+            const statusEl = document.getElementById('status');
+            statusEl.textContent = message;
+            statusEl.className = `status ${type}`;
+        }
+        
+        function updateDebug(info) {
+            document.getElementById('debug-info').innerHTML = info;
+        }
+        
+        function checkWidget() {
+            checkCount++;
+            const widget = document.querySelector('.elfsight-app-3b2bec9e-cc66-481c-88a9-3f156d8a74a3');
+            
+            const info = `
+                <strong>Intento:</strong> ${checkCount}/${maxChecks}<br>
+                <strong>Widget encontrado:</strong> ${widget ? '✅ Sí' : '❌ No'}<br>
+                <strong>Contenido HTML:</strong> ${widget ? widget.innerHTML.length + ' caracteres' : 'N/A'}<br>
+                <strong>Elementos hijos:</strong> ${widget ? widget.children.length : 'N/A'}<br>
+                <strong>Altura:</strong> ${widget ? widget.offsetHeight + 'px' : 'N/A'}<br>
+                <strong>Ancho:</strong> ${widget ? widget.offsetWidth + 'px' : 'N/A'}<br>
+                <strong>Elfsight disponible:</strong> ${window.elfsight ? '✅ Sí' : '❌ No'}<br>
+                <strong>Función initialize:</strong> ${window.elfsight?.initialize ? '✅ Sí' : '❌ No'}
+            `;
+            updateDebug(info);
+            
+            if (widget && (widget.innerHTML.length > 50 || widget.children.length > 0 || widget.offsetHeight > 50)) {
+                updateStatus('✅ ¡Widget del mapa cargado correctamente!', 'success');
+                console.log('✅ Map widget loaded successfully!', widget);
+                return true;
+            }
+            
+            if (checkCount >= maxChecks) {
+                updateStatus('❌ Widget del mapa no pudo cargar', 'error');
+                console.log('❌ Map widget failed to load after', maxChecks * 0.5, 'seconds');
+                return false;
+            }
+            
+            updateStatus(`⏳ Esperando widget del mapa... (${checkCount}/${maxChecks})`, 'loading');
+            setTimeout(checkWidget, 500);
+        }
+        
+        function initElfsight() {
+            if (window.elfsight && typeof window.elfsight.initialize === 'function') {
+                console.log('🔧 Initializing Elfsight for map widget...');
+                try {
+                    window.elfsight.initialize();
+                    console.log('🔧 Elfsight initialized for map');
+                    setTimeout(checkWidget, 1000);
+                } catch (error) {
+                    console.error('🔧 Error initializing Elfsight for map:', error);
+                    updateStatus('❌ Error inicializando Elfsight', 'error');
+                }
+            } else {
+                console.log('🔧 Elfsight not ready for map, waiting...');
+                setTimeout(initElfsight, 500);
+            }
+        }
+        
+        document.addEventListener('DOMContentLoaded', () => {
+            console.log('🔧 Starting Elfsight map widget test...');
+            initElfsight();
+        });
+    </script>
+</body>
+</html>

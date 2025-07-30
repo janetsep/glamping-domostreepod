@@ -1,0 +1,66 @@
+{
+  "name": "Domos Treepod - Experiencia Glamping",
+  "short_name": "Domos Treepod",
+  "description": "Experiencia de glamping en domos geodésicos con todo el confort y en medio de la naturaleza",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#22c55e",
+  "orientation": "portrait-primary",
+  "categories": ["travel", "hospitality", "lifestyle"],
+  "lang": "es",
+  "dir": "ltr",
+  "icons": [
+    {
+      "src": "/favicon.ico",
+      "sizes": "16x16 32x32",
+      "type": "image/x-icon"
+    },
+    {
+      "src": "/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "screenshots": [
+    {
+      "src": "/og-image.png",
+      "sizes": "1200x630",
+      "type": "image/png",
+      "form_factor": "wide"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Reservar Domo",
+      "short_name": "Reservar",
+      "description": "Reserva directa de domos",
+      "url": "/#packages",
+      "icons": [
+        {
+          "src": "/favicon.ico",
+          "sizes": "16x16 32x32"
+        }
+      ]
+    },
+    {
+      "name": "Galería",
+      "short_name": "Fotos",
+      "description": "Ver galería de imágenes",
+      "url": "/#gallery",
+      "icons": [
+        {
+          "src": "/favicon.ico",
+          "sizes": "16x16 32x32"
+        }
+      ]
+    }
+  ]
+}
