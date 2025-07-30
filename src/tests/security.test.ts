@@ -157,7 +157,7 @@ describe('Security Utils', () => {
       expect(checkRateLimit(identifier, 10, 60000)).toBe(false);
     });
 
-    test('should reset after time window', (done) => {
+    test('should reset after time window', async () => {
       const identifier = 'test-user-3';
       
       // Use up all requests
@@ -169,10 +169,8 @@ describe('Security Utils', () => {
       expect(checkRateLimit(identifier, 5, 100)).toBe(false);
       
       // Wait for window to reset
-      setTimeout(() => {
-        expect(checkRateLimit(identifier, 5, 100)).toBe(true);
-        done();
-      }, 150);
+      await new Promise(resolve => setTimeout(resolve, 150));
+      expect(checkRateLimit(identifier, 5, 100)).toBe(true);
     });
   });
 });

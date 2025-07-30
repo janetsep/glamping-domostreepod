@@ -1,7 +1,7 @@
 
-// Environment variables - MUST be set in .env file
-export const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL || '';
-export const SUPABASE_ANON_KEY = import.meta.env.VITE_SUPABASE_ANON_KEY || '';
+// Supabase configuration
+export const SUPABASE_URL = "https://gtxjfmvnzrsuaxryffnt.supabase.co";
+export const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imd0eGpmbXZuenJzdWF4cnlmZm50Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDA1MTg5ODIsImV4cCI6MjA1NjA5NDk4Mn0.WwPCyeZX42Jp4A4lW0jl7arXt0lzwRwm18-Ay_D4Ci8";
 
 // WebPay Configuration - MUST be set in .env file
 export const WEBPAY_COMMERCE_CODE = import.meta.env.VITE_WEBPAY_COMMERCE_CODE || '';

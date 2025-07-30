@@ -3,6 +3,7 @@ import { useState, useEffect } from "react";
 export interface CarouselImage {
   src: string;
   placeholder: string;
+  alt: string;
 }
 
 export const useImageCarousel = (images: CarouselImage[], intervalMs: number = 5000) => {
