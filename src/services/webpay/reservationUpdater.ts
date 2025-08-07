@@ -34,7 +34,7 @@ export async function updateReservationIfNeeded(responseData: TransactionResult)
         .from('reservations')
         .update({ 
           status: 'confirmed',
-          payment_details: responseData,
+          payment_details: responseData as any,
           updated_at: new Date().toISOString()
         })
         .eq('reservation_code', primaryReservation.reservation_code)
@@ -77,7 +77,7 @@ export async function updateReservationIfNeeded(responseData: TransactionResult)
         .from('reservations')
         .update({ 
           status: 'confirmed',
-          payment_details: responseData,
+          payment_details: responseData as any,
           updated_at: new Date().toISOString()
         })
         .eq('reservation_code', latestReservation.reservation_code);

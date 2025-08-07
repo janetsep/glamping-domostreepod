@@ -117,11 +117,12 @@ export const usePaymentStatusHandler = (state: any, searchParams: URLSearchParam
           }));
           
           // Calculate base price (excluding activities, packages, pets)
+          const paymentDetailsAny = primaryReservation.payment_details as any;
           const activitiesTotal = primaryReservation.selected_activities?.length > 0 ? 
-            (primaryReservation.payment_details?.reservation_data?.activities_total || 0) : 0;
+            (paymentDetailsAny?.reservation_data?.activities_total || 0) : 0;
             
           const packagesTotal = primaryReservation.selected_packages?.length > 0 ?
-            (primaryReservation.payment_details?.reservation_data?.packages_total || 0) : 0;
+            (paymentDetailsAny?.reservation_data?.packages_total || 0) : 0;
             
           const totalPets = allReservations.reduce((sum, res) => sum + (res.pets || 0), 0);
           const petsPrice = totalPets * 25000; // Assuming pet price is 25000 per pet

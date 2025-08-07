@@ -39,7 +39,7 @@ export const ThemedPackagesSelector = ({
           return;
         }
 
-        setPackages(data || []);
+        setPackages((data || []).map((row: any) => ({ ...row, title: row.title ?? row.name })) as ThemedPackage[]);
       } catch (error) {
         console.error("Error fetching themed packages:", error);
       } finally {

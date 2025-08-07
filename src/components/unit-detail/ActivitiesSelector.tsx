@@ -40,7 +40,7 @@ export const ActivitiesSelector = ({
           return;
         }
 
-        setActivities(data || []);
+        setActivities((data || []).map((row: any) => ({ ...row, title: row.title ?? row.name })) as Activity[]);
       } catch (error) {
         console.error("Error fetching activities:", error);
       } finally {

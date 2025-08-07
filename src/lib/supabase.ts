@@ -1,13 +1,7 @@
 
-import { createClient } from '@supabase/supabase-js';
-import { SUPABASE_URL, SUPABASE_ANON_KEY } from './constants';
+import { supabase as supabaseClient } from '@/integrations/supabase/client';
 
-export const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
-  auth: {
-    persistSession: true,
-    autoRefreshToken: true,
-  }
-});
+export const supabase = supabaseClient;
 
 export type Reservation = {
   id: string;

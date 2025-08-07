@@ -311,7 +311,7 @@ export const updateReservationData = async (reservationId: string, updateData: P
     // Actualizar todas las reservas con el mismo código
     const { data: updateResult, error: updateError } = await supabase
       .from('reservations')
-      .update(updatePayload)
+      .update(updatePayload as any)
       .eq('reservation_code', reservation.reservation_code)
       .select();
 
