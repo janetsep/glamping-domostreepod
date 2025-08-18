@@ -57,7 +57,7 @@ const Celebrations = () => {
               
               <div className="flex justify-center">
                 <Button 
-                  className="bg-gradient-to-r from-primary to-pink-500 text-white hover:from-primary/90 hover:to-pink-500/90"
+                  variant="highlight"
                   onClick={() => handleNavigate(celebration.id)}
                 >
                   <Info className="mr-2 h-4 w-4" />
