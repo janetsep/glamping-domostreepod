@@ -13,7 +13,7 @@ export const ImageCarousel: React.FC<ImageCarouselProps> = ({
   currentImageIndex
 }) => {
   return (
-    <div className="absolute inset-0 z-0">
+    <div className="w-full h-full relative">
       {images.map((image, index) => (
         <div
           key={index}

@@ -16,10 +16,12 @@ const Hero = () => {
   return (
     <section id="hero" ref={heroRef} className="h-screen relative overflow-hidden -mt-[76px]">
       {/* Background images carousel */}
-      <ImageCarousel images={images} currentImageIndex={currentImageIndex} />
+      <div className="absolute inset-0 z-0">
+        <ImageCarousel images={images} currentImageIndex={currentImageIndex} />
+      </div>
       
       {/* Simple overlay */}
-      <div className="absolute inset-0 bg-black/40 z-5"></div>
+      <div className="absolute inset-0 bg-black/40 z-[1]"></div>
       
       {/* Hero content */}
       <HeroContent isLoaded={isLoaded} benefitsRef={benefitsRef} />
