@@ -1,39 +1,32 @@
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Star, Quote, Instagram, Camera, Heart } from "lucide-react";
+import { testimonialsContent } from "@/data/content/testimonials";
 
-const testimonials = [
-  {
-    id: 1,
-    name: "María & Carlos",
-    type: "Pareja Aventurera",
-    rating: 5,
-    text: "TreePod superó todas nuestras expectativas. La tinaja bajo las estrellas fue mágica, y los senderos nos llevaron a lugares increíbles. ¡Definitivamente volveremos!",
-    image: "/lovable-uploads/71928294-5635-46f7-a3ec-5fb33ef836ea.png",
-    location: "Santiago, Chile",
-    experience: "Paquete Romántico"
-  },
-  {
-    id: 2,
-    name: "Familia González",
-    type: "Familia con Niños",
-    rating: 5,
-    text: "Los niños se divirtieron explorando el bosque mientras nosotros nos relajamos. El domo era espacioso y muy acogedor. Una experiencia familiar perfecta.",
-    image: "/lovable-uploads/1e29d754-6882-4de5-b2ca-3d9680160dda.png", 
-    location: "Concepción, Chile",
-    experience: "Paquete Familiar"
-  },
-  {
-    id: 3,
-    name: "Andrea",
-    type: "Fotógrafa",
-    rating: 5,
-    text: "Como fotógrafa de naturaleza, encontré en TreePod el lugar perfecto. Los amaneceres desde el domo son espectaculares, y la fauna local es increíble.",
-    image: "/lovable-uploads/365c130e-5ba5-49fa-84ed-dfb1c95cd08d.png",
-    location: "Valparaíso, Chile", 
-    experience: "Paquete Fotógrafo"
-  }
-];
+// Convertir testimonios reales a formato de la sección con imágenes
+const testimonials = testimonialsContent.testimonials.slice(0, 3).map((testimonial, index) => {
+  const images = [
+    "/lovable-uploads/71928294-5635-46f7-a3ec-5fb33ef836ea.png",
+    "/lovable-uploads/1e29d754-6882-4de5-b2ca-3d9680160dda.png", 
+    "/lovable-uploads/365c130e-5ba5-49fa-84ed-dfb1c95cd08d.png"
+  ];
+  
+  const experiences = [
+    "Paquete Romántico",
+    "Paquete Familiar", 
+    "Experiencia Individual"
+  ];
+  
+  return {
+    id: index + 1,
+    name: testimonial.name,
+    rating: testimonial.rating,
+    text: testimonial.quote,
+    image: images[index],
+    location: testimonial.location,
+    experience: experiences[index]
+  };
+});
 
 const stats = [
   { number: "500+", label: "Huéspedes Felices", icon: Heart },

@@ -21,10 +21,15 @@ export const useNavigation = () => {
     const isMainPage = location.pathname === '/' || location.pathname === '/index';
     
     if (isMainPage) {
-      // If on main page, scroll to section
+      // If on main page, scroll to section with header offset
       const element = document.getElementById(id);
       if (element) {
-        element.scrollIntoView({ behavior: 'smooth' });
+        const headerOffset = 80; // Altura del header fijo
+        const elementPosition = element.offsetTop - headerOffset;
+        window.scrollTo({
+          top: elementPosition,
+          behavior: 'smooth'
+        });
       }
     } else {
       // If on another page, navigate to home with hash
@@ -37,11 +42,16 @@ export const useNavigation = () => {
     if (path.startsWith('/#')) {
       const sectionId = path.substring(2);
       
-      // If already on homepage, just scroll to section
+      // If already on homepage, just scroll to section with header offset
       if (location.pathname === '/' || location.pathname === '/index') {
         const element = document.getElementById(sectionId);
         if (element) {
-          element.scrollIntoView({ behavior: 'smooth' });
+          const headerOffset = 80; // Altura del header fijo
+          const elementPosition = element.offsetTop - headerOffset;
+          window.scrollTo({
+            top: elementPosition,
+            behavior: 'smooth'
+          });
           return;
         }
       }

@@ -1,13 +1,10 @@
-import { MapPin, Trees, Droplets, Bird, Car, Bus, Plane, ConciergeBell } from "lucide-react";
+import { MapPin, Trees, Car, Plane, ConciergeBell } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
-import { useElfsight } from '@/hooks/useElfsight';
+import Map from "./Map";
 
 const Location = () => {
   const navigate = useNavigate();
-  
-  // Force Elfsight initialization for map widget
-  useElfsight('3b2bec9e-cc66-481c-88a9-3f156d8a74a3', 2000);
   
   const handleExploreClick = () => {
     navigate("/unit/48a7a330-ebae-4e79-8f53-31a84ac900d9"); // ID del Domo Araucaria
@@ -23,7 +20,7 @@ const Location = () => {
           </p>
         </div>
         
-        {/* Widget Elfsight Google Maps */}
+        {/* Mapa Interactivo de TreePod */}
         <div className="max-w-4xl mx-auto mb-12">
           <div className="bg-white rounded-lg shadow-md overflow-hidden">
             {/* Header del mapa */}
@@ -34,9 +31,9 @@ const Location = () => {
               </div>
             </div>
             
-            {/* Widget Elfsight */}
-            <div className="min-h-[400px] bg-white p-4">
-              <div className="elfsight-app-3b2bec9e-cc66-481c-88a9-3f156d8a74a3" data-elfsight-app-lazy></div>
+            {/* Mapa Mapbox */}
+            <div className="p-4">
+              <Map />
             </div>
             
             {/* Información básica */}
