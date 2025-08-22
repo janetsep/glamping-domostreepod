@@ -7,7 +7,7 @@ export type Json =
   | Json[]
 
 export type Database = {
-  // Allows to automatically instanciate createClient with right options
+  // Allows to automatically instantiate createClient with right options
   // instead of createClient<Database, { PostgrestVersion: 'XX' }>(URL, KEY)
   __InternalSupabase: {
     PostgrestVersion: "12.2.3 (519615d)"
@@ -261,6 +261,33 @@ export type Database = {
           },
         ]
       }
+      special_windows: {
+        Row: {
+          created_at: string | null
+          end: string
+          id: number
+          label: string
+          package_ids: string[]
+          start: string
+        }
+        Insert: {
+          created_at?: string | null
+          end: string
+          id?: number
+          label: string
+          package_ids?: string[]
+          start: string
+        }
+        Update: {
+          created_at?: string | null
+          end?: string
+          id?: number
+          label?: string
+          package_ids?: string[]
+          start?: string
+        }
+        Relationships: []
+      }
       themed_packages: {
         Row: {
           created_at: string | null
@@ -293,7 +320,10 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      check_availability: {
+        Args: { end_date: string; pax?: number; start_date: string }
+        Returns: Json
+      }
     }
     Enums: {
       reservation_type_enum:
