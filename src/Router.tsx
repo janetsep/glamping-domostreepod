@@ -50,7 +50,12 @@ function Router() {
         if (element) {
           // Longer delay to ensure the page has fully loaded
           setTimeout(() => {
-            element.scrollIntoView({ behavior: 'smooth' });
+            const headerOffset = 80; // Altura del header fijo
+            const elementPosition = element.offsetTop - headerOffset;
+            window.scrollTo({
+              top: elementPosition,
+              behavior: 'smooth'
+            });
           }, 300);
         }
       }
