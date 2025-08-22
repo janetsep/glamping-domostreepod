@@ -1,36 +1,18 @@
+
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Star, Quote, Instagram, Camera, Heart } from "lucide-react";
-import { testimonialsContent } from "@/data/content/testimonials";
+import { testimonialsContent, getAverageRating } from "@/data/content/testimonials";
 
-// Convertir testimonios reales a formato de la sección con imágenes
-const testimonials = testimonialsContent.testimonials.slice(0, 3).map((testimonial, index) => {
-  const images = [
-    "/lovable-uploads/71928294-5635-46f7-a3ec-5fb33ef836ea.png",
-    "/lovable-uploads/1e29d754-6882-4de5-b2ca-3d9680160dda.png", 
-    "/lovable-uploads/365c130e-5ba5-49fa-84ed-dfb1c95cd08d.png"
-  ];
-  
-  const experiences = [
-    "Paquete Romántico",
-    "Paquete Familiar", 
-    "Experiencia Individual"
-  ];
-  
-  return {
-    id: index + 1,
-    name: testimonial.name,
-    rating: testimonial.rating,
-    text: testimonial.quote,
-    image: images[index],
-    location: testimonial.location,
-    experience: experiences[index]
-  };
-});
+// Usar los testimonios reales del archivo de datos
+const testimonials = testimonialsContent.testimonials.slice(0, 3);
+
+// Obtener la calificación promedio real
+const averageRating = getAverageRating();
 
 const stats = [
   { number: "500+", label: "Huéspedes Felices", icon: Heart },
-  { number: "4.9/5", label: "Calificación Promedio", icon: Star },
+  { number: `${averageRating}/5`, label: "Calificación Promedio", icon: Star },
   { number: "95%", label: "Recomendarían TreePod", icon: Quote },
   { number: "1200+", label: "Fotos Compartidas", icon: Camera }
 ];
@@ -53,10 +35,10 @@ export const SocialProofSection = () => {
             <span className="text-green-700 font-semibold">Experiencias Reales</span>
           </div>
           <h2 className="text-4xl md:text-5xl font-display font-bold text-gray-900 mb-6">
-            Lo que Dicen Nuestros Huéspedes
+            {testimonialsContent.title}
           </h2>
           <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-            Más de 500 viajeros han encontrado su experiencia perfecta en TreePod
+            {testimonialsContent.subtitle}
           </p>
         </div>
 
@@ -78,17 +60,15 @@ export const SocialProofSection = () => {
           })}
         </div>
 
-        {/* Testimonials */}
+        {/* Testimonials reales */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-16">
-          {testimonials.map((testimonial) => (
-            <Card key={testimonial.id} className="p-6 hover:shadow-xl transition-all duration-300">
+          {testimonials.map((testimonial, index) => (
+            <Card key={index} className="p-6 hover:shadow-xl transition-all duration-300">
               <div className="flex items-center mb-4">
-                <div className="w-12 h-12 rounded-full overflow-hidden mr-4">
-                  <img 
-                    src={testimonial.image} 
-                    alt={testimonial.name}
-                    className="w-full h-full object-cover"
-                  />
+                <div className="w-12 h-12 rounded-full bg-gradient-to-br from-primary/20 to-primary/10 flex items-center justify-center mr-4">
+                  <span className="text-lg font-bold text-primary">
+                    {testimonial.name.charAt(0)}
+                  </span>
                 </div>
                 <div>
                   <h4 className="font-semibold text-gray-900">{testimonial.name}</h4>
@@ -102,12 +82,12 @@ export const SocialProofSection = () => {
               
               <Quote className="w-8 h-8 text-primary/20 mb-2" />
               <p className="text-gray-600 mb-4 leading-relaxed">
-                "{testimonial.text}"
+                "{testimonial.quote}"
               </p>
               
               <div className="flex justify-between items-center">
                 <Badge variant="secondary" className="text-xs">
-                  {testimonial.experience}
+                  Huésped Verificado
                 </Badge>
                 <span className="text-xs text-gray-500">{testimonial.location}</span>
               </div>
