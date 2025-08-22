@@ -42,7 +42,7 @@ export const useQuoteManagement = () => {
       displayUnit.id === '4'
     );
 
-    // Obtener precio base del paquete
+    // Obtener precio base del paquete - sincronizado con PackageInfo
     const getPackagePrice = (packageId: string) => {
       switch (packageId) {
         case 'mujeres-relax-package': return 520000;

@@ -151,7 +151,13 @@ const Packages = () => {
                           </div>
                         )}
                       </div>
-                      <Button variant="highlight" onClick={() => navigate("/unit/1")}>
+                      <Button 
+                        variant="highlight" 
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          navigate(`/unit/${pkg.id}`);
+                        }}
+                      >
                         Reservar
                       </Button>
                     </div>

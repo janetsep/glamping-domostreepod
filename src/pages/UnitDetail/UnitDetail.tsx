@@ -26,6 +26,24 @@ const UnitDetail = () => {
     processPaymentStatus();
   }, [processPaymentStatus]);
 
+  // Scroll to reservation panel on load
+  useEffect(() => {
+    if (state.displayUnit) {
+      // Delay to ensure content is loaded
+      setTimeout(() => {
+        const reservationPanel = document.querySelector('[data-testid="reservation-panel"]');
+        if (reservationPanel) {
+          const headerOffset = 80;
+          const elementPosition = reservationPanel.getBoundingClientRect().top + window.pageYOffset - headerOffset;
+          window.scrollTo({
+            top: elementPosition,
+            behavior: 'smooth'
+          });
+        }
+      }, 500);
+    }
+  }, [state.displayUnit]);
+
   return (
     <div className="min-h-screen bg-white pt-24">
       <div className="container mx-auto container-padding">
