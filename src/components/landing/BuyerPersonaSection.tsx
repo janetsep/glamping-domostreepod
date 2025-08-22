@@ -114,9 +114,9 @@ export const BuyerPersonaSection = () => {
                     <Button 
                       variant="highlight"
                       className="flex-1"
-                      onClick={() => handleReserveClick(persona.id)}
+                      onClick={() => navigate("/unit/1")}
                     >
-                      Ver Paquetes
+                      Reservar Ahora
                     </Button>
                   </div>
                 </div>
@@ -138,8 +138,9 @@ export const BuyerPersonaSection = () => {
               size="lg" 
               variant="secondary"
               className="bg-white text-primary hover:bg-gray-100"
+              onClick={() => navigate("/unit/1")}
             >
-              Hablar con un Especialista
+              Reservar Ahora
             </Button>
           </div>
         </div>

@@ -13,6 +13,7 @@ import NotFound from "./pages/NotFound";
 import Index from "./pages/Index";
 import UnitDetail from "./pages/UnitDetail";
 import TravelerType from "./pages/TravelerType";
+import Packages from "./pages/Packages";
 import CelebrationDetail from "./pages/CelebrationDetail";
 import { ReservationTest } from "./pages/ReservationTest";
 import ProductionTest from "./pages/ProductionTest";
@@ -26,6 +27,7 @@ const router = createBrowserRouter(
       <Route path="sobre-nosotros" element={<AboutUs />} />
       <Route path="unit/:unitId" element={<UnitDetail />} />
       <Route path="tipo-viajero/:typeId" element={<TravelerType />} />
+      <Route path="paquetes" element={<Packages />} />
       <Route path="celebracion/:id" element={<CelebrationDetail />} />
       <Route path="webpay/return" element={<WebPayReturn />} />
       <Route path="demo-reservas" element={<ReservationTest />} />

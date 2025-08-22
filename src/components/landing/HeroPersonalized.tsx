@@ -49,10 +49,13 @@ export const HeroPersonalized = () => {
   }, []);
 
   const scrollToPersonaSection = (personaId?: string) => {
-    const element = personaId 
-      ? document.getElementById(`persona-${personaId}`)
-      : document.getElementById('buyer-personas');
-    element?.scrollIntoView({ behavior: 'smooth' });
+    if (personaId) {
+      const element = document.getElementById(`persona-${personaId}`);
+      element?.scrollIntoView({ behavior: 'smooth' });
+    } else {
+      const element = document.getElementById('buyer-personas');
+      element?.scrollIntoView({ behavior: 'smooth' });
+    }
   };
 
   return (

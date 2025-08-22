@@ -69,7 +69,8 @@ export const PackagesByType = () => {
   }, []);
 
   const handlePackageClick = (packageId: string) => {
-    navigate(`/unit/${packageId}`);
+    // Navigate to unit detail with the package ID mapped to an existing unit
+    navigate(`/unit/1`);
   };
 
   const formatPrice = (price: number) => {
@@ -282,10 +283,10 @@ export const PackagesByType = () => {
               Creamos paquetes únicos adaptados a tus necesidades específicas
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Button size="lg" variant="highlight">
-                Crear Paquete Personalizado
+              <Button size="lg" variant="highlight" onClick={() => navigate("/unit/1")}>
+                Reservar Experiencia
               </Button>
-              <Button size="lg" variant="outline">
+              <Button size="lg" variant="outline" onClick={() => navigate("/paquetes")}>
                 Ver Todos los Paquetes
               </Button>
             </div>
