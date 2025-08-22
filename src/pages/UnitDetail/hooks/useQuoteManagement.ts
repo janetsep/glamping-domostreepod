@@ -34,8 +34,12 @@ export const useQuoteManagement = () => {
       displayUnit.id.includes('package') || 
       displayUnit.id === 'mujeres-relax-package' ||
       displayUnit.id === 'cumpleanos-package' ||
-      displayUnit.id === 'aniversario-package' ||
-      displayUnit.id === 'familia-package'
+      displayUnit.id === 'aniversarios-package' ||
+      displayUnit.id === 'fiesta-familiar-package' ||
+      displayUnit.id === 'fiestas-patrias-package' ||
+      displayUnit.id === 'navidad-package' ||
+      displayUnit.id === 'ano-nuevo-package' ||
+      displayUnit.id === '4'
     );
 
     // Obtener precio base del paquete
@@ -43,8 +47,12 @@ export const useQuoteManagement = () => {
       switch (packageId) {
         case 'mujeres-relax-package': return 520000;
         case 'cumpleanos-package': return 580000;
-        case 'aniversario-package': return 650000;
-        case 'familia-package': return 550000;
+        case 'aniversarios-package': return 650000;
+        case 'fiesta-familiar-package': return 550000;
+        case 'fiestas-patrias-package': return 580000;
+        case 'navidad-package': return 650000;
+        case 'ano-nuevo-package': return 680000;
+        case '4': return 450000; // Exclusividad total
         default: return 520000;
       }
     };
