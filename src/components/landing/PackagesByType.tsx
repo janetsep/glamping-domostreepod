@@ -164,7 +164,7 @@ export const PackagesByType = () => {
                         </div>
                       )}
                     </div>
-                    <Button variant="highlight" size="sm">
+                    <Button variant="highlight" size="sm" onClick={() => navigate("/unit/1")}>
                       Reservar
                       <ArrowRight className="w-4 h-4 ml-1" />
                     </Button>
@@ -255,7 +255,7 @@ export const PackagesByType = () => {
                             </div>
                           )}
                         </div>
-                        <Button variant="outline" size="sm">
+                        <Button variant="outline" size="sm" onClick={() => handlePackageClick(pkg.id)}>
                           Ver Detalles
                         </Button>
                       </div>

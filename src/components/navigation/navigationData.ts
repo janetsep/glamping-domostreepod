@@ -38,41 +38,68 @@ export interface SubMenuItem {
   submenu?: SubMenuItem[]; // Added submenu property for nested menus
 }
 
-// Navigation links with icons - Reordenadas según solicitud
+// Navigation links with icons - Actualizados para la nueva landing page
 export const navigationLinks: NavLink[] = [
   { 
-    name: "Domos", 
-    id: "packages", 
-    icon: House, 
-    path: null, 
-    description: "Nuestras opciones para cada tipo de viajero",
-    submenu: [
-      { name: "Descubre Nuestros Domos", id: "packages", path: null, icon: Eye },
-      { name: "Galería", id: "gallery", path: null, icon: ImageIcon },
-      { name: "Cómo llegar", id: "location", path: null, icon: Navigation }
-    ]
+    name: "Inicio", 
+    id: null,
+    icon: Home, 
+    path: "/", 
+    description: "Volver al inicio"
   },
   { 
     name: "Experiencias", 
-    id: "benefits", 
+    id: "buyer-personas", 
     icon: Sparkles, 
     path: null, 
-    description: "Descubre lo que ofrecemos",
+    description: "Descubre experiencias personalizadas",
     submenu: [
-      { name: "Celebraciones", id: "celebrations", path: null, icon: PartyPopper },
-      { 
-        name: "Actividades", 
-        id: "benefits", 
-        path: null, 
-        icon: Activity,
-        submenu: [
-          { name: "Recorridos y Paisajes", id: "benefits", path: null, icon: Mountain, tabId: "recorridos" },
-          { name: "Historias y Cultura Local", id: "benefits", path: null, icon: Book, tabId: "historias" },
-          { name: "Baño de Bosque", id: "benefits", path: null, icon: TreePine, tabId: "bosque" },
-          { name: "Juegos de Mesa", id: "benefits", path: null, icon: Gamepad, tabId: "juegos" }
-        ]
-      }
+      { name: "Parejas Aventureras", id: "persona-parejas-jovenes", path: null, icon: Eye },
+      { name: "Familias", id: "persona-familias", path: null, icon: Eye },
+      { name: "Grupos de Amigos", id: "persona-grupos-amigos", path: null, icon: Eye },
+      { name: "Experiencia Exclusiva", id: "persona-exclusividad-total", path: null, icon: Eye }
     ]
   },
-  { name: "Contacto", id: "contact", icon: Mail, path: null }
+  { 
+    name: "Paquetes", 
+    id: "packages-by-type", 
+    icon: House, 
+    path: null, 
+    description: "Nuestros domos y paquetes por categoría"
+  },
+  { 
+    name: "Testimonios", 
+    id: "social-proof", 
+    icon: Eye, 
+    path: null, 
+    description: "Lo que dicen nuestros huéspedes"
+  },
+  { 
+    name: "Cultura", 
+    id: "culture", 
+    icon: TreePine, 
+    path: null, 
+    description: "Cultura, gastronomía y naturaleza local"
+  },
+  { 
+    name: "Galería", 
+    id: "gallery", 
+    icon: ImageIcon, 
+    path: null, 
+    description: "Imágenes de nuestros domos y entorno"
+  },
+  { 
+    name: "Ubicación", 
+    id: "location", 
+    icon: MapPin, 
+    path: null, 
+    description: "Cómo llegar al Valle Las Trancas"
+  },
+  { 
+    name: "Contacto", 
+    id: "contact", 
+    icon: Mail, 
+    path: null, 
+    description: "Contáctanos para reservar"
+  }
 ];

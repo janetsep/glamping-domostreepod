@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { ChevronDown, Star, MapPin } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 import { heroContent } from "@/data/content/hero";
 
 const heroImages = [
@@ -38,6 +39,7 @@ const buyerPersonaOptions = [
 ];
 
 export const HeroPersonalized = () => {
+  const navigate = useNavigate();
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [selectedPersona, setSelectedPersona] = useState<string | null>(null);
 
@@ -129,9 +131,9 @@ export const HeroPersonalized = () => {
             size="lg" 
             variant="highlight"
             className="text-lg px-8 py-3"
-            onClick={() => scrollToPersonaSection()}
+            onClick={() => navigate("/unit/1")}
           >
-            {heroContent.ctaButton}
+            Reservar Ahora
           </Button>
           <Button 
             size="lg" 
@@ -139,7 +141,7 @@ export const HeroPersonalized = () => {
             className="text-lg px-8 py-3 border-white text-white hover:bg-white hover:text-gray-900"
             onClick={() => scrollToPersonaSection()}
           >
-            {heroContent.scrollButton}
+            Explorar Experiencias
           </Button>
         </div>
 

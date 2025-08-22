@@ -151,7 +151,7 @@ const Packages = () => {
                           </div>
                         )}
                       </div>
-                      <Button variant="highlight">
+                      <Button variant="highlight" onClick={() => navigate("/unit/1")}>
                         Reservar
                       </Button>
                     </div>
