@@ -5,6 +5,7 @@ import { HighlightedPackages } from "@/components/landing/HighlightedPackages";
 import { BenefitsShowcase } from "@/components/landing/BenefitsShowcase";
 import { SocialProofSection } from "@/components/landing/SocialProofSection";
 import { UrgencySection } from "@/components/landing/UrgencySection";
+import { LocationSection } from "@/components/landing/LocationSection";
 import { FinalCTA } from "@/components/landing/FinalCTA";
 
 const Index = () => {
@@ -31,7 +32,10 @@ const Index = () => {
       {/* 7. Urgencia y escasez */}
       <UrgencySection />
       
-      {/* 8. CTA final */}
+      {/* 8. Ubicación */}
+      <LocationSection />
+      
+      {/* 9. CTA final */}
       <FinalCTA />
     </div>
   );

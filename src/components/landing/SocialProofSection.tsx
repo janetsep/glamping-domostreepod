@@ -26,7 +26,7 @@ const instagramPosts = [
 
 export const SocialProofSection = () => {
   return (
-    <section id="social-proof" className="py-20 bg-gradient-to-b from-gray-50 to-white">
+    <section id="testimonios" className="py-20 bg-gradient-to-b from-gray-50 to-white">
       <div className="container mx-auto px-4">
         {/* Header */}
         <div className="text-center mb-16">
