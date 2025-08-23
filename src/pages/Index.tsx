@@ -1,9 +1,10 @@
 import { SimpleHero } from "@/components/landing/SimpleHero";
-import { ProblemSection } from "@/components/landing/ProblemSection";
+import { SocialProofSection } from "@/components/landing/SocialProofSection";
 import { SolutionPackages } from "@/components/landing/SolutionPackages";
 import { HighlightedPackages } from "@/components/landing/HighlightedPackages";
+import { LeadMagnetSection } from "@/components/landing/LeadMagnetSection";
+import { FAQSection } from "@/components/landing/FAQSection";
 import { BenefitsShowcase } from "@/components/landing/BenefitsShowcase";
-import { SocialProofSection } from "@/components/landing/SocialProofSection";
 import { UrgencySection } from "@/components/landing/UrgencySection";
 import { LocationSection } from "@/components/landing/LocationSection";
 import { FinalCTA } from "@/components/landing/FinalCTA";
@@ -11,31 +12,32 @@ import { FinalCTA } from "@/components/landing/FinalCTA";
 const Index = () => {
   return (
     <div className="min-h-screen">
-      {/* 1. Hero Simple con CTA claro */}
+      {/* 1. Hero Section - Impacto inicial y CTA principal */}
       <SimpleHero />
       
-      {/* 2. Problema que resolvemos */}
-      <ProblemSection />
-      
-      {/* 3. Nuestros paquetes como solución */}
-      <SolutionPackages />
-      
-      {/* 4. Destacados del mes */}
-      <HighlightedPackages />
-      
-      {/* 5. Beneficios clave */}
-      <BenefitsShowcase />
-      
-      {/* 6. Prueba social */}
+      {/* 2. Social Proof - Credibilidad inmediata */}
       <SocialProofSection />
       
-      {/* 7. Urgencia y escasez */}
+      {/* 3. Experiencias - Mostrar el valor y despertar deseo */}
+      <SolutionPackages />
+      <HighlightedPackages />
+      
+      {/* 4. Lead Magnet - Capturar leads con valor */}
+      <LeadMagnetSection />
+      
+      {/* 5. Beneficios clave - Reforzar el valor */}
+      <BenefitsShowcase />
+      
+      {/* 6. FAQ - Eliminar objeciones */}
+      <FAQSection />
+      
+      {/* 7. Urgencia y escasez - Crear necesidad de actuar */}
       <UrgencySection />
       
-      {/* 8. Ubicación */}
+      {/* 8. Ubicación - Información práctica */}
       <LocationSection />
       
-      {/* 9. CTA final */}
+      {/* 9. CTA final - Última oportunidad de conversión */}
       <FinalCTA />
     </div>
   );
