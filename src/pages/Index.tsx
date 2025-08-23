@@ -1,11 +1,8 @@
 import { SimpleHero } from "@/components/landing/SimpleHero";
 import { SocialProofSection } from "@/components/landing/SocialProofSection";
-import { SolutionPackages } from "@/components/landing/SolutionPackages";
+import { QuickBookingSection } from "@/components/landing/QuickBookingSection";
 import { HighlightedPackages } from "@/components/landing/HighlightedPackages";
-import { LeadMagnetSection } from "@/components/landing/LeadMagnetSection";
 import { FAQSection } from "@/components/landing/FAQSection";
-import { BenefitsShowcase } from "@/components/landing/BenefitsShowcase";
-import { UrgencySection } from "@/components/landing/UrgencySection";
 import { LocationSection } from "@/components/landing/LocationSection";
 import { FinalCTA } from "@/components/landing/FinalCTA";
 
@@ -18,26 +15,19 @@ const Index = () => {
       {/* 2. Social Proof - Credibilidad inmediata */}
       <SocialProofSection />
       
-      {/* 3. Experiencias - Mostrar el valor y despertar deseo */}
-      <SolutionPackages />
+      {/* 3. Reserva Rápida - Conversión directa con urgencia */}
+      <QuickBookingSection />
+      
+      {/* 4. Paquetes Destacados - Solo los mejores para no confundir */}
       <HighlightedPackages />
       
-      {/* 4. Lead Magnet - Capturar leads con valor */}
-      <LeadMagnetSection />
-      
-      {/* 5. Beneficios clave - Reforzar el valor */}
-      <BenefitsShowcase />
-      
-      {/* 6. FAQ - Eliminar objeciones */}
+      {/* 5. FAQ - Solo las preguntas más importantes */}
       <FAQSection />
       
-      {/* 7. Urgencia y escasez - Crear necesidad de actuar */}
-      <UrgencySection />
-      
-      {/* 8. Ubicación - Información práctica */}
+      {/* 6. Ubicación - Info práctica esencial */}
       <LocationSection />
       
-      {/* 9. CTA final - Última oportunidad de conversión */}
+      {/* 7. CTA final - Última oportunidad de conversión */}
       <FinalCTA />
     </div>
   );
