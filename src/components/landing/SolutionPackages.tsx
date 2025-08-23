@@ -81,21 +81,21 @@ export const SolutionPackages = () => {
                   className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                 />
                 {/* Overlay */}
-                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent" />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/50 to-black/20" />
                 
                 {/* Discount Badge */}
                 <div className="absolute top-4 right-4">
-                  <div className="bg-primary text-white px-3 py-1 rounded-lg font-bold text-lg">
+                  <div className="bg-primary text-white px-3 py-1 rounded-lg font-bold text-lg shadow-lg">
                     {pkg.discount}
                   </div>
                 </div>
 
                 {/* Content */}
                 <div className="absolute bottom-0 left-0 right-0 p-6 text-white">
-                  <h3 className="text-2xl font-bold mb-2">
+                  <h3 className="text-2xl font-bold mb-2 drop-shadow-lg" style={{ textShadow: '2px 2px 4px rgba(0,0,0,0.8)' }}>
                     {pkg.title}
                   </h3>
-                  <p className="text-white/90 mb-4 text-sm leading-relaxed">
+                  <p className="text-white mb-4 text-sm leading-relaxed drop-shadow-md" style={{ textShadow: '1px 1px 3px rgba(0,0,0,0.7)' }}>
                     {pkg.description}
                   </p>
 
