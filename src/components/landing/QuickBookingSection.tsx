@@ -56,7 +56,7 @@ export const QuickBookingSection = () => {
                 className={`relative p-6 cursor-pointer transition-all duration-300 hover:shadow-xl hover:scale-105 ${
                   index === 0 ? 'border-2 border-primary bg-primary/5' : 'border border-gray-200'
                 }`}
-                onClick={() => navigate(`/booking?package=${pkg.id}`)}
+                onClick={() => navigate('/paquetes')}
               >
                 {index === 0 && (
                   <div className="absolute -top-3 left-1/2 transform -translate-x-1/2">
@@ -85,7 +85,8 @@ export const QuickBookingSection = () => {
                     className="w-full bg-primary hover:bg-primary/90 text-white font-bold"
                     onClick={(e) => {
                       e.stopPropagation();
-                      navigate(`/booking?package=${pkg.id}`);
+                      // Navegar a la página de paquetes en lugar de booking que no existe
+                      navigate('/paquetes');
                     }}
                   >
                     Reservar Ahora
@@ -120,7 +121,7 @@ export const QuickBookingSection = () => {
             <Button 
               variant="outline" 
               className="flex items-center gap-2 h-12"
-              onClick={() => navigate('/availability')}
+              onClick={() => navigate('/paquetes')}
             >
               <Calendar className="w-4 h-4" />
               Ver Disponibilidad

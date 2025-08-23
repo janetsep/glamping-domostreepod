@@ -2,6 +2,8 @@ import { SimpleHero } from "@/components/landing/SimpleHero";
 import { DynamicSocialProof } from "@/components/landing/DynamicSocialProof";
 import { QuickBookingSection } from "@/components/landing/QuickBookingSection";
 import { HighlightedPackages } from "@/components/landing/HighlightedPackages";
+import { GalleryTestimonials } from "@/components/landing/GalleryTestimonials";
+import { InteractiveMap } from "@/components/landing/InteractiveMap";
 import { FAQSection } from "@/components/landing/FAQSection";
 import { LocationSection } from "@/components/landing/LocationSection";
 import { FinalCTA } from "@/components/landing/FinalCTA";
@@ -21,13 +23,19 @@ const Index = () => {
       {/* 4. Paquetes Destacados - Solo los mejores para no confundir */}
       <HighlightedPackages />
       
-      {/* 5. FAQ - Solo las preguntas más importantes */}
+      {/* 5. Galería y Testimonios - Prueba visual y social */}
+      <GalleryTestimonials />
+      
+      {/* 6. Mapa Interactivo - Ubicación y acceso */}
+      <InteractiveMap />
+      
+      {/* 7. FAQ - Solo las preguntas más importantes */}
       <FAQSection />
       
-      {/* 6. Ubicación - Info práctica esencial */}
+      {/* 8. Ubicación - Info práctica esencial */}
       <LocationSection />
       
-      {/* 7. CTA final - Última oportunidad de conversión */}
+      {/* 9. CTA final - Última oportunidad de conversión */}
       <FinalCTA />
     </div>
   );
