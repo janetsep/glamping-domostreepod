@@ -85,7 +85,7 @@ export const SolutionPackages = () => {
                 
                 {/* Discount Badge */}
                 <div className="absolute top-4 right-4">
-                  <div className="bg-green-500 text-white px-3 py-1 rounded-lg font-bold text-lg">
+                  <div className="bg-primary text-white px-3 py-1 rounded-lg font-bold text-lg">
                     {pkg.discount}
                   </div>
                 </div>
@@ -113,13 +113,13 @@ export const SolutionPackages = () => {
 
                   {/* CTA Button */}
                   <Button 
-                    className="w-full bg-green-600 hover:bg-green-700 text-white font-semibold py-3 rounded-lg transition-colors duration-200"
+                    className="w-full bg-primary hover:bg-primary/90 text-white font-semibold py-3 rounded-lg transition-colors duration-200"
                     onClick={(e) => {
                       e.stopPropagation();
                       navigate(`/unit/${pkg.id}`);
                     }}
                   >
-                    Book This Offer
+                    Reservar Ahora
                   </Button>
                 </div>
               </div>
