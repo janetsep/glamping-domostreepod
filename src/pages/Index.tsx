@@ -1,5 +1,5 @@
 import { SimpleHero } from "@/components/landing/SimpleHero";
-import { SocialProofSection } from "@/components/landing/SocialProofSection";
+import { DynamicSocialProof } from "@/components/landing/DynamicSocialProof";
 import { QuickBookingSection } from "@/components/landing/QuickBookingSection";
 import { HighlightedPackages } from "@/components/landing/HighlightedPackages";
 import { FAQSection } from "@/components/landing/FAQSection";
@@ -12,8 +12,8 @@ const Index = () => {
       {/* 1. Hero Section - Impacto inicial y CTA principal */}
       <SimpleHero />
       
-      {/* 2. Social Proof - Credibilidad inmediata */}
-      <SocialProofSection />
+      {/* 2. Prueba Social Dinámica - Credibilidad con datos reales */}
+      <DynamicSocialProof />
       
       {/* 3. Reserva Rápida - Conversión directa con urgencia */}
       <QuickBookingSection />
