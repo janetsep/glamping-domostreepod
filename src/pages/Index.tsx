@@ -1,26 +1,38 @@
-
-import { HeroPersonalized } from "@/components/landing/HeroPersonalized";
-import { BuyerPersonaSection } from "@/components/landing/BuyerPersonaSection";
-import { PackagesByType } from "@/components/landing/PackagesByType";
+import { SimpleHero } from "@/components/landing/SimpleHero";
+import { ProblemSection } from "@/components/landing/ProblemSection";
+import { SolutionPackages } from "@/components/landing/SolutionPackages";
+import { HighlightedPackages } from "@/components/landing/HighlightedPackages";
+import { BenefitsShowcase } from "@/components/landing/BenefitsShowcase";
 import { SocialProofSection } from "@/components/landing/SocialProofSection";
-import Gallery from "@/components/Gallery";
-import Benefits from "@/components/Benefits";
-import Location from "@/components/Location";
-import SimplifiedContact from "@/components/SimplifiedContact";
-import CultureSection from "@/components/CultureSection";
+import { UrgencySection } from "@/components/landing/UrgencySection";
+import { FinalCTA } from "@/components/landing/FinalCTA";
 
 const Index = () => {
   return (
     <div className="min-h-screen">
-      <HeroPersonalized />
-      <BuyerPersonaSection />
-      <PackagesByType />
+      {/* 1. Hero Simple con CTA claro */}
+      <SimpleHero />
+      
+      {/* 2. Problema que resolvemos */}
+      <ProblemSection />
+      
+      {/* 3. Nuestros paquetes como solución */}
+      <SolutionPackages />
+      
+      {/* 4. Destacados del mes */}
+      <HighlightedPackages />
+      
+      {/* 5. Beneficios clave */}
+      <BenefitsShowcase />
+      
+      {/* 6. Prueba social */}
       <SocialProofSection />
-      <CultureSection />
-      <Gallery />
-      <Benefits />
-      <Location />
-      <SimplifiedContact />
+      
+      {/* 7. Urgencia y escasez */}
+      <UrgencySection />
+      
+      {/* 8. CTA final */}
+      <FinalCTA />
     </div>
   );
 };
