@@ -92,12 +92,19 @@ export const SolutionPackages = () => {
 
                 {/* Content */}
                 <div className="absolute bottom-0 left-0 right-0 p-6 text-white">
-                  <h3 className="text-2xl font-bold mb-2 drop-shadow-lg" style={{ textShadow: '2px 2px 4px rgba(0,0,0,0.8)' }}>
-                    {pkg.title}
-                  </h3>
-                  <p className="text-white mb-4 text-sm leading-relaxed drop-shadow-md" style={{ textShadow: '1px 1px 3px rgba(0,0,0,0.7)' }}>
-                    {pkg.description}
-                  </p>
+                  {/* Title with strong background */}
+                  <div className="bg-black/60 backdrop-blur-sm rounded-lg px-4 py-2 mb-3">
+                    <h3 className="text-2xl font-bold text-white">
+                      {pkg.title}
+                    </h3>
+                  </div>
+                  
+                  {/* Description with background */}
+                  <div className="bg-black/50 backdrop-blur-sm rounded-lg px-4 py-3 mb-4">
+                    <p className="text-white text-sm leading-relaxed">
+                      {pkg.description}
+                    </p>
+                  </div>
 
                   {/* Code and Valid Till */}
                   <div className="flex items-center justify-between text-sm mb-4">
