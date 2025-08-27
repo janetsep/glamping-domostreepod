@@ -127,7 +127,6 @@ export const ReservationSummary: React.FC<ReservationSummaryProps> = ({
       {/* Mostrar distribución de domos detallada */}
       {quote.domoDistribution && quote.domoDistribution.length > 0 && (
         <div className="mt-3 bg-secondary/10 p-3 rounded-md">
-          <p className="font-medium mb-2">Distribución por domo:</p>
           <div className="grid grid-cols-1 gap-2">
             {/* Mostrar todos los domos de la distribución, incluso los que no tienen huéspedes */}
             {quote.breakdown
