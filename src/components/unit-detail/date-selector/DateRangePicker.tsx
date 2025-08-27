@@ -3,13 +3,8 @@ import { format } from "date-fns";
 import { es } from "date-fns/locale";
 import { CalendarIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { AvailabilityCalendar } from "../AvailabilityCalendar";
-
 interface DateRangePickerProps {
   startDate?: Date;
   endDate?: Date;
@@ -18,7 +13,6 @@ interface DateRangePickerProps {
   unitId: string;
   requiredDomos?: number;
 }
-
 export const DateRangePicker: React.FC<DateRangePickerProps> = ({
   startDate,
   endDate,
@@ -28,13 +22,18 @@ export const DateRangePicker: React.FC<DateRangePickerProps> = ({
   requiredDomos = 1
 }) => {
   const [isOpen, setIsOpen] = useState(false);
-  const [range, setRange] = useState<{ from: Date | undefined, to: Date | undefined }>({
+  const [range, setRange] = useState<{
+    from: Date | undefined;
+    to: Date | undefined;
+  }>({
     from: startDate,
-    to: endDate,
+    to: endDate
   });
   const [hoverDate, setHoverDate] = useState<Date | undefined>();
-
-  const handleRangeSelect = (range: { startDate: Date | undefined, endDate: Date | undefined }) => {
+  const handleRangeSelect = (range: {
+    startDate: Date | undefined;
+    endDate: Date | undefined;
+  }) => {
     console.log(' [DateRangePicker] Rango seleccionado:', {
       startDate: range.startDate?.toISOString(),
       endDate: range.endDate?.toISOString()
@@ -74,95 +73,64 @@ export const DateRangePicker: React.FC<DateRangePickerProps> = ({
       setIsOpen(false);
     }
   };
-
   const handleOpenChange = (open: boolean) => {
     setIsOpen(open);
     if (open) {
       // Limpiar selección anterior al abrir
-      setRange({ from: undefined, to: undefined });
+      setRange({
+        from: undefined,
+        to: undefined
+      });
       onStartDateChange(undefined);
       onEndDateChange(undefined);
       setHoverDate(undefined);
     }
   };
-
   const formatDateRange = () => {
     if (startDate && endDate) {
-      return `${format(startDate, "dd MMM", { locale: es })} - ${format(endDate, "dd MMM yyyy", { locale: es })}`;
+      return `${format(startDate, "dd MMM", {
+        locale: es
+      })} - ${format(endDate, "dd MMM yyyy", {
+        locale: es
+      })}`;
     } else if (startDate) {
-      return `${format(startDate, "dd MMM yyyy", { locale: es })} - Seleccionar salida`;
+      return `${format(startDate, "dd MMM yyyy", {
+        locale: es
+      })} - Seleccionar salida`;
     } else {
       return "Seleccionar fechas";
     }
   };
-
   const clearDates = () => {
     onStartDateChange(undefined);
     onEndDateChange(undefined);
   };
-
-  return (
-    <div className="space-y-2">
+  return <div className="space-y-2">
       <label className="block text-sm font-medium text-gray-700">
         Fechas de estadía
       </label>
       
       <Popover open={isOpen} onOpenChange={handleOpenChange}>
         <PopoverTrigger asChild>
-          <Button
-            variant="outline"
-            className="w-full justify-start text-left font-normal"
-          >
+          <Button variant="outline" className="w-full justify-start text-left font-normal">
             <CalendarIcon className="mr-2 h-4 w-4" />
             <span className="flex-1">{formatDateRange()}</span>
-            {(startDate || endDate) && (
-              <button
-                onClick={(e) => {
-                  e.stopPropagation();
-                  clearDates();
-                }}
-                className="ml-2 text-gray-400 hover:text-gray-600"
-              >
+            {(startDate || endDate) && <button onClick={e => {
+            e.stopPropagation();
+            clearDates();
+          }} className="ml-2 text-gray-400 hover:text-gray-600">
                 ✕
-              </button>
-            )}
+              </button>}
           </Button>
         </PopoverTrigger>
         
         <PopoverContent className="w-auto p-0" align="start">
           <div className="p-4">
-            <div className="mb-3 text-sm text-gray-600 bg-blue-50 p-2 rounded">
-              {!startDate ? (
-                <span className="flex items-center gap-2">
-                  <span className="text-blue-600">📅</span>
-                  <span><strong>Paso 1:</strong> Haz clic en tu fecha de entrada</span>
-                </span>
-              ) : !endDate ? (
-                <span className="flex items-center gap-2">
-                  <span className="text-orange-600">📅</span>
-                  <span><strong>Paso 2:</strong> Haz clic en tu fecha de salida</span>
-                </span>
-              ) : (
-                <span className="flex items-center gap-2">
-                  <span className="text-green-600">✅</span>
-                  <span><strong>¡Perfecto!</strong> Fechas seleccionadas</span>
-                </span>
-              )}
-            </div>
+            
             
 
             
-            <AvailabilityCalendar 
-              unitId={unitId}
-              onSelectRange={handleRangeSelect}
-              checkDateRange={true}
-              selectedStartDate={startDate}
-              selectedEndDate={endDate}
-              disableNightMode={true}
-              requiredDomos={requiredDomos}
-              hoverDate={hoverDate}
-              onHoverDate={setHoverDate}
-            />
+            <AvailabilityCalendar unitId={unitId} onSelectRange={handleRangeSelect} checkDateRange={true} selectedStartDate={startDate} selectedEndDate={endDate} disableNightMode={true} requiredDomos={requiredDomos} hoverDate={hoverDate} onHoverDate={setHoverDate} />
             
             <div className="mt-3 pt-3 border-t border-gray-200">
               <div className="flex justify-between items-center text-xs text-gray-500">
@@ -173,6 +141,5 @@ export const DateRangePicker: React.FC<DateRangePickerProps> = ({
           </div>
         </PopoverContent>
       </Popover>
-    </div>
-  );
+    </div>;
 };

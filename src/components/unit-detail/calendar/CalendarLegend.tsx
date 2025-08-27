@@ -1,8 +1,6 @@
 import React from 'react';
-
 export const CalendarLegend = () => {
-  return (
-    <div className="mt-4 text-sm">
+  return <div className="mt-4 text-sm">
       <p className="text-gray-700 mb-2">* El formato de disponibilidad es: disponibles/total</p>
       <div className="flex flex-wrap gap-4">
         <div className="flex items-center">
@@ -18,9 +16,6 @@ export const CalendarLegend = () => {
           <span>No disponible</span>
         </div>
       </div>
-      <p className="mt-2 text-xs text-gray-600">
-        "Insuficiente" significa que no hay suficientes domos disponibles para la cantidad de huéspedes seleccionada.
-      </p>
-    </div>
-  );
+      
+    </div>;
 };
