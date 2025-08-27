@@ -78,12 +78,12 @@ export const ReservationSummary: React.FC<ReservationSummaryProps> = ({
     if (item.guests === 0) {
       return (
         <>
-          <span>Domo {item.domoNumber}: 2 personas</span>
+          <span>{item.domoNumber}: 2 personas</span>
           <span className="text-xs text-amber-600 ml-2">(Domo adicional)</span>
         </>
       );
     }
-    return <span>Domo {item.domoNumber}: {item.guests} {item.guests === 1 ? 'persona' : 'personas'}</span>;
+    return <span>{item.domoNumber}: {item.guests} {item.guests === 1 ? 'persona' : 'personas'}</span>;
   };
 
   return (
