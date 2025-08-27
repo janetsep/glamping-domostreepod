@@ -11,39 +11,46 @@ export const UnitInfo = ({
   unit
 }: UnitInfoProps) => {
   // Datos reales de la sección "¡Los Huéspedes Opinan!"
-  const reviewsPlatforms = [
-    { name: "Todas las reseñas", rating: "4.9", color: "text-gray-700", icon: null },
-    { name: "Airbnb", rating: "5.0", color: "text-red-500", icon: AirbnbIcon },
-    { name: "Google", rating: "4.9", color: "text-blue-500", icon: GoogleIcon },
-    { name: "Booking.com", rating: "9.6", color: "text-blue-700", icon: BookingIcon },
-    { name: "Tripadvisor", rating: "5.0", color: "text-green-600", icon: TripadvisorIcon }
-  ];
-  
+  const reviewsPlatforms = [{
+    name: "Todas las reseñas",
+    rating: "4.9",
+    color: "text-gray-700",
+    icon: null
+  }, {
+    name: "Airbnb",
+    rating: "5.0",
+    color: "text-red-500",
+    icon: AirbnbIcon
+  }, {
+    name: "Google",
+    rating: "4.9",
+    color: "text-blue-500",
+    icon: GoogleIcon
+  }, {
+    name: "Booking.com",
+    rating: "9.6",
+    color: "text-blue-700",
+    icon: BookingIcon
+  }, {
+    name: "Tripadvisor",
+    rating: "5.0",
+    color: "text-green-600",
+    icon: TripadvisorIcon
+  }];
   const generalRating = 4.9;
-
   return <Card>
       <CardHeader>
         <div className="flex items-start justify-between">
-          <div>
-            <CardTitle className="text-2xl font-display font-bold mb-2">
-              Domo
-            </CardTitle>
-            <div className="flex items-center gap-2 text-muted-foreground mb-4">
-              <MapPin className="w-4 h-4" />
-              <span className="text-sm">Valle Las Trancas, Región de Ñuble</span>
-            </div>
-          </div>
+          
           <div className="text-right">
             {/* Tabla de puntuaciones por plataforma - formato horizontal */}
             <div className="mb-3 bg-gray-50 rounded-lg p-2">
                <div className="flex gap-3 text-xs justify-end border-b border-gray-300 pb-2">
-                 {reviewsPlatforms.map((platform, index) => (
-                    <div key={platform.name} className={`flex items-center gap-1.5 ${index === 0 ? 'border-b-2 border-black pb-1' : ''}`}>
+                 {reviewsPlatforms.map((platform, index) => <div key={platform.name} className={`flex items-center gap-1.5 ${index === 0 ? 'border-b-2 border-black pb-1' : ''}`}>
                       {platform.icon && <platform.icon className="w-4 h-4" />}
                       <span className={platform.color}>{platform.name}</span>
                       <span className="font-semibold">{platform.rating}</span>
-                    </div>
-                 ))}
+                    </div>)}
                </div>
               
               {/* Calificación general con estrellas */}
@@ -52,9 +59,7 @@ export const UnitInfo = ({
                 <div className="flex items-center justify-end gap-1">
                   <span className="font-bold text-lg">{generalRating}</span>
                   <div className="flex">
-                    {[...Array(5)].map((_, i) => (
-                      <Star key={i} className="w-4 h-4 fill-red-500 text-red-500" />
-                    ))}
+                    {[...Array(5)].map((_, i) => <Star key={i} className="w-4 h-4 fill-red-500 text-red-500" />)}
                   </div>
                   <span className="text-xs text-gray-500 ml-1">(161)</span>
                 </div>
