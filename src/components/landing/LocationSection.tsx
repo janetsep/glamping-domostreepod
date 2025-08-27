@@ -2,40 +2,29 @@ import { MapPin, Navigation, Phone, Mail } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
 import Map from "@/components/Map";
-
 export const LocationSection = () => {
   const navigate = useNavigate();
-
-  const directions = [
-    {
-      icon: Navigation,
-      title: "Desde Santiago",
-      description: "5 horas por Ruta 5 Sur hasta Chillán, luego 1.5h por Valle Las Trancas",
-      time: "5 horas"
-    },
-    {
-      icon: Navigation,
-      title: "Desde Chillán", 
-      description: "1.5 horas por carretera asfaltada hacia Valle Las Trancas",
-      time: "1.5 horas"
-    },
-    {
-      icon: Navigation,
-      title: "Desde Concepción",
-      description: "2.5 horas vía Chillán por Ruta 5 Sur",
-      time: "2.5 horas"
-    }
-  ];
-
-  return (
-    <section id="ubicacion" className="py-16 bg-gray-50">
+  const directions = [{
+    icon: Navigation,
+    title: "Desde Santiago",
+    description: "5 horas por Ruta 5 Sur hasta Chillán, luego 1.5h por Valle Las Trancas",
+    time: "5 horas"
+  }, {
+    icon: Navigation,
+    title: "Desde Chillán",
+    description: "1.5 horas por carretera asfaltada hacia Valle Las Trancas",
+    time: "1.5 horas"
+  }, {
+    icon: Navigation,
+    title: "Desde Concepción",
+    description: "2.5 horas vía Chillán por Ruta 5 Sur",
+    time: "2.5 horas"
+  }];
+  return <section id="ubicacion" className="py-16 bg-gray-50">
       <div className="container mx-auto px-4">
         {/* Header */}
         <div className="text-center mb-12">
-          <div className="inline-flex items-center gap-2 bg-primary/10 text-primary px-4 py-2 rounded-full text-sm font-medium mb-4">
-            <MapPin className="w-4 h-4" />
-            Valle Las Trancas, Ñuble
-          </div>
+          
           <h2 className="text-3xl md:text-4xl font-display font-bold text-gray-900 mb-4">
             Te Esperamos en la Montaña
           </h2>
@@ -71,8 +60,7 @@ export const LocationSection = () => {
             </h3>
             
             <div className="space-y-4 mb-8">
-              {directions.map((direction, index) => (
-                <div key={index} className="bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow">
+              {directions.map((direction, index) => <div key={index} className="bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow">
                   <div className="flex items-start gap-4">
                     <div className="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center flex-shrink-0">
                       <direction.icon className="w-6 h-6 text-primary" />
@@ -87,8 +75,7 @@ export const LocationSection = () => {
                       <p className="text-gray-600 text-sm">{direction.description}</p>
                     </div>
                   </div>
-                </div>
-              ))}
+                </div>)}
             </div>
 
             {/* Contact Info */}
@@ -104,16 +91,12 @@ export const LocationSection = () => {
                   <span className="text-gray-600">info@treepod.cl</span>
                 </div>
               </div>
-              <Button 
-                className="w-full mt-4 bg-primary hover:bg-primary/90"
-                onClick={() => navigate('/unit/1')}
-              >
+              <Button className="w-full mt-4 bg-primary hover:bg-primary/90" onClick={() => navigate('/unit/1')}>
                 Reservar Experiencia
               </Button>
             </div>
           </div>
         </div>
       </div>
-    </section>
-  );
+    </section>;
 };

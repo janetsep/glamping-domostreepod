@@ -1,12 +1,9 @@
 import { Button } from "@/components/ui/button";
 import { Phone, Mail, MessageCircle, ArrowRight } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-
 export const FinalCTA = () => {
   const navigate = useNavigate();
-
-  return (
-    <section id="contacto" className="py-16 bg-gradient-to-br from-primary to-secondary text-white">
+  return <section id="contacto" className="py-16 bg-gradient-to-br from-primary to-secondary text-white">
       <div className="container mx-auto px-4">
         <div className="max-w-4xl mx-auto text-center">
           {/* Header */}
@@ -25,11 +22,7 @@ export const FinalCTA = () => {
             <p className="text-lg mb-6 opacity-90">
               Mejor precio garantizado al reservar directamente con nosotros
             </p>
-            <Button 
-              size="lg" 
-              className="bg-white text-primary hover:bg-gray-100 px-8 py-4 text-lg font-semibold"
-              onClick={() => navigate('/unit/1')}
-            >
+            <Button size="lg" className="bg-white text-primary hover:bg-gray-100 px-8 py-4 text-lg font-semibold" onClick={() => navigate('/unit/1')}>
               Reservar Ahora
               <ArrowRight className="w-5 h-5 ml-2" />
             </Button>
@@ -66,16 +59,8 @@ export const FinalCTA = () => {
           </div>
 
           {/* Bottom Message */}
-          <div className="border-t border-white/20 pt-8">
-            <p className="text-lg mb-4">
-              <strong>Más de 500 huéspedes</strong> han vivido experiencias inolvidables en TreePod
-            </p>
-            <p className="opacity-90">
-              Únete a ellos y descubre por qué somos el glamping #1 en Valle Las Trancas
-            </p>
-          </div>
+          
         </div>
       </div>
-    </section>
-  );
+    </section>;
 };

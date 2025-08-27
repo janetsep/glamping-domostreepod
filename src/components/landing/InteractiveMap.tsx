@@ -1,44 +1,47 @@
 import { MapPin, Navigation, Phone, Clock } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-
 export const InteractiveMap = () => {
   const location = {
     address: "Valle Las Trancas, Región de Ñuble, Chile",
     coordinates: "-36.9197, -71.4892",
-    nearbyAttractions: [
-      { name: "Termas de Chillán", distance: "15 km", type: "Termas" },
-      { name: "Centro de Ski Valle Las Trancas", distance: "8 km", type: "Ski" },
-      { name: "Sendero Los Coigües", distance: "3 km", type: "Trekking" },
-      { name: "Mirador Shangri-La", distance: "12 km", type: "Mirador" }
-    ],
+    nearbyAttractions: [{
+      name: "Termas de Chillán",
+      distance: "15 km",
+      type: "Termas"
+    }, {
+      name: "Centro de Ski Valle Las Trancas",
+      distance: "8 km",
+      type: "Ski"
+    }, {
+      name: "Sendero Los Coigües",
+      distance: "3 km",
+      type: "Trekking"
+    }, {
+      name: "Mirador Shangri-La",
+      distance: "12 km",
+      type: "Mirador"
+    }],
     accessInfo: {
       fromSantiago: "5 horas en auto",
-      fromConcepcion: "2.5 horas en auto", 
+      fromConcepcion: "2.5 horas en auto",
       fromChillan: "1 hora en auto"
     }
   };
-
   const openInGoogleMaps = () => {
     const url = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(location.address)}`;
     window.open(url, '_blank');
   };
-
   const openInWaze = () => {
     const url = `https://waze.com/ul?q=${encodeURIComponent(location.address)}`;
     window.open(url, '_blank');
   };
-
-  return (
-    <section className="py-16 bg-gradient-to-br from-primary/5 to-white">
+  return <section className="py-16 bg-gradient-to-br from-primary/5 to-white">
       <div className="container mx-auto px-4">
         
         {/* Header */}
         <div className="text-center mb-12">
-          <div className="inline-flex items-center gap-2 bg-primary/10 text-primary px-4 py-2 rounded-full text-sm font-medium mb-6">
-            <MapPin className="w-4 h-4" />
-            Ubicación
-          </div>
+          
           <h2 className="text-3xl md:text-4xl font-display font-bold text-foreground mb-4">
             Encuentra TreePod en el Valle Las Trancas
           </h2>
@@ -61,17 +64,11 @@ export const InteractiveMap = () => {
                   
                   {/* Action buttons */}
                   <div className="flex gap-3 justify-center">
-                    <Button 
-                      onClick={openInGoogleMaps}
-                      className="bg-blue-600 hover:bg-blue-700 text-white"
-                    >
+                    <Button onClick={openInGoogleMaps} className="bg-blue-600 hover:bg-blue-700 text-white">
                       <Navigation className="w-4 h-4 mr-2" />
                       Google Maps
                     </Button>
-                    <Button 
-                      onClick={openInWaze}
-                      className="bg-blue-500 hover:bg-blue-600 text-white"
-                    >
+                    <Button onClick={openInWaze} className="bg-blue-500 hover:bg-blue-600 text-white">
                       <Navigation className="w-4 h-4 mr-2" />
                       Waze
                     </Button>
@@ -120,15 +117,13 @@ export const InteractiveMap = () => {
                 <h3 className="text-xl font-bold text-foreground">Atractivos cercanos</h3>
               </div>
               <div className="space-y-3">
-                {location.nearbyAttractions.map((attraction, index) => (
-                  <div key={index} className="flex items-center justify-between py-2 border-b border-gray-100 last:border-b-0">
+                {location.nearbyAttractions.map((attraction, index) => <div key={index} className="flex items-center justify-between py-2 border-b border-gray-100 last:border-b-0">
                     <div>
                       <p className="font-medium text-foreground">{attraction.name}</p>
                       <p className="text-sm text-muted-foreground">{attraction.type}</p>
                     </div>
                     <span className="text-primary font-medium">{attraction.distance}</span>
-                  </div>
-                ))}
+                  </div>)}
               </div>
             </Card>
 
@@ -141,10 +136,7 @@ export const InteractiveMap = () => {
               <p className="text-muted-foreground mb-4">
                 Nuestro equipo te puede guiar paso a paso para llegar sin problemas
               </p>
-              <Button 
-                className="w-full bg-primary hover:bg-primary/90"
-                onClick={() => window.open('https://wa.me/56912345678', '_blank')}
-              >
+              <Button className="w-full bg-primary hover:bg-primary/90" onClick={() => window.open('https://wa.me/56912345678', '_blank')}>
                 <Phone className="w-4 h-4 mr-2" />
                 Contactar por WhatsApp
               </Button>
@@ -152,6 +144,5 @@ export const InteractiveMap = () => {
           </div>
         </div>
       </div>
-    </section>
-  );
+    </section>;
 };
