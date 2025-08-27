@@ -1,9 +1,11 @@
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
 import { Star, MapPin, Users } from "lucide-react";
+import { useGlampingStats } from '@/hooks/useGlampingData';
 
 export const SimpleHero = () => {
   const navigate = useNavigate();
+  const { data: stats, isLoading } = useGlampingStats();
 
   const scrollToPackages = () => {
     const element = document.getElementById('packages');
@@ -35,7 +37,12 @@ export const SimpleHero = () => {
               <Star key={i} className="w-4 h-4 fill-yellow-400 text-yellow-400" />
             ))}
           </div>
-          <span className="text-sm text-gray-600">4.9/5 • 500+ huéspedes felices</span>
+          <span className="text-sm text-gray-600">
+            {!isLoading && stats ? 
+              `${stats.averageRating}/5 • ${stats.totalGuests}+ huéspedes felices` :
+              "Cargando..."
+            }
+          </span>
         </div>
 
         {/* Main headline */}
@@ -88,7 +95,10 @@ export const SimpleHero = () => {
 
         {/* Social proof indicator */}
         <p className="text-sm text-gray-500 mt-6">
-          Únete a más de 500 huéspedes que han vivido experiencias inolvidables
+          {!isLoading && stats ? 
+            `Únete a más de ${stats.totalGuests} huéspedes que han vivido experiencias inolvidables` :
+            "Únete a nuestros huéspedes que han vivido experiencias inolvidables"
+          }
         </p>
       </div>
     </section>

@@ -43,5 +43,10 @@ export const AvailabilityMessage = ({
     mensaje: availableMessage,
     estilo: messageStyle
   });
-  return;
+  
+  return (
+    <div className={`p-3 rounded-lg ${messageStyle}`}>
+      <p className="text-sm font-medium">{availableMessage}</p>
+    </div>
+  );
 };
