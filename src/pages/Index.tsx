@@ -2,7 +2,7 @@ import { SimpleHero } from "@/components/landing/SimpleHero";
 import { DynamicSocialProof } from "@/components/landing/DynamicSocialProof";
 import { QuickBookingSection } from "@/components/landing/QuickBookingSection";
 import { HighlightedPackages } from "@/components/landing/HighlightedPackages";
-import { GalleryTestimonials } from "@/components/landing/GalleryTestimonials";
+import Testimonials from "@/components/Testimonials";
 import { InteractiveMap } from "@/components/landing/InteractiveMap";
 import { FAQSection } from "@/components/landing/FAQSection";
 import { LocationSection } from "@/components/landing/LocationSection";
@@ -24,7 +24,7 @@ const Index = () => {
       <HighlightedPackages />
       
       {/* 5. Galería y Testimonios - Prueba visual y social */}
-      <GalleryTestimonials />
+      <Testimonials />
       
       {/* 6. Mapa Interactivo - Ubicación y acceso */}
       <InteractiveMap />
