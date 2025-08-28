@@ -37,7 +37,7 @@ export const SimpleHero = () => {
         </h1>
 
         {/* Subheadline */}
-        <p className="text-xl md:text-2xl text-gray-600 mb-8 max-w-3xl mx-auto">
+        <p className="text-xl md:text-2xl text-white mb-8 max-w-3xl mx-auto text-shadow-lg">
           Experiencias únicas en domos geodésicos en Valle Las Trancas, 
           rodeado de bosque nativo y la cordillera de los Andes
         </p>
