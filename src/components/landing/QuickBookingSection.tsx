@@ -64,7 +64,7 @@ export const QuickBookingSection = () => {
                   {/* Price */}
                   <div className="mb-4">
                     <div className="flex items-center justify-center gap-2">
-                      <span className="text-2xl font-bold text-primary">{formatPrice(pkg.price)}</span>
+                      <span className="text-2xl font-bold text-primary">$180.000 noche</span>
                     </div>
                   </div>
 
