@@ -74,7 +74,7 @@ export const HighlightedPackages = () => {
 
                 {/* Content */}
                 <div className="absolute bottom-0 left-0 right-0 p-6 text-white">
-                  <h3 className="text-2xl font-bold mb-2">
+                  <h3 className="text-2xl font-bold mb-2 text-white">
                     {pkg.title}
                   </h3>
                   <p className="text-white/90 mb-4 text-sm leading-relaxed">
