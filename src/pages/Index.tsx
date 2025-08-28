@@ -5,7 +5,7 @@ import { HighlightedPackages } from "@/components/landing/HighlightedPackages";
 import Testimonials from "@/components/Testimonials";
 import { InteractiveMap } from "@/components/landing/InteractiveMap";
 import { FAQSection } from "@/components/landing/FAQSection";
-import { LocationSection } from "@/components/landing/LocationSection";
+
 import { FinalCTA } from "@/components/landing/FinalCTA";
 
 const Index = () => {
@@ -32,10 +32,7 @@ const Index = () => {
       {/* 7. FAQ - Solo las preguntas más importantes */}
       <FAQSection />
       
-      {/* 8. Ubicación - Info práctica esencial */}
-      <LocationSection />
-      
-      {/* 9. CTA final - Última oportunidad de conversión */}
+      {/* 8. CTA final - Última oportunidad de conversión */}
       <FinalCTA />
     </div>
   );
