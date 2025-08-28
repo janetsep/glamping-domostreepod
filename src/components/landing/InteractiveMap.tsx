@@ -2,9 +2,26 @@ import { MapPin, Navigation, Phone, Clock } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { useElfsight } from "@/hooks/useElfsight";
+import { useState, useEffect } from "react";
+
 export const InteractiveMap = () => {
+  const [showFallback, setShowFallback] = useState(false);
+  
   // Initialize Elfsight for Google Maps widget
   useElfsight('3b2bec9e-cc66-481c-88a9-3f156d8a74a3', 1500);
+
+  // Show fallback after 8 seconds if Elfsight doesn't load
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      const elfsightElement = document.querySelector('.elfsight-app-3b2bec9e-cc66-481c-88a9-3f156d8a74a3');
+      if (elfsightElement && elfsightElement.children.length === 0) {
+        console.log('🔧 ELFSIGHT: ⚠️ Map widget no cargó, mostrando fallback');
+        setShowFallback(true);
+      }
+    }, 8000);
+
+    return () => clearTimeout(timer);
+  }, []);
   
   const location = {
     address: "Valle Las Trancas, Región de Ñuble, Chile",
@@ -61,7 +78,28 @@ export const InteractiveMap = () => {
             <Card className="overflow-hidden shadow-xl">
               {/* Elfsight Google Maps Widget */}
               <div className="relative h-96">
-                <div className="elfsight-app-3b2bec9e-cc66-481c-88a9-3f156d8a74a3" data-elfsight-app-lazy></div>
+                <div className={`elfsight-app-3b2bec9e-cc66-481c-88a9-3f156d8a74a3 ${showFallback ? 'hidden' : ''}`} data-elfsight-app-lazy></div>
+                
+                {/* Fallback Map */}
+                {showFallback && (
+                  <div className="h-full bg-gradient-to-br from-green-100 to-green-200 flex items-center justify-center relative">
+                    <div className="text-center">
+                      <MapPin className="w-16 h-16 text-primary mx-auto mb-4" />
+                      <h3 className="text-xl font-bold text-foreground mb-2">TreePod Valle Las Trancas</h3>
+                      <p className="text-muted-foreground mb-4">{location.address}</p>
+                      <div className="flex gap-2 justify-center">
+                        <Button onClick={openInGoogleMaps} className="bg-primary hover:bg-primary/90">
+                          <Navigation className="w-4 h-4 mr-2" />
+                          Google Maps
+                        </Button>
+                        <Button onClick={openInWaze} variant="outline">
+                          <Navigation className="w-4 h-4 mr-2" />
+                          Waze
+                        </Button>
+                      </div>
+                    </div>
+                  </div>
+                )}
                 
                 {/* Coordinate overlay */}
                 <div className="absolute top-4 right-4 bg-white/90 rounded-lg px-3 py-2">
