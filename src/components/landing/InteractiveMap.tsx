@@ -5,20 +5,22 @@ import { useElfsight } from "@/hooks/useElfsight";
 import { useState, useEffect } from "react";
 
 export const InteractiveMap = () => {
-  const [showFallback, setShowFallback] = useState(false);
+  const [showElfsight, setShowElfsight] = useState(false);
   
   // Initialize Elfsight for Google Maps widget
   useElfsight('3b2bec9e-cc66-481c-88a9-3f156d8a74a3', 1500);
 
-  // Show fallback after 8 seconds if Elfsight doesn't load
+  // Try to show Elfsight widget after 3 seconds, keep fallback as default
   useEffect(() => {
     const timer = setTimeout(() => {
       const elfsightElement = document.querySelector('.elfsight-app-3b2bec9e-cc66-481c-88a9-3f156d8a74a3');
-      if (elfsightElement && elfsightElement.children.length === 0) {
-        console.log('🔧 ELFSIGHT: ⚠️ Map widget no cargó, mostrando fallback');
-        setShowFallback(true);
+      if (elfsightElement && elfsightElement.children.length > 0) {
+        console.log('🔧 ELFSIGHT: ✅ Map widget cargado, mostrando widget');
+        setShowElfsight(true);
+      } else {
+        console.log('🔧 ELFSIGHT: ⚠️ Map widget no cargó, usando fallback nativo');
       }
-    }, 8000);
+    }, 3000);
 
     return () => clearTimeout(timer);
   }, []);
@@ -76,12 +78,14 @@ export const InteractiveMap = () => {
           {/* Interactive Map */}
           <div className="relative">
             <Card className="overflow-hidden shadow-xl">
-              {/* Elfsight Google Maps Widget */}
+              {/* Elfsight Google Maps Widget - solo se muestra si carga correctamente */}
               <div className="relative h-96">
-                <div className={`elfsight-app-3b2bec9e-cc66-481c-88a9-3f156d8a74a3 ${showFallback ? 'hidden' : ''}`} data-elfsight-app-lazy></div>
+                {showElfsight && (
+                  <div className="elfsight-app-3b2bec9e-cc66-481c-88a9-3f156d8a74a3" data-elfsight-app-lazy></div>
+                )}
                 
-                {/* Fallback Map */}
-                {showFallback && (
+                {/* Fallback Map - se muestra por defecto */}
+                {!showElfsight && (
                   <div className="h-full bg-gradient-to-br from-green-100 to-green-200 flex items-center justify-center relative">
                     <div className="text-center">
                       <MapPin className="w-16 h-16 text-primary mx-auto mb-4" />

@@ -3,20 +3,22 @@ import { useState, useEffect } from 'react';
 import { Star, Quote } from 'lucide-react';
 
 const Testimonials = () => {
-  const [showFallback, setShowFallback] = useState(false);
+  const [showElfsight, setShowElfsight] = useState(false);
   
   // Force Elfsight initialization for this widget
   useElfsight('58776635-7259-470b-9077-f838d052ebab', 1500);
 
-  // Show fallback after 8 seconds if Elfsight doesn't load
+  // Try to show Elfsight widget after 3 seconds, keep fallback as default
   useEffect(() => {
     const timer = setTimeout(() => {
       const elfsightElement = document.querySelector('.elfsight-app-58776635-7259-470b-9077-f838d052ebab');
-      if (elfsightElement && elfsightElement.children.length === 0) {
-        console.log('🔧 ELFSIGHT: ⚠️ Testimonials widget no cargó, mostrando fallback');
-        setShowFallback(true);
+      if (elfsightElement && elfsightElement.children.length > 0) {
+        console.log('🔧 ELFSIGHT: ✅ Testimonials widget cargado, mostrando widget');
+        setShowElfsight(true);
+      } else {
+        console.log('🔧 ELFSIGHT: ⚠️ Testimonials widget no cargó, usando fallback nativo');
       }
-    }, 8000);
+    }, 3000);
 
     return () => clearTimeout(timer);
   }, []);
@@ -57,11 +59,13 @@ const Testimonials = () => {
         
         <div className="max-w-4xl mx-auto">
           <div className="bg-white rounded-lg shadow-md p-6">
-            {/* Widget Elfsight */}
-            <div className={`elfsight-app-58776635-7259-470b-9077-f838d052ebab ${showFallback ? 'hidden' : ''}`} data-elfsight-app-lazy></div>
+            {/* Widget Elfsight - solo se muestra si carga correctamente */}
+            {showElfsight && (
+              <div className="elfsight-app-58776635-7259-470b-9077-f838d052ebab" data-elfsight-app-lazy></div>
+            )}
             
-            {/* Fallback Testimonials */}
-            {showFallback && (
+            {/* Fallback Testimonials - se muestra por defecto */}
+            {!showElfsight && (
               <div className="space-y-6">
                 <div className="text-center mb-8">
                   <div className="flex items-center justify-center gap-2 mb-2">
