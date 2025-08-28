@@ -16,8 +16,8 @@ export const SimpleHero = () => {
   };
   return <section className="relative min-h-screen flex items-center justify-center bg-gradient-to-br from-primary/10 via-white to-secondary/10">
       {/* Background Image */}
-      <div className="absolute inset-0 bg-cover bg-center bg-no-repeat opacity-20" style={{
-      backgroundImage: "url('/lovable-uploads/dafd81f1-18a1-4796-9a46-b39914b747a9.jpg')"
+      <div className="absolute inset-0 bg-cover bg-center bg-no-repeat opacity-30" style={{
+      backgroundImage: "url('/lovable-uploads/4b5f5afe-beee-4c81-bba2-1ef103e3a4e7.png')"
     }} />
       
       <div className="relative z-10 container mx-auto px-4 text-center">
