@@ -20,17 +20,20 @@ export const SimpleHero = () => {
       backgroundImage: "url('/lovable-uploads/4b5f5afe-beee-4c81-bba2-1ef103e3a4e7.png')"
     }} />
       
+      {/* Dark overlay for better text readability */}
+      <div className="absolute inset-0 bg-black/30" />
+      
       <div className="relative z-10 container mx-auto px-4 text-center">
         {/* Trust indicators */}
         <div className="flex items-center justify-center gap-2 mb-6">
           <div className="flex items-center gap-1">
             {[...Array(5)].map((_, i) => <Star key={i} className="w-4 h-4 fill-yellow-400 text-yellow-400" />)}
           </div>
-          <span className="text-sm text-gray-600">4.9/5 • 500+ huéspedes felices</span>
+          <span className="text-sm text-white">4.9/5 • 500+ huéspedes felices</span>
         </div>
 
         {/* Main headline */}
-        <h1 className="text-4xl md:text-6xl lg:text-7xl font-display font-bold text-gray-900 mb-6 leading-tight">
+        <h1 className="text-4xl md:text-6xl lg:text-7xl font-display font-bold text-white mb-6 leading-tight text-shadow-lg">
           Desconecta del Ruido
           <br />
           <span className="text-primary">Conecta con la Naturaleza</span>
@@ -43,7 +46,7 @@ export const SimpleHero = () => {
         </p>
 
         {/* Key benefits */}
-        <div className="flex flex-wrap items-center justify-center gap-6 mb-8 text-gray-700">
+        <div className="flex flex-wrap items-center justify-center gap-6 mb-8 text-white">
           <div className="flex items-center gap-2">
             <MapPin className="w-5 h-5 text-primary" />
             <span>Valle Las Trancas, Ñuble</span>
@@ -61,13 +64,13 @@ export const SimpleHero = () => {
         {/* CTA Buttons */}
         <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
           
-          <Button size="lg" variant="outline" className="border-2 border-primary text-primary hover:bg-primary hover:text-white px-8 py-4 text-lg font-semibold transition-all duration-300" onClick={() => navigate('/unit/1')}>
+          <Button size="lg" variant="outline" className="border-2 border-white text-white hover:bg-white hover:text-primary px-8 py-4 text-lg font-semibold transition-all duration-300" onClick={() => navigate('/unit/1')}>
             Reservar Ahora
           </Button>
         </div>
 
         {/* Social proof indicator */}
-        <p className="text-sm text-gray-500 mt-6">
+        <p className="text-sm text-white/80 mt-6">
           Únete a más de 500 huéspedes que han vivido experiencias inolvidables
         </p>
       </div>
