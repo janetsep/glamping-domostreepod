@@ -16,7 +16,7 @@ export const SimpleHero = () => {
   };
   return <section className="relative min-h-screen flex items-center justify-center bg-gradient-to-br from-primary/10 via-white to-secondary/10">
       {/* Background Image */}
-      <div className="absolute inset-0 bg-cover bg-center bg-no-repeat opacity-30" style={{
+      <div className="absolute inset-0 bg-cover bg-center bg-no-repeat opacity-60" style={{
       backgroundImage: "url('/lovable-uploads/4b5f5afe-beee-4c81-bba2-1ef103e3a4e7.png')"
     }} />
       
