@@ -1,7 +1,11 @@
 import { MapPin, Navigation, Phone, Clock } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
+import { useElfsight } from "@/hooks/useElfsight";
 export const InteractiveMap = () => {
+  // Initialize Elfsight for Google Maps widget
+  useElfsight('3b2bec9e-cc66-481c-88a9-3f156d8a74a3', 1500);
+  
   const location = {
     address: "Valle Las Trancas, Región de Ñuble, Chile",
     coordinates: "-36.9197, -71.4892",
@@ -55,25 +59,9 @@ export const InteractiveMap = () => {
           {/* Interactive Map */}
           <div className="relative">
             <Card className="overflow-hidden shadow-xl">
-              {/* Map placeholder - En producción sería un mapa real */}
-              <div className="relative h-96 bg-gradient-to-br from-green-100 to-blue-100 flex items-center justify-center">
-                <div className="text-center">
-                  <MapPin className="w-16 h-16 text-primary mx-auto mb-4" />
-                  <h3 className="text-xl font-bold text-foreground mb-2">TreePod Glamping</h3>
-                  <p className="text-muted-foreground mb-4">{location.address}</p>
-                  
-                  {/* Action buttons */}
-                  <div className="flex gap-3 justify-center">
-                    <Button onClick={openInGoogleMaps} className="bg-blue-600 hover:bg-blue-700 text-white">
-                      <Navigation className="w-4 h-4 mr-2" />
-                      Google Maps
-                    </Button>
-                    <Button onClick={openInWaze} className="bg-blue-500 hover:bg-blue-600 text-white">
-                      <Navigation className="w-4 h-4 mr-2" />
-                      Waze
-                    </Button>
-                  </div>
-                </div>
+              {/* Elfsight Google Maps Widget */}
+              <div className="relative h-96">
+                <div className="elfsight-app-3b2bec9e-cc66-481c-88a9-3f156d8a74a3" data-elfsight-app-lazy></div>
                 
                 {/* Coordinate overlay */}
                 <div className="absolute top-4 right-4 bg-white/90 rounded-lg px-3 py-2">
